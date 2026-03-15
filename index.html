@@ -9,10 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --red:    #D93F3F;
-  --orange: #E8823A;
-  --gold:   #C8952A;
-  --cream:  #FAF7F2;
+  --blue:   #214A9A;
+  --navy:   #1C2B4A;
+  --gold:   #C8A44D;
+  --bg:     #F7F8FA;
   --navy:   #0F1F2E;
   --white:  #FFFFFF;
   --text:   #1a1a1a;
@@ -21,7 +21,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 
 /* ===== NAV ===== */
 nav{
@@ -35,14 +35,14 @@ nav{
 .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
 .nav-logo-mark{
   width:32px;height:32px;border-radius:50%;
-  background:linear-gradient(135deg,var(--red),var(--orange));
+  background:linear-gradient(135deg,var(--blue),var(--gold));
   display:flex;align-items:center;justify-content:center;
   font-family:'Outfit',sans-serif;font-weight:900;font-size:0.85rem;color:white;
 }
 .nav-logo-text strong{display:block;font-size:0.82rem;color:white;font-weight:700;}
 .nav-logo-text span{font-size:0.58rem;color:rgba(255,255,255,0.5);letter-spacing:0.08em;}
 .nav-btn{
-  background:var(--red);color:white;
+  background:var(--blue);color:white;
   padding:8px 16px;border-radius:20px;
   text-decoration:none;font-size:0.78rem;font-weight:700;
   transition:background 0.2s;
@@ -74,7 +74,7 @@ nav{
 }
 .drawer-cta{
   display:block;text-align:center;margin-top:1.5rem;
-  background:linear-gradient(135deg,var(--red),var(--orange));
+  background:linear-gradient(135deg,var(--blue),var(--gold));
   color:white;padding:16px;border-radius:14px;
   font-size:1rem;font-weight:700;text-decoration:none;
 }
@@ -114,7 +114,7 @@ nav{
   margin-bottom:1rem;
   animation:fadeUp 0.8s ease 0.2s both;
 }
-.hero-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--orange);}
+.hero-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--gold);}
 .hero-title{
   font-family:'Shippori Mincho',serif;
   font-size:clamp(2rem,8vw,3.2rem);
@@ -133,17 +133,17 @@ nav{
   line-height:1.9;margin-bottom:1.8rem;
   animation:fadeUp 0.8s ease 0.5s both;
 }
-.hero-catch strong{color:var(--orange);}
+.hero-catch strong{color:var(--gold);}
 .hero-btns{
   display:flex;flex-direction:column;gap:0.7rem;
   animation:fadeUp 0.8s ease 0.6s both;
 }
 .btn-main{
   display:block;text-align:center;
-  background:linear-gradient(135deg,var(--red),var(--orange));
+  background:linear-gradient(135deg,var(--blue),var(--gold));
   color:white;padding:16px;border-radius:12px;
   font-size:1rem;font-weight:700;text-decoration:none;
-  box-shadow:0 4px 20px rgba(217,63,63,0.4);
+  box-shadow:0 4px 20px rgba(33,74,154,0.4);
 }
 .btn-sub{
   display:block;text-align:center;
@@ -169,7 +169,7 @@ nav{
 .stat-num{
   display:block;
   font-family:'Outfit',sans-serif;font-weight:900;font-size:1.5rem;
-  color:var(--orange);line-height:1;margin-bottom:3px;
+  color:var(--gold);line-height:1;margin-bottom:3px;
 }
 .stat-label{font-size:0.65rem;color:rgba(255,255,255,0.5);letter-spacing:0.05em;}
 
@@ -179,9 +179,9 @@ nav{
 .eyebrow{
   font-family:'Outfit',sans-serif;
   font-size:0.65rem;font-weight:700;letter-spacing:0.25em;
-  text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;
+  text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem;
 }
-.eyebrow.light{color:var(--orange);}
+.eyebrow.light{color:var(--gold);}
 .section-h2{
   font-family:'Shippori Mincho',serif;
   font-size:clamp(1.6rem,5vw,2.2rem);
@@ -198,7 +198,7 @@ nav{
   display:grid;grid-template-columns:56px 1fr;gap:1rem;align-items:center;
   background:white;border-radius:16px;padding:1.2rem;
   box-shadow:0 2px 12px rgba(0,0,0,0.06);
-  border-left:3px solid var(--orange);
+  border-left:3px solid var(--gold);
 }
 .persona-icon{
   width:52px;height:52px;border-radius:50%;
@@ -206,7 +206,7 @@ nav{
   display:flex;align-items:center;justify-content:center;
   font-size:1.5rem;
 }
-.persona-label{font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:0.2rem;letter-spacing:0.05em;}
+.persona-label{font-size:0.7rem;color:var(--blue);font-weight:700;margin-bottom:0.2rem;letter-spacing:0.05em;}
 .persona-title{font-size:0.92rem;font-weight:700;color:var(--navy);margin-bottom:0.2rem;}
 .persona-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;}
 
@@ -229,7 +229,7 @@ nav{
 .feat{
   display:flex;gap:1rem;align-items:flex-start;
   padding:1.2rem;border-radius:14px;
-  background:var(--cream);
+  background:var(--bg);
   border:1px solid var(--border);
 }
 .feat-num{
@@ -254,7 +254,7 @@ nav{
 }
 .vision-inner{position:relative;z-index:2;padding:64px 1.5rem;}
 .vision-quote{
-  border-left:3px solid var(--orange);
+  border-left:3px solid var(--gold);
   padding:1.2rem 1.2rem;
   background:rgba(255,255,255,0.04);
   border-radius:0 12px 12px 0;
@@ -264,7 +264,7 @@ nav{
   font-family:'Shippori Mincho',serif;
   font-size:1rem;color:white;line-height:2;font-weight:400;
 }
-.vision-quote span{color:var(--orange);font-weight:700;}
+.vision-quote span{color:var(--gold);font-weight:700;}
 
 /* ===== PRACTICE INFO ===== */
 .practice-cards{display:flex;flex-direction:column;gap:0.8rem;}
@@ -278,13 +278,13 @@ nav{
   background:linear-gradient(135deg,#fff0e8,#ffdfc0);
   display:flex;align-items:center;justify-content:center;font-size:1.1rem;
 }
-.pcard-label{font-size:0.7rem;font-weight:700;color:var(--red);margin-bottom:0.2rem;letter-spacing:0.05em;}
+.pcard-label{font-size:0.7rem;font-weight:700;color:var(--blue);margin-bottom:0.2rem;letter-spacing:0.05em;}
 .pcard-val{font-size:0.9rem;font-weight:700;color:var(--navy);}
 .pcard-sub{font-size:0.75rem;color:var(--muted);margin-top:0.1rem;}
 
 /* ===== RECRUITMENT ===== */
 .recruit-section{
-  background:linear-gradient(135deg,var(--red),var(--orange));
+  background:linear-gradient(135deg,var(--blue),var(--gold));
   padding:64px 1.5rem;text-align:center;
 }
 .recruit-num{
@@ -310,7 +310,7 @@ nav{
 }
 .btn-recruit{
   display:block;
-  background:white;color:var(--red);
+  background:white;color:var(--blue);
   padding:16px;border-radius:12px;
   font-size:1rem;font-weight:700;text-decoration:none;
   box-shadow:0 4px 20px rgba(0,0,0,0.2);
@@ -331,25 +331,25 @@ nav{
 .form-body{padding:1.5rem;}
 .form-g{margin-bottom:1rem;}
 .form-g label{display:block;font-size:0.75rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
-.form-g label .req{color:var(--red);margin-left:2px;}
+.form-g label .req{color:var(--blue);margin-left:2px;}
 .form-g input,.form-g select,.form-g textarea{
   width:100%;padding:11px 13px;
   border:1.5px solid var(--border);border-radius:10px;
   font-size:0.88rem;font-family:inherit;
-  background:var(--cream);outline:none;
+  background:var(--bg);outline:none;
   transition:border-color 0.2s;
   -webkit-appearance:none;color:var(--text);
 }
 .form-g input:focus,.form-g select:focus,.form-g textarea:focus{
-  border-color:var(--orange);background:white;
+  border-color:var(--gold);background:white;
 }
 .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
 .btn-submit{
   width:100%;padding:15px;
-  background:linear-gradient(135deg,var(--red),var(--orange));
+  background:linear-gradient(135deg,var(--blue),var(--gold));
   color:white;border:none;border-radius:12px;
   font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;
-  box-shadow:0 4px 16px rgba(217,63,63,0.3);
+  box-shadow:0 4px 16px rgba(33,74,154,0.3);
   display:flex;align-items:center;justify-content:center;gap:8px;
   transition:opacity 0.2s;
 }
@@ -369,7 +369,7 @@ nav{
 .news-meta{display:flex;align-items:center;gap:0.5rem;}
 .news-date{font-family:'Outfit',sans-serif;font-size:0.72rem;color:var(--muted);}
 .news-tag{font-size:0.62rem;font-weight:700;padding:1px 8px;border-radius:10px;}
-.tag-new{background:rgba(217,63,63,0.1);color:var(--red);}
+.tag-new{background:rgba(33,74,154,0.1);color:var(--blue);}
 .tag-info{background:rgba(200,149,42,0.12);color:var(--gold);}
 .news-title{font-size:0.88rem;color:var(--text);line-height:1.6;}
 
@@ -378,7 +378,7 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
 .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
 .footer-logo-mark{
   width:38px;height:38px;border-radius:50%;
-  background:linear-gradient(135deg,var(--red),var(--orange));
+  background:linear-gradient(135deg,var(--blue),var(--gold));
   display:flex;align-items:center;justify-content:center;
   font-family:'Outfit',sans-serif;font-weight:900;font-size:1rem;color:white;
 }
@@ -395,7 +395,7 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
   font-size:1rem;text-decoration:none;
   transition:background 0.2s;
 }
-.footer-sns a:hover{background:var(--red);}
+.footer-sns a:hover{background:var(--blue);}
 .footer-copy{font-size:0.68rem;color:rgba(255,255,255,0.25);}
 
 /* ===== REVEAL ===== */
@@ -406,11 +406,11 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
 .scroll-top{
   position:fixed;bottom:1.5rem;right:1.5rem;z-index:100;
   width:42px;height:42px;border-radius:50%;
-  background:var(--red);color:white;border:none;
+  background:var(--blue);color:white;border:none;
   font-size:1rem;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   opacity:0;transition:opacity 0.3s;
-  box-shadow:0 4px 16px rgba(217,63,63,0.35);
+  box-shadow:0 4px 16px rgba(33,74,154,0.35);
 }
 .scroll-top.visible{opacity:1;}
 </style>
@@ -449,7 +449,7 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-eyebrow">Higashi Osaka · 2025</div>
-    <h1 class="hero-title">久しぶりに楽器、<br>楽しく吹きませんか？</h1>
+    <h1 class="hero-title">久しぶりに<br>楽器、吹きませんか？</h1>
     <p class="hero-title-en">Higashi Osaka Wind Orchestra</p>
     <p class="hero-catch">
       <strong>ブランク何年でも大歓迎。</strong><br>
@@ -491,7 +491,7 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
 <section class="section" id="about">
   <div class="reveal">
     <p class="eyebrow">For You</p>
-    <h2 class="section-h2">こんな方に来てほしい！</h2>
+    <h2 class="section-h2">こんな方に<br>来てほしい</h2>
     <p class="section-lead">学生時代に吹奏楽をやっていた方、楽器を持て余している方、音楽仲間を探している方。ここはそんな人たちのための場所です。</p>
   </div>
   <div class="personas reveal">
@@ -695,7 +695,7 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
             <span id="btnText">見学を申し込む</span>
             <div class="spinner" id="spinner"></div>
           </button>
-          <p class="form-note">送信内容は自動でスプレッドシートに記録されます。<br>折り返し higashiosaka.winds@gmail.com よりご連絡します。</p>
+          <p class="form-note">送信内容は自動でスプレッドシートに記録されます。<br>折り返し <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ef6f7f9ffedf6f7f1edfff5ffb0e9f7f0faeddef9f3fff7f2b0fdf1f3">[email&#160;protected]</a> よりご連絡します。</p>
         </form>
         <div class="success-box" id="successBox">
           <div class="success-icon">🎵</div>
@@ -757,7 +757,7 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
 
 // Hamburger
@@ -819,11 +819,4 @@ const obs = new IntersectionObserver(entries => {
     if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
   });
 }, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-// Scroll top
-const st = document.getElementById('scrollTop');
-window.addEventListener('scroll', () => st.classList.toggle('visible', scrollY > 400));
-</script>
-</body>
-</html>
+document
