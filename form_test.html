@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>見学申込フォーム テスト</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E8334A;
+  --orange: #FF6B35;
+  --navy: #073B4C;
+  --cream: #FFFBF5;
+  --gray: #F5F5F0;
+  --text: #1a1a1a;
+  --muted: #666;
+  --border: #e0ddd5;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans JP',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem 1rem; }
+
+.card {
+  width:100%; max-width:480px;
+  background:white; border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,0.1);
+}
+.card-header {
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  padding:1.5rem;
+}
+.card-header-eyebrow { font-size:0.7rem; color:rgba(255,255,255,0.8); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.4rem; }
+.card-header-title { font-size:1.2rem; font-weight:700; color:white; margin-bottom:0.2rem; }
+.card-header-sub { font-size:0.8rem; color:rgba(255,255,255,0.85); }
+
+.card-body { padding:1.5rem; }
+
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+.form-g { margin-bottom:1rem; }
+.form-g label { display:block; font-size:0.75rem; font-weight:700; color:var(--navy); margin-bottom:0.4rem; }
+.form-g label .req { color:var(--red); margin-left:2px; }
+.form-g input, .form-g select, .form-g textarea {
+  width:100%; padding:11px 13px;
+  border:1.5px solid var(--border); border-radius:10px;
+  font-size:0.88rem; font-family:inherit;
+  background:var(--gray); outline:none;
+  transition:border-color 0.2s, background 0.2s;
+  -webkit-appearance:none;
+  color:var(--text);
+}
+.form-g input:focus, .form-g select:focus, .form-g textarea:focus {
+  border-color:var(--orange); background:white;
+}
+.form-g input::placeholder, .form-g textarea::placeholder { color:#bbb; }
+
+.btn-submit {
+  width:100%; padding:15px;
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  color:white; border:none; border-radius:12px;
+  font-size:1rem; font-weight:700; font-family:inherit;
+  cursor:pointer; transition:opacity 0.2s, transform 0.15s;
+  box-shadow:0 4px 16px rgba(232,51,74,0.3);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-submit:hover { opacity:0.92; }
+.btn-submit:active { transform:scale(0.98); }
+.btn-submit:disabled { opacity:0.6; cursor:not-allowed; }
+
+.form-note { font-size:0.72rem; color:var(--muted); margin-top:0.8rem; text-align:center; line-height:1.6; }
+
+/* 送信中・完了状態 */
+.spinner {
+  width:18px; height:18px; border:2.5px solid rgba(255,255,255,0.4);
+  border-top-color:white; border-radius:50%;
+  animation:spin 0.7s linear infinite; display:none;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.success-box {
+  display:none;
+  text-align:center; padding:2rem 1rem;
+}
+.success-icon { font-size:3rem; margin-bottom:1rem; }
+.success-title { font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:0.5rem; }
+.success-text { font-size:0.88rem; color:var(--muted); line-height:1.8; }
+
+.error-box {
+  display:none;
+  background:#fff0f0; border:1.5px solid #ffcccc;
+  border-radius:10px; padding:0.8rem 1rem;
+  font-size:0.82rem; color:#c0392b;
+  margin-bottom:1rem; line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-header-eyebrow">Higashi Osaka Wind Orchestra</div>
+    <div class="card-header-title">🎺 見学・体験申込</div>
+    <div class="card-header-sub">まずは気軽に来てみてください！¥500 / 回</div>
+  </div>
+
+  <div class="card-body">
+    <div class="error-box" id="errorBox"></div>
+
+    <form id="form">
+      <div class="form-row">
+        <div class="form-g">
+          <label>お名前<span class="req">*</span></label>
+          <input type="text" id="name" placeholder="山田 花子" required>
+        </div>
+        <div class="form-g">
+          <label>担当楽器<span class="req">*</span></label>
+          <select id="instrument" required>
+            <option value="">選択してください</option>
+            <option>トランペット</option>
+            <option>トロンボーン</option>
+            <option>ホルン</option>
+            <option>ユーフォニアム</option>
+            <option>チューバ</option>
+            <option>クラリネット</option>
+            <option>サックス</option>
+            <option>フルート</option>
+            <option>オーボエ</option>
+            <option>打楽器</option>
+            <option>コントラバス</option>
+            <option>その他・未定</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-g">
+        <label>メールアドレス<span class="req">*</span></label>
+        <input type="email" id="email" placeholder="example@gmail.com" required>
+      </div>
+
+      <div class="form-g">
+        <label>希望見学日・一言</label>
+        <textarea id="message" rows="3" placeholder="〇月ごろ希望です／ブランク10年ですが大丈夫ですか？ など"></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span id="btnText">見学を申し込む</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+      <p class="form-note">送信内容はスプレッドシートに自動記録されます。<br>折り返しご連絡いたします。</p>
+    </form>
+
+    <div class="success-box" id="successBox">
+      <div class="success-icon">🎵</div>
+      <div class="success-title">申込ありがとうございます！</div>
+      <div class="success-text">折り返しご連絡いたします。<br>一緒に音楽を楽しみましょう！<br><br>東大阪吹奏楽団</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
+
+document.getElementById('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const name       = document.getElementById('name').value.trim();
+  const instrument = document.getElementById('instrument').value;
+  const email      = document.getElementById('email').value.trim();
+  const message    = document.getElementById('message').value.trim();
+
+  const errorBox = document.getElementById('errorBox');
+  errorBox.style.display = 'none';
+  if (!name || !instrument || !email) {
+    errorBox.textContent = '※ お名前・楽器・メールアドレスは必須です。';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  const btn     = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const spinner = document.getElementById('spinner');
+  btn.disabled = true;
+  btnText.textContent = '送信中...';
+  spinner.style.display = 'block';
+
+  // FormDataでURLエンコード送信（CORS回避）
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('instrument', instrument);
+  formData.append('email', email);
+  formData.append('message', message);
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: formData
+  }).then(function() {
+    document.getElementById('form').style.display = 'none';
+    document.getElementById('successBox').style.display = 'block';
+  }).catch(function() {
+    errorBox.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
+    errorBox.style.display = 'block';
+    btn.disabled = false;
+    btnText.textContent = '見学を申し込む';
+    spinner.style.display = 'none';
+  });
+});
+</script>
+</body>
+</html>
