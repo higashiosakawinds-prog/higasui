@@ -3,170 +3,784 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>見学申込フォーム テスト</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<title>東大阪吹奏楽団 | 一緒に奏でよう東大阪の音</title>
+<meta name="description" content="東大阪市の地域吹奏楽団。ブランク歓迎・年齢不問・毎週土曜練習。楽器をもう一度吹きませんか？見学¥500〜">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --red: #E8334A;
-  --orange: #FF6B35;
-  --navy: #073B4C;
-  --cream: #FFFBF5;
-  --gray: #F5F5F0;
-  --text: #1a1a1a;
-  --muted: #666;
-  --border: #e0ddd5;
+  --red:    #D93F3F;
+  --orange: #E8823A;
+  --gold:   #C8952A;
+  --cream:  #FAF7F2;
+  --navy:   #0F1F2E;
+  --white:  #FFFFFF;
+  --text:   #1a1a1a;
+  --muted:  #5a5a5a;
+  --border: #E0DBD3;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Noto Sans JP',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem 1rem; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
 
-.card {
-  width:100%; max-width:480px;
-  background:white; border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 8px 40px rgba(0,0,0,0.1);
+/* ===== NAV ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.2rem;
+  background:rgba(15,31,46,0.96);
+  backdrop-filter:blur(12px);
 }
-.card-header {
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo-mark{
+  width:32px;height:32px;border-radius:50%;
   background:linear-gradient(135deg,var(--red),var(--orange));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:0.85rem;color:white;
+}
+.nav-logo-text strong{display:block;font-size:0.82rem;color:white;font-weight:700;}
+.nav-logo-text span{font-size:0.58rem;color:rgba(255,255,255,0.5);letter-spacing:0.08em;}
+.nav-btn{
+  background:var(--red);color:white;
+  padding:8px 16px;border-radius:20px;
+  text-decoration:none;font-size:0.78rem;font-weight:700;
+  transition:background 0.2s;
+}
+.nav-btn:hover{background:#bf3535;}
+
+/* hamburger */
+.ham{
+  width:36px;height:36px;border:none;background:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+}
+.ham span{display:block;width:20px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
+.ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.ham.open span:nth-child(2){opacity:0;}
+.ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+.drawer{
+  position:fixed;top:56px;left:0;right:0;bottom:0;z-index:190;
+  background:var(--navy);
+  transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  padding:2rem 1.5rem 3rem;overflow-y:auto;
+}
+.drawer.open{transform:translateX(0);}
+.drawer ul{list-style:none;display:flex;flex-direction:column;}
+.drawer ul li a{
+  display:flex;align-items:center;gap:0.8rem;
+  padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;
+}
+.drawer-cta{
+  display:block;text-align:center;margin-top:1.5rem;
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  color:white;padding:16px;border-radius:14px;
+  font-size:1rem;font-weight:700;text-decoration:none;
+}
+
+/* ===== HERO ===== */
+.hero{
+  min-height:100svh;padding-top:56px;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background-image:url('conductor.jpeg');
+  background-size:cover;background-position:center top;
+  transform:scale(1.05);
+  animation:heroZoom 12s ease-out forwards;
+}
+@keyframes heroZoom{from{transform:scale(1.05);}to{transform:scale(1);}}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(15,31,46,0.3) 0%,
+    rgba(15,31,46,0.15) 40%,
+    rgba(15,31,46,0.75) 75%,
+    rgba(15,31,46,0.97) 100%
+  );
+}
+.hero-content{
+  position:relative;z-index:2;
+  padding:0 1.5rem 3rem;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.68rem;font-weight:700;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.7);text-transform:uppercase;
+  margin-bottom:1rem;
+  animation:fadeUp 0.8s ease 0.2s both;
+}
+.hero-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--orange);}
+.hero-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(2rem,8vw,3.2rem);
+  font-weight:700;color:white;
+  line-height:1.3;margin-bottom:0.6rem;
+  animation:fadeUp 0.8s ease 0.3s both;
+}
+.hero-title-en{
+  font-family:'Outfit',sans-serif;
+  font-size:0.72rem;font-weight:300;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.5);margin-bottom:1.2rem;
+  animation:fadeUp 0.8s ease 0.4s both;
+}
+.hero-catch{
+  font-size:0.9rem;color:rgba(255,255,255,0.8);
+  line-height:1.9;margin-bottom:1.8rem;
+  animation:fadeUp 0.8s ease 0.5s both;
+}
+.hero-catch strong{color:var(--orange);}
+.hero-btns{
+  display:flex;flex-direction:column;gap:0.7rem;
+  animation:fadeUp 0.8s ease 0.6s both;
+}
+.btn-main{
+  display:block;text-align:center;
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  color:white;padding:16px;border-radius:12px;
+  font-size:1rem;font-weight:700;text-decoration:none;
+  box-shadow:0 4px 20px rgba(217,63,63,0.4);
+}
+.btn-sub{
+  display:block;text-align:center;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.25);
+  color:white;padding:14px;border-radius:12px;
+  font-size:0.88rem;font-weight:500;text-decoration:none;
+  backdrop-filter:blur(4px);
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== STATS ===== */
+.stats{
+  background:var(--navy);
+  display:grid;grid-template-columns:repeat(3,1fr);
+}
+.stat{
+  padding:1.2rem 0.5rem;text-align:center;
+  border-right:1px solid rgba(255,255,255,0.08);
+}
+.stat:last-child{border-right:none;}
+.stat-num{
+  display:block;
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:1.5rem;
+  color:var(--orange);line-height:1;margin-bottom:3px;
+}
+.stat-label{font-size:0.65rem;color:rgba(255,255,255,0.5);letter-spacing:0.05em;}
+
+/* ===== SECTION BASE ===== */
+.section{padding:64px 1.5rem;}
+.section-alt{background:white;}
+.eyebrow{
+  font-family:'Outfit',sans-serif;
+  font-size:0.65rem;font-weight:700;letter-spacing:0.25em;
+  text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;
+}
+.eyebrow.light{color:var(--orange);}
+.section-h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.6rem,5vw,2.2rem);
+  font-weight:700;color:var(--navy);line-height:1.35;
+  margin-bottom:0.8rem;
+}
+.section-h2.light{color:white;}
+.section-lead{font-size:0.88rem;color:var(--muted);line-height:1.95;margin-bottom:2rem;}
+.section-lead.light{color:rgba(255,255,255,0.7);}
+
+/* ===== PERSONA ===== */
+.personas{display:flex;flex-direction:column;gap:1rem;}
+.persona{
+  display:grid;grid-template-columns:56px 1fr;gap:1rem;align-items:center;
+  background:white;border-radius:16px;padding:1.2rem;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  border-left:3px solid var(--orange);
+}
+.persona-icon{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#fef3e8,#fde0c0);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+}
+.persona-label{font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:0.2rem;letter-spacing:0.05em;}
+.persona-title{font-size:0.92rem;font-weight:700;color:var(--navy);margin-bottom:0.2rem;}
+.persona-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;}
+
+/* ===== PHOTO GRID ===== */
+.photo-section{padding:0;}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:220px 160px;}
+.photo-cell{position:relative;overflow:hidden;}
+.photo-cell:first-child{grid-column:1/-1;height:260px;}
+.photo-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.6s ease;}
+.photo-cell:hover img{transform:scale(1.04);}
+.photo-cell-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(15,31,46,0.6) 0%,transparent 60%);
+  display:flex;align-items:flex-end;padding:12px 14px;
+}
+.photo-cell-label{font-size:0.68rem;color:white;font-weight:700;letter-spacing:0.08em;}
+
+/* ===== FEATURES ===== */
+.features{display:flex;flex-direction:column;gap:1rem;}
+.feat{
+  display:flex;gap:1rem;align-items:flex-start;
+  padding:1.2rem;border-radius:14px;
+  background:var(--cream);
+  border:1px solid var(--border);
+}
+.feat-num{
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:1.8rem;
+  color:var(--border);line-height:1;flex-shrink:0;width:36px;
+  padding-top:2px;
+}
+.feat-body{}
+.feat-title{font-size:0.92rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem;}
+.feat-text{font-size:0.8rem;color:var(--muted);line-height:1.7;}
+
+/* ===== VISION ===== */
+.vision-section{
+  background:var(--navy);
+  position:relative;overflow:hidden;
+}
+.vision-bg{
+  position:absolute;inset:0;
+  background-image:url('concert.png');
+  background-size:cover;background-position:center;
+  opacity:0.15;
+}
+.vision-inner{position:relative;z-index:2;padding:64px 1.5rem;}
+.vision-quote{
+  border-left:3px solid var(--orange);
+  padding:1.2rem 1.2rem;
+  background:rgba(255,255,255,0.04);
+  border-radius:0 12px 12px 0;
+  margin:1.5rem 0;
+}
+.vision-quote p{
+  font-family:'Shippori Mincho',serif;
+  font-size:1rem;color:white;line-height:2;font-weight:400;
+}
+.vision-quote span{color:var(--orange);font-weight:700;}
+
+/* ===== PRACTICE INFO ===== */
+.practice-cards{display:flex;flex-direction:column;gap:0.8rem;}
+.pcard{
+  background:white;border-radius:14px;padding:1.2rem;
+  display:flex;gap:1rem;align-items:flex-start;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+.pcard-icon{
+  width:40px;height:40px;flex-shrink:0;border-radius:10px;
+  background:linear-gradient(135deg,#fff0e8,#ffdfc0);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.pcard-label{font-size:0.7rem;font-weight:700;color:var(--red);margin-bottom:0.2rem;letter-spacing:0.05em;}
+.pcard-val{font-size:0.9rem;font-weight:700;color:var(--navy);}
+.pcard-sub{font-size:0.75rem;color:var(--muted);margin-top:0.1rem;}
+
+/* ===== RECRUITMENT ===== */
+.recruit-section{
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  padding:64px 1.5rem;text-align:center;
+}
+.recruit-num{
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:4rem;color:white;line-height:1;
+  margin-bottom:0.2rem;
+}
+.recruit-num span{font-size:1.2rem;vertical-align:super;}
+.recruit-label{font-size:0.8rem;color:rgba(255,255,255,0.8);margin-bottom:1.5rem;letter-spacing:0.1em;}
+.recruit-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.6rem;font-weight:700;color:white;margin-bottom:0.5rem;
+}
+.recruit-desc{font-size:0.85rem;color:rgba(255,255,255,0.85);line-height:1.9;margin-bottom:2rem;}
+.recruit-parts{
+  display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2rem;
+}
+.part-chip{
+  background:rgba(255,255,255,0.15);
+  color:white;padding:5px 12px;border-radius:20px;
+  font-size:0.75rem;font-weight:700;
+  border:1px solid rgba(255,255,255,0.25);
+}
+.btn-recruit{
+  display:block;
+  background:white;color:var(--red);
+  padding:16px;border-radius:12px;
+  font-size:1rem;font-weight:700;text-decoration:none;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* ===== JOIN FORM ===== */
+.form-wrap{max-width:500px;margin:0 auto;}
+.form-card{
+  background:white;border-radius:20px;overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,0.08);
+}
+.form-card-head{
+  background:linear-gradient(135deg,var(--navy),#1a3550);
   padding:1.5rem;
 }
-.card-header-eyebrow { font-size:0.7rem; color:rgba(255,255,255,0.8); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.4rem; }
-.card-header-title { font-size:1.2rem; font-weight:700; color:white; margin-bottom:0.2rem; }
-.card-header-sub { font-size:0.8rem; color:rgba(255,255,255,0.85); }
-
-.card-body { padding:1.5rem; }
-
-.form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
-.form-g { margin-bottom:1rem; }
-.form-g label { display:block; font-size:0.75rem; font-weight:700; color:var(--navy); margin-bottom:0.4rem; }
-.form-g label .req { color:var(--red); margin-left:2px; }
-.form-g input, .form-g select, .form-g textarea {
-  width:100%; padding:11px 13px;
-  border:1.5px solid var(--border); border-radius:10px;
-  font-size:0.88rem; font-family:inherit;
-  background:var(--gray); outline:none;
-  transition:border-color 0.2s, background 0.2s;
-  -webkit-appearance:none;
-  color:var(--text);
+.form-card-head-title{font-size:1.1rem;font-weight:700;color:white;margin-bottom:0.2rem;}
+.form-card-head-sub{font-size:0.78rem;color:rgba(255,255,255,0.7);}
+.form-body{padding:1.5rem;}
+.form-g{margin-bottom:1rem;}
+.form-g label{display:block;font-size:0.75rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
+.form-g label .req{color:var(--red);margin-left:2px;}
+.form-g input,.form-g select,.form-g textarea{
+  width:100%;padding:11px 13px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-size:0.88rem;font-family:inherit;
+  background:var(--cream);outline:none;
+  transition:border-color 0.2s;
+  -webkit-appearance:none;color:var(--text);
 }
-.form-g input:focus, .form-g select:focus, .form-g textarea:focus {
-  border-color:var(--orange); background:white;
+.form-g input:focus,.form-g select:focus,.form-g textarea:focus{
+  border-color:var(--orange);background:white;
 }
-.form-g input::placeholder, .form-g textarea::placeholder { color:#bbb; }
-
-.btn-submit {
-  width:100%; padding:15px;
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.btn-submit{
+  width:100%;padding:15px;
   background:linear-gradient(135deg,var(--red),var(--orange));
-  color:white; border:none; border-radius:12px;
-  font-size:1rem; font-weight:700; font-family:inherit;
-  cursor:pointer; transition:opacity 0.2s, transform 0.15s;
-  box-shadow:0 4px 16px rgba(232,51,74,0.3);
-  display:flex; align-items:center; justify-content:center; gap:8px;
+  color:white;border:none;border-radius:12px;
+  font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 16px rgba(217,63,63,0.3);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity 0.2s;
 }
-.btn-submit:hover { opacity:0.92; }
-.btn-submit:active { transform:scale(0.98); }
-.btn-submit:disabled { opacity:0.6; cursor:not-allowed; }
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.form-note{font-size:0.72rem;color:var(--muted);text-align:center;margin-top:0.8rem;line-height:1.6;}
+.error-box{display:none;background:#fff0f0;border:1.5px solid #ffcccc;border-radius:8px;padding:0.8rem;font-size:0.8rem;color:#c0392b;margin-bottom:1rem;}
+.success-box{display:none;text-align:center;padding:2rem 1rem;}
+.success-icon{font-size:3rem;margin-bottom:1rem;}
+.success-title{font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;}
+.success-text{font-size:0.85rem;color:var(--muted);line-height:1.8;}
 
-.form-note { font-size:0.72rem; color:var(--muted); margin-top:0.8rem; text-align:center; line-height:1.6; }
+/* ===== NEWS ===== */
+.news-list{display:flex;flex-direction:column;}
+.news-item{padding:1rem 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:4px;}
+.news-meta{display:flex;align-items:center;gap:0.5rem;}
+.news-date{font-family:'Outfit',sans-serif;font-size:0.72rem;color:var(--muted);}
+.news-tag{font-size:0.62rem;font-weight:700;padding:1px 8px;border-radius:10px;}
+.tag-new{background:rgba(217,63,63,0.1);color:var(--red);}
+.tag-info{background:rgba(200,149,42,0.12);color:var(--gold);}
+.news-title{font-size:0.88rem;color:var(--text);line-height:1.6;}
 
-/* 送信中・完了状態 */
-.spinner {
-  width:18px; height:18px; border:2.5px solid rgba(255,255,255,0.4);
-  border-top-color:white; border-radius:50%;
-  animation:spin 0.7s linear infinite; display:none;
+/* ===== FOOTER ===== */
+footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.footer-logo-mark{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:1rem;color:white;
 }
-@keyframes spin { to { transform:rotate(360deg); } }
-
-.success-box {
-  display:none;
-  text-align:center; padding:2rem 1rem;
+.footer-logo-name{font-size:0.95rem;font-weight:700;color:white;}
+.footer-logo-name span{display:block;font-size:0.6rem;color:rgba(255,255,255,0.4);letter-spacing:0.1em;}
+.footer-desc{font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.85;margin-bottom:1.5rem;}
+.footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;margin-bottom:2rem;}
+.footer-nav a{color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.8rem;padding:5px 0;}
+.footer-sns{display:flex;gap:0.8rem;margin-bottom:2rem;}
+.footer-sns a{
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(255,255,255,0.07);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;text-decoration:none;
+  transition:background 0.2s;
 }
-.success-icon { font-size:3rem; margin-bottom:1rem; }
-.success-title { font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:0.5rem; }
-.success-text { font-size:0.88rem; color:var(--muted); line-height:1.8; }
+.footer-sns a:hover{background:var(--red);}
+.footer-copy{font-size:0.68rem;color:rgba(255,255,255,0.25);}
 
-.error-box {
-  display:none;
-  background:#fff0f0; border:1.5px solid #ffcccc;
-  border-radius:10px; padding:0.8rem 1rem;
-  font-size:0.82rem; color:#c0392b;
-  margin-bottom:1rem; line-height:1.6;
+/* ===== REVEAL ===== */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ===== SCROLL TOP ===== */
+.scroll-top{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:100;
+  width:42px;height:42px;border-radius:50%;
+  background:var(--red);color:white;border:none;
+  font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.3s;
+  box-shadow:0 4px 16px rgba(217,63,63,0.35);
 }
+.scroll-top.visible{opacity:1;}
 </style>
 </head>
 <body>
 
-<div class="card">
-  <div class="card-header">
-    <div class="card-header-eyebrow">Higashi Osaka Wind Orchestra</div>
-    <div class="card-header-title">🎺 見学・体験申込</div>
-    <div class="card-header-sub">まずは気軽に来てみてください！¥500 / 回</div>
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">東</div>
+    <div class="nav-logo-text">
+      <strong>東大阪吹奏楽団</strong>
+      <span>Higashi Osaka Wind Orchestra</span>
+    </div>
+  </a>
+  <button class="ham" id="ham" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="drawer" id="drawer">
+  <ul>
+    <li><a href="#about" onclick="closeMenu()"><span>🎷</span>団について</a></li>
+    <li><a href="#features" onclick="closeMenu()"><span>✨</span>団の特徴</a></li>
+    <li><a href="#practice" onclick="closeMenu()"><span>📅</span>練習案内</a></li>
+    <li><a href="#recruit" onclick="closeMenu()"><span>🎺</span>募集情報</a></li>
+    <li><a href="#join" onclick="closeMenu()"><span>📝</span>見学申込</a></li>
+    <li><a href="#news" onclick="closeMenu()"><span>📢</span>NEWS</a></li>
+  </ul>
+  <a href="#join" class="drawer-cta" onclick="closeMenu()">🎺 見学・体験を申し込む</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Higashi Osaka · 2025</div>
+    <h1 class="hero-title">久しぶりに<br>楽器、吹きませんか？</h1>
+    <p class="hero-title-en">Higashi Osaka Wind Orchestra</p>
+    <p class="hero-catch">
+      <strong>ブランク何年でも大歓迎。</strong><br>
+      東大阪に、大人も子どもも一緒に音楽を楽しめる場所をつくりたい。毎週土曜、一緒に奏でましょう。
+    </p>
+    <div class="hero-btns">
+      <a href="#join" class="btn-main">🎺 見学・体験を申し込む（¥500〜）</a>
+      <a href="#about" class="btn-sub">団について詳しく見る</a>
+    </div>
   </div>
+</section>
 
-  <div class="card-body">
-    <div class="error-box" id="errorBox"></div>
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><span class="stat-num">¥500</span><span class="stat-label">見学・体験</span></div>
+  <div class="stat"><span class="stat-num">毎週</span><span class="stat-label">土曜練習</span></div>
+  <div class="stat"><span class="stat-num">全</span><span class="stat-label">世代・パート歓迎</span></div>
+</div>
 
-    <form id="form">
-      <div class="form-row">
-        <div class="form-g">
-          <label>お名前<span class="req">*</span></label>
-          <input type="text" id="name" placeholder="山田 花子" required>
-        </div>
-        <div class="form-g">
-          <label>担当楽器<span class="req">*</span></label>
-          <select id="instrument" required>
-            <option value="">選択してください</option>
-            <option>トランペット</option>
-            <option>トロンボーン</option>
-            <option>ホルン</option>
-            <option>ユーフォニアム</option>
-            <option>チューバ</option>
-            <option>クラリネット</option>
-            <option>サックス</option>
-            <option>フルート</option>
-            <option>オーボエ</option>
-            <option>打楽器</option>
-            <option>コントラバス</option>
-            <option>その他・未定</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-g">
-        <label>メールアドレス<span class="req">*</span></label>
-        <input type="email" id="email" placeholder="example@gmail.com" required>
-      </div>
-
-      <div class="form-g">
-        <label>希望見学日・一言</label>
-        <textarea id="message" rows="3" placeholder="〇月ごろ希望です／ブランク10年ですが大丈夫ですか？ など"></textarea>
-      </div>
-
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <span id="btnText">見学を申し込む</span>
-        <div class="spinner" id="spinner"></div>
-      </button>
-      <p class="form-note">送信内容はスプレッドシートに自動記録されます。<br>折り返しご連絡いたします。</p>
-    </form>
-
-    <div class="success-box" id="successBox">
-      <div class="success-icon">🎵</div>
-      <div class="success-title">申込ありがとうございます！</div>
-      <div class="success-text">折り返しご連絡いたします。<br>一緒に音楽を楽しみましょう！<br><br>東大阪吹奏楽団</div>
+<!-- PHOTO -->
+<div class="photo-section">
+  <div class="photo-grid">
+    <div class="photo-cell">
+      <img src="trombone.jpg" alt="トロンボーン演奏">
+      <div class="photo-cell-overlay"><span class="photo-cell-label">ENSEMBLE</span></div>
+    </div>
+    <div class="photo-cell">
+      <img src="horn.jpg" alt="ホルン">
+      <div class="photo-cell-overlay"><span class="photo-cell-label">BRASS</span></div>
+    </div>
+    <div class="photo-cell">
+      <img src="concert.png" alt="演奏会">
+      <div class="photo-cell-overlay"><span class="photo-cell-label">CONCERT</span></div>
     </div>
   </div>
 </div>
 
+<!-- ABOUT / PERSONA -->
+<section class="section" id="about">
+  <div class="reveal">
+    <p class="eyebrow">For You</p>
+    <h2 class="section-h2">こんな方に<br>来てほしい</h2>
+    <p class="section-lead">学生時代に吹奏楽をやっていた方、楽器を持て余している方、音楽仲間を探している方。ここはそんな人たちのための場所です。</p>
+  </div>
+  <div class="personas reveal">
+    <div class="persona">
+      <div class="persona-icon">🎷</div>
+      <div>
+        <div class="persona-label">社会人・20〜40代</div>
+        <div class="persona-title">「学生時代ぶりに楽器を吹きたい」</div>
+        <div class="persona-desc">ブランク5年・10年・それ以上でも全然OK。一緒にゆっくり取り戻しましょう。</div>
+      </div>
+    </div>
+    <div class="persona">
+      <div class="persona-icon">👨‍👩‍👧</div>
+      <div>
+        <div class="persona-label">保護者・ファミリー</div>
+        <div class="persona-title">「子どもと一緒に音楽したい」</div>
+        <div class="persona-desc">親子で同じ舞台に立てる、珍しい場所です。大人も一緒に指導を受けられます。</div>
+      </div>
+    </div>
+    <div class="persona">
+      <div class="persona-icon">🎓</div>
+      <div>
+        <div class="persona-label">学生・大学生</div>
+        <div class="persona-title">「部活卒業後も続けたい」</div>
+        <div class="persona-desc">高校・大学を卒業しても音楽を続けられる環境を用意しています。</div>
+      </div>
+    </div>
+    <div class="persona">
+      <div class="persona-icon">🤝</div>
+      <div>
+        <div class="persona-label">指導・サポート希望</div>
+        <div class="persona-title">「演奏より運営で関わりたい」</div>
+        <div class="persona-desc">指導・広報・運営など、楽器を吹かない形での参加も大歓迎です。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section section-alt" id="features">
+  <div class="reveal">
+    <p class="eyebrow">Features</p>
+    <h2 class="section-h2">東大阪吹奏楽団の<br>3つの特徴</h2>
+  </div>
+  <div class="features reveal">
+    <div class="feat">
+      <div class="feat-num">01</div>
+      <div class="feat-body">
+        <div class="feat-title">ブランク・未経験も歓迎</div>
+        <div class="feat-text">「何年も吹いてないから不安」という方こそ大歓迎。指導者がしっかりサポートするので、焦らずゆっくり再スタートできます。</div>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-num">02</div>
+      <div class="feat-body">
+        <div class="feat-title">毎週土曜のゆるやかな練習</div>
+        <div class="feat-text">仕事・家庭・学業と両立できるペースで活動。参加できない週があっても大丈夫。無理なく続けられる環境を大切にしています。</div>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-num">03</div>
+      <div class="feat-body">
+        <div class="feat-title">世代を超えたつながり</div>
+        <div class="feat-text">中学生から社会人まで一緒に演奏できる地域団体ならではの環境。音楽を通じて東大阪に新しいコミュニティをつくります。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<div class="vision-section" id="vision">
+  <div class="vision-bg"></div>
+  <div class="vision-inner">
+    <div class="reveal">
+      <p class="eyebrow light">Our Vision</p>
+      <h2 class="section-h2 light">目指すは<br>"大阪のムジークフェライン"</h2>
+      <div class="vision-quote">
+        <p>ウィーンに世界中から人が集まる音楽の殿堂があるように、<br>東大阪にも<span>地域に根ざし、世代を超えて愛され続ける</span>音楽の場をつくりたい。<br>それが私たちの長期ビジョンです。</p>
+      </div>
+      <p class="section-lead light">でも、始まりはいつも「一緒に楽しもう」というシンプルな気持ちから。まずは一緒に音を出しましょう。</p>
+      <a href="#join" class="btn-main" style="max-width:280px;display:block;">一緒に始めませんか？</a>
+    </div>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<section class="section" id="practice">
+  <div class="reveal">
+    <p class="eyebrow">Practice</p>
+    <h2 class="section-h2">練習案内</h2>
+    <p class="section-lead">見学はいつでもOK。まずは雰囲気だけ感じに来てください。</p>
+  </div>
+  <div class="practice-cards reveal">
+    <div class="pcard">
+      <div class="pcard-icon">📅</div>
+      <div>
+        <div class="pcard-label">練習日</div>
+        <div class="pcard-val">毎週土曜日</div>
+        <div class="pcard-sub">テスト期間・天候等により日曜振替あり</div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-icon">📍</div>
+      <div>
+        <div class="pcard-label">練習場所</div>
+        <div class="pcard-val">東大阪市内</div>
+        <div class="pcard-sub">荒本人権文化センター ほか</div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-icon">👀</div>
+      <div>
+        <div class="pcard-label">見学・体験</div>
+        <div class="pcard-val">¥500 / 回（最大3回）</div>
+        <div class="pcard-sub">楽器の貸出しも相談可</div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pcard-icon">🎒</div>
+      <div>
+        <div class="pcard-label">持ち物</div>
+        <div class="pcard-val">楽器・楽譜立て</div>
+        <div class="pcard-sub">楽器がない方はお申込み時にご相談ください</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECRUIT -->
+<section class="recruit-section" id="recruit">
+  <div class="reveal">
+    <div class="recruit-num"><span>現在</span>4<span>名</span></div>
+    <div class="recruit-label">CURRENT MEMBERS · 目標20名</div>
+    <h2 class="recruit-title">全パート大募集中！</h2>
+    <p class="recruit-desc">立ち上げメンバーとして一緒に団を育てていきませんか？<br>今が一番アツい時期です。</p>
+    <div class="recruit-parts">
+      <span class="part-chip">Trumpet</span>
+      <span class="part-chip">Trombone</span>
+      <span class="part-chip">Horn</span>
+      <span class="part-chip">Euphonium</span>
+      <span class="part-chip">Tuba</span>
+      <span class="part-chip">Clarinet</span>
+      <span class="part-chip">Saxophone</span>
+      <span class="part-chip">Flute</span>
+      <span class="part-chip">Oboe</span>
+      <span class="part-chip">Percussion 🥁</span>
+      <span class="part-chip">その他</span>
+    </div>
+    <a href="#join" class="btn-recruit">見学・体験を申し込む</a>
+  </div>
+</section>
+
+<!-- JOIN FORM -->
+<section class="section section-alt" id="join">
+  <div class="reveal">
+    <p class="eyebrow">Join Us</p>
+    <h2 class="section-h2">見学・体験申込</h2>
+    <p class="section-lead">フォームからお申し込みいただくと、折り返しご連絡します。お気軽にどうぞ！</p>
+  </div>
+  <div class="form-wrap reveal">
+    <div class="form-card">
+      <div class="form-card-head">
+        <div class="form-card-head-title">🎺 見学・体験申込フォーム</div>
+        <div class="form-card-head-sub">¥500 / 回・最大3回まで体験いただけます</div>
+      </div>
+      <div class="form-body">
+        <div class="error-box" id="errorBox"></div>
+        <form id="joinForm">
+          <div class="form-row2">
+            <div class="form-g">
+              <label>お名前<span class="req">*</span></label>
+              <input type="text" id="name" placeholder="山田 花子" required>
+            </div>
+            <div class="form-g">
+              <label>担当楽器<span class="req">*</span></label>
+              <select id="instrument" required>
+                <option value="">選択</option>
+                <option>トランペット</option>
+                <option>トロンボーン</option>
+                <option>ホルン</option>
+                <option>ユーフォニアム</option>
+                <option>チューバ</option>
+                <option>クラリネット</option>
+                <option>サックス</option>
+                <option>フルート</option>
+                <option>オーボエ</option>
+                <option>打楽器</option>
+                <option>その他・未定</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-g">
+            <label>メールアドレス<span class="req">*</span></label>
+            <input type="email" id="email" placeholder="example@gmail.com" required>
+          </div>
+          <div class="form-g">
+            <label>希望見学日・一言</label>
+            <textarea id="message" rows="3" placeholder="〇月ごろ希望です／ブランク10年ですが大丈夫ですか？ など"></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <span id="btnText">見学を申し込む</span>
+            <div class="spinner" id="spinner"></div>
+          </button>
+          <p class="form-note">送信内容は自動でスプレッドシートに記録されます。<br>折り返し higashiosaka.winds@gmail.com よりご連絡します。</p>
+        </form>
+        <div class="success-box" id="successBox">
+          <div class="success-icon">🎵</div>
+          <div class="success-title">申込ありがとうございます！</div>
+          <div class="success-text">折り返しご連絡いたします。<br>一緒に音楽を楽しみましょう！<br><br>東大阪吹奏楽団</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section class="section" id="news">
+  <div class="reveal">
+    <p class="eyebrow">News</p>
+    <h2 class="section-h2">お知らせ</h2>
+  </div>
+  <div class="news-list reveal">
+    <div class="news-item">
+      <div class="news-meta"><span class="news-date">2025.07.17</span><span class="news-tag tag-new">NEW</span></div>
+      <div class="news-title">東大阪吹奏楽団、誕生しました！見学・体験申込受付スタート。</div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta"><span class="news-date">2025.07</span><span class="news-tag tag-info">INFO</span></div>
+      <div class="news-title">東大阪市・東大阪市教育委員会より後援をいただきました。</div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta"><span class="news-date">2025.07</span><span class="news-tag tag-info">INFO</span></div>
+      <div class="news-title">公式サイト・Instagram・LINEを開設しました。</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-mark">東</div>
+    <div class="footer-logo-name">
+      東大阪吹奏楽団
+      <span>Higashi Osaka Wind Orchestra</span>
+    </div>
+  </div>
+  <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。吹奏楽を通して、子どもから大人まで共に育ち合う場を地域の中に育てたい。</p>
+  <div class="footer-nav">
+    <a href="#about">団について</a>
+    <a href="#features">団の特徴</a>
+    <a href="#practice">練習案内</a>
+    <a href="#recruit">募集情報</a>
+    <a href="#join">見学申込</a>
+    <a href="#news">NEWS</a>
+  </div>
+  <div class="footer-sns">
+    <a href="#">📷</a>
+    <a href="#">💬</a>
+    <a href="#">▶️</a>
+  </div>
+  <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
 
-document.getElementById('form').addEventListener('submit', function(e) {
+// Hamburger
+const ham = document.getElementById('ham');
+const drawer = document.getElementById('drawer');
+ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  drawer.classList.toggle('open');
+  document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+});
+function closeMenu() {
+  ham.classList.remove('open');
+  drawer.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Form
+document.getElementById('joinForm').addEventListener('submit', function(e) {
   e.preventDefault();
-
-  const name       = document.getElementById('name').value.trim();
+  const name = document.getElementById('name').value.trim();
   const instrument = document.getElementById('instrument').value;
-  const email      = document.getElementById('email').value.trim();
-  const message    = document.getElementById('message').value.trim();
-
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
   const errorBox = document.getElementById('errorBox');
   errorBox.style.display = 'none';
   if (!name || !instrument || !email) {
@@ -174,36 +788,42 @@ document.getElementById('form').addEventListener('submit', function(e) {
     errorBox.style.display = 'block';
     return;
   }
-
-  const btn     = document.getElementById('submitBtn');
+  const btn = document.getElementById('submitBtn');
   const btnText = document.getElementById('btnText');
   const spinner = document.getElementById('spinner');
   btn.disabled = true;
   btnText.textContent = '送信中...';
   spinner.style.display = 'block';
-
-  // FormDataでURLエンコード送信（CORS回避）
-  const formData = new FormData();
-  formData.append('name', name);
-  formData.append('instrument', instrument);
-  formData.append('email', email);
-  formData.append('message', message);
-
-  fetch(GAS_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: formData
-  }).then(function() {
-    document.getElementById('form').style.display = 'none';
-    document.getElementById('successBox').style.display = 'block';
-  }).catch(function() {
-    errorBox.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
-    errorBox.style.display = 'block';
-    btn.disabled = false;
-    btnText.textContent = '見学を申し込む';
-    spinner.style.display = 'none';
-  });
+  const fd = new FormData();
+  fd.append('name', name);
+  fd.append('instrument', instrument);
+  fd.append('email', email);
+  fd.append('message', message);
+  fetch(GAS_URL, { method:'POST', mode:'no-cors', body:fd })
+    .then(() => {
+      document.getElementById('joinForm').style.display = 'none';
+      document.getElementById('successBox').style.display = 'block';
+    })
+    .catch(() => {
+      errorBox.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
+      errorBox.style.display = 'block';
+      btn.disabled = false;
+      btnText.textContent = '見学を申し込む';
+      spinner.style.display = 'none';
+    });
 });
+
+// Reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Scroll top
+const st = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => st.classList.toggle('visible', scrollY > 400));
 </script>
 </body>
 </html>
