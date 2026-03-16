@@ -90,7 +90,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 @media(min-width:680px) {
   .carousel-wrap { overflow:visible; }
-  .carousel-track { display:grid; grid-template-columns:repeat(3,1fr); transform:none !important; gap:0; }
+  .carousel-track { display:grid; transform:none !important; gap:0; }
+  .carousel-track.count-1 { grid-template-columns:1fr; }
+  .carousel-track.count-2 { grid-template-columns:repeat(2,1fr); }
+  .carousel-track.count-3 { grid-template-columns:repeat(3,1fr); }
   .carousel-slide { flex:none; }
   .carousel-btn { display:none; }
   .carousel-dots { display:none; }
@@ -331,7 +334,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p>ウィーンに世界中から人が集まる音楽の殿堂があるように、<br>東大阪にも<span>地域に根ざし、世代を超えて愛され続ける</span>音楽の場をつくりたい。<br>それが私たちの長期ビジョンです。</p>
     </div>
     <p style="line-height:1.8; margin-bottom:2.5rem; color:rgba(255,255,255,0.8);">でも、始まりはいつも「一緒に楽しもう」というシンプルな気持ちから。まずは一緒に音を出しましょう。</p>
-<a href="#join" class="btn-gold" style="max-width:280px; margin:0 auto; display:block; text-align:center;">一緒に始めませんか？</a>
+    <a href="#join" class="btn-gold" style="max-width:280px; margin:0 auto;">一緒に始めませんか？</a>
   </div>
 </section>
 
@@ -507,6 +510,9 @@ function initCarousel(slides) {
   }
 
   const total = track.children.length;
+  // PC用：件数に応じてgridカラム数を切り替え
+  track.classList.remove('count-1','count-2','count-3');
+  track.classList.add('count-' + Math.min(total, 3));
 
   window.goSlide = function(n) {
     cur = (n + total) % total;
