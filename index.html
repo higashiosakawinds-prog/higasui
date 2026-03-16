@@ -6,6 +6,7 @@
 <title>東大阪吹奏楽団 | 一緒に奏でよう東大阪の音</title>
 <meta name="description" content="東大阪市の地域吹奏楽団。ブランク歓迎・年齢不問・毎週土曜練習。楽器をもう一度吹きませんか？見学¥500〜">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -180,8 +181,12 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 /* FOOTER (SNS復活！) */
 footer { background: var(--navy); padding: 4rem 0; text-align: center; border-top: 2px solid var(--gold); color: white; }
 .footer-logo img { height: 40px; filter: brightness(0) invert(1); margin-bottom: 1.5rem; }
-.footer-sns { display: flex; justify-content: center; gap: 1.2rem; margin: 2rem 0; }
-.footer-sns a { width: 44px; height: 44px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.2rem; border: 1px solid rgba(255,255,255,0.1); }
+.footer-sns { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
+.footer-sns a { width: 44px; height: 44px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); transition: background 0.2s, color 0.2s; }
+.footer-sns a:hover { background: rgba(255,255,255,0.12); color: white; }
+.footer-sns a.sns-instagram:hover { background: #E1306C; border-color: #E1306C; color: white; }
+.footer-sns a.sns-youtube:hover { background: #FF0000; border-color: #FF0000; color: white; }
+.footer-sns a.sns-line:hover { background: #06C755; border-color: #06C755; color: white; }
 
 .reveal { opacity: 0; transform: translateY(20px); transition: 0.8s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -198,11 +203,11 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 
 <div id="site-drawer">
   <ul>
-    <li><a href="#about" onclick="closeNav()">■ 団について</a></li>
-    <li><a href="#features" onclick="closeNav()">■ 団の特徴</a></li>
-    <li><a href="#practice" onclick="closeNav()">■ 練習案内</a></li>
-    <li><a href="#recruit" onclick="closeNav()">■ 募集情報</a></li>
-    <li><a href="#join" onclick="closeNav()">■ 見学申込</a></li>
+    <li><a href="#about" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="#features" onclick="closeNav()">✨ 団の特徴</a></li>
+    <li><a href="#practice" onclick="closeNav()">📅 練習案内</a></li>
+    <li><a href="#recruit" onclick="closeNav()">🎺 募集情報</a></li>
+    <li><a href="#join" onclick="closeNav()">📝 見学申込</a></li>
   </ul>
   <a href="#join" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
 </div>
@@ -406,9 +411,9 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
     <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
     <p style="font-size:0.8rem; opacity:0.6; line-height:1.8; max-width:600px; margin:0 auto;">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。<br>吹奏楽を通して、子どもから大人まで共に育ち合う場を地域の中に育てたい。</p>
     <div class="footer-sns">
-      <a href="#" aria-label="Instagram">📷</a>
-      <a href="#" aria-label="X">💬</a>
-      <a href="#" aria-label="YouTube">▶️</a>
+      <a href="#" class="sns-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="sns-youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="sns-line" aria-label="LINE"><i class="fab fa-line"></i></a>
     </div>
     <p style="font-size:0.7rem; opacity:0.3;">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
   </div>
