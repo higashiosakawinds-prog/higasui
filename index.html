@@ -66,6 +66,25 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 /* STATS */
 .stats { background: var(--navy); display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(255,255,255,0.1); }
+
+/* CAROUSEL */
+.carousel-wrap { position:relative; background:#000; overflow:hidden; max-width:960px; margin:0 auto; }
+.carousel-track { display:flex; transition:transform 0.4s ease; }
+.carousel-slide { flex:0 0 100%; }
+.carousel-slide img { width:100%; height:auto; display:block; }
+.carousel-btn {
+  position:absolute; top:50%; transform:translateY(-50%);
+  background:rgba(0,0,0,0.45); color:white; border:none; cursor:pointer;
+  width:36px; height:36px; border-radius:50%;
+  font-size:1.4rem; display:flex; align-items:center; justify-content:center;
+  transition:background 0.2s;
+}
+.carousel-btn:hover { background:rgba(0,0,0,0.7); }
+.carousel-prev { left:10px; }
+.carousel-next { right:10px; }
+.carousel-dots { position:absolute; bottom:10px; left:0; right:0; display:flex; justify-content:center; gap:6px; }
+.carousel-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.45); transition:background 0.2s; cursor:pointer; }
+.carousel-dot.active { background:var(--gold); }
 .stat { padding: 1.5rem 0.5rem; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
 .stat:last-child { border-right: none; }
 .stat-num { display: block; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--gold); }
@@ -200,14 +219,27 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
   </div>
 </section>
 
-<!-- 演奏会バナー -->
-<div style="background:#000; max-width:960px; margin:0 auto; width:100%;">
-  <a href="#" id="banner-link" style="display:block; position:relative;">
-    <img src="/higasui/concert_banner.png" alt="第一回定期演奏会" id="banner-img" style="width:100%; height:auto; display:block;">
-    <div style="position:absolute; bottom:0; left:0; right:0; padding:1rem; display:flex; justify-content:flex-end;">
-      <a href="#" class="banner-btn" id="banner-btn" style="background:#C8A44D; color:white; padding:10px 20px; border-radius:20px; font-size:0.82rem; font-weight:700; text-decoration:none; white-space:nowrap;">詳細はこちら →</a>
+<!-- カルーセルバナー -->
+<div class="carousel-wrap">
+  <div class="carousel-track" id="carouselTrack">
+    <!-- フォールバック：Notionから取得できない場合 -->
+    <div class="carousel-slide">
+      <img src="/higasui/concert_banner.png" alt="第一回定期演奏会">
     </div>
-  </a>
+    <div class="carousel-slide">
+      <img src="/higasui/concert_banner.png" alt="第一回定期演奏会">
+    </div>
+    <div class="carousel-slide">
+      <img src="/higasui/concert_banner.png" alt="第一回定期演奏会">
+    </div>
+  </div>
+  <button class="carousel-btn carousel-prev" id="carouselPrev">&#8249;</button>
+  <button class="carousel-btn carousel-next" id="carouselNext">&#8250;</button>
+  <div class="carousel-dots" id="carouselDots">
+    <span class="carousel-dot active"></span>
+    <span class="carousel-dot"></span>
+    <span class="carousel-dot"></span>
+  </div>
 </div>
 
 <div class="news-bar">
@@ -399,14 +431,11 @@ async function loadNews() {
         <span>${item.link ? '<a href="'+item.link+'" style="color:white;text-decoration:none;">'+item.title+'</a>' : item.title}</span>
       </div>
     `).join('');
-    const bannerItem = data.find(d => d.isBanner && d.banner);
-    if (bannerItem) {
-      const img = document.getElementById('banner-img');
-      const btn = document.getElementById('banner-btn');
-      if (img) { img.src = bannerItem.banner; img.alt = bannerItem.title; }
-      if (btn && bannerItem.link) btn.href = bannerItem.link;
-    }
+    // カルーセル用スライドデータ
+    const bannerItems = data.filter(d => d.isBanner && d.banner);
+    initCarousel(bannerItems.length > 0 ? bannerItems : null);
   } catch(e) {
+    initCarousel(null);
     el.innerHTML = `
       <div class="news-row"><span class="news-date">2025.07.17</span><span class="news-tag tag-concert">演奏会</span><span>第一回定期演奏会 2026年12月13日（土）東大阪文化創造館小ホール</span></div>
       <div class="news-row"><span class="news-date">2025.07.17</span><span class="news-tag tag-news">NEWS</span><span>東大阪吹奏楽団、誕生しました！見学・体験申込受付スタート。</span></div>
@@ -448,6 +477,38 @@ if (theForm) {
         if (btn) btn.disabled = false;
       });
   });
+}
+
+// カルーセル
+function initCarousel(slides) {
+  const track = document.getElementById('carouselTrack');
+  const dotsWrap = document.getElementById('carouselDots');
+  if (!track) return;
+  let cur = 0;
+
+  // スライドをNotionデータで更新
+  if (slides && slides.length > 0) {
+    track.innerHTML = slides.map(s =>
+      `<div class="carousel-slide"><a href="${s.link||'#'}"><img src="${s.banner}" alt="${s.title}"></a></div>`
+    ).join('');
+    dotsWrap.innerHTML = slides.map((_,i) =>
+      `<span class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></span>`
+    ).join('');
+  }
+
+  const total = track.children.length;
+
+  window.goSlide = function(n) {
+    cur = (n + total) % total;
+    track.style.transform = `translateX(-${cur * 100}%)`;
+    document.querySelectorAll('.carousel-dot').forEach((d,i) => d.classList.toggle('active', i===cur));
+  };
+
+  document.getElementById('carouselPrev').onclick = () => goSlide(cur - 1);
+  document.getElementById('carouselNext').onclick = () => goSlide(cur + 1);
+
+  // 自動再生
+  setInterval(() => goSlide(cur + 1), 4000);
 }
 
 // スクロールリビール
