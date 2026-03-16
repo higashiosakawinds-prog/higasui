@@ -83,8 +83,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .stat-label{font-size:0.62rem;color:rgba(255,255,255,0.45);letter-spacing:0.05em;}
 
 /* CONCERT BANNER */
-.banner-wrap{position:relative;overflow:hidden;background:var(--navy);aspect-ratio:16/7;max-height:320px;}
-.banner-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.banner-wrap{position:relative;overflow:hidden;background:#000;max-width:960px;margin:0 auto;width:100%;}
+.banner-wrap img{width:100%;height:auto;display:block;}
 .banner-overlay{position:absolute;bottom:0;left:0;right:0;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:flex-end;}
 .banner-btn{display:inline-block;background:var(--gold);color:white;padding:10px 20px;border-radius:20px;font-size:0.82rem;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 2px 16px rgba(200,164,77,0.5);transition:background 0.2s;}
 .banner-btn:hover{background:var(--goldhv);}
@@ -236,13 +236,18 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;border-top:2px solid rg
 </div>
 
 <section class="hero">
-  <div class="hero-photo"></div>
-  <!-- オーバーレイなし -->
+  <!-- 上段：写真＋ロゴ -->
+  <div class="hero-photo-wrap">
+    <img src="/higasui/trumpet_girl.jpg" alt="東大阪吹奏楽団">
+    <div class="hero-logo-over">
+      <img src="/higasui/higasui.svg" alt="東大阪吹奏楽団">
+    </div>
+  </div>
+  <!-- 下段：ネイビー背景＋テキスト -->
   <div class="hero-body">
-    <p class="hero-eyebrow">Higashi Osaka Wind Orchestra · Est. 2025</p>
     <h1 class="hero-h1">久しぶりに<br>楽器、吹きませんか？</h1>
     <p class="hero-en">Higashi Osaka Wind Orchestra</p>
-    <p class="hero-desc"><strong>ブランク何年でも大歓迎。</strong><br>東大阪に、大人も子どもも一緒に音楽を楽しめる場所をつくりたい。毎週土曜、一緒に奏でましょう。</p>
+    <p class="hero-desc"><strong>ブランク何年でも大歓迎。</strong><br>東大阪に、大人も子供も一緒に音楽を楽しめる場所を作りたい。毎週土曜日は一緒に奏でましょう！</p>
     <div class="hero-btns">
       <a href="#join" class="btn-gold">🎺 見学・体験を申し込む（¥500〜）</a>
       <a href="#about" class="btn-ghost">団について詳しく見る</a>
