@@ -46,19 +46,14 @@ nav {
 .site-drawer {
   position:fixed;
   top:56px; left:0; right:0; bottom:0;
-  z-index:99;
+  z-index:101;
   background:var(--navy);
   overflow-y:auto;
   padding:1.5rem 1.5rem 3rem;
-  /* 初期状態：画面右外に隠す */
-  transform:translateX(100%);
-  transition:transform 0.3s ease;
-  /* visibility使って確実に非表示 */
-  visibility:hidden;
+  display:none;
 }
 .site-drawer.is-open {
-  transform:translateX(0);
-  visibility:visible;
+  display:block;
 }
 .site-drawer ul { list-style:none; }
 .site-drawer ul li a {
