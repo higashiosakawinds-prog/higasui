@@ -680,29 +680,25 @@ footer { background:var(--navy); padding:2.5rem 1.5rem 3rem; border-top:2px soli
 
 <script>
 /* ===== HAMBURGER ===== */
-const hamBtn = document.getElementById('hamBtn');
-const siteDrawer = document.getElementById('siteDrawer');
-let isOpen = false;
 
-hamBtn.addEventListener('click', function() {
-  isOpen = !isOpen;
-  if (isOpen) {
-    siteDrawer.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-    hamBtn.setAttribute('aria-label', 'メニューを閉じる');
-  } else {
-    siteDrawer.classList.remove('is-open');
-    document.body.style.overflow = '';
-    hamBtn.setAttribute('aria-label', 'メニューを開く');
-  }
+const hamBtn = document.getElementById("hamBtn");
+const drawer = document.getElementById("siteDrawer");
+
+hamBtn.addEventListener("click", () => {
+
+  hamBtn.classList.toggle("active");
+  drawer.classList.toggle("is-open");
+
 });
 
-function closeNav() {
-  isOpen = false;
-  siteDrawer.classList.remove('is-open');
-  document.body.style.overflow = '';
-}
+/* メニュークリックで閉じる */
 
+function closeNav(){
+
+  hamBtn.classList.remove("active");
+  drawer.classList.remove("is-open");
+
+}
 /* ===== NEWS (Notion API → GASプロキシ経由で取得) ===== */
 // NotionのDBIDをここに設定（後で設定）
 const NOTION_PROXY = 'https://script.google.com/macros/s/AKfycbzdOojPCNSk8Aa0xcjMVlJj9TdbY77-V3rjAQuaAp_lcFR0rk_IK6s6h5xRuqoXn0Km/exec';
