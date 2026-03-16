@@ -56,10 +56,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 
 /* HERO */
+/* --- ここから上書き --- */
 .hero {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
   padding-top: 56px;
   background: var(--navy);
   display: block;
@@ -68,75 +67,73 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .hero-photo-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
+  max-width: 800px; /* 写真がでかくなりすぎないよう調整 */
+  margin: 0 auto;
   line-height: 0;
 }
 
 .hero-photo-wrap img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto; /* 比率を保って表示 */
+  display: block;
 }
 
-/* ロゴのサイズとドロップシャドウ */
+/* ロゴのサイズと影 */
 .hero-logo-over {
   position: absolute;
   top: 10%;
   left: 5%;
-  width: 65%;
+  width: 50%;
   max-width: 250px;
   z-index: 2;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
-}
-
-.hero-logo-over img {
-  width: 100%;
-  height: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
 }
 
 .hero-body {
-  padding: 2.5rem 1.5rem 3.5rem;
+  padding: 3rem 1.5rem 4rem;
   background: var(--navy);
   text-align: center;
+  width: 100%; 
 }
 
 .hero-h1 {
   font-family: 'Shippori Mincho', serif;
-  font-size: clamp(1.8rem, 8vw, 2.6rem);
+  font-size: clamp(1.8rem, 5vw, 2.8rem); 
   font-weight: 700;
   color: white;
   line-height: 1.4;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
+  max-width: 800px;
 }
 
 .hero-en {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: rgba(255,255,255,0.7);
   margin-bottom: 1.5rem;
   letter-spacing: 0.2em;
 }
 
 .hero-desc {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: white;
   line-height: 1.8;
-  margin-bottom: 2.5rem;
+  margin: 0 auto 2.5rem;
+  max-width: 650px; 
 }
 
 .hero-desc strong {
   color: #FFE585;
 }
 
-/* BUTTONS */
 .hero-btns {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  max-width: 320px;
+  gap: 15px;
+  max-width: 340px;
   margin: 0 auto;
 }
+  
 .btn-gold, .btn-ghost {
   display: block;
   padding: 18px;
