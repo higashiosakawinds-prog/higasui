@@ -57,21 +57,21 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 /* HERO */
 .hero{min-height:100svh;padding-top:56px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;background:var(--navy);}
-.hero-photo{position:absolute;inset:0;background-image:url('/higasui/trumpet_girl.jpg');background-size:cover;background-position:center 15%;animation:zoom 14s ease-out forwards;}
+.hero-photo{position:absolute;inset:0;background-image:url('/higasui/trumpet_girl.jpg');background-size:cover;background-position:60% center;animation:zoom 14s ease-out forwards;}
 @keyframes zoom{from{transform:scale(1.05)}to{transform:scale(1)}}
-.hero-dim{position:absolute;inset:0;background:linear-gradient(160deg,rgba(28,43,74,0.72) 0%,rgba(33,74,154,0.4) 40%,rgba(28,43,74,0.88) 70%,rgba(28,43,74,0.98) 100%);}
+
 .hero-body{position:relative;z-index:2;padding:0 1.5rem 3rem;}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;animation:up 0.8s ease 0.2s both;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;animation:up 0.8s ease 0.2s both;text-shadow:0 1px 8px rgba(0,0,0,0.6);}
 .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold);}
-.hero-h1{font-family:'Shippori Mincho',serif;font-size:clamp(2rem,8vw,3.2rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;animation:up 0.8s ease 0.3s both;}
-.hero-en{font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:300;letter-spacing:0.22em;color:rgba(255,255,255,0.4);margin-bottom:1.3rem;animation:up 0.8s ease 0.4s both;}
-.hero-desc{font-size:0.88rem;color:rgba(255,255,255,0.82);line-height:1.95;margin-bottom:1.8rem;animation:up 0.8s ease 0.5s both;}
-.hero-desc strong{color:#E0C876;}
+.hero-h1{font-family:'Shippori Mincho',serif;font-size:clamp(2rem,8vw,3.2rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;animation:up 0.8s ease 0.3s both;text-shadow:0 2px 16px rgba(0,0,0,0.7),0 4px 32px rgba(0,0,0,0.5);}
+.hero-en{font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:300;letter-spacing:0.22em;color:rgba(255,255,255,0.85);margin-bottom:1.3rem;animation:up 0.8s ease 0.4s both;text-shadow:0 1px 8px rgba(0,0,0,0.6);}
+.hero-desc{font-size:0.88rem;color:white;line-height:1.95;margin-bottom:1.8rem;animation:up 0.8s ease 0.5s both;text-shadow:0 1px 10px rgba(0,0,0,0.65),0 2px 20px rgba(0,0,0,0.4);}
+.hero-desc strong{color:#FFE585;}
 .hero-btns{display:flex;flex-direction:column;gap:0.7rem;animation:up 0.8s ease 0.6s both;}
 @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
 /* BUTTONS */
-.btn-gold{display:block;text-align:center;background:var(--gold);color:white;padding:16px;border-radius:12px;font-size:1rem;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(200,164,77,0.4);transition:background 0.2s;}
+.btn-gold{display:block;text-align:center;background:var(--gold);color:white;padding:16px;border-radius:12px;font-size:1rem;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(200,164,77,0.4),0 2px 20px rgba(0,0,0,0.3);transition:background 0.2s;}
 .btn-gold:hover{background:var(--goldhv);}
 .btn-ghost{display:block;text-align:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:white;padding:14px;border-radius:12px;font-size:0.88rem;font-weight:500;text-decoration:none;}
 
@@ -237,7 +237,7 @@ footer{background:var(--navy);padding:2.5rem 1.5rem 3rem;border-top:2px solid rg
 
 <section class="hero">
   <div class="hero-photo"></div>
-  <div class="hero-dim"></div>
+  <!-- オーバーレイなし -->
   <div class="hero-body">
     <p class="hero-eyebrow">Higashi Osaka Wind Orchestra · Est. 2025</p>
     <h1 class="hero-h1">久しぶりに<br>楽器、吹きませんか？</h1>
