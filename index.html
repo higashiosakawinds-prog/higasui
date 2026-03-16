@@ -56,8 +56,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   font-size:1rem;font-weight:700;text-decoration:none;
 }
 
+/* --- ここから上書き --- */
 .hero {
-  min-height: auto; 
+  width: 100%;
+  max-width: 600px; /* PCで見てもスマホっぽい横幅に制限する（お好みで調整） */
+  margin: 0 auto;   /* PCで見た時に中央に寄せる */
   padding-top: 56px;
   background: var(--navy);
   display: block;
@@ -66,77 +69,34 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .hero-photo-wrap {
   position: relative;
   width: 100%;
-  line-height: 0;
+  aspect-ratio: 4 / 3; /* 写真の比率を固定して「ぎゅーん」を防ぐ */
+  overflow: hidden;
 }
 
 .hero-photo-wrap img {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
+  object-fit: cover; /* 比率を保ったまま枠に収める */
 }
 
-/* 画像の上のロゴ設定 */
+/* ロゴのサイズと影（さらに調整） */
 .hero-logo-over {
   position: absolute;
   top: 10%;
   left: 5%;
-  width: 80%;
-  max-width: 400px;
+  width: 65%;
+  max-width: 250px;
   z-index: 2;
-  /* 周囲に白っぽい光のような影をつけて、ロゴを浮かび上がらせます */
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 2px rgba(255, 255, 255, 1));
+  /* 白いフチ取りのような影で、ロゴの色をクッキリさせます */
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
 }
 
-.hero-logo-over img {
-  width: 100%;
-  height: auto;
-  /* filter: brightness(0) invert(1); ←これを削除（またはコメントアウト） */
-  /* これで元の色のまま表示されます */
-}
-
-/* テキストエリアの設定 */
 .hero-body {
   padding: 2.5rem 1.5rem 3.5rem;
   background: var(--navy);
   text-align: center;
 }
-
-.hero-h1 {
-  font-family: 'Shippori Mincho', serif;
-  font-size: clamp(1.8rem, 8vw, 2.6rem);
-  font-weight: 700;
-  color: white;
-  line-height: 1.4;
-  margin-bottom: 1rem;
-}
-
-.hero-en {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 300;
-  letter-spacing: 0.2em;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 1.5rem;
-}
-
-.hero-desc {
-  font-size: 0.9rem;
-  color: white;
-  line-height: 1.8;
-  margin-bottom: 2rem;
-}
-
-.hero-desc strong {
-  color: #FFE585;
-}
-
-.hero-btns {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-width: 320px;
-  margin: 0 auto;
-}
+/* --- ここまで --- */
 /* BUTTONS */
 .btn-gold{display:block;text-align:center;background:var(--gold);color:white;padding:16px;border-radius:12px;font-size:1rem;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(200,164,77,0.4),0 2px 20px rgba(0,0,0,0.3);transition:background 0.2s;}
 .btn-gold:hover{background:var(--goldhv);}
