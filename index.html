@@ -56,25 +56,26 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 
 /* HERO */
-/* --- ここから上書き --- */
+/* --- ここから上書き（59行目付近〜140行目付近） --- */
+/* HERO - 背景は全幅、中身はバランス調整 */
 .hero {
   width: 100%;
   padding-top: 56px;
   background: var(--navy);
-  display: block;
+  display: block; /* フレックスを解除して縦に並べる */
 }
 
 .hero-photo-wrap {
   position: relative;
   width: 100%;
-  max-width: 800px; /* 写真がでかくなりすぎないよう調整 */
-  margin: 0 auto;
+  max-width: 960px; /* 写真の最大幅。これ以上は広がらない */
+  margin: 0 auto;   /* 中央に寄せる */
   line-height: 0;
 }
 
 .hero-photo-wrap img {
   width: 100%;
-  height: auto; /* 比率を保って表示 */
+  height: auto;
   display: block;
 }
 
@@ -83,27 +84,26 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   position: absolute;
   top: 10%;
   left: 5%;
-  width: 50%;
+  width: 65%;
   max-width: 250px;
   z-index: 2;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
 }
 
 .hero-body {
   padding: 3rem 1.5rem 4rem;
   background: var(--navy);
   text-align: center;
-  width: 100%; 
+  width: 100%; /* ネイビー背景をズバーっと全幅にする */
 }
 
 .hero-h1 {
   font-family: 'Shippori Mincho', serif;
-  font-size: clamp(1.8rem, 5vw, 2.8rem); 
+  font-size: clamp(1.8rem, 5vw, 3rem);
   font-weight: 700;
   color: white;
   line-height: 1.4;
-  margin: 0 auto 1rem;
-  max-width: 800px;
+  margin-bottom: 1rem;
 }
 
 .hero-en {
@@ -118,14 +118,17 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   font-size: 1rem;
   color: white;
   line-height: 1.8;
-  margin: 0 auto 2.5rem;
-  max-width: 650px; 
+  margin-bottom: 2.5rem;
+  max-width: 700px; /* 文章が一行に伸びすぎないように制限 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hero-desc strong {
   color: #FFE585;
 }
 
+/* BUTTONS */
 .hero-btns {
   display: flex;
   flex-direction: column;
@@ -133,7 +136,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   max-width: 340px;
   margin: 0 auto;
 }
-  
 .btn-gold, .btn-ghost {
   display: block;
   padding: 18px;
@@ -154,14 +156,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   color: white;
 }
 
-/* STATS (数字のエリア) */
+/* STATS - ここも全幅にする */
 .stats {
   background: var(--navy);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid rgba(255,255,255,0.1);
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%; /* 全幅へ */
 }
 .stat {
   padding: 1.5rem 0.5rem;
@@ -173,7 +174,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   display: block;
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: var(--gold);
   margin-bottom: 4px;
 }
@@ -182,20 +183,20 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   color: rgba(255,255,255,0.5);
 }
 
-/* CONCERT BANNER (中央寄せ) */
+/* CONCERT BANNER - 真ん中寄せ＆全幅背景 */
 .banner-wrap {
   background: #000;
   display: flex;
   justify-content: center;
   width: 100%;
-  position: relative;
 }
 .banner-wrap img {
-  max-width: 960px;
+  max-width: 960px; /* バナーの最大幅 */
   width: 100%;
   height: auto;
   display: block;
 }
+/* --- 貼り付けここまで --- */
 
 /* NEWS BAR */
 .news-bar{background:var(--navy);padding:24px 1.5rem;border-bottom:1px solid rgba(200,164,77,0.15);}
