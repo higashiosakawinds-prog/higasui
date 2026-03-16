@@ -77,7 +77,8 @@ nav {
 
 /* drawer */
 .drawer {
-  position: fixed; top: 56px; left: 0; right: 0; bottom: 0; z-index: 190;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 300;
+  padding-top: 56px;
   background: var(--navy);
   transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
   padding: 2rem 1.5rem 3rem; overflow-y: auto;
@@ -106,7 +107,7 @@ nav {
 .hero-bg {
   position: absolute; inset: 0;
   background-image: url('/higasui/trumpet_girl.jpg');
-  background-size: cover; background-position: center top;
+  background-size: cover; background-position: center 15%;
   transform: scale(1.05);
   animation: heroZoom 14s ease-out forwards;
 }
@@ -412,13 +413,13 @@ nav {
 
 /* ===== NEWS ===== */
 .news-list { display: flex; flex-direction: column; }
-.news-item { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.news-item { padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .news-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 4px; }
-.news-date { font-family: 'Outfit', sans-serif; font-size: 0.7rem; color: var(--muted); }
+.news-date { font-family: 'Outfit', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); }
 .news-tag { font-size: 0.6rem; font-weight: 700; padding: 1px 8px; border-radius: 10px; }
-.tag-new { background: rgba(33,74,154,0.1); color: var(--blue); }
-.tag-info { background: rgba(200,164,77,0.15); color: #8B6914; }
-.news-title { font-size: 0.88rem; color: var(--text); line-height: 1.6; }
+.tag-new { background: rgba(200,164,77,0.2); color: var(--gold); }
+.tag-info { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+.news-title { font-size: 0.85rem; color: rgba(255,255,255,0.85); line-height: 1.6; }
 
 /* ===== FOOTER ===== */
 footer {
@@ -530,6 +531,28 @@ footer {
     <div class="photo-overlay"><span class="photo-label">CONCERT</span></div>
   </div>
 </div>
+
+<!-- NEWS -->
+<section class="sec" id="news" style="background:var(--navy);padding:32px 1.5rem;">
+  <div class="reveal">
+    <p class="eyebrow eyebrow-light" style="margin-bottom:1rem;">📢 最新のお知らせ</p>
+  </div>
+  <div class="news-list reveal" style="border-color:rgba(255,255,255,0.1);">
+    <div class="news-item">
+      <div class="news-meta"><span class="news-date">2025.07.17</span><span class="news-tag tag-new">NEW</span></div>
+      <div class="news-title">東大阪吹奏楽団、誕生しました！見学・体験申込受付スタート。</div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta"><span class="news-date">2025.07</span><span class="news-tag tag-info">INFO</span></div>
+      <div class="news-title">東大阪市・東大阪市教育委員会より後援をいただきました。</div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta"><span class="news-date">2025.07</span><span class="news-tag tag-info">INFO</span></div>
+      <div class="news-title">公式サイト・Instagram・LINEを開設しました。</div>
+    </div>
+  </div>
+</section>
+
 
 <div class="gold-line"></div>
 
@@ -749,28 +772,6 @@ footer {
         <div class="ok-title">申込ありがとうございます！</div>
         <div class="ok-text">折り返しご連絡いたします。<br>一緒に音楽を楽しみましょう！<br><br>東大阪吹奏楽団</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- NEWS -->
-<section class="sec sec-bg" id="news">
-  <div class="reveal">
-    <p class="eyebrow">News</p>
-    <h2 class="h2">お知らせ</h2>
-  </div>
-  <div class="news-list reveal">
-    <div class="news-item">
-      <div class="news-meta"><span class="news-date">2025.07.17</span><span class="news-tag tag-new">NEW</span></div>
-      <div class="news-title">東大阪吹奏楽団、誕生しました！見学・体験申込受付スタート。</div>
-    </div>
-    <div class="news-item">
-      <div class="news-meta"><span class="news-date">2025.07</span><span class="news-tag tag-info">INFO</span></div>
-      <div class="news-title">東大阪市・東大阪市教育委員会より後援をいただきました。</div>
-    </div>
-    <div class="news-item">
-      <div class="news-meta"><span class="news-date">2025.07</span><span class="news-tag tag-info">INFO</span></div>
-      <div class="news-title">公式サイト・Instagram・LINEを開設しました。</div>
     </div>
   </div>
 </section>
