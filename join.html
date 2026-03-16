@@ -272,10 +272,10 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
     <div class="calendar-wrap reveal">
       <div class="calendar-header">
         <span class="calendar-icon">📅</span>
-        <span class="calendar-title">練習スケジュール</span>
-        <a href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds%40gmail.com" target="_blank" class="calendar-link">Googleカレンダーで開く →</a>
+        <span class="calendar-title">練習スケジュール（直近3ヶ月）</span>
+        <a href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds%40gmail.com" target="_blank" class="calendar-link">カレンダーで開く →</a>
       </div>
-      <iframe src="https://calendar.google.com/calendar/embed?src=higashiosaka.winds%40gmail.com&ctz=Asia%2FTokyo&mode=AGENDA&showTitle=0&showNav=1&showPrint=0&showTabs=0&showCalendars=0&bgcolor=%231C2B4A&color=%23C8A44D" style="border:0; width:100%; min-height:420px; display:block;" frameborder="0" scrolling="no"></iframe>
+      <div id="cal-list"><div class="cal-loading">読み込み中...</div></div>
     </div>
   </div>
 </section>
@@ -504,6 +504,49 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
+// カレンダー
+const CAL_PROXY = 'https://script.google.com/macros/s/AKfycbxDsZjj2G6lsjx7Knz8HQ1cyIcSt8WjCVm4I1fCy2G7pQLQlJMELH1NJm5zXxc6WMoNQA/exec';
+
+async function loadCalendar() {
+  const el = document.getElementById('cal-list');
+  try {
+    const res = await fetch(CAL_PROXY);
+    const data = await res.json();
+    if (!data || data.length === 0) {
+      el.innerHTML = '<div class="cal-empty">現在登録されている予定はありません。<br>Instagramでもお知らせします📷</div>';
+      return;
+    }
+    el.innerHTML = data.map(ev => {
+      const parts = ev.date.split('.');
+      const month = parts[1] + '/' + parts[2];
+      const day = parts[2];
+      const mon = parts[1];
+      // 場所を短縮（住所が長い場合は施設名だけ抽出）
+      let loc = ev.location;
+      if (loc.length > 20) {
+        const short = loc.match(/[^\s,、]+(?:センター|ホール|館|会館|施設)/);
+        loc = short ? short[0] : loc.split(',')[0].split('、')[0];
+      }
+      const wdClass = ev.weekday === '土' ? 'sat' : ev.weekday === '日' ? 'sun' : 'week';
+      return \`<div class="cal-item">
+        <div class="cal-date-col">
+          <span class="cal-month">\${mon}月</span>
+          <span class="cal-day">\${day}</span>
+          <span class="cal-weekday \${wdClass}">\${ev.weekday}</span>
+        </div>
+        <div class="cal-info-col">
+          <div class="cal-title">\${ev.title}</div>
+          \${loc ? \`<div class="cal-location">📍 \${loc}</div>\` : ''}
+          \${ev.description ? \`<div class="cal-desc">\${ev.description}</div>\` : ''}
+        </div>
+      </div>\`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="cal-empty">読み込みに失敗しました。<br>しばらくしてから再度お試しください。</div>';
+  }
+}
+loadCalendar();
+
 const ham = document.getElementById('ham-btn');
 const drawer = document.getElementById('site-drawer');
 ham.addEventListener('click', function() {
