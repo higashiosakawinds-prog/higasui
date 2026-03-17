@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>よくある質問 | 東大阪吹奏楽団</title>
+<meta name="description" content="東大阪吹奏楽団へのよくある質問。ブランク・楽器・費用・演奏会など気になることをまとめました。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue: #214A9A;
+  --navy: #1C2B4A;
+  --gold: #C8A44D;
+  --goldhv: #D9B85E;
+  --white: #ffffff;
+  --bg: #F7F8FA;
+  --text: #1A1A1A;
+  --muted: #606070;
+  --border: #DDE1EC;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+.inner { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; width: 100%; }
+
+/* NAV */
+#site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 56px; background: rgba(28,43,74,0.97); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,164,77,0.25);
+}
+.nav-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+#nav-logo img { height: 32px; width: auto; filter: brightness(0) invert(1); }
+#ham-btn {
+  width: 44px; height: 44px; border: none; background: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+}
+#ham-btn span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: all 0.3s; }
+
+/* DRAWER */
+#site-drawer {
+  display: none; position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+  z-index: 999; background: var(--navy); overflow-y: auto; padding: 1.5rem 1.5rem 3rem;
+}
+#site-drawer.open { display: block; }
+#site-drawer ul { list-style: none; }
+#site-drawer ul li a {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85); text-decoration: none; font-size: 1rem; font-weight: 500;
+}
+#drawer-cta {
+  display: block; text-align: center; margin-top: 1.5rem;
+  background: var(--gold); color: white; padding: 16px; border-radius: 14px;
+  font-weight: 700; text-decoration: none;
+}
+
+/* PAGE HEADER */
+.page-header {
+  padding-top: 56px;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 100%);
+  position: relative; overflow: hidden;
+}
+.page-header::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(200,164,77,0.08);
+}
+.page-header-inner {
+  position: relative; z-index: 1;
+  padding: 3rem 1.5rem 3.5rem;
+  max-width: 1000px; margin: 0 auto;
+}
+.page-eyebrow {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--gold); display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem;
+}
+.page-eyebrow::before { content: ''; width: 16px; height: 1.5px; background: var(--gold); }
+.page-header h1 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(1.8rem,5vw,2.8rem); font-weight: 700; color: white; line-height: 1.3; margin-bottom: 0.8rem;
+}
+.page-header p { font-size: 0.9rem; color: rgba(255,255,255,0.72); line-height: 1.9; }
+
+/* BREADCRUMB */
+.breadcrumb { background: var(--white); padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+.breadcrumb-inner { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--muted); }
+.breadcrumb-inner a { color: var(--blue); text-decoration: none; }
+
+/* SECTION */
+.sec { padding: 64px 0; }
+.sec-bg { background: var(--bg); }
+.sec-white { background: var(--white); }
+.sec-navy { background: var(--navy); }
+.gold-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(200,164,77,0.4), transparent); }
+
+.eyebrow {
+  font-family: 'Outfit', sans-serif; font-size: 0.63rem; font-weight: 800;
+  letter-spacing: 0.28em; text-transform: uppercase; color: var(--blue);
+  margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;
+}
+.eyebrow::before { content: ''; width: 16px; height: 1.5px; background: var(--gold); }
+.eyebrow-light { color: var(--gold); }
+.h2 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(1.5rem,4vw,2rem); font-weight: 700; line-height: 1.35; margin-bottom: 1rem; color: var(--navy);
+}
+.h2-white { color: white; }
+
+/* FAQ CATEGORIES */
+.faq-cats {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem;
+}
+.faq-cat-btn {
+  padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+  font-size: 0.78rem; font-weight: 700; cursor: pointer;
+  background: var(--white); color: var(--muted);
+  transition: all 0.2s; font-family: inherit;
+}
+.faq-cat-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+.faq-cat-btn:hover { border-color: var(--blue); color: var(--blue); }
+.faq-cat-btn.active:hover { color: white; }
+
+/* FAQ GROUPS */
+.faq-group { margin-bottom: 2.5rem; }
+.faq-group-title {
+  font-size: 0.75rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 8px; padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--border);
+}
+.faq-group-title::before { content: ''; width: 3px; height: 14px; background: var(--gold); border-radius: 2px; }
+
+/* FAQ ITEMS */
+.faq-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.faq-item {
+  background: var(--white); border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.faq-item:hover { box-shadow: 0 4px 16px rgba(33,74,154,0.08); }
+.faq-item.open { border-color: rgba(33,74,154,0.2); }
+.faq-q {
+  width: 100%; display: flex; align-items: center; gap: 1rem;
+  padding: 1.1rem 1.2rem; cursor: pointer;
+  background: none; border: none; text-align: left; font-family: inherit;
+}
+.faq-q-icon {
+  width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px;
+  background: linear-gradient(135deg, #EEF2FB, #D5DFFA);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.8rem; color: var(--blue);
+}
+.faq-item.open .faq-q-icon { background: var(--blue); color: white; }
+.faq-q-text { flex: 1; font-size: 0.9rem; font-weight: 700; color: var(--navy); line-height: 1.5; text-align: left; }
+.faq-q-arrow {
+  width: 20px; height: 20px; flex-shrink: 0;
+  border-radius: 50%; background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; color: var(--muted);
+  transition: transform 0.3s, background 0.2s;
+}
+.faq-item.open .faq-q-arrow { transform: rotate(180deg); background: var(--blue); color: white; }
+.faq-a {
+  display: none;
+  padding: 0 1.2rem 1.2rem 4rem;
+  font-size: 0.85rem; color: var(--muted); line-height: 1.85;
+}
+.faq-item.open .faq-a { display: block; }
+.faq-a strong { color: var(--navy); }
+.faq-a a { color: var(--blue); text-decoration: none; }
+.faq-a a:hover { text-decoration: underline; }
+
+/* CTA SECTION */
+.cta-box {
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  border-radius: 20px; padding: 2.5rem 2rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-box::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(200,164,77,0.08);
+}
+.cta-box-inner { position: relative; z-index: 1; }
+.cta-box h3 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 0.6rem;
+}
+.cta-box p { font-size: 0.85rem; color: rgba(255,255,255,0.72); line-height: 1.8; margin-bottom: 1.5rem; }
+.btn-gold {
+  display: inline-block; text-align: center;
+  background: var(--gold); color: white; padding: 14px 32px; border-radius: 12px;
+  font-size: 1rem; font-weight: 700; text-decoration: none;
+  box-shadow: 0 4px 20px rgba(200,164,77,0.4); transition: background 0.2s;
+}
+.btn-gold:hover { background: var(--goldhv); }
+
+/* FOOTER */
+footer { background: var(--navy); padding: 2.5rem 0 3rem; border-top: 2px solid rgba(200,164,77,0.2); }
+.footer-logo { margin-bottom: 1rem; }
+.footer-logo img { height: 36px; width: auto; filter: brightness(0) invert(1); opacity: 0.8; }
+.footer-desc { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.85; margin-bottom: 1.5rem; max-width: 500px; }
+.footer-links { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; margin-bottom: 2rem; max-width: 320px; }
+.footer-links a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.8rem; padding: 5px 0; transition: color 0.2s; }
+.footer-links a:hover { color: var(--gold); }
+.footer-sns { display: flex; gap: 1rem; margin-bottom: 2rem; }
+.footer-sns a {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; text-decoration: none; color: rgba(255,255,255,0.7); transition: background 0.2s, color 0.2s;
+}
+.footer-sns a.sns-instagram:hover { background: #E1306C; border-color: #E1306C; color: white; }
+.footer-sns a.sns-youtube:hover { background: #FF0000; border-color: #FF0000; color: white; }
+.footer-sns a.sns-line:hover { background: #06C755; border-color: #06C755; color: white; }
+.footer-copy { font-size: 0.67rem; color: rgba(255,255,255,0.2); }
+
+/* UTILS */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.scroll-top {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--blue); color: white; border: 2px solid var(--gold);
+  font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s;
+  box-shadow: 0 4px 16px rgba(33,74,154,0.35);
+}
+.scroll-top.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="site-nav">
+  <div class="inner nav-inner">
+    <a href="/higasui/" id="nav-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></a>
+    <button id="ham-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- DRAWER -->
+<div id="site-drawer">
+  <ul>
+    <li><a href="/higasui/#about" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="/higasui/#features" onclick="closeNav()">✨ 団の特徴</a></li>
+    <li><a href="/higasui/join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
+    <li><a href="/higasui/#recruit" onclick="closeNav()">🎺 募集情報</a></li>
+    <li><a href="/higasui/join.html#form" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="/higasui/faq.html" onclick="closeNav()">❓ よくある質問</a></li>
+  </ul>
+  <a href="/higasui/join.html#form" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="page-eyebrow">FAQ</p>
+    <h1>よくある質問</h1>
+    <p>入団・練習・費用など、よくいただく質問をまとめました。<br>解決しない場合はお気軽にLINEやメールでご相談ください。</p>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="inner breadcrumb-inner">
+    <a href="/higasui/">TOP</a>
+    <span>›</span>
+    <span>よくある質問</span>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="sec sec-bg">
+  <div class="inner">
+
+    <!-- 参加・入団について -->
+    <div class="faq-group reveal">
+      <div class="faq-group-title">参加・入団について</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">ブランクが長くても大丈夫ですか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            もちろんです！当団には学生時代にやっていて、ブランクが長かったメンバーも多数在籍しています。「久しぶりすぎて不安…」という方こそ大歓迎です。一緒にゆっくり取り戻しましょう！
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">楽器を持っていないのですが参加できますか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            打楽器を除き、原則ご自身の所有楽器をご利用いただいています。ただし、状況によりお貸しできる場合もありますのでお気軽にご相談ください！楽器の購入相談も対応しています。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">子どもも参加できますか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            中学生からご参加いただけます！親子で一緒に同じ舞台に立てるのが当団の魅力のひとつです。保護者の方も一緒に演奏に参加いただけます。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">家族で参加することはできますか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            もちろんです！当団はメンバー全員が輝いてほしいと願っています。家族みんなで一緒に音楽を楽しんでください。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">見学から入団までの流れを教えてください</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            見学後、団の説明を簡単にさせていただき、約款と入団申込フォームのQRコードをお渡しします。心が固まったら、お家でもどこでもお申し込みください！焦らずゆっくり検討してOKです。お待ちしています！
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 練習について -->
+    <div class="faq-group reveal">
+      <div class="faq-group-title">練習について</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">練習についていけるか不安です…</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            その気持ち、よくわかります！基本的には土曜日午後の合奏を中心とした練習で、少しずつステップアップいただく形です。<br><br>
+            また、<strong>午前中に指導者を招いたワークショップ</strong>（希望者募り・有料実施）や<strong>フリー練習</strong>も実施しています。一人ひとりの技術に合わせて音楽教室のご紹介も可能ですので、お気軽にご相談ください！
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">仕事や学校で休む週があっても大丈夫ですか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            大丈夫です！仕事・家庭・学業との両立を大切にしています。参加できない週があっても気にしないでください。無理なく続けられるペースで活動しています。
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 費用について -->
+    <div class="faq-group reveal">
+      <div class="faq-group-title">費用について</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">月会費はいくらですか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            <strong>大人：¥3,000 / 月、学生：¥1,500 / 月</strong>です。<br><br>
+            別途、衣装代・場所代・演奏会費用が発生することがあります。詳細は入団時にご説明します。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">見学・体験の費用はいくらですか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            <strong>¥500 / 回</strong>です。最大3回まで見学・体験いただけます。3回以内であれば入団しなくても構いません。まずは気軽に雰囲気を感じに来てください！
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 活動・演奏会について -->
+    <div class="faq-group reveal">
+      <div class="faq-group-title">活動・演奏会について</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">演奏会はありますか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            年に一度の<strong>定期演奏会</strong>、参加者を募って実施する<strong>街のイベントへの参加</strong>、また演奏会とは別で<strong>交流会</strong>も実施します。第一回定期演奏会は2026年12月13日（土）東大阪文化創造館小ホールにて開催予定です！
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <div class="faq-q-icon">Q</div>
+            <span class="faq-q-text">休団はできますか？</span>
+            <span class="faq-q-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            可能です！申請中は<strong>団費の支払い不要</strong>で、最大6ヶ月間休団できます。更新の際は現状をお聞きした上で判断させていただきます。<br><br>
+            ⚠️ 休団中は各種演奏会・イベントへの参加ができませんのでご注意ください。
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- まだ解決しない場合 -->
+    <div class="cta-box reveal">
+      <div class="cta-box-inner">
+        <h3>解決しない質問はお気軽に！</h3>
+        <p>LINEまたはメールにてお気軽にご相談ください。<br>通常2〜3日以内にお返事します。</p>
+        <a href="/higasui/join.html#form" class="btn-gold">🎺 見学申込・お問い合わせ</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="inner">
+    <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
+    <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
+    <div class="footer-links">
+      <a href="/higasui/#about">団について</a>
+      <a href="/higasui/#features">団の特徴</a>
+      <a href="/higasui/join.html">練習案内</a>
+      <a href="/higasui/#recruit">募集情報</a>
+      <a href="/higasui/join.html#form">見学申込</a>
+      <a href="/higasui/faq.html">よくある質問</a>
+    </div>
+    <div class="footer-sns">
+      <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-line" aria-label="LINE"><i class="fab fa-line"></i></a>
+    </div>
+    <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ハンバーガー
+const ham = document.getElementById('ham-btn');
+const drawer = document.getElementById('site-drawer');
+ham.addEventListener('click', function() {
+  const isOpen = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !isOpen);
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+});
+function closeNav() {
+  drawer.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// FAQ アコーディオン
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  // 同じグループ内の他を閉じる
+  const group = item.closest('.faq-list');
+  group.querySelectorAll('.faq-item.open').forEach(function(el) {
+    el.classList.remove('open');
+  });
+  // クリックしたのを開く（すでに開いてたら閉じる）
+  if (!isOpen) item.classList.add('open');
+}
+
+// スクロールリビール
+const obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) {
+    if (e.isIntersecting) setTimeout(function() { e.target.classList.add('visible'); }, i * 100);
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+// スクロールトップ
+const st = document.getElementById('scrollTop');
+window.addEventListener('scroll', function() { st.classList.toggle('show', scrollY > 400); });
+</script>
+</body>
+</html>
