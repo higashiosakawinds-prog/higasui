@@ -684,46 +684,44 @@
   </div>
 
 <script>
-  // =============================================
-  //  設定
-  // =============================================
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycby4pxDhKel0Yxc2xDbU2MPOOg_hwP6cX54aLMjgTJdjccejRcW3k2LMXJUOkj1S4lQS/exec';
+// =============================================
+//  設定
+// =============================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSgXXJGuzEgaXWcZaRfsVtnIHoaAmRG-WkuR12XypADT-jG6w/exec';
 
-  // =============================================
-  //  状態
-  // =============================================
-  let selectedChoice = null;
-  let memberToken = null;
-  let practiceId  = null;
+// =============================================
+//  状態
+// =============================================
+let selectedChoice = null;
+let memberToken = null;
+let practiceId  = null;
 
-  // =============================================
-  //  初期化
-  // =============================================
-  window.addEventListener('DOMContentLoaded', async () => {
-    const params = new URLSearchParams(location.search);
-    memberToken = params.get('token');
-    practiceId  = params.get('pid');   // 省略可（最新練習を自動取得）
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  memberToken = params.get('token');
+  practiceId  = params.get('pid');
+  if (!memberToken) {
+    showState('error');
+    return;
+  }
+  await loadMemberAndPractice();
+});
 
-    if (!memberToken) {
+// =============================================
+//  GAS からデータ取得
+// =============================================
+async function loadMemberAndPractice() {
+  try {
+    const url = `${GAS_URL}?action=getAttendanceInfo&token=${encodeURIComponent(memberToken)}${practiceId ? '&pid=' + practiceId : ''}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.success) {
       showState('error');
       return;
     }
-    await loadMemberAndPractice();
-  });
-
-  // =============================================
-  //  GAS からデータ取得
-  // =============================================
-  async function loadMemberAndPractice() {
-    try {
-      const url = `https://script.google.com/macros/s/AKfycby4pxDhKel0Yxc2xDbU2MPOOg_hwP6cX54aLMjgTJdjccejRcW3k2LMXJUOkj1S4lQS/exec?action=getAttendanceInfo&token=${encodeURIComponent(memberToken)}${practiceId ? '&pid=' + practiceId : ''}`;
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (!data.success) {
-        showState('error');
-        return;
-      }
 
       // 練習情報をセット
       document.getElementById('practiceDate').textContent  = data.practiceDate  || '日程未定';
