@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>予約管理委員会 マニュアル | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;--white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;--green:#1D9E75;--red:#C0392B;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.5rem;width:100%;}
+
+/* NAV */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
+#nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.58rem;color:rgba(255,255,255,0.4);letter-spacing:.14em;font-weight:400;}
+#ham-btn{width:44px;height:44px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+#ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all .3s;}
+#site-drawer{display:none;position:fixed;top:56px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{display:flex;align-items:center;gap:.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;}
+#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:16px;border-radius:14px;font-weight:700;text-decoration:none;}
+
+/* PAGE HEADER */
+.page-header{padding-top:56px;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(200,164,77,0.08);}
+.page-header-inner{position:relative;z-index:1;padding:3rem 1.5rem 3.5rem;max-width:900px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.8rem;}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:white;line-height:1.3;margin-bottom:.8rem;}
+.page-header p{font-size:.9rem;color:rgba(255,255,255,0.72);line-height:1.9;}
+.header-meta{display:flex;gap:12px;margin-top:1.2rem;flex-wrap:wrap;}
+.header-badge{padding:4px 12px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;}
+.badge-ver{background:rgba(200,164,77,.2);color:var(--gold);}
+.badge-date{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+
+/* TOC */
+.toc-wrap{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin:2rem 0;}
+.toc-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.toc-list li a{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;text-decoration:none;color:var(--blue);font-size:.85rem;transition:background .15s;}
+.toc-list li a:hover{background:#f0f4ff;}
+.toc-num{font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;background:var(--blue);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* MAIN */
+.main-wrap{padding:40px 0 80px;}
+
+/* SECTION */
+.doc-section{margin-bottom:48px;scroll-margin-top:80px;}
+.sec-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--border);}
+.sec-num{width:40px;height:40px;border-radius:12px;background:var(--blue);color:#fff;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--navy);line-height:1.3;}
+.sec-lead{font-size:.85rem;color:var(--muted);margin-top:4px;line-height:1.7;}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;}
+.card-head{padding:1rem 1.2rem;background:linear-gradient(135deg,var(--navy),var(--blue));display:flex;align-items:center;gap:10px;}
+.card-head-icon{font-size:1rem;color:var(--gold);}
+.card-head-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:#fff;}
+.card-body{padding:1.2rem 1.4rem;}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);position:relative;}
+.step:last-child{border-bottom:none;}
+.step-left{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;}
+.step-circle{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-line{width:2px;flex:1;background:var(--border);margin:4px auto 0;}
+.step:last-child .step-line{display:none;}
+.step-body{flex:1;padding-bottom:8px;}
+.step-title{font-weight:700;font-size:.9rem;color:var(--navy);margin-bottom:.4rem;}
+.step-desc{font-size:.82rem;color:var(--muted);line-height:1.8;}
+
+/* NOTICE BOXES */
+.notice{border-radius:12px;padding:1rem 1.2rem;margin:12px 0;font-size:.82rem;line-height:1.8;}
+.notice-blue{background:rgba(33,74,154,.06);border-left:3px solid var(--blue);color:var(--navy);}
+.notice-gold{background:rgba(200,164,77,.08);border-left:3px solid var(--gold);color:#6B4E00;}
+.notice-green{background:rgba(29,158,117,.07);border-left:3px solid var(--green);color:#0d5c40;}
+.notice-red{background:rgba(192,57,43,.06);border-left:3px solid var(--red);color:#7B1A1A;}
+.notice strong{font-weight:700;}
+
+/* TAG DEMO */
+.tag-demo{background:#1e2d45;border-radius:12px;padding:1.2rem 1.4rem;margin:12px 0;}
+.tag-demo-title{font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;}
+.tag-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:.8rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.08);}
+.tag-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.tag-badge{padding:3px 10px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;flex-shrink:0;margin-top:2px;}
+.tag-none{background:rgba(29,158,117,.25);color:#5eead4;}
+.tag-no-notify{background:rgba(239,68,68,.25);color:#fca5a5;}
+.tag-attend{background:rgba(33,74,154,.35);color:#93c5fd;}
+.tag-body{font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.7;}
+.tag-body code{background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;font-family:'Courier New',monospace;color:#fde68a;font-size:.78rem;}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:0;}
+.flow-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px dashed var(--border);}
+.flow-item:last-child{border-bottom:none;}
+.flow-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.flow-auto{background:rgba(33,74,154,.1);color:var(--blue);}
+.flow-manual{background:rgba(200,164,77,.12);color:#92680a;}
+.flow-body{}
+.flow-title{font-weight:700;font-size:.85rem;color:var(--navy);margin-bottom:2px;}
+.flow-desc{font-size:.78rem;color:var(--muted);line-height:1.7;}
+.flow-label{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.62rem;font-weight:700;margin-left:6px;vertical-align:middle;}
+.fl-auto{background:#dbeafe;color:#1d4ed8;}
+.fl-manual{background:#fef9c3;color:#854d0e;}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:12px 0;}
+.data-table th{background:var(--navy);color:#fff;padding:.7rem 1rem;text-align:left;font-weight:600;font-family:'Outfit',sans-serif;font-size:.72rem;letter-spacing:.05em;}
+.data-table td{padding:.8rem 1rem;border-bottom:1px solid var(--border);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:#f8f9ff;}
+
+/* CHECKLIST */
+.checklist{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.checklist li{display:flex;align-items:flex-start;gap:10px;font-size:.85rem;line-height:1.7;}
+.check-box{width:20px;height:20px;border:2px solid var(--blue);border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.check-box.done{background:var(--blue);}
+.check-box.done::after{content:'✓';color:#fff;font-size:.7rem;font-weight:700;}
+
+/* QA */
+.qa-list{display:flex;flex-direction:column;gap:12px;}
+.qa-item{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.qa-q{padding:.9rem 1.2rem;background:#f8f9ff;font-weight:700;font-size:.85rem;color:var(--navy);display:flex;align-items:flex-start;gap:8px;cursor:pointer;}
+.qa-q-badge{background:var(--blue);color:#fff;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:10px;flex-shrink:0;margin-top:1px;}
+.qa-a{padding:.9rem 1.2rem;font-size:.82rem;color:var(--muted);line-height:1.8;border-top:1px solid var(--border);}
+
+/* VERSION */
+.version-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.version-table th{background:#f0f4ff;color:var(--navy);padding:.6rem 1rem;text-align:left;font-weight:700;border-bottom:2px solid var(--blue);}
+.version-table td{padding:.7rem 1rem;border-bottom:1px solid var(--border);}
+
+/* FOOTER */
+footer{background:var(--navy);padding:32px 0;text-align:center;}
+footer p{font-family:'Outfit',sans-serif;font-size:.72rem;color:rgba(255,255,255,.35);letter-spacing:.05em;}
+
+/* PRINT */
+@media print{
+  #site-nav,#site-drawer,#ham-btn{display:none!important;}
+  .page-header{padding-top:0;}
+  .main-wrap{padding-top:0;}
+  body{background:#fff;}
+  .card{box-shadow:none;border:1px solid #ccc;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="site-nav">
+  <div class="nav-inner inner">
+    <a id="nav-logo" href="./index.html">東大阪吹奏楽団<small>HIGASHIOSAKA WINDS</small></a>
+    <button id="ham-btn" onclick="toggleDrawer()" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div id="site-drawer">
+  <ul>
+    <li><a href="./index.html"><i class="fa-solid fa-house" style="width:18px"></i> トップ</a></li>
+    <li><a href="./member.html"><i class="fa-solid fa-user" style="width:18px"></i> マイページ</a></li>
+  </ul>
+  <a class="btn" id="drawer-cta" href="./attendance.html">出欠回答はこちら</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-eyebrow"><span>COMMITTEE MANUAL</span></div>
+    <h1>予約管理委員会<br>マニュアル</h1>
+    <p>練習会場の予約・スケジュール管理・団員への共有まで。<br>このマニュアル1冊でひがすいDXシステムを使いこなせます。</p>
+    <div class="header-meta">
+      <span class="header-badge badge-ver">Ver 1.0</span>
+      <span class="header-badge badge-date"><i class="fa-solid fa-calendar" style="margin-right:4px"></i>2026年3月作成</span>
+      <span class="header-badge badge-date"><i class="fa-solid fa-rotate" style="margin-right:4px"></i>随時更新</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main-wrap">
+  <div class="inner">
+
+    <!-- 目次 -->
+    <div class="toc-wrap">
+      <div class="toc-title"><i class="fa-solid fa-list" style="color:var(--blue)"></i> 目次</div>
+      <ul class="toc-list">
+        <li><a href="#overview"><div class="toc-num">1</div> 委員会の役割と全体像</a></li>
+        <li><a href="#system"><div class="toc-num">2</div> ひがすいDXシステムの仕組み</a></li>
+        <li><a href="#calendar"><div class="toc-num">3</div> Googleカレンダーへの入力方法</a></li>
+        <li><a href="#tags"><div class="toc-num">4</div> タグの使い方（#配信不要・#出欠対象）</a></li>
+        <li><a href="#flow"><div class="toc-num">5</div> 毎週の自動フロー</a></li>
+        <li><a href="#venues"><div class="toc-num">6</div> 主な使用会場と予約方法</a></li>
+        <li><a href="#schedule"><div class="toc-num">7</div> 年間スケジュール管理</a></li>
+        <li><a href="#handover"><div class="toc-num">8</div> 引き継ぎチェックリスト</a></li>
+        <li><a href="#faq"><div class="toc-num">9</div> よくある質問・トラブル対応</a></li>
+      </ul>
+    </div>
+
+    <!-- 1. 役割と全体像 -->
+    <div class="doc-section" id="overview">
+      <div class="sec-header">
+        <div class="sec-num">1</div>
+        <div>
+          <div class="sec-title">委員会の役割と全体像</div>
+          <div class="sec-lead">予約管理委員会が担う業務の全体像を把握しましょう</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-bullseye card-head-icon"></i><div class="card-head-title">ミッション</div></div>
+        <div class="card-body">
+          <p style="font-size:.88rem;line-height:1.9;color:var(--navy);font-weight:500;">「団員が練習日・場所を意識せず活動に集中できる環境をつくる」</p>
+          <p style="font-size:.82rem;color:var(--muted);line-height:1.8;margin-top:.5rem;">カレンダーに入力すれば、あとは全自動。それがひがすいDXシステムです。</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-list-check card-head-icon"></i><div class="card-head-title">主な業務</div></div>
+        <div class="card-body">
+          <table class="data-table">
+            <thead><tr><th>業務</th><th>頻度</th><th>手動/自動</th></tr></thead>
+            <tbody>
+              <tr><td>練習会場の予約</td><td>月1〜2回</td><td><span style="color:#854d0e;font-weight:700;">手動</span></td></tr>
+              <tr><td>Googleカレンダーへの入力</td><td>予約後すぐ</td><td><span style="color:#854d0e;font-weight:700;">手動</span></td></tr>
+              <tr><td>スプシへの自動同期</td><td>毎週日曜0時</td><td><span style="color:var(--blue);font-weight:700;">自動</span></td></tr>
+              <tr><td>団員へのLINE通知</td><td>毎週月曜9時</td><td><span style="color:var(--blue);font-weight:700;">自動</span></td></tr>
+              <tr><td>未回答者へのリマインド</td><td>毎週木曜19時</td><td><span style="color:var(--blue);font-weight:700;">自動</span></td></tr>
+              <tr><td>出欠集計の幹部報告</td><td>毎週土曜8時</td><td><span style="color:var(--blue);font-weight:700;">自動</span></td></tr>
+              <tr><td>年間スケジュール調整</td><td>年1〜2回</td><td><span style="color:#854d0e;font-weight:700;">手動</span></td></tr>
+            </tbody>
+          </table>
+          <div class="notice notice-green" style="margin-top:12px;">
+            <strong>ポイント：</strong>カレンダーへの入力さえ済ませれば、団員への共有・出欠管理・集計報告はすべて自動で動きます。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. システムの仕組み -->
+    <div class="doc-section" id="system">
+      <div class="sec-header">
+        <div class="sec-num">2</div>
+        <div>
+          <div class="sec-title">ひがすいDXシステムの仕組み</div>
+          <div class="sec-lead">全体の流れを把握しておきましょう</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-diagram-project card-head-icon"></i><div class="card-head-title">データの流れ</div></div>
+        <div class="card-body">
+          <div class="flow">
+            <div class="flow-item">
+              <div class="flow-icon flow-manual"><i class="fa-solid fa-calendar-plus"></i></div>
+              <div class="flow-body">
+                <div class="flow-title">① Googleカレンダーに入力 <span class="flow-label fl-manual">手動</span></div>
+                <div class="flow-desc">予約が取れたらすぐにカレンダーへ。タイトル・場所・時間を入力するだけでOK。</div>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon flow-auto"><i class="fa-solid fa-rotate"></i></div>
+              <div class="flow-body">
+                <div class="flow-title">② 毎週日曜0時 自動同期 <span class="flow-label fl-auto">自動</span></div>
+                <div class="flow-desc">GAS（Google Apps Script）がカレンダーを読み取り、スプレッドシートの「練習スケジュール」シートに自動で書き込みます。</div>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon flow-auto"><i class="fa-brands fa-line"></i></div>
+              <div class="flow-body">
+                <div class="flow-title">③ 毎週月曜9時 LINE通知 <span class="flow-label fl-auto">自動</span></div>
+                <div class="flow-desc">全団員のLINEに練習日・場所・出欠回答URLが自動送信されます。</div>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon flow-auto"><i class="fa-solid fa-check-circle"></i></div>
+              <div class="flow-body">
+                <div class="flow-title">④ 団員が出欠回答 <span class="flow-label fl-auto">自動</span></div>
+                <div class="flow-desc">団員がLINEのリンクをタップ → 参加/遅刻早退/欠席を1タップで回答。スプシに自動記録されます。</div>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon flow-auto"><i class="fa-solid fa-bell"></i></div>
+              <div class="flow-body">
+                <div class="flow-title">⑤ 木曜19時 未回答リマインド <span class="flow-label fl-auto">自動</span></div>
+                <div class="flow-desc">締切（木曜23:59）までに未回答の団員にのみリマインドが送られます。</div>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon flow-auto"><i class="fa-solid fa-chart-bar"></i></div>
+              <div class="flow-body">
+                <div class="flow-title">⑥ 土曜8時 集計報告 <span class="flow-label fl-auto">自動</span></div>
+                <div class="flow-desc">幹部のLINEに「参加○名・欠席○名・未回答○名」の集計が自動送信されます。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice notice-blue">
+        <strong>予約管理委員がやることはたった1つ：</strong>会場を予約したらGoogleカレンダーに入力する。それだけで①〜⑥がすべて自動で動きます。
+      </div>
+    </div>
+
+    <!-- 3. カレンダー入力方法 -->
+    <div class="doc-section" id="calendar">
+      <div class="sec-header">
+        <div class="sec-num">3</div>
+        <div>
+          <div class="sec-title">Googleカレンダーへの入力方法</div>
+          <div class="sec-lead">入力するのは3項目だけです</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-pencil card-head-icon"></i><div class="card-head-title">入力手順</div></div>
+        <div class="card-body">
+          <div class="steps">
+            <div class="step">
+              <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+              <div class="step-body">
+                <div class="step-title">Googleカレンダーを開く</div>
+                <div class="step-desc">
+                  <a href="https://calendar.google.com" target="_blank" style="color:var(--blue);">calendar.google.com</a> にアクセスし、<strong>higashiosaka.winds@gmail.com</strong> のアカウントでログイン。<br>
+                  スマホの場合はGoogleカレンダーアプリからでもOK。
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+              <div class="step-body">
+                <div class="step-title">練習日をタップしてイベントを作成</div>
+                <div class="step-desc">カレンダーの日付をクリック（またはタップ）→「イベントを作成」を選択。</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
+              <div class="step-body">
+                <div class="step-title">以下の3項目を入力</div>
+                <div class="step-desc">
+                  <table class="data-table" style="margin-top:8px;">
+                    <thead><tr><th>項目</th><th>入力内容</th><th>例</th></tr></thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>タイトル</strong></td>
+                        <td>「練習」を必ず含める</td>
+                        <td>練習 4月5日</td>
+                      </tr>
+                      <tr>
+                        <td><strong>日時</strong></td>
+                        <td>開始・終了時刻を入力</td>
+                        <td>13:00〜17:00</td>
+                      </tr>
+                      <tr>
+                        <td><strong>場所</strong></td>
+                        <td>会場名（住所も可）</td>
+                        <td>東大阪文化創造館</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-left"><div class="step-circle">4</div><div class="step-line"></div></div>
+              <div class="step-body">
+                <div class="step-title">保存して完了！</div>
+                <div class="step-desc">
+                  「保存」をクリックすれば完了です。<br>
+                  次の日曜0時の自動同期でスプシに反映され、月曜9時に団員へLINEが届きます。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice notice-gold">
+        <strong>⚠️ 注意：</strong>タイトルに「練習」が含まれていないと出欠確認LINEが送られません。「4月5日」だけでなく必ず「<strong>練習</strong> 4月5日」と入力してください。
+      </div>
+
+      <div class="notice notice-blue">
+        <strong>手動で今すぐ同期したい場合：</strong>GASエディタを開いて <code style="background:#e8eaf6;padding:1px 6px;border-radius:4px;font-family:monospace;">syncCalendarToSheet</code> を手動実行すれば即座にスプシに反映されます。
+      </div>
+    </div>
+
+    <!-- 4. タグの使い方 -->
+    <div class="doc-section" id="tags">
+      <div class="sec-header">
+        <div class="sec-num">4</div>
+        <div>
+          <div class="sec-title">タグの使い方</div>
+          <div class="sec-lead">説明欄にタグを入れることで通知をコントロールできます</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-tags card-head-icon"></i><div class="card-head-title">タグ一覧と動作</div></div>
+        <div class="card-body">
+          <div class="tag-demo">
+            <div class="tag-demo-title">カレンダー説明欄のタグ</div>
+            <div class="tag-row">
+              <div class="tag-badge tag-none">タグなし</div>
+              <div class="tag-body">
+                タイトルに「練習」を含む場合 → スプシ同期✅ LINE通知✅ 出欠確認✅<br>
+                タイトルに「練習」を含まない場合 → スプシ同期✅ LINE通知❌ 出欠確認❌<br>
+                <span style="color:rgba(255,255,255,.4);font-size:.75rem;">例）ミーティング、演奏会、総会 → 通知なし</span>
+              </div>
+            </div>
+            <div class="tag-row">
+              <div class="tag-badge tag-no-notify"><code>#配信不要</code></div>
+              <div class="tag-body">
+                スプシ同期✅ LINE通知❌ 出欠確認❌<br>
+                <span style="color:rgba(255,255,255,.4);font-size:.75rem;">例）幹部ミーティング、会計作業日など団員全員に知らせなくていいもの</span>
+              </div>
+            </div>
+            <div class="tag-row">
+              <div class="tag-badge tag-attend"><code>#出欠対象</code></div>
+              <div class="tag-body">
+                スプシ同期✅ LINE通知✅ 出欠確認✅<br>
+                <span style="color:rgba(255,255,255,.4);font-size:.75rem;">例）演奏会本番、合同練習など「練習」以外で出欠を取りたいイベント</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-book-open card-head-icon"></i><div class="card-head-title">具体的な入力例</div></div>
+        <div class="card-body">
+          <table class="data-table">
+            <thead><tr><th>タイトル</th><th>説明欄</th><th>通知</th></tr></thead>
+            <tbody>
+              <tr><td>練習 4月5日</td><td>（空欄）</td><td>✅ 全員に通知</td></tr>
+              <tr><td>幹部ミーティング</td><td>#配信不要</td><td>❌ 通知なし</td></tr>
+              <tr><td>第一回定期演奏会</td><td>#出欠対象</td><td>✅ 全員に通知</td></tr>
+              <tr><td>会計作業</td><td>#配信不要</td><td>❌ 通知なし</td></tr>
+              <tr><td>合同練習（○○楽団）</td><td>#出欠対象</td><td>✅ 全員に通知</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 毎週の自動フロー -->
+    <div class="doc-section" id="flow">
+      <div class="sec-header">
+        <div class="sec-num">5</div>
+        <div>
+          <div class="sec-title">毎週の自動フロー</div>
+          <div class="sec-lead">何曜日に何が自動で動くかを把握しておきましょう</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:0;">
+          <table class="data-table" style="margin:0;">
+            <thead><tr><th>曜日・時刻</th><th>自動で起きること</th><th>担当者への影響</th></tr></thead>
+            <tbody>
+              <tr><td><strong>日曜 0:00</strong></td><td>カレンダー→スプシ自動同期</td><td>なし（全自動）</td></tr>
+              <tr><td><strong>月曜 9:00</strong></td><td>全団員にLINEで出欠確認を送信</td><td>なし（全自動）</td></tr>
+              <tr><td><strong>木曜 19:00</strong></td><td>未回答者にリマインド送信</td><td>なし（全自動）</td></tr>
+              <tr><td><strong>木曜 23:59</strong></td><td>回答締切</td><td>なし</td></tr>
+              <tr><td><strong>土曜 8:00</strong></td><td>幹部に出欠集計LINEを送信</td><td>集計を確認するだけ</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="notice notice-green">
+        <strong>週の流れのまとめ：</strong>日曜に同期 → 月曜に通知 → 木曜にリマインド → 土曜に集計。カレンダーへの入力さえ済んでいれば、あとは何もしなくてOKです。
+      </div>
+    </div>
+
+    <!-- 6. 主な会場と予約方法 -->
+    <div class="doc-section" id="venues">
+      <div class="sec-header">
+        <div class="sec-num">6</div>
+        <div>
+          <div class="sec-title">主な使用会場と予約方法</div>
+          <div class="sec-lead">ひがすいが主に使用する会場の情報です</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-building card-head-icon"></i><div class="card-head-title">東大阪文化創造館（メイン会場）</div></div>
+        <div class="card-body">
+          <table class="data-table">
+            <tbody>
+              <tr><td style="width:120px;color:var(--muted);">住所</td><td>大阪府東大阪市御厨南２丁目３−４</td></tr>
+              <tr><td style="color:var(--muted);">予約方法</td><td>窓口 または オンライン予約システム</td></tr>
+              <tr><td style="color:var(--muted);">予約開始</td><td>使用月の2ヶ月前から（要確認）</td></tr>
+              <tr><td style="color:var(--muted);">カレンダー場所欄</td><td>「東大阪文化創造館」と入力</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-building card-head-icon"></i><div class="card-head-title">荒本人権文化センター（サブ会場）</div></div>
+        <div class="card-body">
+          <table class="data-table">
+            <tbody>
+              <tr><td style="width:120px;color:var(--muted);">住所</td><td>東大阪市（詳細要確認）</td></tr>
+              <tr><td style="color:var(--muted);">予約方法</td><td>窓口 または 電話</td></tr>
+              <tr><td style="color:var(--muted);">カレンダー場所欄</td><td>「荒本人権文化センター」と入力</td></tr>
+            </tbody>
+          </table>
+          <div class="notice notice-gold" style="margin-top:12px;">
+            <strong>注意：</strong>会場名の表記がカレンダーと違うと自動認識されない場合があります。必ず上記の表記で入力してください。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. 年間スケジュール管理 -->
+    <div class="doc-section" id="schedule">
+      <div class="sec-header">
+        <div class="sec-num">7</div>
+        <div>
+          <div class="sec-title">年間スケジュール管理</div>
+          <div class="sec-lead">演奏会・重要イベントは早めに動くのが鉄則</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-clock card-head-icon"></i><div class="card-head-title">動くべきタイミング</div></div>
+        <div class="card-body">
+          <table class="data-table">
+            <thead><tr><th>タイミング</th><th>やること</th></tr></thead>
+            <tbody>
+              <tr><td>演奏会の<strong>6ヶ月前</strong></td><td>演奏会会場の抽選・仮予約に参加</td></tr>
+              <tr><td>演奏会の<strong>3ヶ月前</strong></td><td>本予約確定 → カレンダーに入力（#出欠対象）</td></tr>
+              <tr><td><strong>毎月初め</strong></td><td>翌月〜翌々月の練習会場を予約 → カレンダーに入力</td></tr>
+              <tr><td><strong>総会時</strong></td><td>次年度の定期演奏会日程を決定・共有</td></tr>
+            </tbody>
+          </table>
+          <div class="notice notice-red" style="margin-top:12px;">
+            <strong>⚠️ 演奏会会場は半年前から動く必要があります。</strong>団長と日程を相談した上で、抽選への参加を忘れずに。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. 引き継ぎチェックリスト -->
+    <div class="doc-section" id="handover">
+      <div class="sec-header">
+        <div class="sec-num">8</div>
+        <div>
+          <div class="sec-title">引き継ぎチェックリスト</div>
+          <div class="sec-lead">担当者が変わるときに必ず確認してください</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-arrow-right-arrow-left card-head-icon"></i><div class="card-head-title">前任者 → 後任者 引き継ぎ項目</div></div>
+        <div class="card-body">
+          <ul class="checklist">
+            <li><div class="check-box"></div><div>Googleカレンダー（higashiosaka.winds@gmail.com）の編集権限を付与した</div></li>
+            <li><div class="check-box"></div><div>GASプロジェクト（ひがすい_出欠管理）の閲覧権限を付与した</div></li>
+            <li><div class="check-box"></div><div>スプレッドシートの「練習スケジュール」シートの見方を説明した</div></li>
+            <li><div class="check-box"></div><div>タグの使い方（#配信不要・#出欠対象）を説明した</div></li>
+            <li><div class="check-box"></div><div>主な使用会場の予約方法・窓口情報を伝えた</div></li>
+            <li><div class="check-box"></div><div>直近3ヶ月の練習スケジュール・会場予約状況を共有した</div></li>
+            <li><div class="check-box"></div><div>演奏会会場の予約状況・今後の抽選予定を伝えた</div></li>
+            <li><div class="check-box"></div><div>このマニュアルのURLを共有した</div></li>
+          </ul>
+          <div class="notice notice-green" style="margin-top:16px;">
+            <strong>引き継ぎ後の確認：</strong>後任者がカレンダーにテスト入力 → 日曜の同期 or 手動実行でスプシに反映されることを一緒に確認してください。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. FAQ -->
+    <div class="doc-section" id="faq">
+      <div class="sec-header">
+        <div class="sec-num">9</div>
+        <div>
+          <div class="sec-title">よくある質問・トラブル対応</div>
+          <div class="sec-lead">困ったときはまずここを確認</div>
+        </div>
+      </div>
+
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-q-badge">Q</span>カレンダーに入力したのにスプシに反映されない</div>
+          <div class="qa-a">
+            毎週日曜0時の自動同期を待つか、GASエディタで <code style="background:#e8eaf6;padding:1px 6px;border-radius:4px;font-family:monospace;">syncCalendarToSheet</code> を手動実行してください。<br>
+            それでも反映されない場合は、カレンダーの入力アカウントが <strong>higashiosaka.winds@gmail.com</strong> であることを確認してください。
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-q-badge">Q</span>月曜にLINEが届かなかった</div>
+          <div class="qa-a">
+            以下の順番で確認してください。<br>
+            ① 練習スケジュールシートに今週の練習が入っているか<br>
+            ② イベントのタイトルに「練習」が含まれているか（説明欄に #出欠対象 がある場合は除く）<br>
+            ③ GASのトリガーが正常に動いているか（GASエディタ → トリガーページ → エラー率を確認）
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-q-badge">Q</span>会場が変更になった場合はどうする？</div>
+          <div class="qa-a">
+            Googleカレンダーのイベントを編集して場所欄を更新するだけでOKです。次回の自動同期（または手動実行）でスプシに反映されます。既に出欠確認LINEが送信済みの場合は、別途LINEグループで団員に告知してください。
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-q-badge">Q</span>特定の人だけに配信したくない</div>
+          <div class="qa-a">
+            スプレッドシートの「団員マスタ」シートで、該当の団員のステータスを「休団」に変更してください。ステータスが「正会員」「学生」の人にのみ通知が届く仕組みになっています。
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q"><span class="qa-q-badge">Q</span>GASの操作がわからない・怖い</div>
+          <div class="qa-a">
+            基本的にGASを触る必要があるのは「手動で今すぐ同期したいとき」だけです。普段の運用ではGASを触る必要はありません。どうしても必要な場合は団長または技術担当に連絡してください。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- バージョン履歴 -->
+    <div class="card" style="margin-top:48px;">
+      <div class="card-head"><i class="fa-solid fa-clock-rotate-left card-head-icon"></i><div class="card-head-title">更新履歴</div></div>
+      <div class="card-body">
+        <table class="version-table">
+          <thead><tr><th>バージョン</th><th>日付</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>Ver 1.0</td><td>2026年3月</td><td>初版作成（ひがすいDXシステム Phase 1 完成に合わせて）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>© 東大阪吹奏楽団 | 予約管理委員会マニュアル Ver 1.0</p>
+</footer>
+
+<script>
+function toggleDrawer() {
+  document.getElementById('site-drawer').classList.toggle('open');
+}
+</script>
+</body>
+</html>
