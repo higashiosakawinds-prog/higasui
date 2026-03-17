@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>定款 | 東大阪吹奏楽団</title>
+<meta name="description" content="東大阪吹奏楽団の定款。目的・会員・組織・会計などに関する規定。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;--white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:1000px;margin:0 auto;padding:0 1.5rem;width:100%;}
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+#ham-btn{width:44px;height:44px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+#ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
+#site-drawer{display:none;position:fixed;top:56px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{display:flex;align-items:center;gap:0.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;}
+#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:16px;border-radius:14px;font-weight:700;text-decoration:none;}
+.page-header{padding-top:56px;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(200,164,77,0.08);}
+.page-header-inner{position:relative;z-index:1;padding:3rem 1.5rem 3.5rem;max-width:1000px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.8rem;}
+.page-header p{font-size:0.9rem;color:rgba(255,255,255,0.72);line-height:1.9;}
+.breadcrumb{background:var(--white);padding:0.8rem 0;border-bottom:1px solid var(--border);}
+.breadcrumb-inner{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--muted);}
+.breadcrumb-inner a{color:var(--blue);text-decoration:none;}
+
+/* TOC */
+.toc-wrap{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2.5rem;}
+.toc-title{font-size:0.78rem;font-weight:800;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+.toc-title::before{content:'';width:3px;height:14px;background:var(--gold);border-radius:2px;}
+.toc-list{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;}
+@media(max-width:500px){.toc-list{grid-template-columns:1fr;}}
+.toc-list a{font-size:0.8rem;color:var(--blue);text-decoration:none;padding:3px 0;display:flex;align-items:center;gap:5px;}
+.toc-list a::before{content:'§';font-size:0.65rem;color:var(--gold);}
+.toc-list a:hover{text-decoration:underline;}
+
+/* DOCUMENT */
+.doc-wrap{max-width:760px;}
+.doc-meta{font-size:0.78rem;color:var(--muted);margin-bottom:2.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
+
+.chapter{margin-bottom:3rem;}
+.chapter-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.1rem;font-weight:700;color:var(--navy);
+  padding:0.6rem 1rem;
+  background:linear-gradient(135deg,rgba(33,74,154,0.07),rgba(33,74,154,0.03));
+  border-left:4px solid var(--blue);
+  border-radius:0 8px 8px 0;
+  margin-bottom:1.5rem;
+}
+.article{margin-bottom:1.8rem;}
+.article-title{
+  font-size:0.88rem;font-weight:700;color:var(--navy);
+  margin-bottom:0.6rem;
+  display:flex;align-items:baseline;gap:0.5rem;
+}
+.article-num{
+  font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:800;
+  color:var(--gold);background:rgba(200,164,77,0.12);
+  padding:1px 7px;border-radius:10px;flex-shrink:0;
+}
+.article-body{font-size:0.85rem;color:var(--text);line-height:2;}
+.article-body p{margin-bottom:0.6rem;}
+.article-body p:last-child{margin-bottom:0;}
+.article-list{list-style:none;margin:0.5rem 0 0.5rem 0.5rem;}
+.article-list li{font-size:0.84rem;color:var(--text);line-height:1.9;padding-left:1.2rem;position:relative;}
+.article-list li::before{content:'・';position:absolute;left:0;color:var(--gold);}
+.article-list.num{counter-reset:al;}
+.article-list.num li{counter-increment:al;}
+.article-list.num li::before{content:counter(al) '.';color:var(--blue);font-weight:700;font-size:0.78rem;}
+.note{background:rgba(200,164,77,0.07);border-radius:8px;padding:0.8rem 1rem;font-size:0.78rem;color:var(--muted);line-height:1.8;margin-top:0.8rem;border-left:3px solid var(--gold);}
+
+/* FEE TABLE */
+.fee-table{width:100%;border-collapse:collapse;font-size:0.83rem;margin:0.8rem 0;}
+.fee-table th{background:var(--navy);color:white;padding:8px 12px;text-align:left;font-weight:700;font-size:0.75rem;}
+.fee-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;}
+.fee-table tr:last-child td{border-bottom:none;}
+.fee-table tr:nth-child(even) td{background:rgba(33,74,154,0.03);}
+
+/* FOOTER */
+footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(200,164,77,0.2);}
+.footer-logo{margin-bottom:1rem;}
+.footer-logo img{height:36px;width:auto;filter:brightness(0) invert(1);opacity:0.8;}
+.footer-desc{font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.85;margin-bottom:1.5rem;max-width:500px;}
+.footer-links{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;margin-bottom:2rem;max-width:320px;}
+.footer-links a{color:rgba(255,255,255,0.55);text-decoration:none;font-size:0.8rem;padding:5px 0;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-sns{display:flex;gap:1rem;margin-bottom:2rem;}
+.footer-sns a{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;text-decoration:none;color:rgba(255,255,255,0.7);transition:background 0.2s,color 0.2s;}
+.footer-sns a.sns-instagram:hover{background:#E1306C;border-color:#E1306C;color:white;}
+.footer-sns a.sns-youtube:hover{background:#FF0000;border-color:#FF0000;color:white;}
+.footer-sns a.sns-line:hover{background:#06C755;border-color:#06C755;color:white;}
+.footer-copy{font-size:0.67rem;color:rgba(255,255,255,0.2);}
+.scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;z-index:50;width:42px;height:42px;border-radius:50%;background:var(--blue);color:white;border:2px solid var(--gold);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;box-shadow:0 4px 16px rgba(33,74,154,0.35);}
+.scroll-top.show{opacity:1;}
+
+/* RULEBOOK */
+.rulebook-wrap{max-width:760px;margin-top:4rem;padding-top:3rem;border-top:2px solid var(--border);}
+.rulebook-header{margin-bottom:2rem;}
+.rulebook-eyebrow{font-family:'Outfit',sans-serif;font-size:0.63rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;}
+.rulebook-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.rulebook-title{font-family:'Shippori Mincho',serif;font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;}
+.rulebook-desc{font-size:0.83rem;color:var(--muted);line-height:1.8;}
+.rulebook-note{background:rgba(200,164,77,0.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:0.8rem 1rem;font-size:0.78rem;color:#6B4E00;line-height:1.8;margin-bottom:2rem;}
+.rb-item{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:0.7rem;background:var(--white);}
+.rb-item.open{border-color:rgba(33,74,154,0.2);}
+.rb-btn{width:100%;display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;background:none;border:none;cursor:pointer;font-family:inherit;text-align:left;}
+.rb-icon{width:32px;height:32px;flex-shrink:0;border-radius:8px;background:linear-gradient(135deg,#EEF2FB,#D5DFFA);display:flex;align-items:center;justify-content:center;font-size:0.95rem;}
+.rb-item.open .rb-icon{background:var(--blue);}
+.rb-label{flex:1;font-size:0.9rem;font-weight:700;color:var(--navy);}
+.rb-arrow{width:20px;height:20px;flex-shrink:0;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--muted);transition:transform 0.3s,background 0.2s;}
+.rb-item.open .rb-arrow{transform:rotate(180deg);background:var(--blue);color:white;}
+.rb-body{display:none;padding:0 1.2rem 1.2rem 4rem;font-size:0.84rem;color:var(--text);line-height:2;}
+.rb-item.open .rb-body{display:block;}
+.rb-body ul{list-style:none;display:flex;flex-direction:column;gap:0.3rem;}
+.rb-body ul li{padding-left:1rem;position:relative;color:var(--muted);}
+.rb-body ul li::before{content:'・';position:absolute;left:0;color:var(--gold);}
+.rb-body ul li strong{color:var(--navy);}
+.rb-body .rb-section{font-size:0.72rem;font-weight:800;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin:0.8rem 0 0.3rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border);}
+.rb-body .rb-note{background:rgba(33,74,154,0.05);border-radius:8px;padding:0.7rem 0.9rem;font-size:0.78rem;color:var(--muted);margin-top:0.8rem;line-height:1.7;}
+.sec{padding:64px 0;}
+.sec-bg{background:var(--bg);}
+</style>
+</head>
+<body>
+
+<nav id="site-nav">
+  <div class="inner nav-inner">
+    <a href="/higasui/" id="nav-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></a>
+    <button id="ham-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="site-drawer">
+  <ul>
+    <li><a href="/higasui/#about" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="/higasui/#features" onclick="closeNav()">✨ 団の特徴</a></li>
+    <li><a href="/higasui/join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
+    <li><a href="/higasui/#recruit" onclick="closeNav()">🎺 募集情報</a></li>
+    <li><a href="/higasui/join.html#form" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="/higasui/faq.html" onclick="closeNav()">❓ よくある質問</a></li>
+  </ul>
+  <a href="/higasui/join.html#form" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+</div>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="page-eyebrow">Articles of Association</p>
+    <h1>定款</h1>
+    <p>東大阪吹奏楽団の目的・組織・運営に関する基本規定です。<br>施行日：2026年4月1日</p>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="inner breadcrumb-inner">
+    <a href="/higasui/">TOP</a><span>›</span><span>定款</span>
+  </div>
+</div>
+
+<section class="sec sec-bg">
+  <div class="inner">
+    <div class="doc-wrap">
+
+      <!-- 目次 -->
+      <div class="toc-wrap">
+        <div class="toc-title">目次</div>
+        <div class="toc-list">
+          <a href="#ch1">第1章 総則</a>
+          <a href="#ch2">第2章 会員および構成</a>
+          <a href="#ch3">第3章 ボランティア・協力者</a>
+          <a href="#ch4">第4章 組織および運営体制</a>
+          <a href="#ch5">第5章 会議および意思決定</a>
+          <a href="#ch6">第6章 会計および附則</a>
+        </div>
+      </div>
+
+      <div class="doc-meta">
+        制定：2026年4月1日　／　東大阪吹奏楽団（略称：ひがすい）
+      </div>
+
+      <!-- 第1章 -->
+      <div class="chapter" id="ch1">
+        <div class="chapter-title">第1章　総則</div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第1条</span>名称</div>
+          <div class="article-body">
+            <p>本団体は「東大阪吹奏楽団」（以下「本団」）と称し、略称として「ひがすい」を用いる。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第2条</span>目的</div>
+          <div class="article-body">
+            <p>本団は、音楽を通じて人が育ち、その人が地域を育て、地域がまた新たな人を育てる。そうした「人と地域と音楽」の好循環を築いていくことを目指す。</p>
+            <p>特に、団内で育った子どもたちが、やがて後輩を支えたり地域で活躍する存在となるような、持続可能な成長と継承の仕組みを重視する。</p>
+            <p>吹奏楽を通じて以下の目的を実現することを目指す。</p>
+            <ul class="article-list">
+              <li>子どもから大人までが世代や立場を越えて交流・成長できる場の創出</li>
+              <li>地域に根ざした音楽文化の継承・発展</li>
+              <li>部活動の地域移行に対応した、教育・文化の新たな仕組みの構築</li>
+              <li>地域の人々がともに学び、支え合う、持続可能な地域社会の実現</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第3条</span>活動内容</div>
+          <div class="article-body">
+            <p>本団は、前条の目的を達成するため、以下の事業を行う。</p>
+            <ul class="article-list">
+              <li>吹奏楽の演奏活動（定期演奏会、地域イベント、依頼演奏等）</li>
+              <li>練習活動および技術向上のための研修・講習会の開催</li>
+              <li>学校や教育関係者と連携した音楽教育支援</li>
+              <li>地域との協働による文化振興活動（子育て支援、福祉・高齢者支援等含む）</li>
+              <li>団員相互の親睦・交流促進活動</li>
+              <li>その他、本団の目的を達成するために必要な活動</li>
+            </ul>
+            <div class="note">本団は政治的・宗教的な活動は一切行わず、反社会勢力等と一切関わりを持たない。</div>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第4条</span>拠点</div>
+          <div class="article-body">
+            <p>本団の主たる活動拠点は、<strong>東大阪文化創造館</strong>（大阪府東大阪市御厨南2丁目3−4）とする。必要に応じてその他市内公共施設等も利用する。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第2章 -->
+      <div class="chapter" id="ch2">
+        <div class="chapter-title">第2章　会員および構成</div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第5条</span>会員の種別</div>
+          <div class="article-body">
+            <p>本団の会員は、以下のとおり区分する。</p>
+            <ul class="article-list">
+              <li><strong>正会員：</strong>本団の目的に賛同し、継続的に演奏活動等に参加する個人</li>
+              <li><strong>学生会員：</strong>中学生・高校生で、保護者の同意のもと参加する個人</li>
+              <li><strong>ボランティア会員：</strong>演奏参加は任意だが、資金的・技術的支援などを通じて本団の活動を支援する個人または団体</li>
+              <li><strong>賛助会員：</strong>演奏にあたって足りないパートを補う必要がある場合に招聘する</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第6条</span>構成部門</div>
+          <div class="article-body">
+            <p>本団は以下の部門で構成される。</p>
+            <ul class="article-list">
+              <li>東大阪吹奏楽団（運営事務局）</li>
+              <li>ジュニアの部</li>
+              <li>ハイスクールの部</li>
+              <li>一般の部（大学生・社会人・保護者・地域住民等）</li>
+            </ul>
+            <p>運営事務局は各部門を横断的に支援・運営する統括機能を担う。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第7条</span>入会・退会</div>
+          <div class="article-body">
+            <ul class="article-list">
+              <li>入会希望者は、所定の申請フォームを提出し、代表および本部の承認を得ることとする</li>
+              <li>未成年者については保護者の同意を必要とし、活動にあたっては保護者との連携を重視する</li>
+              <li>学生会員の送迎・見守り等の運営サポートについては、保護者に協力を呼びかけるものとする。ただし強制ではなく、可能な範囲での協力とする</li>
+              <li>退会する場合は、指定フォームにより届出を行い、未納の会費等がある場合は精算を要する</li>
+              <li>会費の長期滞納や本団の秩序を著しく乱す行為があった場合、協議の上、退会または除名を勧告することがある</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第8条</span>団費</div>
+          <div class="article-body">
+            <p>団費は年度ごとに役員・本部が定め、総会の承認をもって確定する。</p>
+            <table class="fee-table">
+              <thead><tr><th>種別</th><th>金額</th><th>備考</th></tr></thead>
+              <tbody>
+                <tr><td>正会員</td><td>月額 ¥3,000</td><td></td></tr>
+                <tr><td>学生会員</td><td>月額 ¥1,500</td><td></td></tr>
+                <tr><td>ボランティア会員</td><td>月額 ¥1,000</td><td>任意</td></tr>
+                <tr><td>部活保険費（学生のみ）</td><td>年額 ¥800</td><td>入団時・毎年4月更新</td></tr>
+                <tr><td>演奏会費</td><td>¥5,000（都度）</td><td>主催演奏会実施時</td></tr>
+                <tr><td>指導テキスト（学生）</td><td>約 ¥2,000</td><td>入団時・所有時不要</td></tr>
+              </tbody>
+            </table>
+            <div class="note">指導を必要とする団員・学生は、指導料として別途指導代を徴収する場合がある。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第3章 -->
+      <div class="chapter" id="ch3">
+        <div class="chapter-title">第3章　ボランティア会員および協力者</div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第9条</span>ボランティア・賛助会員</div>
+          <div class="article-body">
+            <p>本団の活動に賛同し、演奏・指導・資金・物品・労力などの支援を行う個人または団体は、ボランティア会員・協力者として登録できる。</p>
+            <ul class="article-list">
+              <li>定期的な演奏活動は任意参加だが、演奏・指導・広報・運営支援などを通じて活動に関わることができる</li>
+              <li>会費（または寄付金）は任意とし、その金額・方法は本部が定める</li>
+              <li>議決権はないが、必要に応じ活動報告・意見交換の場を設ける</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第10条</span>指導者への謝礼</div>
+          <div class="article-body">
+            <p>演奏指導ボランティアへの謝礼は、本部が別途定める。謝礼は原則として感謝の意とし、過度な報酬を目的としない。謝礼支払いに必要な場合は、助成金・補助金を申請して充当する。</p>
+            <ul class="article-list">
+              <li>見守り・活動支援ボランティアへの謝礼はないが、年間表彰制度を設ける</li>
+              <li>活動証明書や推薦書の発行も希望者へ行う</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第4章 -->
+      <div class="chapter" id="ch4">
+        <div class="chapter-title">第4章　組織および運営体制</div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第11条</span>役員</div>
+          <div class="article-body">
+            <p>本団の運営にあたり、以下の役員を置く。役員の任期は1年とし、再任および兼任を妨げない。</p>
+            <p>【運営事務局】</p>
+            <ul class="article-list">
+              <li><strong>代表理事（1名）：</strong>本団体を代表し、対外的な責任と最終決定権を持つ</li>
+              <li><strong>副代表（1名）：</strong>代表を補佐し、代表不在時にその職務を代行する</li>
+              <li><strong>統括会計（1名）：</strong>全体の会費および収支の管理を担当する</li>
+              <li><strong>統括広報（1名）：</strong>対外的な情報発信・渉外業務を担当する</li>
+            </ul>
+            <p>【一般の部】</p>
+            <ul class="article-list">
+              <li><strong>団長（1名）・副団長（2名）</strong></li>
+            </ul>
+            <p>【学生の部（ジュニア・ハイスクール各選出）】</p>
+            <ul class="article-list">
+              <li><strong>部長（1名）・副部長（2名）</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第12条</span>委員会</div>
+          <div class="article-body">
+            <p>団の運営を支えるため以下の委員会を設置する。委員会は学生・一般問わず全会員が所属するものとし、各種ボランティア会員も任意で参加できる。</p>
+            <ul class="article-list">
+              <li>企画運営委員会：演奏会の企画・実施全般</li>
+              <li>会計委員会：団費の徴収・帳簿管理</li>
+              <li>広報委員会：媒体作成・集客・SNS運用・WEBサイト管理</li>
+              <li>蔵書委員会：楽譜・資料の管理</li>
+              <li>予約管理委員会：練習会場の予約・スケジュール管理</li>
+              <li>楽器管理委員会：打楽器・備品等の管理</li>
+              <li>安全サポート委員会：団員・学生の安全な活動支援</li>
+            </ul>
+            <div class="note">立ち上げ期および人員が少ない期間は、委員の兼務を認める。また状況に応じて委員会の統廃合・新設を行うことができる。可能な限りシステム・デジタルツールを活用し、特定個人への負担集中（属人化）を防ぐことを方針とする。</div>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第13条</span>役員・委員の解任</div>
+          <div class="article-body">
+            <p>役員または委員が以下のいずれかに該当する場合、代表および本部の協議により解任することができる。</p>
+            <ul class="article-list num">
+              <li>正当な理由なく職務を遂行しない場合</li>
+              <li>団の名誉または信用を著しく損なう行為があった場合</li>
+              <li>団員からの申し立てがあり、継続が困難と判断された場合</li>
+            </ul>
+            <p>解任にあたっては、本人に対して事前に弁明の機会を与え、代表・副代表・本部メンバーによる協議を経て、過半数の同意をもって行う。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第5章 -->
+      <div class="chapter" id="ch5">
+        <div class="chapter-title">第5章　会議および意思決定</div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第14条</span>総会</div>
+          <div class="article-body">
+            <p>本団は年に1回、定期総会を開催し、以下の事項を審議・決定する。</p>
+            <ul class="article-list num">
+              <li>事業計画および活動方針</li>
+              <li>収支予算および決算</li>
+              <li>役員の選任および解任</li>
+              <li>会則の改正に関する事項</li>
+              <li>その他、代表が必要と認めた事項</li>
+            </ul>
+            <p>総会の議決権は正会員に限り、出席者の過半数の賛成をもって議決する。</p>
+            <p>総会は代表の招集によって行う。ただし、<strong>正会員の過半数以上</strong>の要請があった場合には、臨時総会を開催するものとする。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第15条</span>会議の運営</div>
+          <div class="article-body">
+            <p>総会以外に、本団の運営に関する事項は役員会議（運営事務局・団長・副団長）にて審議・決定する。会議の記録は役員会が作成・保管し、必要に応じて団員に公開する。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第16条</span>規約の改正</div>
+          <div class="article-body">
+            <p>本定款の改正は、総会において正会員の過半数の同意をもって行う。緊急の場合は本部会議での暫定措置を行うことができ、次回総会での承認を要する。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第6章 -->
+      <div class="chapter" id="ch6">
+        <div class="chapter-title">第6章　会計および附則</div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第17条</span>会計年度</div>
+          <div class="article-body">
+            <p>本団の会計年度は、毎年4月1日から翌年3月31日までとする。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第18条</span>収入および支出</div>
+          <div class="article-body">
+            <p>本団の活動にかかる経費は、以下をもって充てる。</p>
+            <ul class="article-list num">
+              <li>会費</li>
+              <li>寄付金・賛助金</li>
+              <li>補助金・助成金等</li>
+              <li>演奏会収入その他の事業収入</li>
+            </ul>
+            <p>会計は収支状況を管理し、年1回総会で報告する。余剰金は翌年の積立金とする。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第19条</span>監査</div>
+          <div class="article-body">
+            <p>必要に応じて、団内または外部より監査担当を置くことができる。監査は会計処理の妥当性・使途の確認を行い、総会に報告する。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">第20条</span>団の解散</div>
+          <div class="article-body">
+            <p>団員数の著しい減少、運営困難、財政破綻その他やむを得ない理由により本団の継続が困難となった場合は、代表および本部の協議のうえ、総会にて団員の過半数の同意をもって解散することができる。解散時の残余財産については総会の議決により処理方法を定める。</p>
+          </div>
+        </div>
+
+        <div class="article">
+          <div class="article-title"><span class="article-num">附則</span></div>
+          <div class="article-body">
+            <ul class="article-list">
+              <li>本定款は、2026年4月1日より施行する</li>
+              <li>本定款の内容は、状況に応じて見直し・改定を行うことができる</li>
+              <li>本定款に定めのない事項については、代表・本部および関係者の協議により定める</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- RULEBOOK -->
+<section class="sec sec-bg" id="rulebook">
+  <div class="inner">
+    <div class="rulebook-wrap">
+      <div class="rulebook-header">
+        <p class="rulebook-eyebrow">Rulebook</p>
+        <h2 class="rulebook-title">行動規範・運営ルール</h2>
+        <p class="rulebook-desc">定款とは別に、日常の活動・コミュニティ運営に関する基本的なルールをまとめています。</p>
+      </div>
+      <div class="rulebook-note">
+        📝 このルールブックは定款の補足であり、状況に応じて随時更新します。団員の意見をもとに改善していきます。
+      </div>
+
+      <!-- 練習・活動マナー -->
+      <div class="rb-item">
+        <button class="rb-btn" onclick="toggleRb(this)">
+          <div class="rb-icon">📅</div>
+          <span class="rb-label">練習・活動マナー</span>
+          <span class="rb-arrow">▼</span>
+        </button>
+        <div class="rb-body">
+          <div class="rb-section">出欠・遅刻</div>
+          <ul>
+            <li>欠席・遅刻は前日までにLINEグループへ連絡する</li>
+            <li>やむを得ない当日欠席は、練習開始1時間前までに連絡する</li>
+            <li>無断欠席が続く場合は、状況確認のうえ対応を検討する</li>
+          </ul>
+          <div class="rb-section">練習中のマナー</div>
+          <ul>
+            <li>練習開始10分前には会場入りし、準備を整える</li>
+            <li>合奏中の私語・スマホ操作は控える</li>
+            <li>指揮者・指導者の指示に従い、わからない場合は終了後に確認する</li>
+            <li>会場の備品・楽器は丁寧に扱い、使用後は元の場所に戻す</li>
+          </ul>
+          <div class="rb-section">会場利用</div>
+          <ul>
+            <li>会場のルールを守り、近隣への配慮を忘れない</li>
+            <li>練習後は必ずゴミを持ち帰り、原状回復して退室する</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SNS・写真撮影ルール -->
+      <div class="rb-item">
+        <button class="rb-btn" onclick="toggleRb(this)">
+          <div class="rb-icon">📷</div>
+          <span class="rb-label">SNS・写真撮影ルール</span>
+          <span class="rb-arrow">▼</span>
+        </button>
+        <div class="rb-body">
+          <div class="rb-section">撮影・投稿の基本</div>
+          <ul>
+            <li>練習・イベントの写真・動画はSNS等に投稿してOK（積極的に発信歓迎！）</li>
+            <li>他の団員が映っている写真を投稿する際は、<strong>本人の了承</strong>を得る</li>
+            <li>未成年（学生）が映っている写真の投稿は、<strong>保護者の同意</strong>を確認する</li>
+            <li>顔が映らないよう配慮が必要な方は事前に申し出ること</li>
+          </ul>
+          <div class="rb-section">公式SNSへの投稿</div>
+          <ul>
+            <li>公式アカウントへの投稿は広報担当が行う</li>
+            <li>投稿内容に関する問い合わせ・クレームは代表または広報担当が対応する</li>
+            <li>団の名誉を損なう投稿・炎上につながりかねない投稿は禁止</li>
+          </ul>
+          <div class="rb-section">学生団員向け</div>
+          <ul>
+            <li>個人SNSでの活動発信は自由だが、個人情報（住所・学校名等）の掲載は禁止</li>
+            <li>不適切な投稿を発見した場合は速やかに代表・保護者に報告する</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ハラスメント防止・相談対応 -->
+      <div class="rb-item">
+        <button class="rb-btn" onclick="toggleRb(this)">
+          <div class="rb-icon">🤝</div>
+          <span class="rb-label">ハラスメント防止・相談対応</span>
+          <span class="rb-arrow">▼</span>
+        </button>
+        <div class="rb-body">
+          <div class="rb-section">基本方針</div>
+          <ul>
+            <li>本団はすべてのメンバーが安心して活動できる環境づくりを最優先とする</li>
+            <li>ハラスメント（パワハラ・セクハラ・モラハラ等）は一切認めない</li>
+            <li>年齢・経験・パートの違いによる差別的な扱いを禁止する</li>
+          </ul>
+          <div class="rb-section">相談窓口</div>
+          <ul>
+            <li>困ったこと・気になることは代表または副代表に相談する</li>
+            <li>相談内容は当事者の同意なく他の団員に開示しない</li>
+            <li>学生団員は保護者・学校の先生への相談も推奨する</li>
+          </ul>
+          <div class="rb-section">対応手順</div>
+          <ul>
+            <li>相談受付 → 代表・副代表で事実確認 → 当事者への対応 → 必要に応じて役員会議で審議</li>
+            <li>重大なケースは外部の相談機関への相談も検討する</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 備品・会場トラブル対応 -->
+      <div class="rb-item">
+        <button class="rb-btn" onclick="toggleRb(this)">
+          <div class="rb-icon">🔧</div>
+          <span class="rb-label">備品・トラブル対応</span>
+          <span class="rb-arrow">▼</span>
+        </button>
+        <div class="rb-body">
+          <div class="rb-section">備品の破損・紛失</div>
+          <ul>
+            <li>団の備品を破損・紛失した場合は、速やかに楽器管理委員または代表に報告する</li>
+            <li>故意または重大な過失による破損は、修理・弁償を求める場合がある</li>
+            <li>個人楽器の管理は自己責任とするが、団保管中のトラブルは別途協議する</li>
+          </ul>
+          <div class="rb-section">会場・練習中の事故</div>
+          <ul>
+            <li>ケガや体調不良は無理せず申し出る。安全サポート委員が対応する</li>
+            <li>救急対応が必要な場合は迷わず119番通報し、代表へ連絡する</li>
+            <li>学生団員のケガは保護者へ速やかに連絡する</li>
+          </ul>
+          <div class="rb-section">団員間のトラブル</div>
+          <ul>
+            <li>まず当事者同士で話し合いを試みる</li>
+            <li>解決が難しい場合は代表・副代表に相談し、第三者を交えた対話を行う</li>
+            <li>悪質なケースは役員会議にて審議・対応を決定する</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 学生団員・保護者向けルール -->
+      <div class="rb-item">
+        <button class="rb-btn" onclick="toggleRb(this)">
+          <div class="rb-icon">🎓</div>
+          <span class="rb-label">学生団員・保護者の方へ</span>
+          <span class="rb-arrow">▼</span>
+        </button>
+        <div class="rb-body">
+          <div class="rb-section">送迎・引き渡し</div>
+          <ul>
+            <li>練習終了後は速やかに保護者が迎えに来るか、安全な帰宅手段を確保する</li>
+            <li>やむを得ず遅れる場合は練習終了前に担当者へ連絡する</li>
+            <li>夜間・悪天候時の一人帰宅は原則禁止とする</li>
+          </ul>
+          <div class="rb-section">保護者との連携</div>
+          <ul>
+            <li>緊急連絡が必要な場合は登録の保護者連絡先に連絡する</li>
+            <li>学生の体調・状態で気になることがあれば保護者に情報共有する</li>
+            <li>保護者参加のサポートは強制ではなく、可能な範囲でお願いする</li>
+          </ul>
+          <div class="rb-section">学業優先</div>
+          <ul>
+            <li>定期試験・学校行事による欠席は最優先とし、事前に連絡する</li>
+            <li>学業・部活との両立を無理なく続けられる環境を大切にする</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rb-item" style="background:rgba(33,74,154,0.04);border-color:rgba(33,74,154,0.15);">
+        <div style="padding:1rem 1.2rem;font-size:0.78rem;color:var(--muted);line-height:1.8;">
+          最終更新：2026年4月1日　／　ご意見・改善提案は代表または広報担当までお知らせください。
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="inner">
+    <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
+    <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
+    <div class="footer-links">
+      <a href="/higasui/#about">団について</a><a href="/higasui/#features">団の特徴</a>
+      <a href="/higasui/join.html">練習案内</a><a href="/higasui/#recruit">募集情報</a>
+      <a href="/higasui/join.html#form">見学申込</a><a href="/higasui/faq.html">よくある質問</a>
+    </div>
+    <div class="footer-sns">
+      <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-youtube"><i class="fab fa-youtube"></i></a>
+      <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-line"><i class="fab fa-line"></i></a>
+    </div>
+    <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const ham=document.getElementById('ham-btn');
+const drawer=document.getElementById('site-drawer');
+ham.addEventListener('click',function(){
+  var o=drawer.classList.contains('open');
+  drawer.classList.toggle('open',!o);
+  document.body.style.overflow=o?'':'hidden';
+});
+function closeNav(){drawer.classList.remove('open');document.body.style.overflow='';}
+
+function toggleRb(btn){
+  var item=btn.closest('.rb-item');
+  var isOpen=item.classList.contains('open');
+  item.classList.toggle('open',!isOpen);
+}
+const st=document.getElementById('scrollTop');
+window.addEventListener('scroll',function(){st.classList.toggle('show',scrollY>400);});
+</script>
+</body>
+</html>
