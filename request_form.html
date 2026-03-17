@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>各種申請フォーム | 東大阪吹奏楽団</title>
+<meta name="description" content="東大阪吹奏楽団の団員向け各種申請フォーム。楽譜・楽器貸出、ワークショップ、イベント参加意向など。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;--white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;--green:#1D9E75;--purple:#6B4FB8;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:1000px;margin:0 auto;padding:0 1.5rem;width:100%;}
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+#ham-btn{width:44px;height:44px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+#ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
+#site-drawer{display:none;position:fixed;top:56px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{display:flex;align-items:center;gap:0.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;}
+#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:16px;border-radius:14px;font-weight:700;text-decoration:none;}
+.page-header{padding-top:56px;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(200,164,77,0.08);}
+.page-header-inner{position:relative;z-index:1;padding:3rem 1.5rem 3.5rem;max-width:1000px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.8rem;}
+.page-header p{font-size:0.9rem;color:rgba(255,255,255,0.72);line-height:1.9;}
+.breadcrumb{background:var(--white);padding:0.8rem 0;border-bottom:1px solid var(--border);}
+.breadcrumb-inner{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--muted);}
+.breadcrumb-inner a{color:var(--blue);text-decoration:none;}
+
+/* TABS */
+.tabs-wrap{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:56px;z-index:50;overflow-x:auto;}
+.tabs{display:flex;max-width:1000px;margin:0 auto;padding:0 1.5rem;min-width:max-content;}
+.tab-btn{padding:0.9rem 1rem;border:none;background:none;cursor:pointer;font-family:inherit;font-size:0.78rem;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;transition:all 0.2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.tab-btn:hover{color:var(--blue);}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+/* SECTIONS */
+.sec{padding:48px 0;}
+.sec-bg{background:var(--bg);}
+.form-section{display:none;}
+.form-section.active{display:block;}
+.eyebrow{font-family:'Outfit',sans-serif;font-size:0.63rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.h2{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,4vw,1.9rem);font-weight:700;line-height:1.35;margin-bottom:0.5rem;color:var(--navy);}
+.sec-lead{font-size:0.85rem;color:var(--muted);line-height:1.9;margin-bottom:1.5rem;}
+.notice{border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:0.82rem;line-height:1.8;}
+.notice-blue{background:rgba(33,74,154,0.06);border-left:3px solid var(--blue);color:var(--navy);}
+.notice-gold{background:rgba(200,164,77,0.08);border-left:3px solid var(--gold);color:#6B4E00;}
+
+/* FORM */
+.form-card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(33,74,154,0.1);border:1px solid var(--border);max-width:600px;}
+.form-head{padding:1.5rem;border-bottom:2px solid var(--gold);}
+.form-head-title{font-size:1.05rem;font-weight:700;color:white;margin-bottom:0.2rem;}
+.form-head-sub{font-size:0.75rem;color:rgba(255,255,255,0.65);}
+.c-blue{background:linear-gradient(135deg,var(--navy),var(--blue));}
+.c-green{background:linear-gradient(135deg,#1C4A3A,var(--green));}
+.c-gold{background:linear-gradient(135deg,#4A3A00,var(--gold));}
+.c-purple{background:linear-gradient(135deg,#2A1C4A,var(--purple));}
+.c-teal{background:linear-gradient(135deg,#0D3B3B,#0E8C8C);}
+.c-coral{background:linear-gradient(135deg,#4A1C1C,#C0392B);}
+.form-body{padding:1.5rem;}
+.fg{margin-bottom:1rem;}
+.fg label{display:block;font-size:0.73rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
+.fg label .req{color:var(--gold);margin-left:2px;}
+.fg label .opt{color:var(--muted);font-weight:400;margin-left:4px;font-size:0.68rem;}
+.fg input,.fg select,.fg textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem;font-family:inherit;background:var(--bg);outline:none;transition:border-color 0.2s;-webkit-appearance:none;color:var(--text);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);background:white;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.fg-section{margin:1.2rem 0 0.8rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}
+.fg-section-title{font-size:0.72rem;font-weight:800;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;}
+.btn-submit{width:100%;padding:15px;border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.2s;color:white;margin-top:0.5rem;}
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.b-blue{background:var(--blue);box-shadow:0 4px 16px rgba(33,74,154,0.3);}
+.b-green{background:var(--green);box-shadow:0 4px 16px rgba(29,158,117,0.3);}
+.b-gold{background:var(--gold);box-shadow:0 4px 16px rgba(200,164,77,0.35);}
+.b-purple{background:var(--purple);box-shadow:0 4px 16px rgba(107,79,184,0.3);}
+.b-teal{background:#0E8C8C;box-shadow:0 4px 16px rgba(14,140,140,0.3);}
+.b-coral{background:#C0392B;box-shadow:0 4px 16px rgba(192,57,43,0.3);}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.form-note{font-size:0.7rem;color:var(--muted);text-align:center;margin-top:0.8rem;line-height:1.6;}
+.err-box{display:none;background:#FFF0F0;border:1.5px solid #FFCCCC;border-radius:8px;padding:0.8rem;font-size:0.8rem;color:#C0392B;margin-bottom:1rem;}
+.ok-box{display:none;text-align:center;padding:2.5rem 1rem;}
+.ok-icon{font-size:3rem;margin-bottom:1rem;}
+.ok-title{font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;}
+.ok-text{font-size:0.85rem;color:var(--muted);line-height:1.8;}
+
+/* FOOTER */
+footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(200,164,77,0.2);}
+.footer-logo{margin-bottom:1rem;}
+.footer-logo img{height:36px;width:auto;filter:brightness(0) invert(1);opacity:0.8;}
+.footer-desc{font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.85;margin-bottom:1.5rem;max-width:500px;}
+.footer-links{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;margin-bottom:2rem;max-width:320px;}
+.footer-links a{color:rgba(255,255,255,0.55);text-decoration:none;font-size:0.8rem;padding:5px 0;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-sns{display:flex;gap:1rem;margin-bottom:2rem;}
+.footer-sns a{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;text-decoration:none;color:rgba(255,255,255,0.7);transition:background 0.2s,color 0.2s;}
+.footer-sns a.sns-instagram:hover{background:#E1306C;border-color:#E1306C;color:white;}
+.footer-sns a.sns-youtube:hover{background:#FF0000;border-color:#FF0000;color:white;}
+.footer-sns a.sns-line:hover{background:#06C755;border-color:#06C755;color:white;}
+.footer-copy{font-size:0.67rem;color:rgba(255,255,255,0.2);}
+.scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;z-index:50;width:42px;height:42px;border-radius:50%;background:var(--blue);color:white;border:2px solid var(--gold);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;box-shadow:0 4px 16px rgba(33,74,154,0.35);}
+.scroll-top.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<nav id="site-nav">
+  <div class="inner nav-inner">
+    <a href="/higasui/" id="nav-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></a>
+    <button id="ham-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div id="site-drawer">
+  <ul>
+    <li><a href="/higasui/#about" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="/higasui/#features" onclick="closeNav()">✨ 団の特徴</a></li>
+    <li><a href="/higasui/join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
+    <li><a href="/higasui/#recruit" onclick="closeNav()">🎺 募集情報</a></li>
+    <li><a href="/higasui/join.html#form" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="/higasui/faq.html" onclick="closeNav()">❓ よくある質問</a></li>
+  </ul>
+  <a href="/higasui/join.html#form" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+</div>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="page-eyebrow">Member Requests</p>
+    <h1>各種申請フォーム</h1>
+    <p>団員向けの各種申請はこちらから。送信後、担当者より折り返しご連絡します。</p>
+  </div>
+</div>
+<div class="breadcrumb">
+  <div class="inner breadcrumb-inner">
+    <a href="/higasui/">TOP</a><span>›</span><span>各種申請フォーム</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('loan',this)">📚 楽譜・楽器貸出</button>
+    <button class="tab-btn" onclick="switchTab('ws-join',this)">🎓 WS参加申請</button>
+    <button class="tab-btn" onclick="switchTab('ws-req',this)">💡 WS開催希望</button>
+    <button class="tab-btn" onclick="switchTab('event',this)">🎵 演奏会参加意向</button>
+    <button class="tab-btn" onclick="switchTab('purchase',this)">🛒 備品購入リクエスト</button>
+    <button class="tab-btn" onclick="switchTab('schedule',this)">📆 練習日程アンケート</button>
+  </div>
+</div>
+
+<!-- 楽譜・楽器貸出 -->
+<div class="form-section active sec sec-bg" id="tab-loan">
+  <div class="inner">
+    <div style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Loan Request</p>
+      <h2 class="h2">楽譜・楽器貸出申請</h2>
+      <p class="sec-lead">団所有の楽譜・楽器を外部団体や個人に貸し出す際の申請フォームです。承認後に貸出手続きを進めます。</p>
+    </div>
+    <div class="notice notice-gold">
+      ⚠️ 貸出は原則として団員からの申請のみ受け付けます。返却期限を必ず守ってください。楽器の破損・紛失は申請者の責任となります。
+    </div>
+    <div class="form-card">
+      <div class="form-head c-blue"><div class="form-head-title">📚 楽譜・楽器貸出申請</div><div class="form-head-sub">承認後、蔵書・楽器管理委員よりご連絡します</div></div>
+      <div class="form-body">
+        <div class="err-box" id="loanErr"></div>
+        <form id="loanForm">
+          <div class="fg-row">
+            <div class="fg"><label>申請者名<span class="req">*</span></label><input type="text" id="ln-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="ln-email" placeholder="example@gmail.com" required></div>
+          </div>
+          <div class="fg"><label>貸出種別<span class="req">*</span></label>
+            <select id="ln-type" required>
+              <option value="">選択してください</option>
+              <option value="楽譜">楽譜</option>
+              <option value="楽器">楽器</option>
+              <option value="楽譜・楽器両方">楽譜・楽器両方</option>
+            </select>
+          </div>
+          <div class="fg"><label>貸出先（団体名・氏名）<span class="req">*</span></label><input type="text" id="ln-to" placeholder="〇〇中学校吹奏楽部 / 個人利用" required></div>
+          <div class="fg"><label>貸出物の詳細<span class="req">*</span></label><textarea id="ln-items" rows="3" placeholder="楽譜：〇〇 第〇巻 ／ 楽器：スネアドラム 1台" required></textarea></div>
+          <div class="fg-row">
+            <div class="fg"><label>貸出開始希望日<span class="req">*</span></label><input type="date" id="ln-start" required></div>
+            <div class="fg"><label>返却予定日<span class="req">*</span></label><input type="date" id="ln-end" required></div>
+          </div>
+          <div class="fg"><label>使用目的・備考<span class="opt">任意</span></label><textarea id="ln-note" rows="2" placeholder="練習用 / 演奏会用 など"></textarea></div>
+          <button type="submit" class="btn-submit b-blue" id="ln-btn"><span id="ln-btn-text">貸出を申請する</span><div class="spinner" id="ln-sp"></div></button>
+          <p class="form-note">申請内容は自動で記録されます。担当者より折り返しご連絡します。</p>
+        </form>
+        <div class="ok-box" id="loanOk"><div class="ok-icon">📚</div><div class="ok-title">貸出申請を受け付けました</div><div class="ok-text">蔵書・楽器管理委員より確認後ご連絡します。<br>返却期限を必ずお守りください。<br><br>東大阪吹奏楽団</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WS参加申請 -->
+<div class="form-section sec sec-bg" id="tab-ws-join">
+  <div class="inner">
+    <div style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Workshop Entry</p>
+      <h2 class="h2">ワークショップ参加申請</h2>
+      <p class="sec-lead">外部指導者によるワークショップへの参加申請フォームです。開催のお知らせが届いたらこちらから申し込んでください。</p>
+    </div>
+    <div class="notice notice-blue">
+      ℹ️ ワークショップは希望者を募り有料で実施します。参加費は開催ごとに別途案内します。
+    </div>
+    <div class="form-card">
+      <div class="form-head c-green"><div class="form-head-title">🎓 ワークショップ参加申請</div><div class="form-head-sub">締切日までにお申し込みください</div></div>
+      <div class="form-body">
+        <div class="err-box" id="wsjErr"></div>
+        <form id="wsjForm">
+          <div class="fg-row">
+            <div class="fg"><label>お名前<span class="req">*</span></label><input type="text" id="wj-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>担当楽器<span class="req">*</span></label><input type="text" id="wj-inst" placeholder="トランペット" required></div>
+          </div>
+          <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="wj-email" placeholder="example@gmail.com" required></div>
+          <div class="fg"><label>参加希望のワークショップ<span class="req">*</span></label><input type="text" id="wj-ws" placeholder="〇月〇日 金管ワークショップ" required></div>
+          <div class="fg"><label>参加目的・質問したいこと<span class="opt">任意</span></label><textarea id="wj-note" rows="3" placeholder="音色改善 / ブレスの使い方を学びたい など"></textarea></div>
+          <div class="fg"><label>未成年の場合：保護者同意<span class="opt">未成年のみ</span></label>
+            <select id="wj-parent">
+              <option value="該当なし（成人）">該当なし（成人）</option>
+              <option value="保護者同意済み">保護者同意済み</option>
+              <option value="保護者に確認中">保護者に確認中</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit b-green" id="wj-btn"><span id="wj-btn-text">参加を申請する</span><div class="spinner" id="wj-sp"></div></button>
+          <p class="form-note">申請内容は自動で記録されます。企画運営委員より折り返しご連絡します。</p>
+        </form>
+        <div class="ok-box" id="wsjOk"><div class="ok-icon">🎓</div><div class="ok-title">参加申請を受け付けました！</div><div class="ok-text">企画運営委員より詳細をご連絡します。<br>当日よろしくお願いします！<br><br>東大阪吹奏楽団</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WS開催希望 -->
+<div class="form-section sec sec-bg" id="tab-ws-req">
+  <div class="inner">
+    <div style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Workshop Request</p>
+      <h2 class="h2">ワークショップ開催希望申請</h2>
+      <p class="sec-lead">「こんな練習がしたい」「この分野を強化したい」というリクエストを受け付けます。集まった希望をもとに企画します。</p>
+    </div>
+    <div class="form-card">
+      <div class="form-head c-gold"><div class="form-head-title">💡 ワークショップ開催希望</div><div class="form-head-sub">みんなの声から企画します！</div></div>
+      <div class="form-body">
+        <div class="err-box" id="wsrErr"></div>
+        <form id="wsrForm">
+          <div class="fg-row">
+            <div class="fg"><label>お名前<span class="req">*</span></label><input type="text" id="wr-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>担当楽器<span class="req">*</span></label><input type="text" id="wr-inst" placeholder="トランペット" required></div>
+          </div>
+          <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="wr-email" placeholder="example@gmail.com" required></div>
+          <div class="fg"><label>希望するワークショップの内容<span class="req">*</span></label><textarea id="wr-content" rows="3" placeholder="金管楽器の音色改善 / アンサンブルの基礎 / マーチングの基礎 など" required></textarea></div>
+          <div class="fg"><label>対象パート・レベル<span class="opt">任意</span></label><input type="text" id="wr-target" placeholder="全パート / 木管のみ / 初心者向け など"></div>
+          <div class="fg"><label>希望の時期<span class="opt">任意</span></label><input type="text" id="wr-timing" placeholder="〇月ごろ / 定期演奏会前 など"></div>
+          <div class="fg"><label>その他・要望<span class="opt">任意</span></label><textarea id="wr-note" rows="2" placeholder="具体的な指導者のイメージや、こんな形式がいいなど"></textarea></div>
+          <button type="submit" class="btn-submit b-gold" id="wr-btn"><span id="wr-btn-text">リクエストを送る</span><div class="spinner" id="wr-sp"></div></button>
+          <p class="form-note">申請内容は企画運営委員が確認します。複数の希望が集まった内容から優先的に企画します。</p>
+        </form>
+        <div class="ok-box" id="wsrOk"><div class="ok-icon">💡</div><div class="ok-title">リクエストを受け付けました！</div><div class="ok-text">ありがとうございます！<br>集まった希望をもとに企画検討します。<br><br>東大阪吹奏楽団</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 演奏会参加意向 -->
+<div class="form-section sec sec-bg" id="tab-event">
+  <div class="inner">
+    <div style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Event Entry</p>
+      <h2 class="h2">演奏会・イベント参加意向申請</h2>
+      <p class="sec-lead">演奏会やイベントへの参加意向を事前に申請してください。スケジュール調整・編成決定に活用します。</p>
+    </div>
+    <div class="notice notice-blue">
+      ℹ️ 参加意向の申請はキャンセルを確約するものではありません。変更が生じた場合は速やかに担当者へご連絡ください。
+    </div>
+    <div class="form-card">
+      <div class="form-head c-purple"><div class="form-head-title">🎵 演奏会・イベント参加意向</div><div class="form-head-sub">締切日までにお申し込みください</div></div>
+      <div class="form-body">
+        <div class="err-box" id="evErr"></div>
+        <form id="evForm">
+          <div class="fg-row">
+            <div class="fg"><label>お名前<span class="req">*</span></label><input type="text" id="ev-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>担当楽器<span class="req">*</span></label><input type="text" id="ev-inst" placeholder="トランペット" required></div>
+          </div>
+          <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="ev-email" placeholder="example@gmail.com" required></div>
+          <div class="fg"><label>対象の演奏会・イベント名<span class="req">*</span></label><input type="text" id="ev-name2" placeholder="第一回定期演奏会 / 〇〇まつり など" required></div>
+          <div class="fg"><label>参加意向<span class="req">*</span></label>
+            <select id="ev-intent" required>
+              <option value="">選択してください</option>
+              <option value="参加する">参加する</option>
+              <option value="参加できない">参加できない</option>
+              <option value="検討中">検討中（後日回答）</option>
+            </select>
+          </div>
+          <div class="fg"><label>備考・コメント<span class="opt">任意</span></label><textarea id="ev-note" rows="2" placeholder="当日の到着時間 / 参加できない理由 / 検討中の場合は回答期限 など"></textarea></div>
+          <button type="submit" class="btn-submit b-purple" id="ev-btn"><span id="ev-btn-text">意向を送信する</span><div class="spinner" id="ev-sp"></div></button>
+          <p class="form-note">申請内容は自動で記録されます。企画運営委員より確認後ご連絡します。</p>
+        </form>
+        <div class="ok-box" id="evOk"><div class="ok-icon">🎵</div><div class="ok-title">参加意向を受け付けました！</div><div class="ok-text">ありがとうございます。<br>詳細が決まり次第ご連絡します。<br><br>東大阪吹奏楽団</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 備品購入リクエスト -->
+<div class="form-section sec sec-bg" id="tab-purchase">
+  <div class="inner">
+    <div style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Purchase Request</p>
+      <h2 class="h2">備品購入リクエスト</h2>
+      <p class="sec-lead">「これがあると練習が捗る！」という備品の購入リクエストはこちらから。役員会議で検討します。</p>
+    </div>
+    <div class="form-card">
+      <div class="form-head c-teal"><div class="form-head-title">🛒 備品購入リクエスト</div><div class="form-head-sub">役員会議で検討後、回答します</div></div>
+      <div class="form-body">
+        <div class="err-box" id="puErr"></div>
+        <form id="puForm">
+          <div class="fg-row">
+            <div class="fg"><label>申請者名<span class="req">*</span></label><input type="text" id="pu-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="pu-email" placeholder="example@gmail.com" required></div>
+          </div>
+          <div class="fg"><label>購入希望品目<span class="req">*</span></label><input type="text" id="pu-item" placeholder="折りたたみ椅子 10脚 / チューナー 2台 など" required></div>
+          <div class="fg"><label>参考価格・購入先<span class="opt">任意</span></label><input type="text" id="pu-price" placeholder="約5,000円 / Amazon など"></div>
+          <div class="fg"><label>必要な理由・用途<span class="req">*</span></label><textarea id="pu-reason" rows="3" placeholder="現在の椅子が足りず毎回借りている / 全員分のチューナーがなく困っている など" required></textarea></div>
+          <div class="fg"><label>緊急度<span class="req">*</span></label>
+            <select id="pu-urgency" required>
+              <option value="">選択してください</option>
+              <option value="高い（演奏会・イベント前に必要）">高い（演奏会・イベント前に必要）</option>
+              <option value="普通（あれば助かる）">普通（あれば助かる）</option>
+              <option value="低い（余裕があれば）">低い（余裕があれば）</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit b-teal" id="pu-btn"><span id="pu-btn-text">リクエストを送る</span><div class="spinner" id="pu-sp"></div></button>
+          <p class="form-note">申請内容は役員会議で検討します。予算状況により対応できない場合もあります。</p>
+        </form>
+        <div class="ok-box" id="puOk"><div class="ok-icon">🛒</div><div class="ok-title">購入リクエストを受け付けました！</div><div class="ok-text">役員会議で検討後、回答します。<br>ありがとうございます！<br><br>東大阪吹奏楽団</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 練習日程アンケート -->
+<div class="form-section sec sec-bg" id="tab-schedule">
+  <div class="inner">
+    <div style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Schedule Survey</p>
+      <h2 class="h2">来月の練習希望日程アンケート</h2>
+      <p class="sec-lead">来月の練習日程を決めるためのアンケートです。参加できる曜日・日程をお知らせください。毎月月末ごろに配信します。</p>
+    </div>
+    <div class="notice notice-blue">
+      ℹ️ 回答をもとに予約管理委員が会場を予約します。締切日までにご回答ください。
+    </div>
+    <div class="form-card">
+      <div class="form-head c-coral"><div class="form-head-title">📆 練習日程アンケート</div><div class="form-head-sub">締切日までにご回答ください</div></div>
+      <div class="form-body">
+        <div class="err-box" id="scErr"></div>
+        <form id="scForm">
+          <div class="fg-row">
+            <div class="fg"><label>お名前<span class="req">*</span></label><input type="text" id="sc-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="sc-email" placeholder="example@gmail.com" required></div>
+          </div>
+          <div class="fg"><label>対象月<span class="req">*</span></label>
+            <select id="sc-month" required>
+              <option value="">選択してください</option>
+              <option>1月</option><option>2月</option><option>3月</option><option>4月</option>
+              <option>5月</option><option>6月</option><option>7月</option><option>8月</option>
+              <option>9月</option><option>10月</option><option>11月</option><option>12月</option>
+            </select>
+          </div>
+          <div class="fg"><label>参加できる土曜日の日付<span class="req">*</span></label><textarea id="sc-dates" rows="3" placeholder="第1土曜（〇日）○&#10;第2土曜（〇日）×&#10;第3土曜（〇日）△（午後から可）&#10;第4土曜（〇日）○" required></textarea></div>
+          <div class="fg"><label>日曜参加の可否<span class="req">*</span></label>
+            <select id="sc-sun" required>
+              <option value="">選択してください</option>
+              <option value="土曜が無理な時は日曜OK">土曜が無理な時は日曜OK</option>
+              <option value="日曜は参加できない">日曜は参加できない</option>
+              <option value="日曜の方が参加しやすい">日曜の方が参加しやすい</option>
+            </select>
+          </div>
+          <div class="fg"><label>備考・コメント<span class="opt">任意</span></label><textarea id="sc-note" rows="2" placeholder="午前のみ参加可 / この日は絶対参加したい など"></textarea></div>
+          <button type="submit" class="btn-submit b-coral" id="sc-btn"><span id="sc-btn-text">回答を送信する</span><div class="spinner" id="sc-sp"></div></button>
+          <p class="form-note">回答内容は自動で記録されます。日程決定後、LINEにてお知らせします。</p>
+        </form>
+        <div class="ok-box" id="scOk"><div class="ok-icon">📆</div><div class="ok-title">回答ありがとうございます！</div><div class="ok-text">日程が決まり次第LINEでお知らせします。<br>よろしくお願いします！<br><br>東大阪吹奏楽団</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
+    <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
+    <div class="footer-links">
+      <a href="/higasui/#about">団について</a><a href="/higasui/#features">団の特徴</a>
+      <a href="/higasui/join.html">練習案内</a><a href="/higasui/#recruit">募集情報</a>
+      <a href="/higasui/join.html#form">見学申込</a><a href="/higasui/faq.html">よくある質問</a>
+    </div>
+    <div class="footer-sns">
+      <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-youtube"><i class="fab fa-youtube"></i></a>
+      <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-line"><i class="fab fa-line"></i></a>
+    </div>
+    <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+  </div>
+</footer>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const GAS='https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
+const ham=document.getElementById('ham-btn');
+const drawer=document.getElementById('site-drawer');
+ham.addEventListener('click',function(){var o=drawer.classList.contains('open');drawer.classList.toggle('open',!o);document.body.style.overflow=o?'':'hidden';});
+function closeNav(){drawer.classList.remove('open');document.body.style.overflow='';}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.form-section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function send(type,fields,ids){
+  var err=document.getElementById(ids.err);
+  err.style.display='none';
+  var ok=true;
+  fields.forEach(function(f){if(f.req&&!f.val)ok=false;});
+  if(!ok){err.textContent='※ 必須項目をすべて入力してください。';err.style.display='block';return;}
+  var btn=document.getElementById(ids.btn);
+  btn.disabled=true;
+  document.getElementById(ids.txt).textContent='送信中...';
+  document.getElementById(ids.sp).style.display='block';
+  var fd=new FormData();
+  fd.append('type',type);
+  fields.forEach(function(f){fd.append(f.k,f.val);});
+  fetch(GAS,{method:'POST',mode:'no-cors',body:fd})
+    .then(function(){document.getElementById(ids.form).style.display='none';document.getElementById(ids.ok).style.display='block';})
+    .catch(function(){err.textContent='送信に失敗しました。時間をおいて再度お試しください。';err.style.display='block';btn.disabled=false;document.getElementById(ids.txt).textContent=ids.label;document.getElementById(ids.sp).style.display='none';});
+}
+
+// 楽譜・楽器貸出
+document.getElementById('loanForm').addEventListener('submit',function(e){e.preventDefault();send('loan',[
+  {k:'name',val:document.getElementById('ln-name').value.trim(),req:true},
+  {k:'email',val:document.getElementById('ln-email').value.trim(),req:true},
+  {k:'loan_type',val:document.getElementById('ln-type').value,req:true},
+  {k:'loan_to',val:document.getElementById('ln-to').value.trim(),req:true},
+  {k:'items',val:document.getElementById('ln-items').value.trim(),req:true},
+  {k:'start_date',val:document.getElementById('ln-start').value,req:true},
+  {k:'end_date',val:document.getElementById('ln-end').value,req:true},
+  {k:'note',val:document.getElementById('ln-note').value.trim(),req:false}
+],{btn:'ln-btn',sp:'ln-sp',txt:'ln-btn-text',err:'loanErr',form:'loanForm',ok:'loanOk',label:'貸出を申請する'});});
+
+// WS参加
+document.getElementById('wsjForm').addEventListener('submit',function(e){e.preventDefault();send('ws_join',[
+  {k:'name',val:document.getElementById('wj-name').value.trim(),req:true},
+  {k:'instrument',val:document.getElementById('wj-inst').value.trim(),req:true},
+  {k:'email',val:document.getElementById('wj-email').value.trim(),req:true},
+  {k:'workshop',val:document.getElementById('wj-ws').value.trim(),req:true},
+  {k:'note',val:document.getElementById('wj-note').value.trim(),req:false},
+  {k:'parent',val:document.getElementById('wj-parent').value,req:false}
+],{btn:'wj-btn',sp:'wj-sp',txt:'wj-btn-text',err:'wsjErr',form:'wsjForm',ok:'wsjOk',label:'参加を申請する'});});
+
+// WS開催希望
+document.getElementById('wsrForm').addEventListener('submit',function(e){e.preventDefault();send('ws_request',[
+  {k:'name',val:document.getElementById('wr-name').value.trim(),req:true},
+  {k:'instrument',val:document.getElementById('wr-inst').value.trim(),req:true},
+  {k:'email',val:document.getElementById('wr-email').value.trim(),req:true},
+  {k:'content',val:document.getElementById('wr-content').value.trim(),req:true},
+  {k:'target',val:document.getElementById('wr-target').value.trim(),req:false},
+  {k:'timing',val:document.getElementById('wr-timing').value.trim(),req:false},
+  {k:'note',val:document.getElementById('wr-note').value.trim(),req:false}
+],{btn:'wr-btn',sp:'wr-sp',txt:'wr-btn-text',err:'wsrErr',form:'wsrForm',ok:'wsrOk',label:'リクエストを送る'});});
+
+// 演奏会参加意向
+document.getElementById('evForm').addEventListener('submit',function(e){e.preventDefault();send('event_intent',[
+  {k:'name',val:document.getElementById('ev-name').value.trim(),req:true},
+  {k:'instrument',val:document.getElementById('ev-inst').value.trim(),req:true},
+  {k:'email',val:document.getElementById('ev-email').value.trim(),req:true},
+  {k:'event_name',val:document.getElementById('ev-name2').value.trim(),req:true},
+  {k:'intent',val:document.getElementById('ev-intent').value,req:true},
+  {k:'note',val:document.getElementById('ev-note').value.trim(),req:false}
+],{btn:'ev-btn',sp:'ev-sp',txt:'ev-btn-text',err:'evErr',form:'evForm',ok:'evOk',label:'意向を送信する'});});
+
+// 備品購入
+document.getElementById('puForm').addEventListener('submit',function(e){e.preventDefault();send('purchase',[
+  {k:'name',val:document.getElementById('pu-name').value.trim(),req:true},
+  {k:'email',val:document.getElementById('pu-email').value.trim(),req:true},
+  {k:'item',val:document.getElementById('pu-item').value.trim(),req:true},
+  {k:'price',val:document.getElementById('pu-price').value.trim(),req:false},
+  {k:'reason',val:document.getElementById('pu-reason').value.trim(),req:true},
+  {k:'urgency',val:document.getElementById('pu-urgency').value,req:true}
+],{btn:'pu-btn',sp:'pu-sp',txt:'pu-btn-text',err:'puErr',form:'puForm',ok:'puOk',label:'リクエストを送る'});});
+
+// 練習日程アンケート
+document.getElementById('scForm').addEventListener('submit',function(e){e.preventDefault();send('schedule',[
+  {k:'name',val:document.getElementById('sc-name').value.trim(),req:true},
+  {k:'email',val:document.getElementById('sc-email').value.trim(),req:true},
+  {k:'month',val:document.getElementById('sc-month').value,req:true},
+  {k:'dates',val:document.getElementById('sc-dates').value.trim(),req:true},
+  {k:'sunday',val:document.getElementById('sc-sun').value,req:true},
+  {k:'note',val:document.getElementById('sc-note').value.trim(),req:false}
+],{btn:'sc-btn',sp:'sc-sp',txt:'sc-btn-text',err:'scErr',form:'scForm',ok:'scOk',label:'回答を送信する'});});
+
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e,i){if(e.isIntersecting)setTimeout(function(){e.target.classList.add('visible');},i*80);});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+var st=document.getElementById('scrollTop');
+window.addEventListener('scroll',function(){st.classList.toggle('show',scrollY>400);});
+</script>
+</body>
+</html>
