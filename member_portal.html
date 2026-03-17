@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メンバーポータル | 東大阪吹奏楽団</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
+
+/* ===== ロック画面 ===== */
+#lock-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;
+}
+.lock-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(200,164,77,0.3);
+  border-radius:24px;padding:2.5rem 2rem;
+  width:100%;max-width:400px;text-align:center;
+  backdrop-filter:blur(12px);
+}
+.lock-logo{margin-bottom:1.5rem;}
+.lock-logo img{height:36px;filter:brightness(0) invert(1);opacity:0.9;}
+.lock-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:0.6rem;
+}
+.lock-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.3rem;font-weight:700;color:white;margin-bottom:0.4rem;
+}
+.lock-sub{font-size:0.78rem;color:rgba(255,255,255,0.55);margin-bottom:2rem;line-height:1.7;}
+.lock-input-wrap{position:relative;margin-bottom:1rem;}
+.lock-input{
+  width:100%;padding:14px 48px 14px 16px;
+  background:rgba(255,255,255,0.08);
+  border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:12px;color:white;font-size:1rem;font-family:inherit;
+  outline:none;transition:border-color 0.2s;letter-spacing:0.15em;
+  text-align:center;
+}
+.lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
+.lock-input:focus{border-color:var(--gold);}
+.lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.eye-btn{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;
+}
+.lock-btn{
+  width:100%;padding:15px;background:var(--gold);color:white;
+  border:none;border-radius:12px;font-size:1rem;font-weight:700;
+  font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 16px rgba(200,164,77,0.35);
+  transition:background 0.2s,transform 0.15s;
+}
+.lock-btn:hover{background:var(--goldhv);transform:translateY(-1px);}
+.lock-err{
+  font-size:0.78rem;color:#F08080;margin-top:0.8rem;
+  min-height:1.2em;
+}
+.lock-note{font-size:0.68rem;color:rgba(255,255,255,0.25);margin-top:1.5rem;line-height:1.7;}
+
+/* ===== NAV ===== */
+#site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;
+  background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(200,164,77,0.25);
+}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+.nav-member-badge{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.15em;text-transform:uppercase;
+  background:rgba(200,164,77,0.2);color:var(--gold);
+  padding:4px 10px;border-radius:20px;border:1px solid rgba(200,164,77,0.3);
+}
+.nav-logout{
+  background:none;border:none;cursor:pointer;
+  font-size:0.75rem;color:rgba(255,255,255,0.45);
+  font-family:inherit;padding:6px 10px;border-radius:8px;
+  transition:color 0.2s;
+}
+.nav-logout:hover{color:rgba(255,255,255,0.8);}
+
+/* ===== MAIN ===== */
+#portal-main{display:none;padding-top:56px;}
+
+.page-header{
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  position:relative;overflow:hidden;
+}
+.page-header::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:300px;height:300px;border-radius:50%;background:rgba(200,164,77,0.08);
+}
+.page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1000px;margin:0 auto;}
+.page-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;
+}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;color:white;
+  line-height:1.3;margin-bottom:0.5rem;
+}
+.page-header p{font-size:0.85rem;color:rgba(255,255,255,0.65);line-height:1.8;}
+
+/* ===== SECTION ===== */
+.sec{padding:48px 0;}
+.sec-bg{background:var(--bg);}
+.inner{max-width:1000px;margin:0 auto;padding:0 1.5rem;width:100%;}
+
+.sec-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.63rem;font-weight:800;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);
+  display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;
+}
+.sec-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.sec-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.2rem,3vw,1.6rem);font-weight:700;color:var(--navy);
+  margin-bottom:1.5rem;
+}
+
+/* ===== PORTAL GRID ===== */
+.portal-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;
+}
+@media(min-width:640px){.portal-grid{grid-template-columns:repeat(3,1fr);}}
+
+.portal-card{
+  background:var(--white);border-radius:18px;
+  border:1px solid var(--border);
+  padding:1.6rem 1.2rem;text-align:center;
+  text-decoration:none;color:var(--text);
+  box-shadow:0 2px 12px rgba(33,74,154,0.06);
+  transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;
+  display:flex;flex-direction:column;align-items:center;gap:0.8rem;
+  position:relative;overflow:hidden;
+}
+.portal-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 28px rgba(33,74,154,0.13);
+  border-color:rgba(33,74,154,0.2);
+}
+.portal-card.coming-soon{
+  opacity:0.55;pointer-events:none;cursor:default;
+}
+.portal-card-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+  flex-shrink:0;
+}
+.ic-blue{background:linear-gradient(135deg,rgba(33,74,154,0.12),rgba(33,74,154,0.06));}
+.ic-gold{background:linear-gradient(135deg,rgba(200,164,77,0.18),rgba(200,164,77,0.08));}
+.ic-green{background:linear-gradient(135deg,rgba(29,158,117,0.14),rgba(29,158,117,0.06));}
+.ic-muted{background:rgba(200,200,210,0.15);}
+.portal-card-title{font-size:0.9rem;font-weight:700;color:var(--navy);}
+.portal-card-desc{font-size:0.73rem;color:var(--muted);line-height:1.6;}
+.cs-badge{
+  position:absolute;top:10px;right:10px;
+  font-family:'Outfit',sans-serif;font-size:0.52rem;font-weight:800;
+  letter-spacing:0.1em;text-transform:uppercase;
+  background:var(--bg);color:var(--muted);
+  padding:2px 8px;border-radius:10px;border:1px solid var(--border);
+}
+.portal-card-arrow{
+  font-size:0.75rem;color:rgba(33,74,154,0.4);margin-top:auto;
+}
+
+/* ===== INFO BOX ===== */
+.info-box{
+  background:rgba(33,74,154,0.05);border-radius:14px;
+  padding:1.2rem 1.4rem;border-left:3px solid var(--blue);
+  font-size:0.82rem;color:var(--muted);line-height:1.85;
+}
+.info-box strong{color:var(--navy);}
+.info-box a{color:var(--blue);text-decoration:none;}
+.info-box a:hover{text-decoration:underline;}
+
+/* ===== FOOTER ===== */
+footer{background:var(--navy);padding:2rem 0 1.5rem;}
+.footer-logo{margin-bottom:0.6rem;}
+.footer-logo img{height:26px;filter:brightness(0) invert(1);opacity:0.7;}
+.footer-copy{font-size:0.67rem;color:rgba(255,255,255,0.2);}
+
+/* ===== UTILS ===== */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity 0.55s ease,transform 0.55s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ===== ロック画面 ===== -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-logo">
+      <img src="/higasui/higasui.svg" alt="東大阪吹奏楽団">
+    </div>
+    <p class="lock-eyebrow">Member Portal</p>
+    <h1 class="lock-title">メンバーポータル</h1>
+    <p class="lock-sub">団員専用ページです。<br>パスワードを入力してください。</p>
+    <div class="lock-input-wrap">
+      <input type="password" id="pw-input" class="lock-input"
+             placeholder="パスワードを入力" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')unlock()">
+      <button class="eye-btn" onclick="togglePw()" id="eye-btn">
+        <i class="fas fa-eye" id="eye-icon"></i>
+      </button>
+    </div>
+    <button class="lock-btn" onclick="unlock()">入室する</button>
+    <p class="lock-err" id="lock-err"></p>
+    <p class="lock-note">
+      パスワードは練習時または代表・GMより共有されます。<br>
+      不明な場合は <a href="mailto:higashiosaka.winds@gmail.com" style="color:rgba(255,255,255,0.4);">higashiosaka.winds@gmail.com</a> までご連絡ください。
+    </p>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="site-nav" style="display:none;">
+  <div class="inner nav-inner">
+    <a href="/higasui/" id="nav-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></a>
+    <div style="display:flex;align-items:center;gap:0.8rem;">
+      <span class="nav-member-badge">Member</span>
+      <button class="nav-logout" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> ログアウト
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div id="portal-main">
+
+  <div class="page-header">
+    <div class="page-header-inner">
+      <p class="page-eyebrow">Member Portal</p>
+      <h1>メンバーポータル</h1>
+      <p>東大阪吹奏楽団 団員専用ページです。各種申請・お知らせはこちらから。</p>
+    </div>
+  </div>
+
+  <!-- 申請・手続き -->
+  <section class="sec sec-bg">
+    <div class="inner">
+      <div class="reveal">
+        <p class="sec-eyebrow">Applications</p>
+        <h2 class="sec-title">申請・手続き</h2>
+      </div>
+      <div class="portal-grid reveal">
+
+        <a href="/higasui/member_form.html" class="portal-card">
+          <div class="portal-card-icon ic-blue">📝</div>
+          <div class="portal-card-title">入退団・休団申請</div>
+          <div class="portal-card-desc">入団・休団・復団・退団の各種手続き</div>
+          <span class="portal-card-arrow">→</span>
+        </a>
+
+        <a href="/higasui/request_form.html" class="portal-card">
+          <div class="portal-card-icon ic-blue">📋</div>
+          <div class="portal-card-title">各種申請フォーム</div>
+          <div class="portal-card-desc">備品・施設・演奏会関連の申請</div>
+          <span class="portal-card-arrow">→</span>
+        </a>
+
+        <a href="#" class="portal-card coming-soon">
+          <span class="cs-badge">Coming Soon</span>
+          <div class="portal-card-icon ic-gold">💳</div>
+          <div class="portal-card-title">お支払い</div>
+          <div class="portal-card-desc">会費・演奏会費のお支払い</div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 団員情報・ツール -->
+  <section class="sec" style="background:var(--white);">
+    <div class="inner">
+      <div class="reveal">
+        <p class="sec-eyebrow">Tools</p>
+        <h2 class="sec-title">団員ツール</h2>
+      </div>
+      <div class="portal-grid reveal">
+
+        <a href="/higasui/join.html" class="portal-card">
+          <div class="portal-card-icon ic-green">📅</div>
+          <div class="portal-card-title">練習スケジュール</div>
+          <div class="portal-card-desc">練習日程・場所の確認</div>
+          <span class="portal-card-arrow">→</span>
+        </a>
+
+        <a href="/higasui/faq.html" class="portal-card">
+          <div class="portal-card-icon ic-blue">❓</div>
+          <div class="portal-card-title">よくある質問</div>
+          <div class="portal-card-desc">活動・費用・手続きのQ&A</div>
+          <span class="portal-card-arrow">→</span>
+        </a>
+
+        <a href="/higasui/yakkan.html" class="portal-card">
+          <div class="portal-card-icon ic-blue">📄</div>
+          <div class="portal-card-title">定款・ルール</div>
+          <div class="portal-card-desc">団の規約・ルールブック</div>
+          <span class="portal-card-arrow">→</span>
+        </a>
+
+        <a href="#" class="portal-card coming-soon">
+          <span class="cs-badge">Coming Soon</span>
+          <div class="portal-card-icon ic-muted">👥</div>
+          <div class="portal-card-title">係ページ</div>
+          <div class="portal-card-desc">各係の業務・引き継ぎ資料</div>
+        </a>
+
+        <a href="#" class="portal-card coming-soon">
+          <span class="cs-badge">Coming Soon</span>
+          <div class="portal-card-icon ic-muted">👤</div>
+          <div class="portal-card-title">マイページ</div>
+          <div class="portal-card-desc">自分の情報・申請履歴</div>
+        </a>
+
+        <a href="#" class="portal-card coming-soon">
+          <span class="cs-badge">Coming Soon</span>
+          <div class="portal-card-icon ic-muted">📁</div>
+          <div class="portal-card-title">団内ドキュメント</div>
+          <div class="portal-card-desc">楽譜・資料の共有</div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 連絡先 -->
+  <section class="sec sec-bg">
+    <div class="inner">
+      <div class="reveal">
+        <div class="info-box">
+          <strong>お困りのことは？</strong><br>
+          代表・GMへの連絡は <a href="mailto:higashiosaka.winds@gmail.com">higashiosaka.winds@gmail.com</a> または
+          <a href="https://line.me/ti/p/@798rjgoq" target="_blank">LINE公式アカウント</a> からどうぞ。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="inner">
+      <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
+      <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+    </div>
+  </footer>
+
+</div><!-- /portal-main -->
+
+<script>
+// ===== パスワード設定（ここを変更してください） =====
+const PORTAL_PASSWORD = 'higasui2025';
+// ====================================================
+
+const SESSION_KEY = 'higasui_portal_auth';
+
+function unlock() {
+  const input = document.getElementById('pw-input');
+  const err   = document.getElementById('lock-err');
+  const val   = input.value.trim();
+
+  if (!val) {
+    err.textContent = 'パスワードを入力してください';
+    return;
+  }
+  if (val === PORTAL_PASSWORD) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showPortal();
+  } else {
+    input.classList.add('error');
+    err.textContent = 'パスワードが違います';
+    setTimeout(() => input.classList.remove('error'), 400);
+    input.value = '';
+    input.focus();
+  }
+}
+
+function showPortal() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('site-nav').style.display = 'block';
+  document.getElementById('portal-main').style.display = 'block';
+  initReveal();
+}
+
+function logout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+function togglePw() {
+  const input = document.getElementById('pw-input');
+  const icon  = document.getElementById('eye-icon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'fas fa-eye-slash';
+  } else {
+    input.type = 'password';
+    icon.className = 'fas fa-eye';
+  }
+}
+
+// セッション維持（同じタブなら再入力不要）
+if (sessionStorage.getItem(SESSION_KEY)) {
+  showPortal();
+}
+
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+</script>
+</body>
+</html>
