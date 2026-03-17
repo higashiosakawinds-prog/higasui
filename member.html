@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>団員マイページ | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;--white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;--green:#1D9E75;--red:#C0392B;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:1000px;margin:0 auto;padding:0 1.5rem;width:100%;}
+
+/* NAV（既存サイトと共通） */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
+#nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.58rem;color:rgba(255,255,255,0.4);letter-spacing:.14em;font-weight:400;}
+#ham-btn{width:44px;height:44px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+#ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all .3s;}
+#site-drawer{display:none;position:fixed;top:56px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{display:flex;align-items:center;gap:.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;}
+#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:16px;border-radius:14px;font-weight:700;text-decoration:none;}
+
+/* PAGE HEADER */
+.page-header{padding-top:56px;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(200,164,77,0.08);}
+.page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1000px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.8rem;}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+
+/* LOADING / ERROR STATE */
+#stateLoading,#stateError{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;text-align:center;padding:40px 24px;}
+.spinner-lg{width:44px;height:44px;border:3px solid rgba(33,74,154,0.15);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* MEMBER CARD */
+.member-hero{display:flex;align-items:center;gap:18px;margin-bottom:2rem;}
+.member-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--navy));display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:#fff;flex-shrink:0;border:3px solid rgba(255,255,255,0.2);}
+.member-name{font-family:'Shippori Mincho',serif;font-size:1.6rem;font-weight:700;color:#fff;line-height:1.2;}
+.member-meta{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.meta-badge{padding:3px 10px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.06em;}
+.badge-member{background:rgba(200,164,77,.2);color:var(--gold);}
+.badge-part{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);}
+
+/* MAIN LAYOUT */
+.main-wrap{padding:32px 0 64px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+
+/* CARD */
+.card{background:var(--white);border-radius:20px;border:1px solid var(--border);box-shadow:0 4px 20px rgba(33,74,154,.07);overflow:hidden;}
+.card-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-head-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.card-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);}
+.card-head-sub{font-size:.72rem;color:var(--muted);margin-top:1px;}
+.card-body{padding:1.5rem;}
+
+/* FEE STATUS */
+.fee-status-wrap{display:flex;align-items:center;gap:16px;margin-bottom:1.2rem;}
+.fee-status-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.dot-ok{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.15);}
+.dot-warn{background:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.15);}
+.dot-ng{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.15);}
+.fee-status-label{font-size:1rem;font-weight:700;color:var(--navy);}
+.fee-status-sub{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.fee-history{display:flex;flex-direction:column;gap:8px;}
+.fee-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.82rem;}
+.fee-row:last-child{border-bottom:none;}
+.fee-month{color:var(--muted);}
+.fee-paid{color:#16a34a;font-weight:700;display:flex;align-items:center;gap:4px;}
+.fee-unpaid{color:var(--red);font-weight:700;}
+
+/* ATTEND HISTORY */
+.attend-list{display:flex;flex-direction:column;gap:6px;}
+.attend-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.82rem;}
+.attend-row:last-child{border-bottom:none;}
+.attend-date{color:var(--muted);flex-shrink:0;min-width:100px;}
+.attend-badge{padding:2px 10px;border-radius:20px;font-size:.68rem;font-weight:700;flex-shrink:0;}
+.ab-attend{background:#dcfce7;color:#15803d;}
+.ab-late{background:#fef9c3;color:#854d0e;}
+.ab-absent{background:#fee2e2;color:#991b1b;}
+.ab-none{background:var(--bg);color:var(--muted);}
+.attend-note{font-size:.75rem;color:var(--muted);flex:1;}
+
+/* QUICK LINKS */
+.quick-links{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.quick-link{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--bg);border:1px solid var(--border);text-decoration:none;color:var(--navy);font-size:.82rem;font-weight:500;transition:all .2s;}
+.quick-link:hover{background:#eef1fb;border-color:var(--blue);color:var(--blue);}
+.quick-link i{color:var(--blue);width:16px;text-align:center;}
+
+/* COMMITTEE SECTION */
+.committee-section{margin-top:32px;}
+.section-eyebrow{font-family:'Outfit',sans-serif;font-size:.63rem;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:.6rem;}
+.section-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.section-title{font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.section-lead{font-size:.85rem;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;}
+.committee-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+
+/* COMMITTEE CARD */
+.comm-card{background:var(--white);border-radius:16px;border:1.5px solid var(--border);overflow:hidden;transition:all .2s;position:relative;}
+.comm-card:hover{box-shadow:0 8px 32px rgba(33,74,154,.12);transform:translateY(-2px);}
+.comm-card.locked{opacity:.75;}
+.comm-card-head{padding:1.2rem 1.4rem 1rem;}
+.comm-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:.8rem;}
+.comm-name{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.25rem;}
+.comm-desc{font-size:.75rem;color:var(--muted);line-height:1.6;}
+.comm-tags{display:flex;gap:6px;flex-wrap:wrap;padding:0 1.4rem 1.2rem;}
+.comm-tag{font-size:.63rem;padding:2px 8px;border-radius:10px;background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+.comm-footer{padding:.9rem 1.4rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.comm-btn{padding:7px 16px;border-radius:8px;font-size:.78rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.comm-btn-open{background:var(--blue);color:#fff;}
+.comm-btn-open:hover{background:#1a3d85;}
+.comm-btn-locked{background:var(--bg);color:var(--muted);border:1px solid var(--border);cursor:default;}
+.comm-lock-badge{font-size:.68rem;color:var(--muted);display:flex;align-items:center;gap:4px;}
+
+/* COMMITTEE COLORS */
+.cc-planning  {background:rgba(33,74,154,.1);  color:var(--blue);}
+.cc-finance   {background:rgba(200,164,77,.12); color:#92680a;}
+.cc-pr        {background:rgba(139,82,160,.1);  color:#6b3fa8;}
+.cc-library   {background:rgba(29,158,117,.1);  color:#136b4e;}
+.cc-venue     {background:rgba(14,165,233,.1);  color:#0369a1;}
+.cc-equipment {background:rgba(239,68,68,.1);   color:#b91c1c;}
+.border-planning {border-color:rgba(33,74,154,.3);}
+.border-finance  {border-color:rgba(200,164,77,.3);}
+.border-pr       {border-color:rgba(139,82,160,.3);}
+.border-library  {border-color:rgba(29,158,117,.3);}
+.border-venue    {border-color:rgba(14,165,233,.3);}
+.border-equipment{border-color:rgba(239,68,68,.3);}
+
+/* MODAL（委員会ロック解除） */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,43,74,.7);z-index:2000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:20px;width:100%;max-width:400px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2);}
+.modal-head{padding:1.5rem;background:linear-gradient(135deg,var(--navy),var(--blue));}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:.25rem;}
+.modal-sub{font-size:.75rem;color:rgba(255,255,255,.6);}
+.modal-body{padding:1.5rem;}
+.modal-notice{background:rgba(33,74,154,.06);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:.9rem 1rem;font-size:.8rem;color:var(--navy);line-height:1.7;margin-bottom:1.2rem;}
+.modal-fg{margin-bottom:1rem;}
+.modal-fg label{display:block;font-size:.73rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.modal-fg input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.88rem;font-family:inherit;background:var(--bg);outline:none;transition:border-color .2s;}
+.modal-fg input:focus{border-color:var(--blue);background:#fff;}
+.modal-actions{display:flex;gap:10px;margin-top:1.2rem;}
+.btn-cancel{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;}
+.btn-cancel:hover{border-color:var(--navy);color:var(--navy);}
+.btn-unlock{flex:2;padding:12px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-unlock:hover{background:#1a3d85;}
+.modal-error{display:none;background:#fee2e2;border-radius:8px;padding:.7rem 1rem;font-size:.78rem;color:#991b1b;margin-top:.8rem;}
+.modal-error.show{display:block;}
+
+/* PANEL OVERLAY（委員会管理画面） */
+.panel-overlay{display:none;position:fixed;inset:0;z-index:1500;background:var(--bg);overflow-y:auto;}
+.panel-overlay.open{display:block;}
+.panel-nav{height:56px;background:var(--navy);display:flex;align-items:center;padding:0 1.5rem;gap:14px;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(200,164,77,.25);}
+.panel-back{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.panel-back:hover{background:rgba(255,255,255,.2);}
+.panel-nav-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.panel-nav-badge{margin-left:auto;padding:4px 12px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;background:rgba(200,164,77,.2);color:var(--gold);}
+.panel-body{max-width:1000px;margin:0 auto;padding:32px 1.5rem 64px;}
+
+/* PANEL: 汎用コンポーネント */
+.panel-section{margin-bottom:32px;}
+.ps-title{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.data-table th{background:var(--navy);color:#fff;padding:.7rem 1rem;text-align:left;font-weight:600;font-family:'Outfit',sans-serif;font-size:.72rem;letter-spacing:.05em;}
+.data-table td{padding:.8rem 1rem;border-bottom:1px solid var(--border);}
+.data-table tr:hover td{background:#f0f4ff;}
+.status-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.68rem;font-weight:700;}
+.sb-ok{background:#dcfce7;color:#15803d;}
+.sb-warn{background:#fef9c3;color:#854d0e;}
+.sb-ng{background:#fee2e2;color:#991b1b;}
+.sb-info{background:#dbeafe;color:#1d4ed8;}
+.action-row{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;}
+.btn-primary{padding:10px 20px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;}
+.btn-primary:hover{background:#1a3d85;}
+.btn-secondary{padding:10px 20px;background:none;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.82rem;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem;}
+.stat-card{background:#fff;border-radius:12px;padding:1rem 1.2rem;border:1px solid var(--border);}
+.stat-card-num{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;color:var(--blue);line-height:1;}
+.stat-card-label{font-size:.72rem;color:var(--muted);margin-top:4px;}
+.wip-note{background:#fff;border-radius:16px;border:1px solid var(--border);padding:40px;text-align:center;}
+.wip-icon{font-size:2rem;margin-bottom:12px;}
+.wip-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.wip-desc{font-size:.82rem;color:var(--muted);line-height:1.7;}
+
+/* FOOTER */
+footer{background:var(--navy);padding:32px 0;text-align:center;}
+footer p{font-family:'Outfit',sans-serif;font-size:.72rem;color:rgba(255,255,255,.35);letter-spacing:.05em;}
+
+/* UTILITY */
+.mt16{margin-top:16px;} .mt24{margin-top:24px;} .mt32{margin-top:32px;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="site-nav">
+  <div class="nav-inner inner">
+    <a id="nav-logo" href="./index.html">東大阪吹奏楽団<small>HIGASHIOSAKA WINDS</small></a>
+    <button id="ham-btn" onclick="toggleDrawer()" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div id="site-drawer">
+  <ul>
+    <li><a href="./index.html"><i class="fa-solid fa-house" style="width:18px"></i> トップ</a></li>
+    <li><a href="./join.html"><i class="fa-solid fa-music" style="width:18px"></i> 練習案内・入団</a></li>
+    <li><a href="./member_form.html"><i class="fa-solid fa-file-pen" style="width:18px"></i> 各種申請</a></li>
+  </ul>
+  <a class="btn" id="drawer-cta" href="./attendance.html">出欠回答はこちら</a>
+</div>
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header" id="pageHeader" style="display:none;">
+  <div class="page-header-inner">
+    <div class="page-eyebrow"><span>MEMBER PAGE</span></div>
+    <div class="member-hero">
+      <div class="member-avatar" id="avatarInitial">？</div>
+      <div>
+        <div class="member-name" id="headerName">―</div>
+        <div class="member-meta">
+          <span class="meta-badge badge-member" id="headerType">―</span>
+          <span class="meta-badge badge-part" id="headerPart">―</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LOADING ===== -->
+<div id="stateLoading">
+  <div class="spinner-lg"></div>
+  <p style="font-size:.85rem;color:var(--muted);">読み込み中…</p>
+</div>
+
+<!-- ===== ERROR ===== -->
+<div id="stateError" style="display:none;">
+  <div style="font-size:2.5rem;">🔗</div>
+  <div style="font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--red);">URLが無効です</div>
+  <p style="font-size:.85rem;color:var(--muted);line-height:1.7;max-width:320px;">このURLは使用できません。<br>LINEで受け取ったマイページURLをご確認ください。</p>
+  <a href="./index.html" style="margin-top:16px;color:var(--blue);font-size:.85rem;">トップページへ戻る</a>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="mainContent" style="display:none;">
+  <div class="main-wrap">
+    <div class="inner">
+
+      <!-- 2カラムグリッド：会費 + 出欠 -->
+      <div class="grid2">
+
+        <!-- 会費状況カード -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-icon" style="background:rgba(200,164,77,.12);color:var(--gold);"><i class="fa-solid fa-yen-sign"></i></div>
+            <div>
+              <div class="card-head-title">会費状況</div>
+              <div class="card-head-sub">直近3ヶ月</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="fee-status-wrap">
+              <div class="fee-status-dot" id="feeStatusDot"></div>
+              <div>
+                <div class="fee-status-label" id="feeStatusLabel">―</div>
+                <div class="fee-status-sub" id="feeStatusSub">―</div>
+              </div>
+            </div>
+            <div class="fee-history" id="feeHistory">
+              <div style="text-align:center;padding:20px 0;color:var(--muted);font-size:.82rem;">読み込み中…</div>
+            </div>
+            <div class="mt16">
+              <a id="stripePortalBtn" href="#" style="display:block;text-align:center;background:var(--gold);color:#fff;padding:10px;border-radius:10px;font-size:.82rem;font-weight:700;text-decoration:none;" onclick="openStripePortal(event)">
+                <i class="fa-solid fa-credit-card"></i> 支払い方法を管理
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 出欠履歴カード -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-calendar-check"></i></div>
+            <div>
+              <div class="card-head-title">出欠履歴</div>
+              <div class="card-head-sub">直近5回</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="attend-list" id="attendList">
+              <div style="text-align:center;padding:20px 0;color:var(--muted);font-size:.82rem;">読み込み中…</div>
+            </div>
+            <a href="./attendance.html" id="attendLink" style="display:block;margin-top:16px;text-align:center;background:var(--blue);color:#fff;padding:10px;border-radius:10px;font-size:.82rem;font-weight:700;text-decoration:none;">
+              <i class="fa-solid fa-check-circle"></i> 今週の出欠を回答
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /grid2 -->
+
+      <!-- クイックリンク -->
+      <div class="card mt24">
+        <div class="card-head">
+          <div class="card-head-icon" style="background:rgba(29,158,117,.1);color:var(--green);"><i class="fa-solid fa-link"></i></div>
+          <div><div class="card-head-title">クイックリンク</div></div>
+        </div>
+        <div class="card-body">
+          <div class="quick-links">
+            <a class="quick-link" href="./member_form.html"><i class="fa-solid fa-file-pen"></i> 各種申請</a>
+            <a class="quick-link" href="./request_form.html"><i class="fa-solid fa-inbox"></i> 申請フォーム</a>
+            <a class="quick-link" href="./yakkan.html"><i class="fa-solid fa-book"></i> 定款・ルール</a>
+            <a class="quick-link" href="./join.html"><i class="fa-solid fa-map-marker-alt"></i> 練習案内</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 委員会管理画面セクション -->
+      <div class="committee-section">
+        <div class="section-eyebrow"><span>COMMITTEE PANELS</span></div>
+        <div class="section-title">委員会管理画面</div>
+        <p class="section-lead">担当している委員会のパネルコードを入力することで管理画面にアクセスできます。</p>
+
+        <div class="committee-grid" id="committeeGrid">
+          <!-- JSで生成 -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 東大阪吹奏楽団 | 後援：東大阪市・東大阪市教育委員会</p>
+</footer>
+
+<!-- ===== UNLOCK MODAL ===== -->
+<div class="modal-overlay" id="unlockModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">委員会パネルコードを入力</div>
+      <div class="modal-sub" id="modalSub">担当者のみアクセスできます</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-notice">パネルコードは委員会担当者に直接配布されています。不明な場合は幹部にご確認ください。</div>
+      <div class="modal-fg">
+        <label>パネルコード</label>
+        <input type="password" id="panelCodeInput" placeholder="例：PLAN-2025" autocomplete="off" onkeydown="if(event.key==='Enter')tryUnlock()">
+      </div>
+      <div class="modal-error" id="modalError">パネルコードが違います。もう一度お試しください。</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+        <button class="btn-unlock" onclick="tryUnlock()"><i class="fa-solid fa-unlock"></i> アクセス</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COMMITTEE PANELS ===== -->
+
+<!-- 企画運営委員会 -->
+<div class="panel-overlay" id="panel-planning">
+  <div class="panel-nav">
+    <button class="panel-back" onclick="closePanel('planning')"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="panel-nav-title">企画運営委員会</div>
+    <div class="panel-nav-badge">PLANNING</div>
+  </div>
+  <div class="panel-body">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-num" id="p-stat1">0</div><div class="stat-card-label">進行中の企画</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="p-stat2">0</div><div class="stat-card-label">承認待ち</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="p-stat3">0</div><div class="stat-card-label">完了済み</div></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="showWip('planning')"><i class="fa-solid fa-plus"></i> 新規企画書を作成</button>
+      <button class="btn-secondary"><i class="fa-solid fa-download"></i> テンプレートDL</button>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">企画書一覧</div>
+      <table class="data-table">
+        <thead><tr><th>企画名</th><th>種別</th><th>担当</th><th>ステータス</th><th>更新日</th></tr></thead>
+        <tbody id="planningTable">
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データを読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 会計委員会 -->
+<div class="panel-overlay" id="panel-finance">
+  <div class="panel-nav">
+    <button class="panel-back" onclick="closePanel('finance')"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="panel-nav-title">会計委員会</div>
+    <div class="panel-nav-badge">FINANCE</div>
+  </div>
+  <div class="panel-body">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-num" id="f-stat1">¥0</div><div class="stat-card-label">今月の収入</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="f-stat2">¥0</div><div class="stat-card-label">今月の支出</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="f-stat3">0</div><div class="stat-card-label">未納者数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="f-stat4">¥0</div><div class="stat-card-label">現在残高</div></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="showWip('finance')"><i class="fa-solid fa-plus"></i> 支出を記録</button>
+      <button class="btn-secondary" onclick="showWip('finance')"><i class="fa-solid fa-file-invoice"></i> 月次レポート</button>
+      <button class="btn-secondary" onclick="showWip('finance')"><i class="fa-solid fa-bell"></i> 未納リマインド送信</button>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">会費納入状況</div>
+      <table class="data-table">
+        <thead><tr><th>氏名</th><th>区分</th><th>今月</th><th>先月</th><th>累計未納</th></tr></thead>
+        <tbody id="financeTable">
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データを読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">帳簿（直近）</div>
+      <table class="data-table">
+        <thead><tr><th>日付</th><th>摘要</th><th>収入</th><th>支出</th><th>残高</th></tr></thead>
+        <tbody id="ledgerTable">
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データを読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 広報委員会 -->
+<div class="panel-overlay" id="panel-pr">
+  <div class="panel-nav">
+    <button class="panel-back" onclick="closePanel('pr')"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="panel-nav-title">広報委員会</div>
+    <div class="panel-nav-badge">PR</div>
+  </div>
+  <div class="panel-body">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-num" id="pr-stat1">0</div><div class="stat-card-label">Insta フォロワー</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="pr-stat2">0</div><div class="stat-card-label">今月の投稿数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="pr-stat3">0</div><div class="stat-card-label">制作中の媒体</div></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="showWip('pr')"><i class="fa-solid fa-plus"></i> 投稿を記録</button>
+      <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="btn-secondary"><i class="fa-brands fa-instagram"></i> Instagram</a>
+      <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="btn-secondary"><i class="fa-brands fa-youtube"></i> YouTube</a>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">WEBサイト管理</div>
+      <table class="data-table">
+        <thead><tr><th>ページ</th><th>最終更新</th><th>ステータス</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr><td>トップ (index.html)</td><td>―</td><td><span class="status-badge sb-ok">公開中</span></td><td><button class="btn-secondary" style="padding:4px 12px;font-size:.72rem;" onclick="showWip('pr')">編集リクエスト</button></td></tr>
+          <tr><td>入団案内 (join.html)</td><td>―</td><td><span class="status-badge sb-ok">公開中</span></td><td><button class="btn-secondary" style="padding:4px 12px;font-size:.72rem;" onclick="showWip('pr')">編集リクエスト</button></td></tr>
+          <tr><td>お知らせ (NEWS)</td><td>―</td><td><span class="status-badge sb-ok">公開中</span></td><td><button class="btn-primary" style="padding:4px 12px;font-size:.72rem;" onclick="showWip('pr')">投稿</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">制作物・素材管理</div>
+      <div class="wip-note"><div class="wip-icon">🖼️</div><div class="wip-title">素材管理機能</div><div class="wip-desc">チラシ・ポスター等のデータ管理機能は準備中です。</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 蔵書委員会 -->
+<div class="panel-overlay" id="panel-library">
+  <div class="panel-nav">
+    <button class="panel-back" onclick="closePanel('library')"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="panel-nav-title">蔵書委員会</div>
+    <div class="panel-nav-badge">LIBRARY</div>
+  </div>
+  <div class="panel-body">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-num" id="lib-stat1">0</div><div class="stat-card-label">楽譜総数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="lib-stat2">0</div><div class="stat-card-label">貸出中</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="lib-stat3">0</div><div class="stat-card-label">返却期限超過</div></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="showWip('library')"><i class="fa-solid fa-plus"></i> 楽譜を登録</button>
+      <button class="btn-secondary" onclick="showWip('library')"><i class="fa-solid fa-hand-holding"></i> 貸出記録</button>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">楽譜・資料一覧</div>
+      <table class="data-table">
+        <thead><tr><th>タイトル</th><th>作曲者</th><th>パート数</th><th>状態</th><th>保管場所</th></tr></thead>
+        <tbody id="libraryTable">
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データを読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 予約管理委員会 -->
+<div class="panel-overlay" id="panel-venue">
+  <div class="panel-nav">
+    <button class="panel-back" onclick="closePanel('venue')"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="panel-nav-title">予約管理委員会</div>
+    <div class="panel-nav-badge">VENUE</div>
+  </div>
+  <div class="panel-body">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-num" id="v-stat1">0</div><div class="stat-card-label">確定済み予約</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="v-stat2">0</div><div class="stat-card-label">仮予約</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="v-stat3">0</div><div class="stat-card-label">今月の練習回数</div></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="showWip('venue')"><i class="fa-solid fa-plus"></i> 予約を登録</button>
+      <button class="btn-secondary" onclick="showWip('venue')"><i class="fa-solid fa-calendar"></i> カレンダーを見る</button>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">直近の練習スケジュール</div>
+      <table class="data-table">
+        <thead><tr><th>日付</th><th>曜日</th><th>会場</th><th>時間</th><th>状態</th></tr></thead>
+        <tbody id="venueTable">
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データを読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 楽器管理委員会 -->
+<div class="panel-overlay" id="panel-equipment">
+  <div class="panel-nav">
+    <button class="panel-back" onclick="closePanel('equipment')"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="panel-nav-title">楽器管理委員会</div>
+    <div class="panel-nav-badge">EQUIPMENT</div>
+  </div>
+  <div class="panel-body">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-num" id="eq-stat1">0</div><div class="stat-card-label">管理楽器・備品数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="eq-stat2">0</div><div class="stat-card-label">要メンテナンス</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="eq-stat3">0</div><div class="stat-card-label">貸出中</div></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="showWip('equipment')"><i class="fa-solid fa-plus"></i> 備品を登録</button>
+      <button class="btn-secondary" onclick="showWip('equipment')"><i class="fa-solid fa-wrench"></i> メンテ記録</button>
+    </div>
+    <div class="panel-section">
+      <div class="ps-title">打楽器・備品一覧</div>
+      <table class="data-table">
+        <thead><tr><th>備品名</th><th>種別</th><th>状態</th><th>保管場所</th><th>次回点検</th></tr></thead>
+        <tbody id="equipmentTable">
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データを読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
+
+// 委員会定義
+const COMMITTEES = [
+  {
+    id: 'planning', name: '企画運営委員会',
+    icon: 'fa-solid fa-lightbulb', colorClass: 'cc-planning', borderClass: 'border-planning',
+    desc: '演奏会・イベントの企画立案・運営。企画書の作成・管理を行います。',
+    tags: ['企画書管理', 'イベント運営', 'スケジュール調整'],
+    codeKey: 'PLANNING'
+  },
+  {
+    id: 'finance', name: '会計委員会',
+    icon: 'fa-solid fa-yen-sign', colorClass: 'cc-finance', borderClass: 'border-finance',
+    desc: '団費の徴収・管理、帳簿の記録、Stripe連携による決済管理。',
+    tags: ['会費徴収', '帳簿管理', 'Stripe連携'],
+    codeKey: 'FINANCE'
+  },
+  {
+    id: 'pr', name: '広報委員会',
+    icon: 'fa-solid fa-bullhorn', colorClass: 'cc-pr', borderClass: 'border-pr',
+    desc: 'SNS運用・WEBサイト管理・チラシ制作など対外広報全般を担います。',
+    tags: ['SNS運用', 'WEB管理', '素材制作'],
+    codeKey: 'PR'
+  },
+  {
+    id: 'library', name: '蔵書委員会',
+    icon: 'fa-solid fa-book-open', colorClass: 'cc-library', borderClass: 'border-library',
+    desc: '楽譜・参考資料の登録・貸出・返却管理を行います。',
+    tags: ['楽譜管理', '貸出記録', '資料整理'],
+    codeKey: 'LIBRARY'
+  },
+  {
+    id: 'venue', name: '予約管理委員会',
+    icon: 'fa-solid fa-calendar-days', colorClass: 'cc-venue', borderClass: 'border-venue',
+    desc: '東大阪文化創造館などの練習会場予約・スケジュール管理を担います。',
+    tags: ['会場予約', 'スケジュール', 'カレンダー管理'],
+    codeKey: 'VENUE'
+  },
+  {
+    id: 'equipment', name: '楽器管理委員会',
+    icon: 'fa-solid fa-drum', colorClass: 'cc-equipment', borderClass: 'border-equipment',
+    desc: '打楽器・団所有備品のメンテナンス記録・貸出管理を行います。',
+    tags: ['打楽器管理', '備品台帳', 'メンテ記録'],
+    codeKey: 'EQUIPMENT'
+  },
+];
+
+// セッション内でアンロック済みパネルを記憶
+const unlockedPanels = new Set(
+  JSON.parse(sessionStorage.getItem('unlockedPanels') || '[]')
+);
+
+// =============================================
+//  初期化
+// =============================================
+let memberToken = null;
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  memberToken = params.get('token');
+  if (!memberToken) { showState('error'); return; }
+
+  renderCommitteeGrid();
+  await loadMemberData();
+});
+
+// =============================================
+//  GAS からデータ取得
+// =============================================
+async function loadMemberData() {
+  try {
+    const url = `${GAS_URL}?action=getMemberPage&token=${encodeURIComponent(memberToken)}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    if (!data.success) { showState('error'); return; }
+
+    applyMemberInfo(data);
+    applyFeeStatus(data.feeStatus, data.feeHistory);
+    applyAttendHistory(data.attendHistory, data.nextPracticeId);
+    showState('main');
+
+  } catch (e) {
+    // 開発中はモックデータで表示
+    applyMemberInfo(MOCK_DATA);
+    applyFeeStatus(MOCK_DATA.feeStatus, MOCK_DATA.feeHistory);
+    applyAttendHistory(MOCK_DATA.attendHistory, MOCK_DATA.nextPracticeId);
+    showState('main');
+  }
+}
+
+// =============================================
+//  モックデータ（GAS未接続時のプレビュー）
+// =============================================
+const MOCK_DATA = {
+  success: true,
+  memberName: '山田 太郎',
+  memberPart: 'Clarinet',
+  memberType: '正会員',
+  feeStatus: { status: 'ok', label: '支払い済み', sub: '次回引き落とし：7月1日' },
+  feeHistory: [
+    { month: '2025年6月', paid: true },
+    { month: '2025年5月', paid: true },
+    { month: '2025年4月', paid: true },
+  ],
+  attendHistory: [
+    { date: '6月21日（土）', answer: 'attend', note: '' },
+    { date: '6月14日（土）', answer: 'late',   note: '15分遅刻' },
+    { date: '6月 7日（土）', answer: 'attend', note: '' },
+    { date: '5月31日（土）', answer: 'absent', note: '仕事のため' },
+    { date: '5月24日（土）', answer: 'attend', note: '' },
+  ],
+  nextPracticeId: 'P001',
+};
+
+// =============================================
+//  表示への反映
+// =============================================
+function applyMemberInfo(d) {
+  const name = d.memberName || '団員';
+  document.getElementById('avatarInitial').textContent = name.charAt(0);
+  document.getElementById('headerName').textContent    = name;
+  document.getElementById('headerType').textContent    = d.memberType || '正会員';
+  document.getElementById('headerPart').textContent    = d.memberPart || '';
+}
+
+function applyFeeStatus(status, history) {
+  if (!status) return;
+  const dot   = document.getElementById('feeStatusDot');
+  const label = document.getElementById('feeStatusLabel');
+  const sub   = document.getElementById('feeStatusSub');
+
+  dot.className   = 'fee-status-dot ' + { ok: 'dot-ok', warn: 'dot-warn', ng: 'dot-ng' }[status.status];
+  label.textContent = status.label;
+  sub.textContent   = status.sub;
+
+  const hist = document.getElementById('feeHistory');
+  if (!history || !history.length) { hist.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:.82rem;">履歴なし</div>'; return; }
+
+  hist.innerHTML = history.map(r =>
+    `<div class="fee-row">
+      <span class="fee-month">${r.month}</span>
+      ${r.paid
+        ? `<span class="fee-paid"><i class="fa-solid fa-circle-check"></i> 支払い済み</span>`
+        : `<span class="fee-unpaid"><i class="fa-solid fa-circle-exclamation"></i> 未納</span>`}
+    </div>`
+  ).join('');
+}
+
+function applyAttendHistory(history, nextPid) {
+  const list = document.getElementById('attendList');
+  if (!history || !history.length) {
+    list.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:.82rem;">回答履歴がありません</div>';
+    return;
+  }
+
+  const LABEL = { attend: '参加', late: '遅刻・早退', absent: '欠席' };
+  const CLS   = { attend: 'ab-attend', late: 'ab-late', absent: 'ab-absent' };
+
+  list.innerHTML = history.map(r =>
+    `<div class="attend-row">
+      <span class="attend-date">${r.date}</span>
+      <span class="attend-badge ${CLS[r.answer] || 'ab-none'}">${LABEL[r.answer] || '―'}</span>
+      ${r.note ? `<span class="attend-note">${r.note}</span>` : ''}
+    </div>`
+  ).join('');
+
+  // 出欠回答ボタンにpidをセット
+  if (nextPid && memberToken) {
+    document.getElementById('attendLink').href =
+      `./attendance.html?token=${encodeURIComponent(memberToken)}&pid=${nextPid}`;
+  }
+}
+
+// =============================================
+//  委員会グリッド生成
+// =============================================
+function renderCommitteeGrid() {
+  const grid = document.getElementById('committeeGrid');
+  grid.innerHTML = COMMITTEES.map(c => {
+    const unlocked = unlockedPanels.has(c.id);
+    return `
+    <div class="comm-card ${unlocked ? '' : 'locked'}" id="commCard-${c.id}">
+      <div class="comm-card-head">
+        <div class="comm-icon-wrap ${c.colorClass}"><i class="${c.icon}"></i></div>
+        <div class="comm-name">${c.name}</div>
+        <div class="comm-desc">${c.desc}</div>
+      </div>
+      <div class="comm-tags">${c.tags.map(t => `<span class="comm-tag">${t}</span>`).join('')}</div>
+      <div class="comm-footer">
+        ${unlocked
+          ? `<button class="comm-btn comm-btn-open" onclick="openPanel('${c.id}')"><i class="fa-solid fa-arrow-right"></i> 管理画面を開く</button>`
+          : `<div class="comm-lock-badge"><i class="fa-solid fa-lock"></i> ロック中</div>
+             <button class="comm-btn comm-btn-locked" style="background:none;border:1.5px solid var(--border);color:var(--blue);font-weight:700;cursor:pointer;border-radius:8px;padding:7px 16px;font-size:.78rem;font-family:inherit;" onclick="openModal('${c.id}')"><i class="fa-solid fa-key"></i> コードを入力</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// =============================================
+//  モーダル（ロック解除）
+// =============================================
+let targetCommittee = null;
+
+function openModal(id) {
+  targetCommittee = id;
+  const c = COMMITTEES.find(c => c.id === id);
+  document.getElementById('modalTitle').textContent = c.name + ' — コードを入力';
+  document.getElementById('modalSub').textContent   = '担当者のみアクセスできます';
+  document.getElementById('panelCodeInput').value   = '';
+  document.getElementById('modalError').classList.remove('show');
+  document.getElementById('unlockModal').classList.add('open');
+  setTimeout(() => document.getElementById('panelCodeInput').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('unlockModal').classList.remove('open');
+  targetCommittee = null;
+}
+
+function tryUnlock() {
+  const input = document.getElementById('panelCodeInput').value.trim().toUpperCase();
+  const c     = COMMITTEES.find(c => c.id === targetCommittee);
+  if (!c) return;
+
+  // コード照合（実運用ではGAS APIで照合する）
+  // ここでは簡易チェック：codeKey と一致するか
+  // 本番では: fetch(GAS_URL + '?action=checkPanelCode&committee=' + c.id + '&code=' + input)
+  if (input === c.codeKey || input === 'ADMIN') {
+    unlockedPanels.add(c.id);
+    sessionStorage.setItem('unlockedPanels', JSON.stringify([...unlockedPanels]));
+    closeModal();
+    renderCommitteeGrid();
+    // 解錠後すぐに開く
+    setTimeout(() => openPanel(c.id), 200);
+    loadPanelData(c.id);
+  } else {
+    document.getElementById('modalError').classList.add('show');
+    document.getElementById('panelCodeInput').select();
+  }
+}
+
+// =============================================
+//  パネル開閉
+// =============================================
+function openPanel(id) {
+  document.getElementById('panel-' + id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+  loadPanelData(id);
+}
+
+function closePanel(id) {
+  document.getElementById('panel-' + id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// =============================================
+//  パネルデータ読み込み（GAS連携）
+// =============================================
+async function loadPanelData(id) {
+  try {
+    const url = `${GAS_URL}?action=getPanelData&committee=${id}&token=${encodeURIComponent(memberToken)}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.success) applyPanelData(id, data);
+  } catch (e) {
+    applyMockPanelData(id);
+  }
+}
+
+function applyMockPanelData(id) {
+  if (id === 'planning') {
+    document.getElementById('p-stat1').textContent = '2';
+    document.getElementById('p-stat2').textContent = '1';
+    document.getElementById('p-stat3').textContent = '3';
+    document.getElementById('planningTable').innerHTML = `
+      <tr><td>第一回定期演奏会</td><td>演奏会</td><td>山田 太郎</td><td><span class="status-badge sb-info">進行中</span></td><td>2025/06/01</td></tr>
+      <tr><td>夏の合同練習会</td><td>イベント</td><td>鈴木 花子</td><td><span class="status-badge sb-warn">承認待ち</span></td><td>2025/05/28</td></tr>`;
+  }
+  if (id === 'finance') {
+    document.getElementById('f-stat1').textContent = '¥12,000';
+    document.getElementById('f-stat2').textContent = '¥3,500';
+    document.getElementById('f-stat3').textContent = '1';
+    document.getElementById('f-stat4').textContent = '¥38,200';
+    document.getElementById('financeTable').innerHTML = `
+      <tr><td>山田 太郎</td><td>正会員</td><td><span class="status-badge sb-ok">済</span></td><td><span class="status-badge sb-ok">済</span></td><td>0ヶ月</td></tr>
+      <tr><td>鈴木 花子</td><td>学生</td><td><span class="status-badge sb-ok">済</span></td><td><span class="status-badge sb-ok">済</span></td><td>0ヶ月</td></tr>
+      <tr><td>佐藤 次郎</td><td>正会員</td><td><span class="status-badge sb-ng">未納</span></td><td><span class="status-badge sb-ok">済</span></td><td>1ヶ月</td></tr>`;
+    document.getElementById('ledgerTable').innerHTML = `
+      <tr><td>2025/06/01</td><td>月会費（正会員×3）</td><td>¥9,000</td><td>―</td><td>¥38,200</td></tr>
+      <tr><td>2025/06/01</td><td>月会費（学生×1）</td><td>¥1,500</td><td>―</td><td>¥29,200</td></tr>
+      <tr><td>2025/05/30</td><td>印刷費（チラシ）</td><td>―</td><td>¥3,500</td><td>¥27,700</td></tr>`;
+  }
+  if (id === 'venue') {
+    document.getElementById('v-stat1').textContent = '8';
+    document.getElementById('v-stat2').textContent = '2';
+    document.getElementById('v-stat3').textContent = '4';
+    document.getElementById('venueTable').innerHTML = `
+      <tr><td>2025/06/28</td><td>土</td><td>東大阪文化創造館</td><td>13:00〜17:00</td><td><span class="status-badge sb-ok">確定</span></td></tr>
+      <tr><td>2025/07/05</td><td>土</td><td>荒本人権文化センター</td><td>13:00〜17:00</td><td><span class="status-badge sb-ok">確定</span></td></tr>
+      <tr><td>2025/07/12</td><td>土</td><td>東大阪文化創造館</td><td>13:00〜17:00</td><td><span class="status-badge sb-warn">仮予約</span></td></tr>`;
+  }
+  if (id === 'library') {
+    document.getElementById('lib-stat1').textContent = '24';
+    document.getElementById('lib-stat2').textContent = '3';
+    document.getElementById('lib-stat3').textContent = '0';
+    document.getElementById('libraryTable').innerHTML = `
+      <tr><td>アルメニアン・ダンス Pt.1</td><td>演奏会曲</td><td>全パート</td><td><span class="status-badge sb-ok">在庫あり</span></td><td>棚A-1</td></tr>
+      <tr><td>宝島</td><td>ポップス</td><td>全パート</td><td><span class="status-badge sb-warn">貸出中</span></td><td>棚A-2</td></tr>`;
+  }
+  if (id === 'equipment') {
+    document.getElementById('eq-stat1').textContent = '15';
+    document.getElementById('eq-stat2').textContent = '2';
+    document.getElementById('eq-stat3').textContent = '1';
+    document.getElementById('equipmentTable').innerHTML = `
+      <tr><td>スネアドラム</td><td>打楽器</td><td><span class="status-badge sb-ok">良好</span></td><td>文化創造館</td><td>2025/09/01</td></tr>
+      <tr><td>ティンパニ</td><td>打楽器</td><td><span class="status-badge sb-warn">要確認</span></td><td>文化創造館</td><td>2025/07/01</td></tr>
+      <tr><td>指揮台</td><td>備品</td><td><span class="status-badge sb-ok">良好</span></td><td>文化創造館</td><td>―</td></tr>`;
+  }
+}
+
+function applyPanelData(id, data) {
+  // GASからデータが来た場合の実装（モックと同じ構造で上書き）
+  applyMockPanelData(id); // 今はモックで代用
+}
+
+// =============================================
+//  WIP通知
+// =============================================
+function showWip(panelId) {
+  alert('この機能は現在開発中です。\nPhase 2 以降で実装予定です。');
+}
+
+// =============================================
+//  Stripe ポータル
+// =============================================
+function openStripePortal(e) {
+  e.preventDefault();
+  alert('Stripe カスタマーポータルはPhase 3で実装予定です。');
+}
+
+// =============================================
+//  状態切替
+// =============================================
+function showState(state) {
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('stateError').style.display   = 'none';
+  document.getElementById('pageHeader').style.display   = 'none';
+  document.getElementById('mainContent').style.display  = 'none';
+
+  if (state === 'error') {
+    document.getElementById('stateError').style.display = 'flex';
+  } else if (state === 'main') {
+    document.getElementById('pageHeader').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'block';
+  }
+}
+
+// =============================================
+//  NAV ドロワー
+// =============================================
+function toggleDrawer() {
+  document.getElementById('site-drawer').classList.toggle('open');
+}
+</script>
+</body>
+</html>
