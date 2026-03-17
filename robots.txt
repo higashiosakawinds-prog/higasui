@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://higashiosakawinds-prog.github.io/higasui/sitemap.xml
