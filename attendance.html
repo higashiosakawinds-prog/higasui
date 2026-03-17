@@ -716,7 +716,7 @@
   // =============================================
   async function loadMemberAndPractice() {
     try {
-      const url = `${GAS_URL}?action=getAttendanceInfo&token=${encodeURIComponent(memberToken)}${practiceId ? '&pid=' + practiceId : ''}`;
+      const url = `${https://script.google.com/macros/s/AKfycby4pxDhKel0Yxc2xDbU2MPOOg_hwP6cX54aLMjgTJdjccejRcW3k2LMXJUOkj1S4lQS/exec}?action=getAttendanceInfo&token=${encodeURIComponent(memberToken)}${practiceId ? '&pid=' + practiceId : ''}`;
       const res = await fetch(url);
       const data = await res.json();
 
