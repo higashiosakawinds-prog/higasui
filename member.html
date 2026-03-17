@@ -633,7 +633,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 // =============================================
 async function loadMemberData() {
   try {
-    const url = `${GAS_URL}?action=getMemberPage&token=${encodeURIComponent(memberToken)}`;
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSgXXJGuzEgaXWcZaRfsVtnIHoaAmRG-WkuR12XypADT-jG6w/exec';
     const res  = await fetch(url);
     const data = await res.json();
 
