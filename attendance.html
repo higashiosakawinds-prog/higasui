@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>練習出欠回答 | 東大阪吹奏楽団</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:   #214A9A;
+      --navy:   #1C2B4A;
+      --gold:   #C8A44D;
+      --gold-light: #E8C97A;
+      --white:  #F7F8FA;
+      --gray:   #E8EAF0;
+      --text:   #1a1a2e;
+      --muted:  #6b7280;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--navy);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo {
+      font-family: 'Shippori Mincho', serif;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1.3;
+    }
+    .header-logo span {
+      display: block;
+      font-size: 0.65rem;
+      color: var(--gold-light);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+    }
+    .header-badge {
+      margin-left: auto;
+      background: var(--gold);
+      color: var(--navy);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+    }
+
+    /* ── STATUS CARD ── */
+    .status-bar {
+      width: 100%;
+      max-width: 480px;
+      background: var(--blue);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .status-bar::before {
+      content: '';
+      position: absolute;
+      right: -20px; top: -20px;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+    }
+    .status-bar::after {
+      content: '';
+      position: absolute;
+      right: 30px; top: 20px;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: rgba(200,164,77,0.15);
+    }
+    .status-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .status-info { flex: 1; }
+    .status-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .status-date {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .status-place {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.75);
+      margin-top: 2px;
+    }
+    .status-time {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gold-light);
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .status-time small {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 24px rgba(33,74,154,0.10);
+      border: 1px solid var(--gray);
+    }
+
+    /* ── MEMBER INFO ── */
+    .member-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray);
+      margin-bottom: 28px;
+    }
+    .member-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--navy));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .member-name {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .member-part {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .member-status-badge {
+      margin-left: auto;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      background: #e8f0ff;
+      color: var(--blue);
+    }
+
+    /* ── QUESTION ── */
+    .question-label {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .question-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* ── CHOICE BUTTONS ── */
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .choice-btn {
+      width: 100%;
+      padding: 18px 20px;
+      border-radius: 14px;
+      border: 2px solid var(--gray);
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s ease;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .choice-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .choice-btn:hover { transform: translateY(-2px); }
+
+    .choice-btn.attend { border-color: #22c55e; }
+    .choice-btn.attend::before { background: #f0fdf4; }
+    .choice-btn.attend:hover::before { opacity: 1; }
+    .choice-btn.attend.selected {
+      background: #f0fdf4;
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+    }
+
+    .choice-btn.late { border-color: var(--gold); }
+    .choice-btn.late::before { background: #fffbeb; }
+    .choice-btn.late:hover::before { opacity: 1; }
+    .choice-btn.late.selected {
+      background: #fffbeb;
+      border-color: #d97706;
+      box-shadow: 0 0 0 3px rgba(200,164,77,0.2);
+    }
+
+    .choice-btn.absent { border-color: #ef4444; }
+    .choice-btn.absent::before { background: #fef2f2; }
+    .choice-btn.absent:hover::before { opacity: 1; }
+    .choice-btn.absent.selected {
+      background: #fef2f2;
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+    }
+
+    .choice-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .choice-text {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+    .choice-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .choice-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .choice-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--gray);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+      transition: all 0.2s;
+    }
+    .choice-btn.selected .choice-check {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    .choice-btn.attend.selected .choice-check { background: #16a34a; border-color: #16a34a; }
+    .choice-btn.late.selected .choice-check { background: #d97706; border-color: #d97706; }
+    .choice-btn.absent.selected .choice-check { background: #dc2626; border-color: #dc2626; }
+    .choice-check::after {
+      content: '';
+      width: 6px; height: 10px;
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(45deg) translateY(-1px);
+      display: none;
+    }
+    .choice-btn.selected .choice-check::after { display: block; }
+
+    /* ── NOTE ── */
+    .note-area {
+      display: none;
+      margin-bottom: 20px;
+      animation: slideDown 0.2s ease;
+    }
+    .note-area.show { display: block; }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .note-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .note-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--gray);
+      border-radius: 10px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.88rem;
+      color: var(--text);
+      resize: none;
+      height: 80px;
+      transition: border-color 0.2s;
+      outline: none;
+      background: #fafafa;
+    }
+    .note-input:focus { border-color: var(--blue); background: #fff; }
+
+    /* ── SUBMIT ── */
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.05em;
+      position: relative;
+      overflow: hidden;
+    }
+    .submit-btn:hover:not(:disabled) {
+      background: #1a3d85;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(33,74,154,0.35);
+    }
+    .submit-btn:disabled {
+      background: #b0bec5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .submit-btn.loading::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      animation: shimmer 1s infinite;
+    }
+    @keyframes shimmer {
+      from { transform: translateX(-100%); }
+      to   { transform: translateX(100%); }
+    }
+
+    /* ── DEADLINE ── */
+    .deadline-note {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .deadline-note strong { color: var(--navy); }
+
+    /* ── SUCCESS STATE ── */
+    .success-card {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 48px 28px;
+      box-shadow: 0 4px 24px rgba(33,74,154,0.10);
+      border: 1px solid var(--gray);
+      text-align: center;
+      display: none;
+    }
+    .success-card.show { display: block; animation: fadeInUp 0.4s ease; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .success-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: #f0fdf4;
+      border: 3px solid #22c55e;
+      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+    .success-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .success-answer {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin: 12px 0 16px;
+    }
+    .success-answer.attend { background: #f0fdf4; color: #16a34a; }
+    .success-answer.late   { background: #fffbeb; color: #d97706; }
+    .success-answer.absent { background: #fef2f2; color: #dc2626; }
+    .success-msg {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .change-btn {
+      margin-top: 24px;
+      padding: 10px 24px;
+      background: transparent;
+      border: 1.5px solid var(--gray);
+      border-radius: 10px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .change-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── ERROR STATE ── */
+    .error-card {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 48px 28px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(33,74,154,0.10);
+      border: 1px solid var(--gray);
+      display: none;
+    }
+    .error-card.show { display: block; }
+
+    /* ── ALREADY ANSWERED ── */
+    .already-card {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 24px rgba(33,74,154,0.10);
+      border: 1px solid var(--gray);
+      display: none;
+    }
+    .already-card.show { display: block; }
+    .already-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray);
+      margin-bottom: 20px;
+    }
+    .already-badge {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+    }
+    .already-badge.attend { background: #f0fdf4; color: #16a34a; }
+    .already-badge.late   { background: #fffbeb; color: #d97706; }
+    .already-badge.absent { background: #fef2f2; color: #dc2626; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    footer p {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── LOADING ── */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(28,43,74,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .loading-overlay.show { display: flex; }
+    .spinner {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text {
+      font-family: 'Shippori Mincho', serif;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-logo">
+      東大阪吹奏楽団
+      <span>HIGASHIOSAKA WINDS</span>
+    </div>
+    <div class="header-badge">出欠回答</div>
+  </header>
+
+  <main>
+
+    <!-- ローディング中 -->
+    <div id="loadingCard" style="width:100%;max-width:480px;text-align:center;padding:60px 0;">
+      <div class="spinner" style="margin:0 auto;"></div>
+      <p style="margin-top:16px;font-size:0.85rem;color:var(--muted);">読み込み中…</p>
+    </div>
+
+    <!-- エラー（URLが無効） -->
+    <div class="error-card" id="errorCard">
+      <div style="font-size:2.5rem;margin-bottom:16px;">🔗</div>
+      <div class="success-title" style="color:#dc2626;">URLが無効です</div>
+      <p style="font-size:0.85rem;color:var(--muted);margin-top:8px;line-height:1.7;">
+        このURLは使用できません。<br>
+        LINEで受け取ったURLを再度ご確認ください。
+      </p>
+    </div>
+
+    <!-- 既に回答済み -->
+    <div class="already-card" id="alreadyCard">
+      <div class="already-header">
+        <div>
+          <div style="font-family:'Shippori Mincho',serif;font-weight:700;font-size:1rem;color:var(--navy);">回答済みです</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:2px;">現在の回答状況</div>
+        </div>
+        <div class="already-badge" id="alreadyBadge">参加</div>
+      </div>
+      <p style="font-size:0.83rem;color:var(--muted);line-height:1.7;margin-bottom:20px;">
+        既に回答が記録されています。<br>変更する場合は下のボタンから回答し直せます。
+      </p>
+      <button class="change-btn" style="width:100%;" onclick="showForm()">回答を変更する</button>
+    </div>
+
+    <!-- 練習情報バー（フォーム表示時に表示） -->
+    <div class="status-bar" id="statusBar" style="display:none;">
+      <div class="status-icon">🎺</div>
+      <div class="status-info">
+        <div class="status-label">Next Practice</div>
+        <div class="status-date" id="practiceDate">―</div>
+        <div class="status-place" id="practicePlace">―</div>
+      </div>
+      <div class="status-time">
+        <small>時間</small>
+        <span id="practiceTime">―</span>
+      </div>
+    </div>
+
+    <!-- 回答フォーム -->
+    <div class="card" id="formCard" style="display:none;">
+      <div class="member-info">
+        <div class="member-avatar" id="memberInitial">？</div>
+        <div>
+          <div class="member-name" id="memberName">読み込み中…</div>
+          <div class="member-part" id="memberPart">―</div>
+        </div>
+        <div class="member-status-badge">正会員</div>
+      </div>
+
+      <div class="question-label">今週の練習に参加できますか？</div>
+      <div class="question-sub">締切までに回答してください</div>
+
+      <div class="choices">
+        <button class="choice-btn attend" onclick="selectChoice('attend', this)">
+          <span class="choice-icon">✅</span>
+          <div class="choice-text">
+            <div class="choice-title">参加します</div>
+            <div class="choice-desc">通常通り参加できます</div>
+          </div>
+          <div class="choice-check"></div>
+        </button>
+        <button class="choice-btn late" onclick="selectChoice('late', this)">
+          <span class="choice-icon">🕐</span>
+          <div class="choice-text">
+            <div class="choice-title">遅刻・早退します</div>
+            <div class="choice-desc">時間の変更がある場合</div>
+          </div>
+          <div class="choice-check"></div>
+        </button>
+        <button class="choice-btn absent" onclick="selectChoice('absent', this)">
+          <span class="choice-icon">😔</span>
+          <div class="choice-text">
+            <div class="choice-title">欠席します</div>
+            <div class="choice-desc">今週は参加できません</div>
+          </div>
+          <div class="choice-check"></div>
+        </button>
+      </div>
+
+      <div class="note-area" id="noteArea">
+        <div class="note-label">備考（任意）</div>
+        <textarea class="note-input" id="noteInput" placeholder="遅刻・早退の場合は到着予定時刻など。欠席の場合は理由など（任意）"></textarea>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()" disabled>
+        回答する
+      </button>
+      <p class="deadline-note">
+        回答は<strong id="deadlineText">木曜 23:59</strong>まで変更できます
+      </p>
+    </div>
+
+    <!-- 送信完了 -->
+    <div class="success-card" id="successCard">
+      <div class="success-icon">✓</div>
+      <div class="success-title">回答しました！</div>
+      <div class="success-answer" id="successAnswer">参加</div>
+      <p class="success-msg">
+        回答が記録されました。<br>
+        変更したい場合は同じURLから<br>回答し直すことができます。
+      </p>
+      <button class="change-btn" onclick="location.reload()">回答を変更する</button>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 東大阪吹奏楽団 | 後援：東大阪市・東大阪市教育委員会</p>
+  </footer>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">送信中…</div>
+  </div>
+
+<script>
+  // =============================================
+  //  設定
+  // =============================================
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
+
+  // =============================================
+  //  状態
+  // =============================================
+  let selectedChoice = null;
+  let memberToken = null;
+  let practiceId  = null;
+
+  // =============================================
+  //  初期化
+  // =============================================
+  window.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(location.search);
+    memberToken = params.get('token');
+    practiceId  = params.get('pid');   // 省略可（最新練習を自動取得）
+
+    if (!memberToken) {
+      showState('error');
+      return;
+    }
+    await loadMemberAndPractice();
+  });
+
+  // =============================================
+  //  GAS からデータ取得
+  // =============================================
+  async function loadMemberAndPractice() {
+    try {
+      const url = `${GAS_URL}?action=getAttendanceInfo&token=${encodeURIComponent(memberToken)}${practiceId ? '&pid=' + practiceId : ''}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!data.success) {
+        showState('error');
+        return;
+      }
+
+      // 練習情報をセット
+      document.getElementById('practiceDate').textContent  = data.practiceDate  || '日程未定';
+      document.getElementById('practicePlace').textContent = data.practicePlace || '東大阪文化創造館';
+      document.getElementById('practiceTime').textContent  = data.practiceTime  || '13:00〜';
+
+      // 団員情報をセット
+      const name = data.memberName || '団員';
+      document.getElementById('memberName').textContent    = name;
+      document.getElementById('memberPart').textContent    = data.memberPart || '';
+      document.getElementById('memberInitial').textContent = name.charAt(0);
+
+      // 締切
+      if (data.deadline) {
+        document.getElementById('deadlineText').textContent = data.deadline;
+      }
+
+      // 既回答チェック
+      if (data.alreadyAnswered && data.currentAnswer) {
+        const badge = document.getElementById('alreadyBadge');
+        badge.textContent  = labelOf(data.currentAnswer);
+        badge.className    = 'already-badge ' + data.currentAnswer;
+        showState('already');
+      } else {
+        showState('form');
+      }
+
+      // 練習IDを保存
+      if (data.practiceId) practiceId = data.practiceId;
+
+    } catch (e) {
+      console.error(e);
+      showState('error');
+    }
+  }
+
+  // =============================================
+  //  選択
+  // =============================================
+  function selectChoice(type, btn) {
+    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedChoice = type;
+    document.getElementById('submitBtn').disabled = false;
+
+    // 備考欄
+    const note = document.getElementById('noteArea');
+    if (type === 'late' || type === 'absent') {
+      note.classList.add('show');
+    } else {
+      note.classList.remove('show');
+    }
+  }
+
+  // =============================================
+  //  送信
+  // =============================================
+  async function submitForm() {
+    if (!selectedChoice) return;
+
+    document.getElementById('loadingOverlay').classList.add('show');
+
+    const note = document.getElementById('noteInput').value.trim();
+    const body  = new URLSearchParams({
+      action:     'submitAttendance',
+      token:      memberToken,
+      practiceId: practiceId || '',
+      answer:     selectedChoice,
+      note:       note
+    });
+
+    try {
+      const res  = await fetch(GAS_URL, { method: 'POST', body });
+      const data = await res.json();
+
+      document.getElementById('loadingOverlay').classList.remove('show');
+
+      if (data.success) {
+        const ans = document.getElementById('successAnswer');
+        ans.textContent = labelOf(selectedChoice);
+        ans.className   = 'success-answer ' + selectedChoice;
+        showState('success');
+      } else {
+        alert('送信に失敗しました。もう一度お試しください。');
+      }
+    } catch (e) {
+      document.getElementById('loadingOverlay').classList.remove('show');
+      alert('通信エラーが発生しました。');
+    }
+  }
+
+  // =============================================
+  //  ユーティリティ
+  // =============================================
+  function labelOf(type) {
+    return { attend: '✅ 参加', late: '🕐 遅刻・早退', absent: '😔 欠席' }[type] || type;
+  }
+
+  function showState(state) {
+    document.getElementById('loadingCard').style.display  = 'none';
+    document.getElementById('errorCard').classList.remove('show');
+    document.getElementById('alreadyCard').classList.remove('show');
+    document.getElementById('formCard').style.display     = 'none';
+    document.getElementById('statusBar').style.display    = 'none';
+    document.getElementById('successCard').classList.remove('show');
+
+    if (state === 'error')   document.getElementById('errorCard').classList.add('show');
+    if (state === 'already') document.getElementById('alreadyCard').classList.add('show');
+    if (state === 'form')  {
+      document.getElementById('formCard').style.display  = 'block';
+      document.getElementById('statusBar').style.display = 'flex';
+    }
+    if (state === 'success') document.getElementById('successCard').classList.add('show');
+  }
+
+  function showForm() {
+    document.getElementById('alreadyCard').classList.remove('show');
+    document.getElementById('formCard').style.display  = 'block';
+    document.getElementById('statusBar').style.display = 'flex';
+  }
+</script>
+</body>
+</html>
