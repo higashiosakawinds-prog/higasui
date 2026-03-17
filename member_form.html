@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入団・休団・退団申請 | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;--white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;--green:#1D9E75;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:1000px;margin:0 auto;padding:0 1.5rem;width:100%;}
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+#ham-btn{width:44px;height:44px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+#ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
+#site-drawer{display:none;position:fixed;top:56px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{display:flex;align-items:center;gap:0.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;}
+#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:16px;border-radius:14px;font-weight:700;text-decoration:none;}
+.page-header{padding-top:56px;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(200,164,77,0.08);}
+.page-header-inner{position:relative;z-index:1;padding:3rem 1.5rem 3.5rem;max-width:1000px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.8rem;}
+.page-header p{font-size:0.9rem;color:rgba(255,255,255,0.72);line-height:1.9;}
+.breadcrumb{background:var(--white);padding:0.8rem 0;border-bottom:1px solid var(--border);}
+.breadcrumb-inner{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--muted);}
+.breadcrumb-inner a{color:var(--blue);text-decoration:none;}
+.tabs-wrap{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:56px;z-index:50;}
+.tabs{display:flex;max-width:1000px;margin:0 auto;padding:0 1.5rem;}
+.tab-btn{padding:1rem 1.2rem;border:none;background:none;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+.tab-btn:hover{color:var(--blue);}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);}
+.sec{padding:48px 0;}
+.sec-bg{background:var(--bg);}
+.form-section{display:none;}
+.form-section.active{display:block;}
+.eyebrow{font-family:'Outfit',sans-serif;font-size:0.63rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.eyebrow-light{color:var(--gold);}
+.h2{font-family:'Shippori Mincho',serif;font-size:clamp(1.5rem,4vw,2rem);font-weight:700;line-height:1.35;margin-bottom:0.5rem;color:var(--navy);}
+.sec-lead{font-size:0.85rem;color:var(--muted);line-height:1.9;margin-bottom:2rem;}
+.notice{border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:0.82rem;line-height:1.8;}
+.notice-blue{background:rgba(33,74,154,0.06);border-left:3px solid var(--blue);color:var(--navy);}
+.notice-gold{background:rgba(200,164,77,0.08);border-left:3px solid var(--gold);color:#6B4E00;}
+.notice-red{background:rgba(192,57,43,0.06);border-left:3px solid #C0392B;color:#7B1A1A;}
+.form-card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(33,74,154,0.1);border:1px solid var(--border);max-width:600px;}
+.form-head{padding:1.5rem;border-bottom:2px solid var(--gold);}
+.form-head.join-head{background:linear-gradient(135deg,var(--navy),var(--blue));}
+.form-head.rest-head{background:linear-gradient(135deg,#1C4A3A,#1D9E75);}
+.form-head.leave-head{background:linear-gradient(135deg,#4A1C1C,#8B2E2E);}
+.form-head-title{font-size:1.05rem;font-weight:700;color:white;margin-bottom:0.2rem;}
+.form-head-sub{font-size:0.75rem;color:rgba(255,255,255,0.65);}
+.form-body{padding:1.5rem;}
+.fg{margin-bottom:1rem;}
+.fg label{display:block;font-size:0.73rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
+.fg label .req{color:var(--gold);margin-left:2px;}
+.fg label .opt{color:var(--muted);font-weight:400;margin-left:4px;font-size:0.68rem;}
+.fg input,.fg select,.fg textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem;font-family:inherit;background:var(--bg);outline:none;transition:border-color 0.2s;-webkit-appearance:none;color:var(--text);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);background:white;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.fg-section{margin:1.2rem 0 0.8rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}
+.fg-section-title{font-size:0.72rem;font-weight:800;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;}
+.agree-box{background:var(--bg);border-radius:10px;padding:1rem;margin-bottom:1.2rem;border:1px solid var(--border);max-height:120px;overflow-y:auto;font-size:0.75rem;color:var(--muted);line-height:1.8;}
+.agree-check{display:flex;align-items:flex-start;gap:0.6rem;margin-top:0.8rem;cursor:pointer;}
+.agree-check input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--blue);}
+.agree-check span{font-size:0.8rem;color:var(--navy);line-height:1.6;}
+.agree-check span a{color:var(--blue);text-decoration:none;}
+.btn-submit{width:100%;padding:15px;border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.2s;color:white;margin-top:1rem;}
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.btn-join{background:var(--gold);box-shadow:0 4px 16px rgba(200,164,77,0.35);}
+.btn-rest{background:var(--green);box-shadow:0 4px 16px rgba(29,158,117,0.3);}
+.btn-leave{background:#8B2E2E;box-shadow:0 4px 16px rgba(139,46,46,0.3);}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.form-note{font-size:0.7rem;color:var(--muted);text-align:center;margin-top:0.8rem;line-height:1.6;}
+.err-box{display:none;background:#FFF0F0;border:1.5px solid #FFCCCC;border-radius:8px;padding:0.8rem;font-size:0.8rem;color:#C0392B;margin-bottom:1rem;}
+.ok-box{display:none;text-align:center;padding:2.5rem 1rem;}
+.ok-icon{font-size:3rem;margin-bottom:1rem;}
+.ok-title{font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;}
+.ok-text{font-size:0.85rem;color:var(--muted);line-height:1.8;}
+footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(200,164,77,0.2);}
+.footer-logo{margin-bottom:1rem;}
+.footer-logo img{height:36px;width:auto;filter:brightness(0) invert(1);opacity:0.8;}
+.footer-desc{font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.85;margin-bottom:1.5rem;max-width:500px;}
+.footer-links{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;margin-bottom:2rem;max-width:320px;}
+.footer-links a{color:rgba(255,255,255,0.55);text-decoration:none;font-size:0.8rem;padding:5px 0;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-sns{display:flex;gap:1rem;margin-bottom:2rem;}
+.footer-sns a{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;text-decoration:none;color:rgba(255,255,255,0.7);transition:background 0.2s,color 0.2s;}
+.footer-sns a.sns-instagram:hover{background:#E1306C;border-color:#E1306C;color:white;}
+.footer-sns a.sns-youtube:hover{background:#FF0000;border-color:#FF0000;color:white;}
+.footer-sns a.sns-line:hover{background:#06C755;border-color:#06C755;color:white;}
+.footer-copy{font-size:0.67rem;color:rgba(255,255,255,0.2);}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;z-index:50;width:42px;height:42px;border-radius:50%;background:var(--blue);color:white;border:2px solid var(--gold);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;box-shadow:0 4px 16px rgba(33,74,154,0.35);}
+.scroll-top.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<nav id="site-nav">
+  <div class="inner nav-inner">
+    <a href="/higasui/" id="nav-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></a>
+    <button id="ham-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="site-drawer">
+  <ul>
+    <li><a href="/higasui/#about" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="/higasui/#features" onclick="closeNav()">✨ 団の特徴</a></li>
+    <li><a href="/higasui/join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
+    <li><a href="/higasui/#recruit" onclick="closeNav()">🎺 募集情報</a></li>
+    <li><a href="/higasui/join.html#form" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="/higasui/faq.html" onclick="closeNav()">❓ よくある質問</a></li>
+  </ul>
+  <a href="/higasui/join.html#form" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+</div>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="page-eyebrow">Member Form</p>
+    <h1>入団・休団・復団・退団申請</h1>
+    <p>各種お手続きはこちらのフォームからお願いします。<br>送信後、higashiosaka.winds@gmail.com よりご連絡します。</p>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="inner breadcrumb-inner">
+    <a href="/higasui/">TOP</a><span>›</span><span>入団・休団・退団申請</span>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-btn-join" onclick="switchTab('join',this)">🎺 入団申込</button>
+    <button class="tab-btn" id="tab-btn-rest" onclick="switchTab('rest',this)">🔄 休団・復団申請</button>
+    <button class="tab-btn" id="tab-btn-leave" onclick="switchTab('leave',this)">👋 退団申請</button>
+  </div>
+</div>
+
+<!-- 入団 -->
+<div class="form-section active sec sec-bg" id="tab-join">
+  <div class="inner">
+    <div class="reveal" style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Join</p>
+      <h2 class="h2">入団申込</h2>
+      <p class="sec-lead">フォームを送信後、担当者よりご連絡します。内容確認後、正式に入団手続きを進めます。</p>
+    </div>
+    <div class="notice notice-blue reveal">
+      ✅ 入団前に最大3回まで見学・体験（¥500/回）が可能です。まずは<a href="/higasui/join.html#form" style="color:var(--blue);">見学申込</a>からどうぞ！
+    </div>
+    <div class="form-card reveal">
+      <div class="form-head join-head">
+        <div class="form-head-title">🎺 入団申込フォーム</div>
+        <div class="form-head-sub">送信後、2〜3営業日以内にご連絡します</div>
+      </div>
+      <div class="form-body">
+        <div class="err-box" id="joinErr"></div>
+        <form id="joinForm">
+          <div class="fg-section"><span class="fg-section-title">基本情報</span></div>
+          <div class="fg-row">
+            <div class="fg"><label>お名前<span class="req">*</span></label><input type="text" id="j-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>フリガナ<span class="req">*</span></label><input type="text" id="j-kana" placeholder="ヤマダ ハナコ" required></div>
+          </div>
+          <div class="fg-row">
+            <div class="fg"><label>生年月日<span class="req">*</span></label><input type="date" id="j-birth" required></div>
+            <div class="fg"><label>会員種別<span class="req">*</span></label>
+              <select id="j-type" required>
+                <option value="">選択してください</option>
+                <option value="正会員（大人）">正会員（大人）¥3,000/月</option>
+                <option value="学生会員">学生会員 ¥1,500/月</option>
+                <option value="ボランティア会員">ボランティア会員</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>担当楽器<span class="req">*</span></label>
+            <select id="j-inst" required>
+              <option value="">選択してください</option>
+              <option>フルート/ピッコロ</option><option>オーボエ</option><option>クラリネット</option>
+              <option>サックス</option><option>トランペット</option><option>トロンボーン</option>
+              <option>ホルン</option><option>ユーフォニアム</option><option>チューバ</option>
+              <option>コントラバス</option><option>打楽器</option><option>その他・未定</option>
+            </select>
+          </div>
+          <div class="fg-section"><span class="fg-section-title">連絡先</span></div>
+          <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="j-email" placeholder="example@gmail.com" required></div>
+          <div class="fg-row">
+            <div class="fg"><label>電話番号<span class="req">*</span></label><input type="tel" id="j-phone" placeholder="090-0000-0000" required></div>
+            <div class="fg"><label>緊急連絡先<span class="opt">任意</span></label><input type="tel" id="j-emergency" placeholder="090-0000-0000"></div>
+          </div>
+          <div class="fg-section"><span class="fg-section-title">その他</span></div>
+          <div class="fg"><label>ひとこと<span class="opt">任意</span></label><textarea id="j-msg" rows="3" placeholder="演奏歴・ブランク年数・意気込みなどお気軽にどうぞ！"></textarea></div>
+          <div class="agree-box">
+            入団にあたり、以下の事項に同意いただく必要があります。<br>
+            ・東大阪吹奏楽団定款および各種規則を遵守すること<br>
+            ・会費を毎月期日までに支払うこと<br>
+            ・団の活動において撮影された写真・動画がSNSや広報物に使用される場合があること<br>
+            ・退団・休団の際は所定の手続きを行うこと<br>
+            ・未成年者は保護者の同意を得た上で参加すること
+          </div>
+          <label class="agree-check">
+            <input type="checkbox" id="j-agree">
+            <span>上記の内容および<a href="/higasui/yakkan.html" target="_blank">定款</a>に同意します<span class="req">*</span></span>
+          </label>
+          <button type="submit" class="btn-submit btn-join" id="j-btn">
+            <span id="j-btn-text">入団を申し込む</span>
+            <div class="spinner" id="j-spinner"></div>
+          </button>
+          <p class="form-note">送信内容は自動で記録され、higashiosaka.winds@gmail.com よりご連絡します。</p>
+        </form>
+        <div class="ok-box" id="joinOk">
+          <div class="ok-icon">🎺</div>
+          <div class="ok-title">入団申込を受け付けました！</div>
+          <div class="ok-text">担当者より2〜3営業日以内にご連絡します。<br>一緒に音楽を楽しみましょう！<br><br>東大阪吹奏楽団</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 休団 -->
+<div class="form-section sec sec-bg" id="tab-rest">
+  <div class="inner">
+    <div class="reveal" style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Rest / Return</p>
+      <h2 class="h2">休団・復団申請</h2>
+      <p class="sec-lead">休団（最大6ヶ月）または復団のお手続きはこちらから。休団中は団費の支払いが不要になります。</p>
+    </div>
+    <div class="notice notice-gold reveal">
+      ⚠️ 休団中は演奏会・イベントへの参加ができません。6ヶ月を超える場合は更新手続きが必要です。復団を希望される場合も下記フォームからお手続きください。
+    </div>
+    <div class="form-card reveal">
+      <div class="form-head rest-head">
+        <div class="form-head-title">🔄 休団・復団申請フォーム</div>
+        <div class="form-head-sub">送信後、2〜3営業日以内にご連絡します</div>
+      </div>
+      <div class="form-body">
+        <div class="err-box" id="restErr"></div>
+        <form id="restForm">
+          <div class="fg"><label>申請種別<span class="req">*</span></label>
+            <select id="r-type" required onchange="toggleRestType(this.value)">
+              <option value="">選択してください</option>
+              <option value="休団">休団する</option>
+              <option value="復団">復団する</option>
+            </select>
+          </div>
+          <div class="fg-row">
+            <div class="fg"><label>お名前<span class="req">*</span></label><input type="text" id="r-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="r-email" placeholder="example@gmail.com" required></div>
+          </div>
+          <div class="fg" id="r-date-wrap"><label id="r-date-label">希望日<span class="req">*</span></label><input type="date" id="r-start" required></div>
+          <div class="fg"><label id="r-reason-label">理由・一言<span class="req">*</span></label><textarea id="r-reason" rows="4" placeholder="差し支えない範囲でお聞かせください。" required></textarea></div>
+          <button type="submit" class="btn-submit btn-rest" id="r-btn">
+            <span id="r-btn-text">申請する</span>
+            <div class="spinner" id="r-spinner"></div>
+          </button>
+          <p class="form-note">送信内容は自動で記録され、higashiosaka.winds@gmail.com よりご連絡します。</p>
+        </form>
+        <div class="ok-box" id="restOk">
+          <div class="ok-icon">⏸️</div>
+          <div class="ok-title" id="restOkTitle">申請を受け付けました</div>
+          <div class="ok-text" id="restOkText">担当者より2〜3営業日以内にご連絡します。<br><br>東大阪吹奏楽団</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 退団 -->
+<div class="form-section sec sec-bg" id="tab-leave">
+  <div class="inner">
+    <div class="reveal" style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Leave</p>
+      <h2 class="h2">退団申請</h2>
+      <p class="sec-lead">退団前に一度、休団もご検討ください。未納の会費がある場合は精算をお願いします。</p>
+    </div>
+    <div class="notice notice-red reveal">
+      ⚠️ 退団後の再入団は可能ですが、再度入団手続きが必要です。長期離脱を検討の方はまず<strong>休団申請</strong>をおすすめします。
+    </div>
+    <div class="form-card reveal">
+      <div class="form-head leave-head">
+        <div class="form-head-title">👋 退団申請フォーム</div>
+        <div class="form-head-sub">送信後、2〜3営業日以内にご連絡します</div>
+      </div>
+      <div class="form-body">
+        <div class="err-box" id="leaveErr"></div>
+        <form id="leaveForm">
+          <div class="fg-row">
+            <div class="fg"><label>お名前<span class="req">*</span></label><input type="text" id="l-name" placeholder="山田 花子" required></div>
+            <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="l-email" placeholder="example@gmail.com" required></div>
+          </div>
+          <div class="fg"><label>退団希望日<span class="req">*</span></label><input type="date" id="l-date" required></div>
+          <div class="fg"><label>退団の理由<span class="req">*</span></label><textarea id="l-reason" rows="4" placeholder="差し支えない範囲でお聞かせください。今後の活動改善の参考にさせていただきます。" required></textarea></div>
+          <button type="submit" class="btn-submit btn-leave" id="l-btn">
+            <span id="l-btn-text">退団を申請する</span>
+            <div class="spinner" id="l-spinner"></div>
+          </button>
+          <p class="form-note">送信内容は自動で記録され、higashiosaka.winds@gmail.com よりご連絡します。</p>
+        </form>
+        <div class="ok-box" id="leaveOk">
+          <div class="ok-icon">👋</div>
+          <div class="ok-title">退団申請を受け付けました</div>
+          <div class="ok-text">担当者より2〜3営業日以内にご連絡します。<br>またいつでも戻ってきてください。<br>ありがとうございました！<br><br>東大阪吹奏楽団</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
+    <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
+    <div class="footer-links">
+      <a href="/higasui/#about">団について</a><a href="/higasui/#features">団の特徴</a>
+      <a href="/higasui/join.html">練習案内</a><a href="/higasui/#recruit">募集情報</a>
+      <a href="/higasui/join.html#form">見学申込</a><a href="/higasui/faq.html">よくある質問</a>
+    </div>
+    <div class="footer-sns">
+      <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-youtube"><i class="fab fa-youtube"></i></a>
+      <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-line"><i class="fab fa-line"></i></a>
+    </div>
+    <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const GAS='https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
+const ham=document.getElementById('ham-btn');
+const drawer=document.getElementById('site-drawer');
+ham.addEventListener('click',function(){
+  var o=drawer.classList.contains('open');
+  drawer.classList.toggle('open',!o);
+  document.body.style.overflow=o?'':'hidden';
+});
+function closeNav(){drawer.classList.remove('open');document.body.style.overflow='';}
+
+function toggleRestType(val) {
+  var label = document.getElementById('r-date-label');
+  var rlabel = document.getElementById('r-reason-label');
+  var btn = document.getElementById('r-btn-text');
+  if (val === '復団') {
+    label.innerHTML = '復団希望日<span class="req">*</span>';
+    rlabel.innerHTML = 'ひとこと<span class="opt" style="color:var(--muted);font-weight:400;margin-left:4px;font-size:0.68rem;">任意</span>';
+    btn.textContent = '復団を申請する';
+    document.getElementById('r-reason').required = false;
+    document.getElementById('r-reason').placeholder = 'お気軽にどうぞ！';
+  } else {
+    label.innerHTML = '休団開始希望日<span class="req">*</span>';
+    rlabel.innerHTML = '休団の理由<span class="req">*</span>';
+    btn.textContent = '休団を申請する';
+    document.getElementById('r-reason').required = true;
+    document.getElementById('r-reason').placeholder = '仕事・学業・家庭の事情など、差し支えない範囲でお聞かせください。';
+  }
+}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.form-section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function send(type,fields,ids){
+  var err=document.getElementById(ids.err);
+  err.style.display='none';
+  var ok=true;
+  fields.forEach(function(f){if(!f.val)ok=false;});
+  if(type==='join'){
+    var agree=document.getElementById('j-agree');
+    if(!agree.checked)ok=false;
+  }
+  if(!ok){err.textContent='※ 必須項目をすべて入力・同意してください。';err.style.display='block';return;}
+  var btn=document.getElementById(ids.btn);
+  btn.disabled=true;
+  document.getElementById(ids.txt).textContent='送信中...';
+  document.getElementById(ids.sp).style.display='block';
+  var fd=new FormData();
+  fd.append('type',type);
+  fields.forEach(function(f){fd.append(f.k,f.val);});
+  fetch(GAS,{method:'POST',mode:'no-cors',body:fd})
+    .then(function(){
+      document.getElementById(ids.form).style.display='none';
+      document.getElementById(ids.ok).style.display='block';
+      // 休団・復団で完了メッセージを変える
+      if(type==='rest'){
+        var rt=document.getElementById('r-type').value;
+        var t=document.getElementById('restOkTitle');
+        var tx=document.getElementById('restOkText');
+        if(t&&tx){
+          if(rt==='復団'){
+            t.textContent='復団申請を受け付けました！';
+            tx.innerHTML='担当者より2〜3営業日以内にご連絡します。<br>おかえりなさい！一緒に音楽を楽しみましょう🎺<br><br>東大阪吹奏楽団';
+          } else {
+            t.textContent='休団申請を受け付けました';
+            tx.innerHTML='担当者より2〜3営業日以内にご連絡します。<br>また元気なときに戻ってきてください！<br><br>東大阪吹奏楽団';
+          }
+        }
+      }
+    })
+    .catch(function(){
+      err.textContent='送信に失敗しました。時間をおいて再度お試しください。';
+      err.style.display='block';
+      btn.disabled=false;
+      document.getElementById(ids.txt).textContent=ids.label;
+      document.getElementById(ids.sp).style.display='none';
+    });
+}
+
+document.getElementById('joinForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  send('join',[
+    {k:'name',val:document.getElementById('j-name').value.trim()},
+    {k:'kana',val:document.getElementById('j-kana').value.trim()},
+    {k:'birth',val:document.getElementById('j-birth').value},
+    {k:'member_type',val:document.getElementById('j-type').value},
+    {k:'instrument',val:document.getElementById('j-inst').value},
+    {k:'email',val:document.getElementById('j-email').value.trim()},
+    {k:'phone',val:document.getElementById('j-phone').value.trim()},
+    {k:'emergency',val:document.getElementById('j-emergency').value.trim()},
+    {k:'message',val:document.getElementById('j-msg').value.trim()}
+  ],{btn:'j-btn',sp:'j-spinner',txt:'j-btn-text',err:'joinErr',form:'joinForm',ok:'joinOk',label:'入団を申し込む'});
+});
+
+document.getElementById('restForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  send('rest',[
+    {k:'rest_type',val:document.getElementById('r-type').value},
+    {k:'name',val:document.getElementById('r-name').value.trim()},
+    {k:'email',val:document.getElementById('r-email').value.trim()},
+    {k:'start_date',val:document.getElementById('r-start').value},
+    {k:'reason',val:document.getElementById('r-reason').value.trim()}
+  ],{btn:'r-btn',sp:'r-spinner',txt:'r-btn-text',err:'restErr',form:'restForm',ok:'restOk',label:'申請する'});
+});
+
+document.getElementById('leaveForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  send('leave',[
+    {k:'name',val:document.getElementById('l-name').value.trim()},
+    {k:'email',val:document.getElementById('l-email').value.trim()},
+    {k:'leave_date',val:document.getElementById('l-date').value},
+    {k:'reason',val:document.getElementById('l-reason').value.trim()}
+  ],{btn:'l-btn',sp:'l-spinner',txt:'l-btn-text',err:'leaveErr',form:'leaveForm',ok:'leaveOk',label:'退団を申請する'});
+});
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e,i){if(e.isIntersecting)setTimeout(function(){e.target.classList.add('visible');},i*80);});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+var st=document.getElementById('scrollTop');
+window.addEventListener('scroll',function(){st.classList.toggle('show',scrollY>400);});
+</script>
+</body>
+</html>
