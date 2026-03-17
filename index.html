@@ -188,6 +188,17 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 .footer-sns a.sns-youtube:hover { background: #FF0000; border-color: #FF0000; color: white; }
 .footer-sns a.sns-line:hover { background: #06C755; border-color: #06C755; color: white; }
 
+.scroll-top {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--blue); color: white; border: 2px solid var(--gold);
+  font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s;
+  box-shadow: 0 4px 16px rgba(33,74,154,0.35);
+}
+.scroll-top.show { opacity: 1; }
+
 .reveal { opacity: 0; transform: translateY(20px); transition: 0.8s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
@@ -203,7 +214,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 
 <div id="site-drawer">
   <ul>
-    <li><a href="#about" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="/higasui/about.html" onclick="closeNav()">🎷 団について</a></li>
     <li><a href="#features" onclick="closeNav()">✨ 団の特徴</a></li>
     <li><a href="#practice" onclick="closeNav()">📅 練習案内</a></li>
     <li><a href="#recruit" onclick="closeNav()">🎺 募集情報</a></li>
@@ -226,7 +237,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p class="hero-desc"><strong>ブランク何年でも大歓迎。</strong><br>東大阪に、大人も子供も一緒に音楽を楽しめる場所を作りたい。毎週土曜日は一緒に奏でましょう！</p>
       <div class="hero-btns">
         <a href="#join" class="btn-gold">🎺 見学・体験を申し込む（¥500〜）</a>
-        <a href="#about" class="btn-ghost">団について詳しく見る</a>
+        <a href="/higasui/about.html" class="btn-ghost">団について詳しく見る</a>
       </div>
     </div>
   </div>
@@ -339,7 +350,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p>ウィーンに世界中から人が集まる音楽の殿堂があるように、<br>東大阪にも<span>地域に根ざし、世代を超えて愛され続ける</span>音楽の場をつくりたい。<br>それが私たちの長期ビジョンです。</p>
     </div>
     <p style="line-height:1.8; margin-bottom:2.5rem; color:rgba(255,255,255,0.8);">でも、始まりはいつも「一緒に楽しもう」というシンプルな気持ちから。まずは一緒に音を出しましょう。</p>
-    <a href="#join" class="btn-gold" style="max-width:280px; margin:0 auto;">一緒に始めませんか？</a>
+    <a href="#join" class="btn-gold" style="max-width:280px; margin:0 auto; display:block; text-align:center;">一緒に始めませんか？</a>
   </div>
 </section>
 

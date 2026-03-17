@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>団について | 東大阪吹奏楽団</title>
+<meta name="description" content="東大阪吹奏楽団（ひがすい）について。団の理念・目標・パート構成・指揮者紹介。音楽を通じて人と地域をつなぐ吹奏楽団です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:1000px;margin:0 auto;padding:0 1.5rem;width:100%;}
+
+/* ===== NAV ===== */
+#site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(200,164,77,0.25);
+}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+#ham-btn{
+  width:44px;height:44px;border:none;background:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+}
+#ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
+
+/* ===== DRAWER ===== */
+#site-drawer{
+  display:none;position:fixed;top:56px;left:0;right:0;bottom:0;
+  z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;
+}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{
+  display:flex;align-items:center;gap:0.8rem;padding:1rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;
+}
+#drawer-cta{
+  display:block;text-align:center;margin-top:1.5rem;
+  background:var(--gold);color:white;padding:16px;border-radius:14px;font-weight:700;text-decoration:none;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header{
+  padding-top:56px;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  position:relative;overflow:hidden;
+}
+.page-header::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:300px;height:300px;border-radius:50%;background:rgba(200,164,77,0.08);
+}
+.page-header::after{
+  content:'';position:absolute;bottom:-40px;left:-40px;
+  width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03);
+}
+.page-header-inner{position:relative;z-index:1;padding:3rem 1.5rem 3.5rem;max-width:1000px;margin:0 auto;}
+.page-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;
+}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.8rem;
+}
+.page-header p{font-size:0.9rem;color:rgba(255,255,255,0.72);line-height:1.9;}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb{background:var(--white);padding:0.8rem 0;border-bottom:1px solid var(--border);}
+.breadcrumb-inner{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--muted);}
+.breadcrumb-inner a{color:var(--blue);text-decoration:none;}
+
+/* ===== SECTION ===== */
+.sec{padding:56px 0;}
+.sec-bg{background:var(--bg);}
+.sec-white{background:var(--white);}
+
+.eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.63rem;font-weight:800;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--blue);
+  margin-bottom:0.5rem;display:flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.4rem,3.5vw,1.9rem);font-weight:700;line-height:1.35;
+  margin-bottom:0.5rem;color:var(--navy);
+}
+.sec-lead{font-size:0.85rem;color:var(--muted);line-height:1.9;margin-bottom:2.5rem;}
+
+/* ===== MISSION ===== */
+.mission-card{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);
+  border-radius:20px;padding:2.5rem 2rem;position:relative;overflow:hidden;
+  margin-bottom:2rem;
+}
+.mission-card::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:180px;height:180px;border-radius:50%;background:rgba(200,164,77,0.1);
+}
+.mission-card::after{
+  content:'';position:absolute;bottom:-30px;left:-30px;
+  width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.04);
+}
+.mission-label{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:1rem;display:flex;align-items:center;gap:8px;
+  position:relative;z-index:1;
+}
+.mission-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.mission-text{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.05rem,2.5vw,1.3rem);font-weight:700;
+  color:white;line-height:1.9;position:relative;z-index:1;
+}
+.mission-text em{color:var(--gold);font-style:normal;}
+
+/* ===== PURPOSE LIST ===== */
+.purpose-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+@media(max-width:600px){.purpose-grid{grid-template-columns:1fr;}}
+.purpose-item{
+  background:var(--white);border-radius:14px;padding:1.4rem 1.2rem;
+  border:1px solid var(--border);
+  display:flex;gap:0.9rem;align-items:flex-start;
+  box-shadow:0 2px 12px rgba(33,74,154,0.06);
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.purpose-item:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(33,74,154,0.1);}
+.purpose-icon{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(33,74,154,0.1),rgba(33,74,154,0.05));
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.purpose-body{}
+.purpose-title{font-size:0.82rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem;line-height:1.5;}
+.purpose-desc{font-size:0.76rem;color:var(--muted);line-height:1.7;}
+
+/* ===== ACTIVITY LIST ===== */
+.activity-list{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:2rem;}
+.activity-item{
+  display:flex;align-items:center;gap:0.8rem;
+  background:var(--white);border-radius:10px;padding:0.9rem 1.2rem;
+  border:1px solid var(--border);font-size:0.85rem;color:var(--text);
+}
+.activity-item::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--gold);flex-shrink:0;
+}
+
+/* ===== NOTICE SMALL ===== */
+.notice-small{
+  background:rgba(33,74,154,0.05);border-radius:10px;
+  padding:0.9rem 1.1rem;border-left:3px solid var(--blue);
+  font-size:0.78rem;color:var(--muted);line-height:1.8;
+}
+
+/* ===== DIVIDER ===== */
+.divider{
+  height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);
+  margin:0;
+}
+
+/* ===== ACCORDION ===== */
+.accordion-wrap{display:flex;flex-direction:column;gap:0.75rem;}
+.accordion{
+  background:var(--white);border-radius:14px;
+  border:1px solid var(--border);overflow:hidden;
+  box-shadow:0 2px 10px rgba(33,74,154,0.05);
+}
+.accordion-header{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 1.4rem;background:none;border:none;cursor:pointer;
+  font-family:inherit;text-align:left;gap:1rem;
+  transition:background 0.2s;
+}
+.accordion-header:hover{background:rgba(33,74,154,0.03);}
+.accordion-header-left{display:flex;align-items:center;gap:0.9rem;}
+.accordion-icon{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+}
+.icon-woodwind{background:linear-gradient(135deg,#E8F0FB,#D0E0F5);}
+.icon-brass{background:linear-gradient(135deg,#FBF4E0,#F5E8C0);}
+.icon-perc{background:linear-gradient(135deg,#F0EBF8,#E0D5F0);}
+.icon-other{background:linear-gradient(135deg,#E8F5F0,#D0EDE5);}
+.icon-conductor{background:linear-gradient(135deg,#FBF0E8,#F5DFC0);}
+.accordion-title{font-size:0.95rem;font-weight:700;color:var(--navy);}
+.accordion-sub{font-size:0.73rem;color:var(--muted);margin-top:0.15rem;}
+.accordion-arrow{
+  width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--muted);font-size:0.75rem;
+  transition:transform 0.3s,border-color 0.2s,background 0.2s;
+}
+.accordion.open .accordion-arrow{
+  transform:rotate(180deg);border-color:var(--blue);
+  background:var(--blue);color:white;
+}
+.accordion-body{
+  max-height:0;overflow:hidden;transition:max-height 0.35s ease;
+}
+.accordion.open .accordion-body{max-height:400px;}
+.accordion-inner{
+  padding:0 1.4rem 1.4rem;
+  border-top:1px solid var(--border);
+}
+.coming-soon-wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem 1rem;gap:0.8rem;
+}
+.coming-soon-badge{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.2em;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  color:white;padding:4px 12px;border-radius:20px;
+}
+.coming-soon-text{font-size:0.82rem;color:var(--muted);text-align:center;line-height:1.7;}
+
+/* ===== SPONSOR ===== */
+.sponsor-row{
+  display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;
+  padding:1.2rem 1.4rem;
+  background:var(--white);border-radius:14px;border:1px solid var(--border);
+}
+.sponsor-label{font-size:0.72rem;font-weight:700;color:var(--muted);white-space:nowrap;}
+.sponsor-badges{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.sponsor-badge{
+  font-size:0.75rem;font-weight:700;color:var(--blue);
+  background:rgba(33,74,154,0.08);
+  padding:4px 12px;border-radius:20px;border:1px solid rgba(33,74,154,0.15);
+}
+
+/* ===== CTA ===== */
+.cta-band{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);
+  border-radius:20px;padding:2.5rem 2rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-band::before{
+  content:'';position:absolute;top:-50px;right:-50px;
+  width:200px;height:200px;border-radius:50%;background:rgba(200,164,77,0.1);
+}
+.cta-band-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.2rem,3vw,1.6rem);font-weight:700;color:white;
+  margin-bottom:0.5rem;position:relative;z-index:1;
+}
+.cta-band-sub{
+  font-size:0.85rem;color:rgba(255,255,255,0.7);
+  margin-bottom:1.5rem;line-height:1.8;position:relative;z-index:1;
+}
+.cta-btns{display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gold);color:white;padding:14px 28px;
+  border-radius:12px;font-size:0.9rem;font-weight:700;text-decoration:none;
+  box-shadow:0 4px 16px rgba(200,164,77,0.4);
+  transition:background 0.2s,transform 0.15s;
+}
+.btn-gold:hover{background:var(--goldhv);transform:translateY(-1px);}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1.5px solid rgba(255,255,255,0.4);color:white;padding:14px 28px;
+  border-radius:12px;font-size:0.9rem;font-weight:700;text-decoration:none;
+  transition:border-color 0.2s,background 0.2s;
+}
+.btn-outline:hover{border-color:white;background:rgba(255,255,255,0.08);}
+
+/* ===== STAFF CARD ===== */
+.staff-card{
+  background:var(--white);border-radius:16px;padding:1.6rem 1.8rem;
+  border:1px solid var(--border);
+  display:flex;align-items:center;gap:1.6rem;
+  box-shadow:0 2px 12px rgba(33,74,154,0.06);
+}
+@media(max-width:500px){.staff-card{flex-direction:column;align-items:flex-start;gap:1rem;}}
+.staff-avatar{
+  width:60px;height:60px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+}
+.staff-role{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:0.25rem;
+}
+.staff-name{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;
+}
+.staff-tags{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.staff-tag{
+  font-size:0.7rem;color:var(--muted);
+  background:var(--bg);border:1px solid var(--border);
+  padding:2px 10px;border-radius:20px;
+}
+
+/* ===== FOOTER ===== */
+footer{background:var(--navy);padding:2.5rem 0 1.5rem;margin-top:0;}
+.footer-logo{margin-bottom:0.8rem;}
+.footer-logo img{height:28px;width:auto;filter:brightness(0) invert(1);opacity:0.8;}
+.footer-desc{font-size:0.78rem;color:rgba(255,255,255,0.45);margin-bottom:1.2rem;line-height:1.7;}
+.footer-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.footer-links a{font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;}
+.footer-links a:hover{color:var(--gold);}
+.footer-sns{display:flex;gap:0.6rem;margin-bottom:1.5rem;}
+.footer-sns a{
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;text-decoration:none;color:rgba(255,255,255,0.7);
+  transition:background 0.2s,color 0.2s;
+}
+.footer-sns a.sns-instagram:hover{background:#E1306C;border-color:#E1306C;color:white;}
+.footer-sns a.sns-youtube:hover{background:#FF0000;border-color:#FF0000;color:white;}
+.footer-sns a.sns-line:hover{background:#06C755;border-color:#06C755;color:white;}
+.footer-copy{font-size:0.67rem;color:rgba(255,255,255,0.2);}
+
+/* ===== UTILS ===== */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.scroll-top{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:50;
+  width:42px;height:42px;border-radius:50%;
+  background:var(--blue);color:white;border:2px solid var(--gold);
+  font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.3s;
+  box-shadow:0 4px 16px rgba(33,74,154,0.35);
+}
+.scroll-top.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="site-nav">
+  <div class="inner nav-inner">
+    <a href="/higasui/" id="nav-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></a>
+    <button id="ham-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- DRAWER -->
+<div id="site-drawer">
+  <ul>
+    <li><a href="/higasui/about.html" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="/higasui/join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
+    <li><a href="/higasui/#recruit" onclick="closeNav()">🎺 募集情報</a></li>
+    <li><a href="/higasui/join.html#form" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="/higasui/yakkan.html" onclick="closeNav()">📄 定款</a></li>
+  </ul>
+  <a href="/higasui/join.html#form" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="page-eyebrow">About Us</p>
+    <h1>団について</h1>
+    <p>音楽を通じて人が育ち、人が地域を育てる。<br>東大阪から始まる、新しい吹奏楽のかたち。</p>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="inner breadcrumb-inner">
+    <a href="/higasui/">TOP</a>
+    <span>›</span>
+    <span>団について</span>
+  </div>
+</div>
+
+<!-- MISSION SECTION -->
+<section class="sec sec-white" id="mission">
+  <div class="inner">
+    <div class="reveal">
+      <p class="eyebrow">Mission</p>
+      <h2 class="h2">理念・目標</h2>
+      <p class="sec-lead">東大阪吹奏楽団（ひがすい）が目指すもの。定款第2条に定める、私たちの根本にある想いです。</p>
+    </div>
+
+    <div class="reveal">
+      <div class="mission-card">
+        <p class="mission-label">Our Mission</p>
+        <p class="mission-text">
+          音楽を通じて<em>人が育ち</em>、<br>
+          その人が<em>地域を育て</em>、<br>
+          地域がまた新たな<em>人を育てる</em>。<br><br>
+          そうした「人と地域と音楽」の<br>好循環を、東大阪から築いていく。
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p style="font-size:0.82rem;color:var(--muted);line-height:1.9;margin-bottom:1.5rem;">
+        団内で育った子どもたちが、やがて後輩を支えたり地域で活躍する存在となるような、
+        持続可能な成長と継承の仕組みを重視します。
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="purpose-grid">
+        <div class="purpose-item">
+          <div class="purpose-icon">🌏</div>
+          <div class="purpose-body">
+            <p class="purpose-title">世代を越えた交流・成長の場</p>
+            <p class="purpose-desc">子どもから大人まで、立場を越えてともに音楽を楽しめる場をつくります。</p>
+          </div>
+        </div>
+        <div class="purpose-item">
+          <div class="purpose-icon">🎵</div>
+          <div class="purpose-body">
+            <p class="purpose-title">地域の音楽文化の継承・発展</p>
+            <p class="purpose-desc">東大阪に根ざした音楽文化を大切に育て、次の世代へとつなぎます。</p>
+          </div>
+        </div>
+        <div class="purpose-item">
+          <div class="purpose-icon">🏫</div>
+          <div class="purpose-body">
+            <p class="purpose-title">部活動地域移行への対応</p>
+            <p class="purpose-desc">学校部活動の地域移行に対応した、新しい音楽教育・文化の仕組みを構築します。</p>
+          </div>
+        </div>
+        <div class="purpose-item">
+          <div class="purpose-icon">🤝</div>
+          <div class="purpose-body">
+            <p class="purpose-title">持続可能な地域社会の実現</p>
+            <p class="purpose-desc">地域の人々がともに学び、支え合うコミュニティをつくります。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="sponsor-row">
+        <span class="sponsor-label">後援</span>
+        <div class="sponsor-badges">
+          <span class="sponsor-badge">東大阪市</span>
+          <span class="sponsor-badge">東大阪市教育委員会</span>
+          <span class="sponsor-badge">公益財団法人音楽文化創造</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ACTIVITY SECTION -->
+<section class="sec sec-bg" id="activity">
+  <div class="inner">
+    <div class="reveal">
+      <p class="eyebrow">Activities</p>
+      <h2 class="h2">活動内容</h2>
+      <p class="sec-lead">演奏活動から地域貢献まで、幅広い活動を行っています。</p>
+    </div>
+    <div class="reveal">
+      <div class="activity-list">
+        <div class="activity-item">🎺 吹奏楽の演奏活動（定期演奏会・地域イベント・依頼演奏 等）</div>
+        <div class="activity-item">📚 練習活動および技術向上のための研修・講習会の開催</div>
+        <div class="activity-item">🏫 学校や教育関係者と連携した音楽教育支援</div>
+        <div class="activity-item">🌸 地域との協働による文化振興活動（子育て支援・福祉・高齢者支援 等）</div>
+        <div class="activity-item">🎉 団員相互の親睦・交流促進活動</div>
+      </div>
+      <div class="notice-small">
+        本団は政治的・宗教的な活動は一切行わず、反社会勢力等と一切関わりを持ちません。
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONDUCTOR SECTION -->
+<section class="sec sec-white" id="conductor">
+  <div class="inner">
+    <div class="reveal">
+      <p class="eyebrow">Conductor</p>
+      <h2 class="h2">指揮者紹介</h2>
+      <p class="sec-lead">私たちの音楽を導くマエストロをご紹介します。</p>
+    </div>
+    <div class="reveal">
+      <div class="accordion-wrap">
+        <div class="accordion" id="acc-conductor">
+          <button class="accordion-header" onclick="toggleAcc('acc-conductor')">
+            <div class="accordion-header-left">
+              <div class="accordion-icon icon-conductor">🎼</div>
+              <div>
+                <p class="accordion-title">指揮者</p>
+                <p class="accordion-sub">Music Director / Conductor</p>
+              </div>
+            </div>
+            <div class="accordion-arrow"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-inner">
+              <div class="coming-soon-wrap">
+                <span class="coming-soon-badge">近日公開予定</span>
+                <p class="coming-soon-text">指揮者のプロフィールを準備中です。<br>もうしばらくお待ちください。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PARTS SECTION -->
+<section class="sec sec-bg" id="parts">
+  <div class="inner">
+    <div class="reveal">
+      <p class="eyebrow">Members</p>
+      <h2 class="h2">パート紹介</h2>
+      <p class="sec-lead">現在メンバー募集中です。各パートの詳細は順次公開予定。</p>
+    </div>
+    <div class="reveal">
+      <div class="accordion-wrap">
+        <div class="accordion" id="acc-woodwind">
+          <button class="accordion-header" onclick="toggleAcc('acc-woodwind')">
+            <div class="accordion-header-left">
+              <div class="accordion-icon icon-woodwind">🎷</div>
+              <div>
+                <p class="accordion-title">木管セクション</p>
+                <p class="accordion-sub">Flute / Piccolo / Oboe / Clarinet / Saxophone</p>
+              </div>
+            </div>
+            <div class="accordion-arrow"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-inner">
+              <div class="coming-soon-wrap">
+                <span class="coming-soon-badge">Coming Soon</span>
+                <p class="coming-soon-text">パートメンバーの紹介を準備中です。<br>現在メンバー募集中！</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion" id="acc-brass">
+          <button class="accordion-header" onclick="toggleAcc('acc-brass')">
+            <div class="accordion-header-left">
+              <div class="accordion-icon icon-brass">🎺</div>
+              <div>
+                <p class="accordion-title">金管セクション</p>
+                <p class="accordion-sub">Trumpet / Trombone / Horn / Euphonium / Tuba</p>
+              </div>
+            </div>
+            <div class="accordion-arrow"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-inner">
+              <div class="coming-soon-wrap">
+                <span class="coming-soon-badge">Coming Soon</span>
+                <p class="coming-soon-text">パートメンバーの紹介を準備中です。<br>現在メンバー募集中！</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion" id="acc-perc">
+          <button class="accordion-header" onclick="toggleAcc('acc-perc')">
+            <div class="accordion-header-left">
+              <div class="accordion-icon icon-perc">🥁</div>
+              <div>
+                <p class="accordion-title">打楽器セクション</p>
+                <p class="accordion-sub">Percussion / Timpani / Mallet</p>
+              </div>
+            </div>
+            <div class="accordion-arrow"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-inner">
+              <div class="coming-soon-wrap">
+                <span class="coming-soon-badge">Coming Soon</span>
+                <p class="coming-soon-text">パートメンバーの紹介を準備中です。<br>現在メンバー募集中！</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion" id="acc-other">
+          <button class="accordion-header" onclick="toggleAcc('acc-other')">
+            <div class="accordion-header-left">
+              <div class="accordion-icon icon-other">🎻</div>
+              <div>
+                <p class="accordion-title">コントラバス・その他</p>
+                <p class="accordion-sub">Contrabass / Piano / etc.</p>
+              </div>
+            </div>
+            <div class="accordion-arrow"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-inner">
+              <div class="coming-soon-wrap">
+                <span class="coming-soon-badge">Coming Soon</span>
+                <p class="coming-soon-text">パートメンバーの紹介を準備中です。<br>現在メンバー募集中！</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STAFF SECTION -->
+<section class="sec sec-white" id="staff">
+  <div class="inner">
+    <div class="reveal">
+      <p class="eyebrow">Staff</p>
+      <h2 class="h2">スタッフ</h2>
+      <p class="sec-lead">団の運営を支えるメンバーです。</p>
+    </div>
+    <div class="reveal">
+      <div class="staff-card">
+        <div class="staff-avatar">🎵</div>
+        <div>
+          <p class="staff-role">General Manager / 理事</p>
+          <p class="staff-name">谷 将大</p>
+          <div class="staff-tags">
+            <span class="staff-tag">大阪芸術大学 音楽学科 音楽制作コース卒</span>
+            <span class="staff-tag">地域音楽コーディネーター</span>
+            <span class="staff-tag">バックオフィス・DX担当</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA SECTION -->
+<section class="sec sec-white">
+  <div class="inner">
+    <div class="reveal">
+      <div class="cta-band">
+        <p class="cta-band-title">一緒に音楽を楽しみませんか？</p>
+        <p class="cta-band-sub">見学は¥500〜、楽器がない方もご相談ください。<br>ブランクがあっても大丈夫。毎週土曜日、東大阪で練習しています。</p>
+        <div class="cta-btns">
+          <a href="/higasui/join.html#form" class="btn-gold">🎺 見学を申し込む</a>
+          <a href="/higasui/join.html" class="btn-outline">練習案内を見る</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="inner">
+    <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
+    <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
+    <div class="footer-links">
+      <a href="/higasui/about.html">団について</a>
+      <a href="/higasui/join.html">練習案内</a>
+      <a href="/higasui/#recruit">募集情報</a>
+      <a href="/higasui/join.html#form">見学申込</a>
+      <a href="/higasui/yakkan.html">定款</a>
+    </div>
+    <div class="footer-sns">
+      <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-line" aria-label="LINE"><i class="fab fa-line"></i></a>
+    </div>
+    <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ハンバーガー
+const ham = document.getElementById('ham-btn');
+const drawer = document.getElementById('site-drawer');
+ham.addEventListener('click', function() {
+  const isOpen = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !isOpen);
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+});
+function closeNav() {
+  drawer.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// アコーディオン
+function toggleAcc(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  // 全部閉じる
+  document.querySelectorAll('.accordion').forEach(a => a.classList.remove('open'));
+  // クリックしたものだけトグル
+  if (!isOpen) el.classList.add('open');
+}
+
+// スクロールリビール
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// スクロールトップ
+const st = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => st.classList.toggle('show', scrollY > 400));
+</script>
+</body>
+</html>
