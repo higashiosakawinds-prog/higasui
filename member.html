@@ -1028,8 +1028,17 @@ function loadChartJs(cb) {
 }
 
 // 会計パネル初期化
-function initFinancePanel() {
-  ledgerData = loadLedgerLocal();
+async function initFinancePanel() {
+  // GASから出納帳データを取得
+  try {
+    const url = GAS_URL + '?action=getLedger&token=' + encodeURIComponent(memberToken);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.success) ledgerData = (data.entries || []).sort((a,b) => a.date.localeCompare(b.date));
+    else ledgerData = JSON.parse(localStorage.getItem('higasui_ledger') || '[]');
+  } catch(e) {
+    ledgerData = JSON.parse(localStorage.getItem('higasui_ledger') || '[]');
+  }
   populateMonthFilter();
   populateYearSelect();
   renderLedger();
@@ -1090,8 +1099,8 @@ function setLedgerType(type) {
   }
 }
 
-// ---- 保存 ----
-function saveLedgerEntry() {
+// ---- 保存（GAS POST）----
+async function saveLedgerEntry() {
   const date     = document.getElementById('ledgerDate').value;
   const desc     = document.getElementById('ledgerDesc').value.trim();
   const amount   = parseInt(document.getElementById('ledgerAmount').value, 10);
@@ -1116,7 +1125,14 @@ function saveLedgerEntry() {
 
   // 日付順にソート
   ledgerData.sort((a, b) => a.date.localeCompare(b.date));
-  saveLedgerLocal();
+  // GASに保存（失敗時はローカルに保存）
+  try {
+    const body = new URLSearchParams({ action: 'saveLedger', token: memberToken, entryId: editId, date, desc, category, type: ledgerType, amount, note });
+    await fetch(GAS_URL, { method: 'POST', body });
+    await fetchLedger();
+  } catch(e) {
+    localStorage.setItem('higasui_ledger', JSON.stringify(ledgerData));
+  }
   closeLedgerModal();
   populateMonthFilter();
   populateYearSelect();
@@ -1125,11 +1141,14 @@ function saveLedgerEntry() {
   loadChartJs(() => renderGraph());
 }
 
-// ---- 削除 ----
-function deleteLedgerEntry(id) {
+// ---- 削除（GAS POST）----
+async function deleteLedgerEntry(id) {
   if (!confirm('この記録を削除しますか？')) return;
+  try {
+    const body = new URLSearchParams({ action: 'deleteLedger', token: memberToken, entryId: id });
+    await fetch(GAS_URL, { method: 'POST', body });
+  } catch(e) {}
   ledgerData = ledgerData.filter(e => e.id !== id);
-  saveLedgerLocal();
   renderLedger();
   renderSummaryCards();
   loadChartJs(() => renderGraph());
