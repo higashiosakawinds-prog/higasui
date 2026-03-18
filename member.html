@@ -960,15 +960,11 @@ function closePanel(id) {
 // =============================================
 //  パネルデータ読み込み（GAS連携）
 // =============================================
+// =============================================
+//  パネルデータ読み込み（GAS連携）
+// =============================================
 async function loadPanelData(id) {
-  try {
-    const url = `${GAS_URL}?action=getPanelData&committee=${id}&token=${encodeURIComponent(memberToken)}`;
-    const res  = await fetch(url);
-    const data = await res.json();
-    if (data.success) applyPanelData(id, data);
-  } catch (e) {
-    applyMockPanelData(id);
-  }
+  applyMockPanelData(id);
 }
 
 function applyMockPanelData(id) {
