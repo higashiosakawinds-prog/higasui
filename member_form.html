@@ -195,6 +195,16 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
             <div class="fg"><label>電話番号<span class="req">*</span></label><input type="tel" id="j-phone" placeholder="090-0000-0000" required></div>
             <div class="fg"><label>緊急連絡先<span class="opt">任意</span></label><input type="tel" id="j-emergency" placeholder="090-0000-0000"></div>
           </div>
+          <div class="fg-section"><span class="fg-section-title">LINE連携</span></div>
+          <div class="fg">
+            <label>LINE ID<span class="opt">任意・推奨</span></label>
+            <input type="text" id="j-lineid" placeholder="例：@higasui_taro（@から始まる文字列）">
+            <p style="font-size:.72rem;color:var(--muted);margin-top:4px;line-height:1.6;">
+              <i class="fa-brands fa-line" style="color:#06C755;"></i>
+              LINEアプリ → プロフィール → 「ID」に表示されている文字列を入力してください。<br>
+              入力いただくと入団承認後にマイページURLをLINEでお送りできます。
+            </p>
+          </div>
           <div class="fg-section"><span class="fg-section-title">その他</span></div>
           <div class="fg"><label>ひとこと<span class="opt">任意</span></label><textarea id="j-msg" rows="3" placeholder="演奏歴・ブランク年数・意気込みなどお気軽にどうぞ！"></textarea></div>
           <div class="agree-box">
@@ -431,7 +441,8 @@ document.getElementById('joinForm').addEventListener('submit',function(e){
     {k:'email',val:document.getElementById('j-email').value.trim()},
     {k:'phone',val:document.getElementById('j-phone').value.trim()},
     {k:'emergency',val:document.getElementById('j-emergency').value.trim()},
-    {k:'message',val:document.getElementById('j-msg').value.trim()}
+    {k:'message',val:document.getElementById('j-msg').value.trim()},
+    {k:'line_id',val:document.getElementById('j-lineid').value.trim()}
   ],{btn:'j-btn',sp:'j-spinner',txt:'j-btn-text',err:'joinErr',form:'joinForm',ok:'joinOk',label:'入団を申し込む'});
 });
 

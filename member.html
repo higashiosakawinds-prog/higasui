@@ -365,6 +365,70 @@ footer p{font-family:'Outfit',sans-serif;font-size:.72rem;color:rgba(255,255,255
 
 <!-- ===== COMMITTEE PANELS ===== -->
 
+<!-- 管理者ツール -->
+<div class="panel-overlay" id="panel-admin">
+  <div class="panel-nav">
+    <button class="panel-back" onclick="closePanel('admin')"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="panel-nav-title">管理者ツール</div>
+    <div class="panel-nav-badge" style="background:rgba(239,68,68,.2);color:#fca5a5;">ADMIN</div>
+  </div>
+  <div class="panel-body">
+
+    <div style="background:#fff;border-radius:16px;border:1.5px solid rgba(239,68,68,.3);padding:1.2rem 1.4rem;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start;">
+      <i class="fa-solid fa-shield-halved" style="color:#dc2626;margin-top:2px;"></i>
+      <div style="font-size:.82rem;color:#991b1b;line-height:1.7;">このパネルは<strong>団長・副団長専用</strong>です。入団申請の承認・マイページURL発行を行います。</div>
+    </div>
+
+    <!-- 仮登録・申請者一覧 -->
+    <div class="panel-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div class="ps-title" style="margin-bottom:0;">入団申請・仮登録一覧</div>
+        <button class="btn-secondary" onclick="loadAdminData()" style="padding:6px 14px;font-size:.75rem;">
+          <i class="fa-solid fa-rotate"></i> 再読み込み
+        </button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" style="min-width:600px;">
+          <thead><tr><th>氏名</th><th>パート</th><th>種別</th><th>ステータス</th><th>LINE ID</th><th>操作</th></tr></thead>
+          <tbody id="adminMemberTable">
+            <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">読み込み中…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- マイページURL発行 -->
+    <div class="panel-section">
+      <div class="ps-title">マイページURL発行</div>
+      <div style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:1.4rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div>
+            <label style="display:block;font-size:.73rem;font-weight:700;color:var(--navy);margin-bottom:4px;">団員ID</label>
+            <input type="text" id="adminMemberId" placeholder="M001" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.85rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:.73rem;font-weight:700;color:var(--navy);margin-bottom:4px;">LINE ID（Uxxxxxxx形式）</label>
+            <input type="text" id="adminLineId" placeholder="Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.85rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="display:block;font-size:.73rem;font-weight:700;color:var(--navy);margin-bottom:4px;">団員名</label>
+          <input type="text" id="adminMemberName" placeholder="山田 太郎" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div id="adminResult" style="display:none;background:#f0fdf4;border:1px solid #22c55e;border-radius:10px;padding:12px;margin-bottom:12px;font-size:.82rem;color:#15803d;"></div>
+        <div id="adminError" style="display:none;background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;padding:12px;margin-bottom:12px;font-size:.82rem;color:#991b1b;"></div>
+        <button class="btn-primary" id="adminIssueBtn" onclick="issueMyPageUrl()" style="width:100%;">
+          <i class="fa-solid fa-paper-plane"></i> 承認してマイページURLをLINEで送付
+        </button>
+        <p style="font-size:.72rem;color:var(--muted);margin-top:8px;text-align:center;">
+          ※ LINE IDが空欄の場合はURLをコピーして手動で送付してください
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- 企画運営委員会 -->
 <div class="panel-overlay" id="panel-planning">
   <div class="panel-nav">
@@ -746,6 +810,13 @@ const COMMITTEES = [
     tags: ['打楽器管理', '備品台帳', 'メンテ記録'],
     codeKey: 'EQUIPMENT'
   },
+  {
+    id: 'admin', name: '管理者ツール',
+    icon: 'fa-solid fa-shield-halved', colorClass: 'cc-planning', borderClass: 'border-planning',
+    desc: '団長・副団長専用。入団承認・マイページURL発行を行います。',
+    tags: ['入団承認', 'URL発行', '団員管理'],
+    codeKey: 'ADMIN'
+  },
 ];
 
 // セッション内でアンロック済みパネルを記憶
@@ -960,11 +1031,15 @@ function closePanel(id) {
 // =============================================
 //  パネルデータ読み込み（GAS連携）
 // =============================================
-// =============================================
-//  パネルデータ読み込み（GAS連携）
-// =============================================
 async function loadPanelData(id) {
-  applyMockPanelData(id);
+  try {
+    const url = `${GAS_URL}?action=getPanelData&committee=${id}&token=${encodeURIComponent(memberToken)}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.success) applyPanelData(id, data);
+  } catch (e) {
+    applyMockPanelData(id);
+  }
 }
 
 function applyMockPanelData(id) {
@@ -998,6 +1073,11 @@ function applyMockPanelData(id) {
       <tr><td>スネアドラム</td><td>打楽器</td><td><span class="status-badge sb-ok">良好</span></td><td>文化創造館</td><td>2025/09/01</td></tr>
       <tr><td>ティンパニ</td><td>打楽器</td><td><span class="status-badge sb-warn">要確認</span></td><td>文化創造館</td><td>2025/07/01</td></tr>
       <tr><td>指揮台</td><td>備品</td><td><span class="status-badge sb-ok">良好</span></td><td>文化創造館</td><td>―</td></tr>`;
+  }
+}
+
+  if (id === 'admin') {
+    loadAdminData();
   }
 }
 
@@ -1490,6 +1570,105 @@ function renderFollowUp() {
   ).join('');
 }
 
+
+
+// =============================================
+//  管理者ツール
+// =============================================
+
+async function loadAdminData() {
+  try {
+    const url  = GAS_URL + '?action=getAdminData&token=' + encodeURIComponent(memberToken);
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.success) renderAdminTable(data.members);
+    else renderAdminTable([]);
+  } catch(e) {
+    renderAdminTable([]);
+  }
+}
+
+function renderAdminTable(members) {
+  const tbody = document.getElementById('adminMemberTable');
+  if (!members || !members.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データがありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = members.map(m => {
+    const statusColor = m.status === '正会員' ? '#16a34a' : m.status === '仮登録' ? '#d97706' : 'var(--muted)';
+    return '<tr>' +
+      '<td style="font-weight:700;">' + m.name + '</td>' +
+      '<td style="font-size:.78rem;color:var(--muted);">' + (m.part || '―') + '</td>' +
+      '<td style="font-size:.78rem;">' + (m.type || '―') + '</td>' +
+      '<td><span style="font-weight:700;color:' + statusColor + ';">' + (m.status || '―') + '</span></td>' +
+      '<td style="font-size:.75rem;color:var(--muted);">' + (m.lineId ? m.lineId.substring(0,8) + '...' : '未取得') + '</td>' +
+      '<td><button onclick="fillAdminForm('' + m.id + '','' + m.name + '','' + (m.lineId||'') + '')" ' +
+        'style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;">承認</button></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function fillAdminForm(id, name, lineId) {
+  document.getElementById('adminMemberId').value   = id;
+  document.getElementById('adminMemberName').value = name;
+  document.getElementById('adminLineId').value     = lineId || '';
+  document.getElementById('adminResult').style.display = 'none';
+  document.getElementById('adminError').style.display  = 'none';
+  // 下のフォームまでスクロール
+  document.getElementById('adminIssueBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function issueMyPageUrl() {
+  const memberId   = document.getElementById('adminMemberId').value.trim();
+  const memberName = document.getElementById('adminMemberName').value.trim();
+  const lineId     = document.getElementById('adminLineId').value.trim();
+  const btn        = document.getElementById('adminIssueBtn');
+  const resultEl   = document.getElementById('adminResult');
+  const errorEl    = document.getElementById('adminError');
+
+  resultEl.style.display = 'none';
+  errorEl.style.display  = 'none';
+
+  if (!memberId || !memberName) {
+    errorEl.textContent = '団員IDと団員名は必須です。';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 処理中…';
+
+  try {
+    const body = new URLSearchParams({
+      action: 'approveMember',
+      token:  memberToken,
+      memberId, memberName, lineId,
+    });
+    const res  = await fetch(GAS_URL, { method: 'POST', body });
+    const data = await res.json();
+
+    if (data.success) {
+      const myPageUrl = data.myPageUrl || '';
+      resultEl.innerHTML =
+        '<i class="fa-solid fa-circle-check"></i> 承認完了！<br>' +
+        (lineId ? 'LINEにマイページURLを送付しました。' : '以下のURLを手動で送付してください。') +
+        '<br><br><strong>マイページURL：</strong><br>' +
+        '<a href="' + myPageUrl + '" target="_blank" style="color:var(--blue);word-break:break-all;">' + myPageUrl + '</a>' +
+        '<button onclick="navigator.clipboard.writeText('' + myPageUrl + '')" style="margin-left:8px;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:.72rem;cursor:pointer;">コピー</button>';
+      resultEl.style.display = 'block';
+      await loadAdminData();
+    } else {
+      errorEl.textContent = 'エラー：' + (data.error || '処理に失敗しました');
+      errorEl.style.display = 'block';
+    }
+  } catch(e) {
+    errorEl.textContent = '通信エラーが発生しました。';
+    errorEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 承認してマイページURLをLINEで送付';
+  }
+}
 
 // =============================================
 //  NAV ドロワー
