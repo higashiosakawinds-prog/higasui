@@ -440,8 +440,8 @@ document.getElementById('joinForm').addEventListener('submit',function(e){
     {k:'instrument',val:document.getElementById('j-inst').value},
     {k:'email',val:document.getElementById('j-email').value.trim()},
     {k:'phone',val:document.getElementById('j-phone').value.trim()},
-    {k:'emergency',val:document.getElementById('j-emergency').value.trim()},
-    {k:'message',val:document.getElementById('j-msg').value.trim()},
+    {k:'emergency',val:document.getElementById('j-emergency').value.trim(),optional:true},
+    {k:'message',val:document.getElementById('j-msg').value.trim(),optional:true},
     {k:'line_id',val:document.getElementById('j-lineid').value.trim(),optional:true}
   ],{btn:'j-btn',sp:'j-spinner',txt:'j-btn-text',err:'joinErr',form:'joinForm',ok:'joinOk',label:'入団を申し込む'});
 });
