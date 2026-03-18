@@ -1099,8 +1099,13 @@ function setLedgerType(type) {
   }
 }
 
-// ---- 保存（GAS POST）----
+// ---- 保存（GAS POST・連打防止つき）----
 async function saveLedgerEntry() {
+  const saveBtn = document.getElementById('ledgerSaveBtn');
+  if (saveBtn.disabled) return; // 連打防止
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 保存中…';
+
   const date     = document.getElementById('ledgerDate').value;
   const desc     = document.getElementById('ledgerDesc').value.trim();
   const amount   = parseInt(document.getElementById('ledgerAmount').value, 10);
@@ -1110,6 +1115,8 @@ async function saveLedgerEntry() {
 
   if (!date || !desc || isNaN(amount) || amount <= 0) {
     document.getElementById('ledgerError').classList.add('show');
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> 保存';
     return;
   }
 
@@ -1123,16 +1130,19 @@ async function saveLedgerEntry() {
     });
   }
 
-  // 日付順にソート
   ledgerData.sort((a, b) => a.date.localeCompare(b.date));
-  // GASに保存（失敗時はローカルに保存）
+
   try {
     const body = new URLSearchParams({ action: 'saveLedger', token: memberToken, entryId: editId, date, desc, category, type: ledgerType, amount, note });
     await fetch(GAS_URL, { method: 'POST', body });
     await fetchLedger();
   } catch(e) {
     localStorage.setItem('higasui_ledger', JSON.stringify(ledgerData));
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> 保存';
   }
+
   closeLedgerModal();
   populateMonthFilter();
   populateYearSelect();
