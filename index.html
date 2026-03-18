@@ -250,7 +250,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 <!-- カルーセルバナー -->
 <div class="carousel-wrap">
   <div class="carousel-track" id="carouselTrack">
-    <!-- フォールバック：Notionから取得できない場合 -->
+    <!-- フォールバック：Supabaseから取得できない場合 -->
     <div class="carousel-slide">
       <img src="/higasui/concert_banner.png" alt="第一回定期演奏会">
     </div>
@@ -408,7 +408,8 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
           <div class="fg"><label>メールアドレス *</label><input type="email" id="f-email" required placeholder="example@gmail.com"></div>
           <div class="fg"><label>希望見学日・メッセージ</label><textarea id="f-msg" rows="3" placeholder="質問などあればお気軽に！"></textarea></div>
           <button type="submit" class="btn-gold" id="f-btn" style="width:100%; border:none; cursor:pointer;"><span id="f-btn-text">見学を申し込む</span></button>
-          <p class="form-note">折り返し <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3d55545a5c4e5554524e5c565c134a5453594e7d5a505c5451135e5250">[email&#160;protected]</a> よりご連絡します。</p>
+          <p class="form-note">折り返し higashiosaka.winds@gmail.com よりご連絡します。</p>
+          <div id="errBox" style="display:none; color:red; font-size:0.8rem; margin-top:0.5rem;"></div>
         </form>
         <div id="okBox" style="display:none; text-align:center;"><h3>🎵 申込ありがとうございます！</h3><p>追ってご連絡いたします。</p></div>
       </div>
@@ -439,7 +440,15 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 </footer>
 
 <script>
+// ==============================
+// 設定値
+// ==============================
+const SUPABASE_URL = 'https://eqnacealnmmipapdguc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_09pd5yiuCBENloDwHZTs9A_3uQmSKqy'; // ← Publishable keyに差し替え済み
+
+// ==============================
 // ハンバーガーメニュー
+// ==============================
 const ham = document.getElementById('ham-btn');
 const drawer = document.getElementById('site-drawer');
 ham.addEventListener('click', function() {
@@ -452,37 +461,62 @@ function closeNav() {
   document.body.style.overflow = '';
 }
 
-// Notion NEWS
-const NOTION_PROXY = 'https://script.google.com/macros/s/AKfycbzdOojPCNSk8Aa0xcjMVlJj9TdbY77-V3rjAQuaAp_lcFR0rk_IK6s6h5xRuqoXn0Km/exec';
-
+// ==============================
+// NEWS（Supabase版）
+// ==============================
 async function loadNews() {
   const el = document.getElementById('news-list');
   try {
-    const res = await fetch(NOTION_PROXY);
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/news?is_public=eq.true&order=published_at.desc&limit=5`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+    if (!res.ok) throw new Error('fetch error');
     const data = await res.json();
     if (!data || data.length === 0) throw new Error('empty');
-    el.innerHTML = data.map(item => `
-      <div class="news-row">
-        <span class="news-date">${item.date}</span>
-        <span class="news-tag tag-${item.tag}">${item.tagLabel}</span>
-        <span>${item.link ? '<a href="'+item.link+'" style="color:white;text-decoration:none;">'+item.title+'</a>' : item.title}</span>
-      </div>
-    `).join('');
-    // カルーセル用スライドデータ
-    const bannerItems = data.filter(d => d.isBanner && d.banner);
+
+    el.innerHTML = data.map(item => {
+      const date = item.published_at
+        ? item.published_at.replace(/-/g, '.').slice(0, 10)
+        : '';
+      const tagLabel = item.tag === 'concert' ? '演奏会'
+                     : item.tag === 'news'    ? 'NEWS'
+                     : 'INFO';
+      return `
+        <div class="news-row">
+          <span class="news-date">${date}</span>
+          <span class="news-tag tag-${item.tag || 'info'}">${tagLabel}</span>
+          <span>${item.link_url
+            ? `<a href="${item.link_url}" style="color:white;text-decoration:none;">${item.title}</a>`
+            : item.title}</span>
+        </div>
+      `;
+    }).join('');
+
+    // バナー用スライドデータ
+    const bannerItems = data.filter(d => d.show_banner && d.banner_url);
     initCarousel(bannerItems.length > 0 ? bannerItems : null);
+
   } catch(e) {
+    // フォールバック
     initCarousel(null);
     el.innerHTML = `
-      <div class="news-row"><span class="news-date">2025.07.17</span><span class="news-tag tag-concert">演奏会</span><span>第一回定期演奏会 2026年12月13日（土）東大阪文化創造館小ホール</span></div>
-      <div class="news-row"><span class="news-date">2025.07.17</span><span class="news-tag tag-news">NEWS</span><span>東大阪吹奏楽団、誕生しました！見学・体験申込受付スタート。</span></div>
-      <div class="news-row"><span class="news-date">2025.07</span><span class="news-tag tag-info">INFO</span><span>東大阪市・東大阪市教育委員会より後援をいただきました。</span></div>
+      <div class="news-row"><span class="news-date">2026.03.16</span><span class="news-tag tag-concert">演奏会</span><span>第一回定期演奏会 2026年12月13日（土）東大阪文化創造館小ホール</span></div>
+      <div class="news-row"><span class="news-date">2026.03.16</span><span class="news-tag tag-news">NEWS</span><span>東大阪吹奏楽団、誕生しました！見学・体験申込受付スタート。</span></div>
+      <div class="news-row"><span class="news-date">2026.03.16</span><span class="news-tag tag-info">INFO</span><span>東大阪市・東大阪市教育委員会より後援をいただきました。</span></div>
     `;
   }
 }
 loadNews();
 
-// フォーム送信
+// ==============================
+// フォーム送信（GASのまま維持）
+// ==============================
 const GAS = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
 const theForm = document.getElementById('theForm');
 if (theForm) {
@@ -516,17 +550,18 @@ if (theForm) {
   });
 }
 
+// ==============================
 // カルーセル
+// ==============================
 function initCarousel(slides) {
   const track = document.getElementById('carouselTrack');
   const dotsWrap = document.getElementById('carouselDots');
   if (!track) return;
   let cur = 0;
 
-  // スライドをNotionデータで更新
   if (slides && slides.length > 0) {
     track.innerHTML = slides.map(s =>
-      `<div class="carousel-slide"><a href="${s.link||'#'}"><img src="${s.banner}" alt="${s.title}"></a></div>`
+      `<div class="carousel-slide"><a href="${s.link_url || '#'}"><img src="${s.banner_url}" alt="${s.title}"></a></div>`
     ).join('');
     dotsWrap.innerHTML = slides.map((_,i) =>
       `<span class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></span>`
@@ -534,7 +569,6 @@ function initCarousel(slides) {
   }
 
   const total = track.children.length;
-  // PC用：件数に応じてgridカラム数を切り替え
   track.classList.remove('count-1','count-2','count-3');
   track.classList.add('count-' + Math.min(total, 3));
 
@@ -546,12 +580,12 @@ function initCarousel(slides) {
 
   document.getElementById('carouselPrev').onclick = () => goSlide(cur - 1);
   document.getElementById('carouselNext').onclick = () => goSlide(cur + 1);
-
-  // 自動再生
   setInterval(() => goSlide(cur + 1), 4000);
 }
 
+// ==============================
 // スクロールリビール
+// ==============================
 const obs = new IntersectionObserver(entries => {
   entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i*80); });
 }, {threshold:0.08});
