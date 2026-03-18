@@ -605,24 +605,65 @@ footer p{font-family:'Outfit',sans-serif;font-size:.72rem;color:rgba(255,255,255
     <div class="panel-nav-badge">VENUE</div>
   </div>
   <div class="panel-body">
+
+    <!-- サマリー -->
     <div class="stat-cards">
-      <div class="stat-card"><div class="stat-card-num" id="v-stat1">0</div><div class="stat-card-label">確定済み予約</div></div>
-      <div class="stat-card"><div class="stat-card-num" id="v-stat2">0</div><div class="stat-card-label">仮予約</div></div>
-      <div class="stat-card"><div class="stat-card-num" id="v-stat3">0</div><div class="stat-card-label">今月の練習回数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="v-stat1">―</div><div class="stat-card-label">今月の練習回数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="v-stat2">―</div><div class="stat-card-label">来月の練習回数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="v-stat3">―</div><div class="stat-card-label">使用会場数</div></div>
+      <div class="stat-card"><div class="stat-card-num" id="v-stat4">―</div><div class="stat-card-label">次回練習まで</div></div>
     </div>
+
+    <!-- アクション -->
     <div class="action-row">
-      <button class="btn-primary" onclick="showWip('venue')"><i class="fa-solid fa-plus"></i> 予約を登録</button>
-      <button class="btn-secondary" onclick="showWip('venue')"><i class="fa-solid fa-calendar"></i> カレンダーを見る</button>
+      <a href="https://calendar.google.com" target="_blank" class="btn-primary" style="text-decoration:none;"><i class="fa-solid fa-calendar-plus"></i> カレンダーを編集</a>
+      <button class="btn-secondary" onclick="loadVenueData()"><i class="fa-solid fa-rotate"></i> 再読み込み</button>
     </div>
+
+    <!-- スケジュール一覧 -->
     <div class="panel-section">
-      <div class="ps-title">直近の練習スケジュール</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div class="ps-title" style="margin-bottom:0;">直近の練習スケジュール</div>
+        <select id="venueMonthFilter" onchange="renderVenueTable()" style="padding:4px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.75rem;font-family:inherit;color:var(--navy);background:#fff;outline:none;">
+          <option value="">全期間</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" style="min-width:560px;">
+          <thead><tr><th>日付</th><th>曜日</th><th>会場</th><th>時間</th><th>参加</th><th>欠席</th><th>未回答</th></tr></thead>
+          <tbody id="venueTable">
+            <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;"><div class="spinner-lg" style="margin:0 auto;width:24px;height:24px;border-width:2px;"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 会場別集計 -->
+    <div class="panel-section">
+      <div class="ps-title">会場別集計（今月）</div>
+      <div id="venueStats" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+        <div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem;">読み込み中…</div>
+      </div>
+    </div>
+
+    <!-- 出欠フォローアップ -->
+    <div class="panel-section">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+        <div class="ps-title" style="margin-bottom:0;">出欠フォローアップ</div>
+        <span style="background:#fee2e2;color:#991b1b;font-size:.68rem;font-weight:700;padding:2px 10px;border-radius:20px;">要フォロー優先表示</span>
+      </div>
+      <div style="background:#fffbeb;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:.8rem 1rem;font-size:.78rem;color:#78350f;margin-bottom:1rem;">
+        <i class="fa-solid fa-heart" style="margin-right:6px;"></i>
+        欠席が続いている団員を早めに把握して、声をかけてあげましょう。
+      </div>
       <table class="data-table">
-        <thead><tr><th>日付</th><th>曜日</th><th>会場</th><th>時間</th><th>状態</th></tr></thead>
-        <tbody id="venueTable">
-          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データを読み込み中…</td></tr>
+        <thead><tr><th>氏名</th><th>パート</th><th>直近5回の出欠</th><th>出席率</th><th>最終出席</th></tr></thead>
+        <tbody id="followUpTable">
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">読み込み中…</td></tr>
         </tbody>
       </table>
     </div>
+
   </div>
 </div>
 
@@ -943,13 +984,7 @@ function applyMockPanelData(id) {
     initFinancePanel();
   }
   if (id === 'venue') {
-    document.getElementById('v-stat1').textContent = '8';
-    document.getElementById('v-stat2').textContent = '2';
-    document.getElementById('v-stat3').textContent = '4';
-    document.getElementById('venueTable').innerHTML = `
-      <tr><td>2025/06/28</td><td>土</td><td>東大阪文化創造館</td><td>13:00〜17:00</td><td><span class="status-badge sb-ok">確定</span></td></tr>
-      <tr><td>2025/07/05</td><td>土</td><td>荒本人権文化センター</td><td>13:00〜17:00</td><td><span class="status-badge sb-ok">確定</span></td></tr>
-      <tr><td>2025/07/12</td><td>土</td><td>東大阪文化創造館</td><td>13:00〜17:00</td><td><span class="status-badge sb-warn">仮予約</span></td></tr>`;
+    loadVenueData();
   }
   if (id === 'library') {
     document.getElementById('lib-stat1').textContent = '24';
@@ -1300,6 +1335,165 @@ function exportLedgerCSV() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+
+// =============================================
+//  予約管理パネル
+// =============================================
+
+let venueSchedules = [];
+let venueAttends   = [];
+let venueMembers   = [];
+
+async function loadVenueData() {
+  try {
+    const url  = GAS_URL + '?action=getVenuePanel&token=' + encodeURIComponent(memberToken);
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.success) {
+      venueSchedules = data.schedules || [];
+      venueAttends   = data.attends   || [];
+      venueMembers   = data.members   || [];
+    }
+  } catch(e) {
+    venueSchedules = getMockSchedules();
+    venueAttends   = getMockAttends();
+    venueMembers   = getMockMembers();
+  }
+  populateVenueMonthFilter();
+  renderVenueStats();
+  renderVenueTable();
+  renderFollowUp();
+}
+
+function getMockSchedules() {
+  const now = new Date(); const y = now.getFullYear(); const m = now.getMonth();
+  return [
+    { id:'P001', date: new Date(y,m,1),   place:'東大阪文化創造館',   time:'13:00〜17:00' },
+    { id:'P002', date: new Date(y,m,8),   place:'荒本人権文化センター', time:'13:00〜17:00' },
+    { id:'P003', date: new Date(y,m,15),  place:'東大阪文化創造館',   time:'13:00〜17:00' },
+    { id:'P004', date: new Date(y,m,22),  place:'東大阪文化創造館',   time:'13:00〜17:00' },
+    { id:'P005', date: new Date(y,m+1,5), place:'東大阪文化創造館',   time:'13:00〜17:00' },
+    { id:'P006', date: new Date(y,m+1,12),place:'荒本人権文化センター', time:'13:00〜17:00' },
+  ];
+}
+function getMockAttends() {
+  return [
+    { practiceId:'P001', memberId:'M001', memberName:'谷 将大', answer:'attend' },
+    { practiceId:'P002', memberId:'M001', memberName:'谷 将大', answer:'absent' },
+    { practiceId:'P003', memberId:'M001', memberName:'谷 将大', answer:'attend' },
+  ];
+}
+function getMockMembers() {
+  return [{ id:'M001', name:'谷 将大', part:'―' }];
+}
+
+function populateVenueMonthFilter() {
+  const sel = document.getElementById('venueMonthFilter');
+  const months = [...new Set(venueSchedules.map(s => {
+    const d = new Date(s.date);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }))].sort();
+  const now = new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0');
+  sel.innerHTML = '<option value="">全期間</option>' + months.map(m => {
+    const parts = m.split('-');
+    return '<option value="' + m + '"' + (m===now?' selected':'') + '>' + parts[0] + '年' + parseInt(parts[1]) + '月</option>';
+  }).join('');
+}
+
+function renderVenueStats() {
+  const now = new Date(); const thisM = now.getMonth(); const thisY = now.getFullYear();
+  const nextM = thisM===11?0:thisM+1; const nextY = thisM===11?thisY+1:thisY;
+  const thisMP = venueSchedules.filter(s=>{ const d=new Date(s.date); return d.getFullYear()===thisY&&d.getMonth()===thisM; });
+  const nextMP = venueSchedules.filter(s=>{ const d=new Date(s.date); return d.getFullYear()===nextY&&d.getMonth()===nextM; });
+  const venues = new Set(venueSchedules.map(s=>s.place)).size;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const future = venueSchedules.map(s=>new Date(s.date)).filter(d=>{ const dd=new Date(d); dd.setHours(0,0,0,0); return dd>=today; }).sort((a,b)=>a-b);
+  const daysUntil = future.length ? Math.round((future[0]-today)/(1000*60*60*24)) : null;
+  document.getElementById('v-stat1').textContent = thisMP.length + '回';
+  document.getElementById('v-stat2').textContent = nextMP.length + '回';
+  document.getElementById('v-stat3').textContent = venues + '箇所';
+  document.getElementById('v-stat4').textContent = daysUntil!==null ? daysUntil+'日後' : '―';
+  const venueCount = {};
+  thisMP.forEach(s=>{ venueCount[s.place]=(venueCount[s.place]||0)+1; });
+  const el = document.getElementById('venueStats');
+  if (!Object.keys(venueCount).length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:.82rem;padding:12px;">今月の練習データがありません</div>';
+  } else {
+    el.innerHTML = Object.entries(venueCount).map(([name,cnt]) =>
+      '<div style="background:#fff;border-radius:12px;padding:1rem 1.2rem;border:1px solid var(--border);text-align:center;">' +
+      '<div style="font-family:Outfit,sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue);">' + cnt + '回</div>' +
+      '<div style="font-size:.75rem;color:var(--muted);margin-top:4px;">' + name + '</div></div>'
+    ).join('');
+  }
+}
+
+function renderVenueTable() {
+  const tbody = document.getElementById('venueTable');
+  const filter = document.getElementById('venueMonthFilter').value;
+  const WEEK = ['日','月','火','水','木','金','土'];
+  let schedules = [...venueSchedules].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if (filter) {
+    schedules = schedules.filter(s=>{ const d=new Date(s.date); return (d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))===filter; });
+  } else {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const past  = schedules.filter(s=>new Date(s.date)<today).slice(-2);
+    const future= schedules.filter(s=>new Date(s.date)>=today).slice(0,6);
+    schedules   = [...past,...future];
+  }
+  if (!schedules.length) { tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">データがありません</td></tr>'; return; }
+  tbody.innerHTML = schedules.map(s => {
+    const d=new Date(s.date); const dateStr=(d.getMonth()+1)+'/'+d.getDate(); const week=WEEK[d.getDay()];
+    const today=new Date(); today.setHours(0,0,0,0); const isPast=d<today;
+    const da=venueAttends.filter(a=>a.practiceId===s.id);
+    const attend=da.filter(a=>a.answer==='attend'||a.answer==='late').length;
+    const absent=da.filter(a=>a.answer==='absent').length;
+    const noAns=venueMembers.length-da.length;
+    const names=da.filter(a=>a.answer==='attend'||a.answer==='late').map(a=>a.memberName).join('、')||'―';
+    return '<tr style="'+(isPast?'opacity:.6':'')+'">' +
+      '<td style="white-space:nowrap;font-weight:700;">'+dateStr+'</td>' +
+      '<td><span style="font-weight:700;color:'+(d.getDay()===0?'#dc2626':d.getDay()===6?'var(--blue)':'var(--text)')+';">'+week+'</span></td>' +
+      '<td style="font-size:.82rem;">'+s.place+'</td>' +
+      '<td style="font-size:.82rem;white-space:nowrap;">'+(s.time||'―')+'</td>' +
+      '<td title="'+names+'"><span style="color:#16a34a;font-weight:700;">'+attend+'名</span></td>' +
+      '<td><span style="color:#dc2626;font-weight:700;">'+absent+'名</span></td>' +
+      '<td><span style="color:var(--muted);">'+noAns+'名</span></td></tr>';
+  }).join('');
+}
+
+function renderFollowUp() {
+  const tbody = document.getElementById('followUpTable');
+  if (!venueMembers.length) { tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem;">団員データがありません</td></tr>'; return; }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const recent5 = venueSchedules.filter(s=>new Date(s.date)<=today).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+  const rows = venueMembers.map(m => {
+    const ma = venueAttends.filter(a=>a.memberId===m.id);
+    const dots = recent5.map(s => {
+      const a=ma.find(a=>a.practiceId===s.id);
+      if (!a) return '<span title="未回答" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#e5e7eb;border:2px solid #d1d5db;margin:0 1px;"></span>';
+      if (a.answer==='attend'||a.answer==='late') return '<span title="参加" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#22c55e;margin:0 1px;"></span>';
+      return '<span title="欠席" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#ef4444;margin:0 1px;"></span>';
+    }).join('');
+    const ac=recent5.filter(s=>{ const a=ma.find(a=>a.practiceId===s.id); return a&&(a.answer==='attend'||a.answer==='late'); }).length;
+    const rate=recent5.length?Math.round(ac/recent5.length*100):null;
+    const la=ma.filter(a=>a.answer==='attend'||a.answer==='late').sort((a,b)=>{ const sa=venueSchedules.find(s=>s.id===a.practiceId); const sb=venueSchedules.find(s=>s.id===b.practiceId); return new Date(sb?.date||0)-new Date(sa?.date||0); })[0];
+    const lastDate=la?(()=>{ const s=venueSchedules.find(s=>s.id===la.practiceId); const d=new Date(s?.date); return (d.getMonth()+1)+'/'+d.getDate(); })():'記録なし';
+    const last3=recent5.slice(0,3);
+    const allAbs=last3.length>=2&&last3.every(s=>{ const a=ma.find(a=>a.practiceId===s.id); return !a||a.answer==='absent'; });
+    const need=allAbs||(rate!==null&&rate<=40);
+    return { m, dots, rate, lastDate, need };
+  }).sort((a,b)=>(b.need?1:0)-(a.need?1:0));
+  tbody.innerHTML = rows.map(({m,dots,rate,lastDate,need})=>
+    '<tr style="'+(need?'background:#fff8f8':'')+'">' +
+    '<td>'+(need?'<i class="fa-solid fa-heart" style="color:#dc2626;margin-right:6px;font-size:.75rem;"></i>':'')+
+    '<span style="font-weight:'+(need?700:400)+';">'+m.name+'</span></td>' +
+    '<td style="font-size:.78rem;color:var(--muted);">'+(m.part||'―')+'</td>' +
+    '<td>'+dots+'</td>' +
+    '<td><span style="font-weight:700;color:'+(rate===null?'var(--muted)':rate>=80?'#16a34a':rate>=50?'#d97706':'#dc2626')+';">'+(rate!==null?rate+'%':'―')+'</span></td>' +
+    '<td style="font-size:.8rem;color:var(--muted);">'+lastDate+'</td></tr>'
+  ).join('');
+}
+
 
 // =============================================
 //  NAV ドロワー
