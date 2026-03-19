@@ -687,7 +687,8 @@
 // =============================================
 //  設定
 // =============================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSgXXJGuzEgaXWcZaRfsVtnIHoaAmRG-WkuR12XypADT-jG6w/exec';
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
 
 // =============================================
 //  状態
@@ -695,6 +696,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSg
 let selectedChoice = null;
 let memberToken = null;
 let practiceId  = null;
+let memberId    = null;
 
 // =============================================
 //  初期化
@@ -711,137 +713,192 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 // =============================================
-//  GAS からデータ取得
+//  Supabase からデータ取得
 // =============================================
 async function loadMemberAndPractice() {
   try {
-    const url = `${GAS_URL}?action=getAttendanceInfo&token=${encodeURIComponent(memberToken)}${practiceId ? '&pid=' + practiceId : ''}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!data.success) {
-      showState('error');
-      return;
-    }
+    // tokenで団員情報取得
+    const mRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const members = await mRes.json();
+    if (!members || members.length === 0) { showState('error'); return; }
+    const member = members[0];
+    memberId = member.id;
 
-      // 練習情報をセット
-      document.getElementById('practiceDate').textContent  = data.practiceDate  || '日程未定';
-      document.getElementById('practicePlace').textContent = data.practicePlace || '東大阪文化創造館';
-      document.getElementById('practiceTime').textContent  = data.practiceTime  || '13:00〜';
+    // 団員情報をセット
+    const name = member.name || '団員';
+    document.getElementById('memberName').textContent    = name;
+    document.getElementById('memberPart').textContent    = member.part || '';
+    document.getElementById('memberInitial').textContent = name.charAt(0);
 
-      // 団員情報をセット
-      const name = data.memberName || '団員';
-      document.getElementById('memberName').textContent    = name;
-      document.getElementById('memberPart').textContent    = data.memberPart || '';
-      document.getElementById('memberInitial').textContent = name.charAt(0);
-
-      // 締切
-      if (data.deadline) {
-        document.getElementById('deadlineText').textContent = data.deadline;
-      }
-
-      // 既回答チェック
-      if (data.alreadyAnswered && data.currentAnswer) {
-        const badge = document.getElementById('alreadyBadge');
-        badge.textContent  = labelOf(data.currentAnswer);
-        badge.className    = 'already-badge ' + data.currentAnswer;
-        showState('already');
-      } else {
-        showState('form');
-      }
-
-      // 練習IDを保存
-      if (data.practiceId) practiceId = data.practiceId;
-
-    } catch (e) {
-      console.error(e);
-      showState('error');
-    }
-  }
-
-  // =============================================
-  //  選択
-  // =============================================
-  function selectChoice(type, btn) {
-    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedChoice = type;
-    document.getElementById('submitBtn').disabled = false;
-
-    // 備考欄
-    const note = document.getElementById('noteArea');
-    if (type === 'late' || type === 'absent') {
-      note.classList.add('show');
+    // 練習情報取得（pidあればそのID、なければ最新の練習）
+    let practice = null;
+    if (practiceId) {
+      const pRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/practices?id=eq.${practiceId}&limit=1`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      const practices = await pRes.json();
+      practice = practices[0] || null;
     } else {
-      note.classList.remove('show');
+      const pRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${member.org_id}&order=date.asc&limit=1`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      const practices = await pRes.json();
+      practice = practices[0] || null;
     }
-  }
 
-  // =============================================
-  //  送信
-  // =============================================
-  async function submitForm() {
-    if (!selectedChoice) return;
+    if (!practice) { showState('error'); return; }
+    practiceId = practice.id;
 
-    document.getElementById('loadingOverlay').classList.add('show');
+    // 練習情報をセット
+    const dateObj = new Date(practice.date);
+    const WEEK = ['日','月','火','水','木','金','土'];
+    const dateStr = `${dateObj.getMonth()+1}月${dateObj.getDate()}日（${WEEK[dateObj.getDay()]}）`;
+    document.getElementById('practiceDate').textContent  = dateStr;
+    document.getElementById('practicePlace').textContent = practice.venue || '東大阪文化創造館';
+    document.getElementById('practiceTime').textContent  =
+      (practice.start_time || '13:00').slice(0,5) + '〜' + (practice.end_time || '17:00').slice(0,5);
 
-    const note = document.getElementById('noteInput').value.trim();
-    const body  = new URLSearchParams({
-      action:     'submitAttendance',
-      token:      memberToken,
-      practiceId: practiceId || '',
-      answer:     selectedChoice,
-      note:       note
-    });
-
-    try {
-      const res  = await fetch(GAS_URL, { method: 'POST', body });
-      const data = await res.json();
-
-      document.getElementById('loadingOverlay').classList.remove('show');
-
-      if (data.success) {
-        const ans = document.getElementById('successAnswer');
-        ans.textContent = labelOf(selectedChoice);
-        ans.className   = 'success-answer ' + selectedChoice;
-        showState('success');
-      } else {
-        alert('送信に失敗しました。もう一度お試しください。');
-      }
-    } catch (e) {
-      document.getElementById('loadingOverlay').classList.remove('show');
-      alert('通信エラーが発生しました。');
+    // 既回答チェック
+    const aRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/attendances?practice_id=eq.${practiceId}&member_id=eq.${memberId}&limit=1`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const attendances = await aRes.json();
+    if (attendances && attendances.length > 0) {
+      const current = attendances[0].status;
+      const badge = document.getElementById('alreadyBadge');
+      badge.textContent = labelOf(current);
+      badge.className   = 'already-badge ' + current;
+      showState('already');
+    } else {
+      showState('form');
     }
+
+  } catch (e) {
+    console.error(e);
+    showState('error');
   }
+}
 
-  // =============================================
-  //  ユーティリティ
-  // =============================================
-  function labelOf(type) {
-    return { attend: '✅ 参加', late: '🕐 遅刻・早退', absent: '😔 欠席' }[type] || type;
+// =============================================
+//  選択
+// =============================================
+function selectChoice(type, btn) {
+  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoice = type;
+  document.getElementById('submitBtn').disabled = false;
+
+  const note = document.getElementById('noteArea');
+  if (type === 'late' || type === 'absent') {
+    note.classList.add('show');
+  } else {
+    note.classList.remove('show');
   }
+}
 
-  function showState(state) {
-    document.getElementById('loadingCard').style.display  = 'none';
-    document.getElementById('errorCard').classList.remove('show');
-    document.getElementById('alreadyCard').classList.remove('show');
-    document.getElementById('formCard').style.display     = 'none';
-    document.getElementById('statusBar').style.display    = 'none';
-    document.getElementById('successCard').classList.remove('show');
+// =============================================
+//  送信
+// =============================================
+async function submitForm() {
+  if (!selectedChoice) return;
+  document.getElementById('loadingOverlay').classList.add('show');
 
-    if (state === 'error')   document.getElementById('errorCard').classList.add('show');
-    if (state === 'already') document.getElementById('alreadyCard').classList.add('show');
-    if (state === 'form')  {
-      document.getElementById('formCard').style.display  = 'block';
-      document.getElementById('statusBar').style.display = 'flex';
+  const note = document.getElementById('noteInput').value.trim();
+
+  try {
+    // 既存チェック
+    const aRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/attendances?practice_id=eq.${practiceId}&member_id=eq.${memberId}&limit=1`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const existing = await aRes.json();
+
+    if (existing && existing.length > 0) {
+      // UPDATE
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/attendances?practice_id=eq.${practiceId}&member_id=eq.${memberId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ status: selectedChoice, note: note || null })
+        }
+      );
+      if (!res.ok) throw new Error('更新失敗');
+    } else {
+      // INSERT
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/attendances`,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            practice_id: practiceId,
+            member_id:   memberId,
+            status:      selectedChoice,
+            note:        note || null
+          })
+        }
+      );
+      if (!res.ok) throw new Error('送信失敗');
     }
-    if (state === 'success') document.getElementById('successCard').classList.add('show');
-  }
 
-  function showForm() {
-    document.getElementById('alreadyCard').classList.remove('show');
+    document.getElementById('loadingOverlay').classList.remove('show');
+    const ans = document.getElementById('successAnswer');
+    ans.textContent = labelOf(selectedChoice);
+    ans.className   = 'success-answer ' + selectedChoice;
+    showState('success');
+
+  } catch (e) {
+    document.getElementById('loadingOverlay').classList.remove('show');
+    alert('通信エラーが発生しました。');
+  }
+}
+
+// =============================================
+//  ユーティリティ
+// =============================================
+function labelOf(type) {
+  return { attend: '✅ 参加', late: '🕐 遅刻・早退', absent: '😔 欠席' }[type] || type;
+}
+
+function showState(state) {
+  document.getElementById('loadingCard').style.display  = 'none';
+  document.getElementById('errorCard').classList.remove('show');
+  document.getElementById('alreadyCard').classList.remove('show');
+  document.getElementById('formCard').style.display     = 'none';
+  document.getElementById('statusBar').style.display    = 'none';
+  document.getElementById('successCard').classList.remove('show');
+
+  if (state === 'error')   document.getElementById('errorCard').classList.add('show');
+  if (state === 'already') document.getElementById('alreadyCard').classList.add('show');
+  if (state === 'form')  {
     document.getElementById('formCard').style.display  = 'block';
     document.getElementById('statusBar').style.display = 'flex';
   }
+  if (state === 'success') document.getElementById('successCard').classList.add('show');
+}
+
+function showForm() {
+  document.getElementById('alreadyCard').classList.remove('show');
+  document.getElementById('formCard').style.display  = 'block';
+  document.getElementById('statusBar').style.display = 'flex';
+}
 </script>
 </body>
 </html>
