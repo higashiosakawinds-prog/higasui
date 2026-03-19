@@ -362,19 +362,19 @@ document.getElementById('j-type').addEventListener('change', function() {
   const emergency = document.getElementById('j-emergency');
   const guardian = document.getElementById('j-guardian');
   const guardianAgree = document.getElementById('j-guardian-agree');
-  const emergencyLabel = emergency.previousElementSibling;
+ const emergencyLabel = document.querySelector('label[for="j-emergency"], #j-emergency').closest('.fg')?.querySelector('label');
   if (isStudent) {
     guardianSection.style.display = 'block';
     emergency.required = true;
     emergency.placeholder = '保護者名・続柄・電話番号（必須）';
-    emergencyLabel.innerHTML = '緊急連絡先<span class=\"req\">*</span>';
+    if (emergencyLabel) emergencyLabel.innerHTML = '緊急連絡先<span class="req">*</span>';
     guardian.required = true;
     guardianAgree.required = true;
   } else {
     guardianSection.style.display = 'none';
     emergency.required = false;
     emergency.placeholder = '緊急時の連絡先（氏名・続柄・電話番号）';
-    emergencyLabel.innerHTML = '緊急連絡先<span class=\"opt\">任意</span>';
+if (emergencyLabel) emergencyLabel.innerHTML = '緊急連絡先<span class="opt">任意</span>';
     guardian.required = false;
     guardianAgree.required = false;
   }
