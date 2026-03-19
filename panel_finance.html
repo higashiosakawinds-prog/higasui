@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>会計委員会パネル | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC;
+  --green:#1D9E75; --red:#C0392B;
+  --radius:16px; --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* ===== PANEL NAV ===== */
+#panel-nav{
+  position:sticky;top:0;z-index:100;height:52px;
+  background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);
+  display:flex;align-items:center;padding:0 1.25rem;gap:12px;
+}
+#back-btn{
+  width:34px;height:34px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;flex-shrink:0;
+}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{
+  margin-left:auto;padding:3px 12px;border-radius:20px;
+  font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;
+  background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;
+}
+
+/* ===== LOCK SCREEN ===== */
+#lockScreen{
+  position:fixed;inset:0;z-index:200;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+}
+.lock-card{
+  background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);
+  border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;
+  backdrop-filter:blur(12px);
+}
+.lock-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;
+}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input{
+  width:100%;padding:13px 16px;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+  color:#fff;font-size:1rem;font-family:inherit;outline:none;
+  text-align:center;letter-spacing:.2em;margin-bottom:.8rem;
+  transition:border-color .2s;
+}
+.lock-input:focus{border-color:var(--gold);}
+.lock-btn{
+  width:100%;padding:13px;border:none;border-radius:12px;
+  background:var(--gold);color:var(--navy);font-family:inherit;
+  font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;
+}
+.lock-btn:hover{opacity:.9;}
+.lock-error{
+  display:none;margin-top:.8rem;padding:.6rem 1rem;
+  background:rgba(192,57,43,.2);border-radius:8px;
+  font-size:.75rem;color:#fca5a5;
+}
+.lock-error.show{display:block;}
+
+/* ===== STATES ===== */
+#stateLoading{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:60vh;gap:14px;
+}
+.spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== MAIN ===== */
+#mainContent{display:none;padding:28px 0 80px;}
+
+/* ===== SUMMARY CARDS ===== */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:600px){.stat-grid{grid-template-columns:repeat(4,1fr);}}
+.stat-card{
+  background:var(--white);border-radius:var(--radius);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  padding:1rem 1.2rem;
+}
+.stat-num{
+  font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;
+  color:var(--blue);line-height:1;margin-bottom:4px;
+}
+.stat-num.income{color:var(--green);}
+.stat-num.expense{color:var(--red);}
+.stat-num.unpaid{color:#d97706;}
+.stat-label{font-size:.7rem;color:var(--muted);}
+
+/* ===== CARD ===== */
+.card{
+  background:var(--white);border-radius:var(--radius);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  overflow:hidden;margin-bottom:20px;
+}
+.card-head{
+  padding:1rem 1.25rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.card-head-left{display:flex;align-items:center;gap:10px;}
+.card-icon{
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;
+}
+.card-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
+.card-body{padding:1.25rem;}
+
+/* ===== ACTION ROW ===== */
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.btn-primary{
+  padding:9px 18px;background:var(--blue);color:#fff;border:none;
+  border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;
+}
+.btn-primary:hover{background:#1a3d85;}
+.btn-secondary{
+  padding:9px 18px;background:none;border:1.5px solid var(--border);
+  border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;
+  color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:6px;
+  transition:all .2s;
+}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+
+/* ===== TABLE ===== */
+.tbl-wrap{overflow-x:auto;}
+.data-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.data-table th{
+  background:var(--navy);color:#fff;padding:.65rem 1rem;
+  text-align:left;font-weight:600;font-family:'Outfit',sans-serif;
+  font-size:.68rem;letter-spacing:.05em;white-space:nowrap;
+}
+.data-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:#f5f7ff;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.65rem;font-weight:700;}
+.badge-ok{background:#dcfce7;color:#15803d;}
+.badge-ng{background:#fee2e2;color:#991b1b;}
+.badge-warn{background:#fef9c3;color:#854d0e;}
+.amount-income{color:var(--green);font-weight:700;}
+.amount-expense{color:var(--red);font-weight:700;}
+
+/* フィルター行 */
+.filter-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.filter-select{
+  padding:5px 10px;border:1.5px solid var(--border);border-radius:8px;
+  font-size:.75rem;font-family:inherit;color:var(--navy);
+  background:#fff;outline:none;cursor:pointer;
+}
+
+/* ===== GRAPH ===== */
+.graph-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:1.2rem 1.4rem;margin-bottom:20px;}
+.graph-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.graph-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
+
+/* ===== 収支報告書 ===== */
+@media print {
+  #panel-nav, #lockScreen, .action-row, .no-print { display:none !important; }
+  body { background:#fff; }
+  #mainContent { display:block !important; padding:0; }
+  .card, .graph-card { box-shadow:none; border:1px solid #ddd; break-inside:avoid; }
+  .report-only { display:block !important; }
+}
+.report-only { display:none; }
+
+/* ===== MODAL ===== */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(28,43,74,.65);z-index:300;
+  align-items:flex-end;justify-content:center;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:680px;
+  padding:1.5rem 1.5rem 2.5rem;max-height:92vh;overflow-y:auto;
+}
+.modal-drag{width:36px;height:4px;background:#e5e7eb;border-radius:2px;margin:0 auto 1.2rem;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;}
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
+.type-btn{
+  padding:10px;border-radius:10px;border:2px solid var(--border);
+  background:#fff;font-weight:700;font-size:.85rem;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.type-btn.active-income{border-color:#22c55e;background:#f0fdf4;color:#16a34a;}
+.type-btn.active-expense{border-color:var(--red);background:#fff5f5;color:var(--red);}
+.modal-fg{margin-bottom:1rem;}
+.modal-fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.modal-fg input,.modal-fg select{
+  width:100%;padding:11px 13px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:.88rem;font-family:inherit;
+  background:var(--bg);outline:none;transition:border-color .2s;
+}
+.modal-fg input:focus,.modal-fg select:focus{border-color:var(--blue);background:#fff;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:10px;margin-top:1.2rem;}
+.btn-cancel{
+  flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;
+  background:none;font-family:inherit;font-size:.85rem;font-weight:700;
+  color:var(--muted);cursor:pointer;
+}
+.btn-save{
+  flex:2;padding:12px;border:none;border-radius:10px;
+  background:var(--blue);color:#fff;font-family:inherit;
+  font-size:.88rem;font-weight:700;cursor:pointer;
+}
+.btn-save:hover{background:#1a3d85;}
+.btn-danger{
+  flex:1;padding:12px;border:none;border-radius:10px;
+  background:#fee2e2;color:var(--red);font-family:inherit;
+  font-size:.85rem;font-weight:700;cursor:pointer;
+}
+.modal-msg{display:none;border-radius:8px;padding:.7rem 1rem;font-size:.78rem;margin-top:.8rem;}
+.modal-msg.success{display:block;background:#dcfce7;color:#15803d;}
+.modal-msg.error{display:block;background:#fee2e2;color:#991b1b;}
+.receipt-note{
+  background:#fffbeb;border-left:3px solid var(--gold);
+  border-radius:0 8px 8px 0;padding:.75rem 1rem;
+  font-size:.75rem;color:#78350f;line-height:1.7;margin-bottom:1rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== PANEL NAV ===== -->
+<nav id="panel-nav">
+  <button id="back-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i></button>
+  <div id="panel-title">会計委員会</div>
+  <div id="panel-badge">FINANCE</div>
+</nav>
+
+<!-- ===== LOCK SCREEN ===== -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-eyebrow">COMMITTEE PANEL</div>
+    <div class="lock-title">会計委員会</div>
+    <div class="lock-sub">パネルコードを入力してください。<br>担当者のみアクセスできます。</div>
+    <input class="lock-input" type="password" id="codeInput"
+      placeholder="••••••••" autocomplete="off"
+      onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="lock-btn" onclick="tryUnlock()">
+      <i class="fa-solid fa-unlock"></i> アクセス
+    </button>
+    <div class="lock-error" id="lockError">パネルコードが違います。</div>
+  </div>
+</div>
+
+<!-- ===== LOADING ===== -->
+<div id="stateLoading" style="display:none;">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">データを読み込み中…</p>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div id="mainContent">
+  <div class="inner">
+
+    <!-- サマリーカード -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num income" id="statIncome">¥0</div>
+        <div class="stat-label">今月の収入</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num expense" id="statExpense">¥0</div>
+        <div class="stat-label">今月の支出</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num unpaid" id="statUnpaid">0名</div>
+        <div class="stat-label">未納者数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statBalance">¥0</div>
+        <div class="stat-label">累計残高</div>
+      </div>
+    </div>
+
+    <!-- グラフ -->
+    <div class="graph-card">
+      <div class="graph-head">
+        <div class="graph-title">月次収支グラフ</div>
+        <select class="filter-select" id="graphYear" onchange="renderGraph()"></select>
+      </div>
+      <canvas id="financeChart" height="160"></canvas>
+    </div>
+
+    <!-- アクションボタン -->
+    <div class="action-row no-print">
+      <button class="btn-primary" onclick="openModal()">
+        <i class="fa-solid fa-plus"></i> 収支を記録
+      </button>
+      <button class="btn-secondary" onclick="exportCSV()">
+        <i class="fa-solid fa-download"></i> CSVダウンロード
+      </button>
+      <button class="btn-secondary" onclick="printReport()">
+        <i class="fa-solid fa-print"></i> 収支報告書を印刷
+      </button>
+    </div>
+
+    <!-- 出納帳 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-left">
+          <div class="card-icon" style="background:rgba(200,164,77,.12);color:#92680a;"><i class="fa-solid fa-book"></i></div>
+          <div class="card-title">出納帳</div>
+        </div>
+        <div class="filter-row">
+          <select class="filter-select" id="filterCat" onchange="renderLedger()">
+            <option value="">すべて</option>
+            <option value="会費">会費</option>
+            <option value="会場費">会場費</option>
+            <option value="備品">備品</option>
+            <option value="印刷費">印刷費</option>
+            <option value="その他">その他</option>
+          </select>
+          <select class="filter-select" id="filterMonth" onchange="renderLedger()">
+            <option value="">全期間</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div class="tbl-wrap">
+          <table class="data-table" style="min-width:580px;">
+            <thead>
+              <tr>
+                <th>日付</th><th>摘要</th><th>カテゴリ</th>
+                <th>収入</th><th>支出</th><th>残高</th><th class="no-print"></th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTable">
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 会費納入状況 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-left">
+          <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-users"></i></div>
+          <div class="card-title">会費納入状況</div>
+        </div>
+        <button class="btn-secondary no-print" onclick="loadFeeStatus()" style="padding:5px 12px;font-size:.72rem;">
+          <i class="fa-solid fa-rotate"></i> 更新
+        </button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <thead><tr><th>氏名</th><th>パート</th><th>区分</th><th>ステータス</th></tr></thead>
+            <tbody id="feeTable">
+              <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 収支報告書（印刷用） -->
+    <div class="card report-only">
+      <div class="card-head">
+        <div class="card-title">収支報告書</div>
+      </div>
+      <div class="card-body">
+        <div id="reportContent"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== 収支入力モーダル ===== -->
+<div class="modal-overlay" id="ledgerModal">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="modalTitle">収支を記録</div>
+
+    <div class="type-toggle">
+      <button id="btnIncome" class="type-btn active-income" onclick="setType('income')">
+        <i class="fa-solid fa-arrow-down"></i> 収入
+      </button>
+      <button id="btnExpense" class="type-btn" onclick="setType('expense')">
+        <i class="fa-solid fa-arrow-up"></i> 支出
+      </button>
+    </div>
+
+    <input type="hidden" id="editId">
+
+    <div class="modal-fg">
+      <label>日付 <span style="color:var(--gold)">*</span></label>
+      <input type="date" id="inputDate">
+    </div>
+    <div class="modal-fg">
+      <label>摘要 <span style="color:var(--gold)">*</span></label>
+      <input type="text" id="inputDesc" placeholder="例：3月会費（谷）、会場費（文化創造館）">
+    </div>
+    <div class="fg-row">
+      <div class="modal-fg">
+        <label>金額 <span style="color:var(--gold)">*</span></label>
+        <input type="number" id="inputAmount" placeholder="3000" min="0">
+      </div>
+      <div class="modal-fg">
+        <label>カテゴリ</label>
+        <select id="inputCat">
+          <option value="会費">会費</option>
+          <option value="会場費">会場費</option>
+          <option value="備品">備品</option>
+          <option value="印刷費">印刷費</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="receipt-note">
+      <i class="fa-solid fa-receipt" style="margin-right:6px;"></i>
+      領収書は<strong>原本を必ず保管</strong>してください。デジタル入力とは別に実物を管理します。
+    </div>
+
+    <div class="modal-msg" id="modalMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="btn-danger" id="btnDelete" onclick="deleteEntry()" style="display:none;">削除</button>
+      <button class="btn-save" onclick="saveEntry()">
+        <i class="fa-solid fa-check"></i> 保存
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+const PANEL_CODE = 'FINANCE';
+
+// =============================================
+//  状態
+// =============================================
+let memberToken = null;
+let memberData  = null;
+let ledgerData  = [];
+let currentType = 'income';
+let chartInstance = null;
+
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  memberToken = params.get('token');
+
+  // sessionStorageにアンロック済みなら直接表示
+  const unlocked = sessionStorage.getItem('panel_finance_unlocked');
+  if (unlocked === 'true') {
+    showMain();
+  }
+  // tokenなければロック画面だけ表示
+});
+
+// =============================================
+//  ロック解除
+// =============================================
+function tryUnlock() {
+  const input = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (input === PANEL_CODE) {
+    sessionStorage.setItem('panel_finance_unlocked', 'true');
+    showMain();
+  } else {
+    document.getElementById('lockError').classList.add('show');
+    document.getElementById('codeInput').select();
+  }
+}
+
+async function showMain() {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('stateLoading').style.display = 'flex';
+
+  // tokenがあれば団員情報取得
+  if (memberToken) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+        SB
+      );
+      const members = await res.json();
+      if (members && members.length > 0) memberData = members[0];
+    } catch(e) { console.error(e); }
+  }
+
+  await loadLedger();
+  await loadFeeStatus();
+  loadChartJs(() => {
+    populateYearSelect();
+    renderGraph();
+  });
+
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+}
+
+// =============================================
+//  出納帳データ取得
+// =============================================
+async function loadLedger() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/ledger?order=date.asc`,
+      SB
+    );
+    const data = await res.json();
+    // Supabaseのカラム名をアプリ内部の命名に変換
+    ledgerData = (data || []).map(r => ({
+      id:       r.id,
+      date:     r.date,
+      type:     r.type,        // 'income' | 'expense'
+      category: r.category,
+      amount:   r.amount,
+      desc:     r.description,
+      org_id:   r.org_id,
+      member_id:r.member_id,
+    }));
+  } catch(e) {
+    console.error('ledger取得エラー:', e);
+    ledgerData = [];
+  }
+  populateMonthFilter();
+  renderLedger();
+  renderSummary();
+}
+
+// =============================================
+//  会費納入状況
+// =============================================
+async function loadFeeStatus() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type,fee_status&order=name.asc`,
+      SB
+    );
+    const members = await res.json() || [];
+    renderFeeTable(members);
+    // 未納者数をサマリーに反映
+    const unpaidCount = members.filter(m => m.fee_status === 'unpaid').length;
+    document.getElementById('statUnpaid').textContent = unpaidCount + '名';
+  } catch(e) {
+    document.getElementById('feeTable').innerHTML =
+      '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem;">取得できませんでした</td></tr>';
+  }
+}
+
+function renderFeeTable(members) {
+  if (!members.length) {
+    document.getElementById('feeTable').innerHTML =
+      '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem;">団員データがありません</td></tr>';
+    return;
+  }
+  document.getElementById('feeTable').innerHTML = members.map(m => {
+    const s = m.fee_status;
+    const badge = s === 'paid'
+      ? '<span class="badge badge-ok">支払済</span>'
+      : s === 'unpaid'
+        ? '<span class="badge badge-ng">未納</span>'
+        : '<span class="badge badge-warn">確認中</span>';
+    return `<tr>
+      <td style="font-weight:600;">${m.name}</td>
+      <td style="color:var(--muted);font-size:.78rem;">${m.part || '―'}</td>
+      <td style="font-size:.78rem;">${m.member_type || '―'}</td>
+      <td>${badge}</td>
+    </tr>`;
+  }).join('');
+}
+
+// =============================================
+//  出納帳レンダリング
+// =============================================
+function populateMonthFilter() {
+  const sel = document.getElementById('filterMonth');
+  const prev = sel.value;
+  const months = [...new Set(ledgerData.map(e => e.date.slice(0,7)))].sort().reverse();
+  sel.innerHTML = '<option value="">全期間</option>' + months.map(m => {
+    const [y, mo] = m.split('-');
+    return `<option value="${m}"${m === prev ? ' selected':''}>${y}年${parseInt(mo)}月</option>`;
+  }).join('');
+}
+
+function renderLedger() {
+  const catFilter   = document.getElementById('filterCat').value;
+  const monthFilter = document.getElementById('filterMonth').value;
+
+  let rows = [...ledgerData].sort((a,b) => a.date.localeCompare(b.date));
+  if (catFilter)   rows = rows.filter(r => r.category === catFilter);
+  if (monthFilter) rows = rows.filter(r => r.date.startsWith(monthFilter));
+
+  if (!rows.length) {
+    document.getElementById('ledgerTable').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem;">データがありません</td></tr>';
+    return;
+  }
+
+  // 残高を計算（フィルター前の全データで計算）
+  let runningBalance = 0;
+  const balanceMap = {};
+  [...ledgerData].sort((a,b) => a.date.localeCompare(b.date)).forEach(r => {
+    runningBalance += r.type === 'income' ? r.amount : -r.amount;
+    balanceMap[r.id] = runningBalance;
+  });
+
+  document.getElementById('ledgerTable').innerHTML = rows.map(r => {
+    const d = new Date(r.date);
+    const dateStr = (d.getMonth()+1) + '/' + d.getDate();
+    const isIncome = r.type === 'income';
+    return `<tr>
+      <td style="white-space:nowrap;color:var(--muted);font-size:.75rem;">${r.date}</td>
+      <td style="font-size:.8rem;">${r.desc || '―'}</td>
+      <td><span style="font-size:.65rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">${r.category || '―'}</span></td>
+      <td class="${isIncome ? 'amount-income' : ''}">${isIncome ? '¥' + r.amount.toLocaleString() : '―'}</td>
+      <td class="${!isIncome ? 'amount-expense' : ''}">${!isIncome ? '¥' + r.amount.toLocaleString() : '―'}</td>
+      <td style="font-weight:700;font-size:.8rem;">¥${(balanceMap[r.id]||0).toLocaleString()}</td>
+      <td class="no-print">
+        <button onclick="openEditModal('${r.id}')"
+          style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:.68rem;cursor:pointer;color:var(--navy);">
+          編集
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSummary() {
+  const now = new Date();
+  const thisMonth = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+
+  const thisMonthData = ledgerData.filter(r => r.date.startsWith(thisMonth));
+  const income  = thisMonthData.filter(r => r.type === 'income').reduce((s,r) => s + r.amount, 0);
+  const expense = thisMonthData.filter(r => r.type === 'expense').reduce((s,r) => s + r.amount, 0);
+  const balance = ledgerData.reduce((s,r) => s + (r.type === 'income' ? r.amount : -r.amount), 0);
+
+  document.getElementById('statIncome').textContent  = '¥' + income.toLocaleString();
+  document.getElementById('statExpense').textContent = '¥' + expense.toLocaleString();
+  document.getElementById('statBalance').textContent = '¥' + balance.toLocaleString();
+}
+
+// =============================================
+//  グラフ（Chart.js）
+// =============================================
+function loadChartJs(cb) {
+  if (window.Chart) { cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js';
+  s.onload = cb;
+  document.head.appendChild(s);
+}
+
+function populateYearSelect() {
+  const years = [...new Set(ledgerData.map(r => r.date.slice(0,4)))];
+  if (!years.length) years.push(String(new Date().getFullYear()));
+  const sel = document.getElementById('graphYear');
+  const thisYear = String(new Date().getFullYear());
+  sel.innerHTML = years.sort().reverse().map(y =>
+    `<option value="${y}"${y === thisYear ? ' selected':''}>${y}年</option>`
+  ).join('');
+}
+
+function renderGraph() {
+  const year = document.getElementById('graphYear').value || String(new Date().getFullYear());
+  const months = Array.from({length:12}, (_,i) => year + '-' + String(i+1).padStart(2,'0'));
+
+  const incomes  = months.map(m => ledgerData.filter(r => r.date.startsWith(m) && r.type === 'income').reduce((s,r) => s+r.amount, 0));
+  const expenses = months.map(m => ledgerData.filter(r => r.date.startsWith(m) && r.type === 'expense').reduce((s,r) => s+r.amount, 0));
+
+  const ctx = document.getElementById('financeChart').getContext('2d');
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+      datasets: [
+        { label:'収入', data:incomes,  backgroundColor:'rgba(29,158,117,.7)', borderRadius:4 },
+        { label:'支出', data:expenses, backgroundColor:'rgba(192,57,43,.6)',  borderRadius:4 },
+      ],
+    },
+    options: {
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ position:'top', labels:{ font:{ family:'Noto Sans JP', size:11 } } } },
+      scales:{
+        y:{ beginAtZero:true, ticks:{ callback: v => '¥'+v.toLocaleString(), font:{size:10} } },
+        x:{ ticks:{ font:{size:10} } },
+      },
+    },
+  });
+}
+
+// =============================================
+//  モーダル
+// =============================================
+function openModal() {
+  document.getElementById('editId').value    = '';
+  document.getElementById('inputDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('inputDesc').value = '';
+  document.getElementById('inputAmount').value = '';
+  document.getElementById('inputCat').value  = '会費';
+  document.getElementById('modalTitle').textContent = '収支を記録';
+  document.getElementById('btnDelete').style.display = 'none';
+  document.getElementById('modalMsg').className = 'modal-msg';
+  setType('income');
+  document.getElementById('ledgerModal').classList.add('open');
+}
+
+function openEditModal(id) {
+  const entry = ledgerData.find(r => r.id === id);
+  if (!entry) return;
+  document.getElementById('editId').value      = entry.id;
+  document.getElementById('inputDate').value   = entry.date;
+  document.getElementById('inputDesc').value   = entry.desc || '';
+  document.getElementById('inputAmount').value = entry.amount;
+  document.getElementById('inputCat').value    = entry.category || 'その他';
+  document.getElementById('modalTitle').textContent = '収支を編集';
+  document.getElementById('btnDelete').style.display = '';
+  document.getElementById('modalMsg').className = 'modal-msg';
+  setType(entry.type);
+  document.getElementById('ledgerModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('ledgerModal').classList.remove('open');
+}
+
+function setType(type) {
+  currentType = type;
+  const btnI = document.getElementById('btnIncome');
+  const btnE = document.getElementById('btnExpense');
+  btnI.className = 'type-btn' + (type === 'income'  ? ' active-income'  : '');
+  btnE.className = 'type-btn' + (type === 'expense' ? ' active-expense' : '');
+}
+
+async function saveEntry() {
+  const id     = document.getElementById('editId').value;
+  const date   = document.getElementById('inputDate').value;
+  const desc   = document.getElementById('inputDesc').value.trim();
+  const amount = parseInt(document.getElementById('inputAmount').value);
+  const cat    = document.getElementById('inputCat').value;
+  const msgEl  = document.getElementById('modalMsg');
+
+  msgEl.className = 'modal-msg';
+  if (!date || !desc || !amount || amount <= 0) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '日付・摘要・金額は必須です。';
+    return;
+  }
+
+  const payload = {
+    date, type: currentType, category: cat,
+    amount, description: desc,
+    org_id: memberData?.org_id || null,
+    member_id: memberData?.id || null,
+  };
+
+  try {
+    let res;
+    if (id) {
+      // 更新
+      res = await fetch(`${SUPABASE_URL}/rest/v1/ledger?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { ...SB.headers, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+    } else {
+      // 新規
+      res = await fetch(`${SUPABASE_URL}/rest/v1/ledger`, {
+        method: 'POST',
+        headers: { ...SB.headers, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+    }
+
+    if (res.ok || res.status === 201 || res.status === 204) {
+      msgEl.className = 'modal-msg success';
+      msgEl.textContent = '✓ 保存しました。';
+      await loadLedger();
+      renderSummary();
+      loadChartJs(() => { populateYearSelect(); renderGraph(); });
+      setTimeout(closeModal, 1200);
+    } else {
+      throw new Error('save failed: ' + res.status);
+    }
+  } catch(e) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
+  }
+}
+
+async function deleteEntry() {
+  const id = document.getElementById('editId').value;
+  if (!id) return;
+  if (!confirm('この記録を削除しますか？')) return;
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/ledger?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { ...SB.headers, 'Prefer':'return=minimal' },
+    });
+    if (res.ok || res.status === 204) {
+      closeModal();
+      await loadLedger();
+      renderSummary();
+      loadChartJs(() => { populateYearSelect(); renderGraph(); });
+    } else {
+      throw new Error('delete failed');
+    }
+  } catch(e) {
+    document.getElementById('modalMsg').className = 'modal-msg error';
+    document.getElementById('modalMsg').textContent = '削除に失敗しました。';
+  }
+}
+
+// =============================================
+//  CSVエクスポート
+// =============================================
+function exportCSV() {
+  if (!ledgerData.length) { alert('データがありません。'); return; }
+  const header = '日付,摘要,カテゴリ,種別,金額';
+  const rows   = ledgerData
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .map(r => `${r.date},"${r.desc || ''}",${r.category},${r.type === 'income' ? '収入' : '支出'},${r.amount}`);
+  const csv  = '\uFEFF' + [header, ...rows].join('\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), {
+    href: url, download: `ひがすい_出納帳_${new Date().toISOString().slice(0,10)}.csv`
+  });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// =============================================
+//  収支報告書（印刷）
+// =============================================
+function printReport() {
+  // 月別サマリーを生成
+  const months = [...new Set(ledgerData.map(r => r.date.slice(0,7)))].sort();
+  const rows = months.map(m => {
+    const d = ledgerData.filter(r => r.date.startsWith(m));
+    const income  = d.filter(r => r.type === 'income').reduce((s,r) => s+r.amount, 0);
+    const expense = d.filter(r => r.type === 'expense').reduce((s,r) => s+r.amount, 0);
+    const [y, mo] = m.split('-');
+    return `<tr>
+      <td>${y}年${parseInt(mo)}月</td>
+      <td style="color:var(--green);font-weight:700;">¥${income.toLocaleString()}</td>
+      <td style="color:var(--red);font-weight:700;">¥${expense.toLocaleString()}</td>
+      <td style="font-weight:700;">¥${(income-expense).toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+
+  const total_income  = ledgerData.filter(r => r.type === 'income').reduce((s,r) => s+r.amount, 0);
+  const total_expense = ledgerData.filter(r => r.type === 'expense').reduce((s,r) => s+r.amount, 0);
+
+  document.getElementById('reportContent').innerHTML = `
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;">出力日：${new Date().toLocaleDateString('ja-JP')}</p>
+    <table class="data-table" style="margin-bottom:1rem;">
+      <thead><tr><th>月</th><th>収入</th><th>支出</th><th>収支</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr style="background:#f0f4ff;">
+          <td style="font-weight:700;">合計</td>
+          <td style="color:var(--green);font-weight:700;">¥${total_income.toLocaleString()}</td>
+          <td style="color:var(--red);font-weight:700;">¥${total_expense.toLocaleString()}</td>
+          <td style="font-weight:700;">¥${(total_income-total_expense).toLocaleString()}</td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+  window.print();
+}
+
+// =============================================
+//  戻るボタン
+// =============================================
+function goBack() {
+  if (memberToken) {
+    location.href = `./member.html?token=${encodeURIComponent(memberToken)}`;
+  } else {
+    history.back();
+  }
+}
+</script>
+</body>
+</html>
