@@ -30,8 +30,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   border-bottom:1px solid rgba(200,164,77,0.2);
 }
 .nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;}
-#nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:.95rem;font-weight:700;text-decoration:none;line-height:1.2;}
-#nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:.52rem;color:rgba(255,255,255,.38);letter-spacing:.16em;font-weight:400;}
+#nav-logo{display:flex;align-items:center;text-decoration:none;}
+#nav-logo img{height:28px;width:auto;filter:brightness(0) invert(1);opacity:.92;}
 #ham-btn{width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
 #ham-btn span{display:block;width:20px;height:2px;background:white;border-radius:2px;transition:all .3s;}
 #site-drawer{display:none;position:fixed;top:52px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
@@ -277,7 +277,9 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
 <!-- ===== NAV ===== -->
 <nav id="site-nav">
   <div class="nav-inner">
-    <a id="nav-logo" href="./index.html">東大阪吹奏楽団<small>HIGASHIOSAKA WINDS</small></a>
+    <a id="nav-logo" href="./index.html">
+      <img src="./higasui.svg" alt="東大阪吹奏楽団">
+    </a>
     <button id="ham-btn" onclick="toggleDrawer()" aria-label="メニュー">
       <span></span><span></span><span></span>
     </button>
@@ -406,13 +408,21 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
         <a class="app-link" href="./member_form.html">
           <i class="fa-solid fa-person-walking-arrow-right lead"></i>
           <div>
-            <div>休・復団申請</div>
-            <div class="app-link-desc">一時的に活動をお休みする、または再開する場合</div>
+            <div>休団申請</div>
+            <div class="app-link-desc">一時的に活動をお休みする場合</div>
           </div>
           <i class="fa-solid fa-chevron-right app-link-arrow"></i>
         </a>
         <a class="app-link" href="./member_form.html">
           <i class="fa-solid fa-person-walking-arrow-loop-left lead"></i>
+          <div>
+            <div>復団申請</div>
+            <div class="app-link-desc">休団から活動を再開する場合</div>
+          </div>
+          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
+        </a>
+        <a class="app-link" href="./member_form.html">
+          <i class="fa-solid fa-right-from-bracket lead"></i>
           <div>
             <div>退団申請</div>
             <div class="app-link-desc">団を離れる場合</div>
@@ -482,7 +492,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
     </div>
     <div class="modal-fg">
       <label>備考（任意）</label>
-      <input type="text" id="editNote" placeholder="変更希望内容や、理由など">
+      <input type="text" id="editNote" placeholder="変更理由など">
     </div>
     <div class="modal-msg" id="editMsg"></div>
     <div class="modal-actions">
@@ -616,13 +626,28 @@ function renderHeader(d) {
 
   const ROLE_LABEL = {
     president:'団長', vice_president:'副団長', conductor:'指揮者',
-    director:'理事/GM', committee:'委員', member:'正会員', guardian:'保護者',
+    director:'理事/GM', committee:'委員', member:'正会員',
+    guardian:'保護者', instructor:'外部指導者',
   };
-  document.getElementById('headerRole').textContent = ROLE_LABEL[d.role] || d.member_type || '正会員';
 
-  const partEl = document.getElementById('headerPart');
-  if (d.part) { partEl.textContent = d.part; partEl.style.display = ''; }
-  else { partEl.style.display = 'none'; }
+  // 役職バッジ（複数対応：roles配列 or 単一role）
+  const roles = Array.isArray(d.roles) ? d.roles : (d.role ? [d.role] : []);
+  const roleEl = document.getElementById('headerRole');
+  if (roles.length > 0) {
+    roleEl.outerHTML = roles.map(r =>
+      `<span class="badge badge-role">${ROLE_LABEL[r] || r}</span>`
+    ).join('') +
+    // パートバッジ（複数対応）
+    (Array.isArray(d.parts)
+      ? d.parts.map(p => `<span class="badge badge-part">${p}</span>`).join('')
+      : d.part ? `<span class="badge badge-part">${d.part}</span>` : ''
+    );
+  } else {
+    roleEl.textContent  = d.member_type || '正会員';
+    const partEl = document.getElementById('headerPart');
+    if (d.part) { partEl.textContent = d.part; partEl.style.display = ''; }
+    else { partEl.style.display = 'none'; }
+  }
 
   if (d.fee_status === 'unpaid') {
     document.getElementById('feeWarning').style.display = 'flex';
@@ -642,11 +667,26 @@ function renderFeeCard(d) {
 }
 
 function renderInfoCard(d) {
+  // パート表示（配列 or 単一）
+  const partDisplay = Array.isArray(d.parts) && d.parts.length
+    ? d.parts.join('、') : (d.part || null);
+
+  // 役職表示（配列 or 単一）
+  const ROLE_LABEL = {
+    president:'団長', vice_president:'副団長', conductor:'指揮者',
+    director:'理事/GM', committee:'委員', member:'正会員',
+    guardian:'保護者', instructor:'外部指導者',
+  };
+  const roleDisplay = Array.isArray(d.roles) && d.roles.length
+    ? d.roles.map(r => ROLE_LABEL[r] || r).join('、')
+    : (ROLE_LABEL[d.role] || d.member_type || null);
+
   const rows = [
-    { label:'氏名',     value: d.name },
-    { label:'パート',   value: d.part },
-    { label:'区分',     value: d.member_type },
-    { label:'メール',   value: d.email },
+    { label:'氏名',   value: d.name },
+    { label:'役職',   value: roleDisplay },
+    { label:'パート', value: partDisplay },
+    { label:'区分',   value: d.member_type },
+    { label:'メール', value: d.email },
     { label:'在籍開始', value: d.joined_at ? d.joined_at.slice(0,10) : null },
   ];
   document.getElementById('infoList').innerHTML = rows.map(r =>
@@ -658,7 +698,7 @@ function renderInfoCard(d) {
 
   // 編集モーダル初期値
   document.getElementById('editName').value  = d.name  || '';
-  document.getElementById('editPart').value  = d.part  || '';
+  document.getElementById('editPart').value  = partDisplay || '';
   document.getElementById('editEmail').value = d.email || '';
 }
 
@@ -679,10 +719,10 @@ function renderAttendCard(history, nextPid) {
     ).join('');
   }
 
-  if (nextPid && memberToken) {
-    document.getElementById('attendLink').href =
-      `./attendance.html?token=${encodeURIComponent(memberToken)}&pid=${nextPid}`;
-  }
+  // ②tokenは常にセット、pidがあれば追加
+  const attendBase = `./attendance.html?token=${encodeURIComponent(memberToken)}`;
+  document.getElementById('attendLink').href =
+    nextPid ? `${attendBase}&pid=${nextPid}` : attendBase;
 }
 
 function renderPanelGrid() {
@@ -739,10 +779,11 @@ async function submitEdit() {
         'Prefer': 'return=minimal',
       },
       body: JSON.stringify({
-        member_id:    memberData?.id || null,
-        request_type: 'info_change',
-        content:      JSON.stringify({ name, part, email, note }),
-        status:       'pending',
+        member_id: memberData?.id || null,
+        org_id:    memberData?.org_id || null,
+        type:      'info_change',
+        payload:   JSON.stringify({ name, part, email, note }),
+        status:    'pending',
       }),
     });
 
