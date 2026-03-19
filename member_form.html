@@ -194,7 +194,14 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
             <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="j-email" placeholder="example@gmail.com" required></div>
             <div class="fg"><label>電話番号<span class="req">*</span></label><input type="tel" id="j-phone" placeholder="090-0000-0000" required></div>
           </div>
-          <div class="fg"><label>緊急連絡先<span class="req">*</span></label><input type="text" id="j-emergency" placeholder="保護者名・続柄・電話番号（未成年の方は必須）" required></div>
+          <div class="fg"><label id="j-emergency-label">緊急連絡先<span class="opt">任意</span></label><input type="text" id="j-emergency" placeholder="緊急時の連絡先（氏名・続柄・電話番号）"></div>
+<div id="guardian-section" style="display:none;">
+  <div class="fg"><label>保護者氏名<span class="req">*</span></label><input type="text" id="j-guardian" placeholder="山田 太郎"></div>
+  <label class="agree-check" style="margin-bottom:1rem;">
+    <input type="checkbox" id="j-guardian-agree">
+    <span>保護者の同意を得ています<span class="req">*</span></span>
+  </label>
+</div>
           <div class="fg"><label>LINE ID<span class="opt">任意</span></label><input type="text" id="j-lineid" placeholder="例：higasui_taro"></div>
           <div class="fg"><label>ひとこと<span class="opt">任意</span></label><textarea id="j-msg" rows="3" placeholder="演奏歴・ブランク年数・意気込みなどお気軽にどうぞ！"></textarea></div>
           <div class="agree-box">
@@ -336,7 +343,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ==============================
 // 設定値
 // ==============================
@@ -362,7 +369,7 @@ document.getElementById('j-type').addEventListener('change', function() {
   const emergency = document.getElementById('j-emergency');
   const guardian = document.getElementById('j-guardian');
   const guardianAgree = document.getElementById('j-guardian-agree');
-  const emergencyLabel = document.querySelector('label[for="j-emergency"], #j-emergency').closest('.fg')?.querySelector('label');
+  const emergencyLabel = document.getElementById('j-emergency-label');
   if (isStudent) {
     guardianSection.style.display = 'block';
     emergency.required = true;
