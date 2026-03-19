@@ -764,6 +764,9 @@ footer p{font-family:'Outfit',sans-serif;font-size:.72rem;color:rgba(255,255,255
 // =============================================
 //  設定
 // =============================================
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+// ※ GAS_URLはADMINパネル等移行完了まで暫定維持
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSgXXJGuzEgaXWcZaRfsVtnIHoaAmRG-WkuR12XypADT-jG6w/exec';
 
 // 委員会定義
@@ -839,23 +842,91 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 // =============================================
-//  GAS からデータ取得
+//  Supabase からデータ取得
 // =============================================
+const SB_HEADERS = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`
+};
+
 async function loadMemberData() {
   try {
-    const url = `${GAS_URL}?action=getMemberPage&token=${encodeURIComponent(memberToken)}`;
-    const res  = await fetch(url);
-    const data = await res.json();
+    // 1. tokenで団員情報取得
+    const mRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+      { headers: SB_HEADERS }
+    );
+    const members = await mRes.json();
+    if (!members || members.length === 0) { showState('error'); return; }
+    const member = members[0];
 
-    if (!data.success) { showState('error'); return; }
+    // 2. 団員情報を画面に反映
+    const memberData = {
+      memberName: member.name,
+      memberPart: member.part || '',
+      memberType: member.member_type || '正会員',
+    };
+    applyMemberInfo(memberData);
 
-    applyMemberInfo(data);
-    applyFeeStatus(data.feeStatus, data.feeHistory);
-    applyAttendHistory(data.attendHistory, data.nextPracticeId);
+    // 3. 会費状況（Stripe未導入のためモック表示）
+    const feeStatusData = {
+      status: member.fee_status === 'paid' ? 'ok'
+            : member.fee_status === 'unpaid' ? 'ng' : 'warn',
+      label: member.fee_status === 'paid' ? '支払い済み'
+           : member.fee_status === 'unpaid' ? '未納あり' : '確認中',
+      sub: 'Stripe導入後に自動更新されます',
+    };
+    applyFeeStatus(feeStatusData, []);
+
+    // 4. 出欠履歴取得（直近5回の練習）
+    const today = new Date().toISOString().split('T')[0];
+    const pRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${member.org_id}&date=lte.${today}&order=date.desc&limit=5`,
+      { headers: SB_HEADERS }
+    );
+    const practices = await pRes.json();
+
+    let attendHistory = [];
+    let nextPracticeId = null;
+
+    if (practices && practices.length > 0) {
+      // 出欠回答を取得
+      const practiceIds = practices.map(p => p.id).join(',');
+      const aRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/attendances?member_id=eq.${member.id}&practice_id=in.(${practiceIds})`,
+        { headers: SB_HEADERS }
+      );
+      const attendances = await aRes.json();
+
+      const WEEK = ['日','月','火','水','木','金','土'];
+      attendHistory = practices.map(p => {
+        const d = new Date(p.date);
+        const dateStr = (d.getMonth()+1) + '月' + d.getDate() + '日（' + WEEK[d.getDay()] + '）';
+        const att = attendances.find(a => a.practice_id === p.id);
+        return {
+          date: dateStr,
+          answer: att ? att.answer : null,
+          note: att ? (att.note || '') : '',
+        };
+      });
+
+      // 次回練習（今日以降の最初の練習）を取得
+      const nRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${member.org_id}&date=gte.${today}&order=date.asc&limit=1`,
+        { headers: SB_HEADERS }
+      );
+      const nextPractices = await nRes.json();
+      if (nextPractices && nextPractices.length > 0) {
+        nextPracticeId = nextPractices[0].id;
+      }
+    }
+
+    applyAttendHistory(attendHistory, nextPracticeId);
     showState('main');
 
   } catch (e) {
-    // 開発中はモックデータで表示
+    console.error('Supabase取得エラー:', e);
+    // フォールバック：モックデータで表示
     applyMemberInfo(MOCK_DATA);
     applyFeeStatus(MOCK_DATA.feeStatus, MOCK_DATA.feeHistory);
     applyAttendHistory(MOCK_DATA.attendHistory, MOCK_DATA.nextPracticeId);
@@ -1140,16 +1211,8 @@ function loadChartJs(cb) {
 
 // 会計パネル初期化
 async function initFinancePanel() {
-  // GASから出納帳データを取得
-  try {
-    const url = GAS_URL + '?action=getLedger&token=' + encodeURIComponent(memberToken);
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.success) ledgerData = (data.entries || []).sort((a,b) => a.date.localeCompare(b.date));
-    else ledgerData = JSON.parse(localStorage.getItem('higasui_ledger') || '[]');
-  } catch(e) {
-    ledgerData = JSON.parse(localStorage.getItem('higasui_ledger') || '[]');
-  }
+  // 出納帳はlocalStorage（GAS→Supabase ledgerテーブル移行予定）
+  ledgerData = JSON.parse(localStorage.getItem('higasui_ledger') || '[]');
   populateMonthFilter();
   populateYearSelect();
   renderLedger();
@@ -1423,15 +1486,55 @@ let venueMembers   = [];
 
 async function loadVenueData() {
   try {
-    const url  = GAS_URL + '?action=getVenuePanel&token=' + encodeURIComponent(memberToken);
-    const res  = await fetch(url);
-    const data = await res.json();
-    if (data.success) {
-      venueSchedules = data.schedules || [];
-      venueAttends   = data.attends   || [];
-      venueMembers   = data.members   || [];
+    const today = new Date().toISOString().split('T')[0];
+
+    // 練習スケジュール（直近2ヶ月分）
+    const twoMonthsAgo = new Date();
+    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 1);
+    const fromDate = twoMonthsAgo.toISOString().split('T')[0];
+    const toDate = new Date(new Date().setMonth(new Date().getMonth() + 2)).toISOString().split('T')[0];
+
+    const pRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/practices?date=gte.${fromDate}&date=lte.${toDate}&order=date.asc`,
+      { headers: SB_HEADERS }
+    );
+    const practices = await pRes.json();
+
+    // 団員一覧
+    const mRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,part&order=name.asc`,
+      { headers: SB_HEADERS }
+    );
+    const membersData = await mRes.json();
+
+    // 出欠データ
+    let attendsData = [];
+    if (practices && practices.length > 0) {
+      const ids = practices.map(p => p.id).join(',');
+      const aRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/attendances?practice_id=in.(${ids})`,
+        { headers: SB_HEADERS }
+      );
+      attendsData = await aRes.json();
     }
+
+    // データ整形（既存の renderVenueTable 等に合わせた形式）
+    venueSchedules = (practices || []).map(p => ({
+      id: p.id,
+      date: p.date,
+      place: p.location || p.place || '東大阪文化創造館',
+      time: p.start_time ? (p.start_time.slice(0,5) + '〜' + (p.end_time || '').slice(0,5)) : '13:00〜17:00',
+    }));
+    venueMembers = (membersData || []).map(m => ({ id: m.id, name: m.name, part: m.part }));
+    venueAttends = (attendsData || []).map(a => ({
+      practiceId: a.practice_id,
+      memberId: a.member_id,
+      memberName: venueMembers.find(m => m.id === a.member_id)?.name || '―',
+      answer: a.answer,
+    }));
+
   } catch(e) {
+    console.error('Venue Supabase取得エラー:', e);
     venueSchedules = getMockSchedules();
     venueAttends   = getMockAttends();
     venueMembers   = getMockMembers();
@@ -1573,19 +1676,15 @@ function renderFollowUp() {
 
 
 // =============================================
-//  管理者ツール
+//  管理者ツール（Supabase移行予定）
 // =============================================
 
 async function loadAdminData() {
-  try {
-    const url  = GAS_URL + '?action=getAdminData&token=' + encodeURIComponent(memberToken);
-    const res  = await fetch(url);
-    const data = await res.json();
-    if (data.success) renderAdminTable(data.members);
-    else renderAdminTable([]);
-  } catch(e) {
-    renderAdminTable([]);
-  }
+  // TODO: Supabase membersテーブルから取得（GMパネル実装時に対応）
+  // 現在はモック表示
+  renderAdminTable([
+    { id: '1', name: '谷 将大', part: '―', type: '正会員', status: '正会員', lineId: 'Ue75737198a3df8ce7d0dab76337b31e8' }
+  ]);
 }
 
 function renderAdminTable(members) {
@@ -1621,7 +1720,6 @@ function fillAdminForm(id, name, lineId) {
 async function issueMyPageUrl() {
   const memberId   = document.getElementById('adminMemberId').value.trim();
   const memberName = document.getElementById('adminMemberName').value.trim();
-  const lineId     = document.getElementById('adminLineId').value.trim();
   const btn        = document.getElementById('adminIssueBtn');
   const resultEl   = document.getElementById('adminResult');
   const errorEl    = document.getElementById('adminError');
@@ -1638,36 +1736,28 @@ async function issueMyPageUrl() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 処理中…';
 
-  try {
-    const body = new URLSearchParams({
-      action: 'approveMember',
-      token:  memberToken,
-      memberId, memberName, lineId,
-    });
-    const res  = await fetch(GAS_URL, { method: 'POST', body });
-    const data = await res.json();
+  // TODO: Supabase Auth導入後は自動化予定
+  // 現在は token を生成して手動でSupabaseに登録 → LINEで手動送付
+  const token = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  const myPageUrl = `https://higashiosakawinds-prog.github.io/higasui/member.html?token=${token}`;
 
-    if (data.success) {
-      const myPageUrl = data.myPageUrl || '';
-      resultEl.innerHTML =
-        '<i class="fa-solid fa-circle-check"></i> 承認完了！<br>' +
-        (lineId ? 'LINEにマイページURLを送付しました。' : '以下のURLを手動で送付してください。') +
-        '<br><br><strong>マイページURL：</strong><br>' +
-        '<a href="' + myPageUrl + '" target="_blank" style="color:var(--blue);word-break:break-all;">' + myPageUrl + '</a>' +
-        '<button onclick="navigator.clipboard.writeText('' + myPageUrl + '')" style="margin-left:8px;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:.72rem;cursor:pointer;">コピー</button>';
-      resultEl.style.display = 'block';
-      await loadAdminData();
-    } else {
-      errorEl.textContent = 'エラー：' + (data.error || '処理に失敗しました');
-      errorEl.style.display = 'block';
-    }
-  } catch(e) {
-    errorEl.textContent = '通信エラーが発生しました。';
-    errorEl.style.display = 'block';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 承認してマイページURLをLINEで送付';
-  }
+  resultEl.innerHTML =
+    '<div style="background:#dcfce7;border-radius:10px;padding:1rem 1.2rem;margin-bottom:1rem;">' +
+    '<i class="fa-solid fa-circle-check" style="color:#16a34a;margin-right:6px;"></i>' +
+    '<strong style="color:#15803d;">URL生成完了！</strong></div>' +
+    '<p style="font-size:.82rem;color:var(--navy);margin-bottom:.8rem;line-height:1.8;">' +
+    '①&nbsp;Supabaseの <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">members</code> テーブルで' +
+    '&nbsp;<strong>' + memberName + '</strong>&nbsp;の <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">token</code> カラムを以下の値に更新してください：<br>' +
+    '<code style="background:#f1f5f9;padding:4px 8px;border-radius:4px;font-size:.78rem;word-break:break-all;display:inline-block;margin-top:4px;">' + token + '</code></p>' +
+    '<p style="font-size:.82rem;color:var(--navy);margin-bottom:.8rem;">②&nbsp;以下のURLをLINEで手動送付してください：</p>' +
+    '<div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:.8rem;word-break:break-all;font-size:.78rem;">' +
+    '<a href="' + myPageUrl + '" target="_blank" style="color:var(--blue);">' + myPageUrl + '</a></div>' +
+    '<button onclick="navigator.clipboard.writeText(\'' + myPageUrl + '\').then(()=>this.textContent=\'コピー済み ✓\')" ' +
+    'style="margin-top:10px;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:.78rem;font-weight:700;cursor:pointer;">URLをコピー</button>';
+  resultEl.style.display = 'block';
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 承認してマイページURLをLINEで送付';
 }
 
 // =============================================
