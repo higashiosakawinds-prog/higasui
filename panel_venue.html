@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>予約管理委員会パネル | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC;
+  --green:#1D9E75; --red:#C0392B;
+  --radius:16px; --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* ===== PANEL NAV ===== */
+#panel-nav{
+  position:sticky;top:0;z-index:100;height:52px;
+  background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);
+  display:flex;align-items:center;padding:0 1.25rem;gap:12px;
+}
+#back-btn{
+  width:34px;height:34px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;flex-shrink:0;
+}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{
+  margin-left:auto;padding:3px 12px;border-radius:20px;
+  font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;
+  background:rgba(14,165,233,.2);color:#7dd3fc;letter-spacing:.08em;
+}
+
+/* ===== LOCK SCREEN ===== */
+#lockScreen{
+  position:fixed;inset:0;z-index:200;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+}
+.lock-card{
+  background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);
+  border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;
+  backdrop-filter:blur(12px);
+}
+.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input{
+  width:100%;padding:13px 16px;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+  color:#fff;font-size:1rem;font-family:inherit;outline:none;
+  text-align:center;letter-spacing:.2em;margin-bottom:.8rem;transition:border-color .2s;
+}
+.lock-input:focus{border-color:var(--gold);}
+.lock-btn{width:100%;padding:13px;border:none;border-radius:12px;background:var(--gold);color:var(--navy);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;}
+.lock-error{display:none;margin-top:.8rem;padding:.6rem 1rem;background:rgba(192,57,43,.2);border-radius:8px;font-size:.75rem;color:#fca5a5;}
+.lock-error.show{display:block;}
+
+/* ===== LOADING ===== */
+#stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
+.spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== MAIN ===== */
+#mainContent{display:none;padding:28px 0 80px;}
+
+/* ===== STAT GRID ===== */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:600px){.stat-grid{grid-template-columns:repeat(4,1fr);}}
+.stat-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:1rem 1.2rem;}
+.stat-num{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;color:var(--blue);line-height:1;margin-bottom:4px;}
+.stat-label{font-size:.7rem;color:var(--muted);}
+
+/* ===== CARD ===== */
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
+.card-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.card-head-left{display:flex;align-items:center;gap:10px;}
+.card-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.card-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
+
+/* ===== BUTTONS ===== */
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.btn-primary{padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;text-decoration:none;}
+.btn-primary:hover{background:#1a3d85;}
+.btn-line{padding:9px 18px;background:#06C755;color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s;}
+.btn-line:hover{opacity:.85;}
+.btn-secondary{padding:9px 18px;background:none;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none;}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+
+/* ===== TABLE ===== */
+.tbl-wrap{overflow-x:auto;}
+.data-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.data-table th{background:var(--navy);color:#fff;padding:.65rem 1rem;text-align:left;font-weight:600;font-family:'Outfit',sans-serif;font-size:.68rem;letter-spacing:.05em;white-space:nowrap;}
+.data-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:#f5f7ff;}
+
+/* 出欠ドット */
+.dot{display:inline-block;width:16px;height:16px;border-radius:50%;margin:0 1px;}
+.dot-attend{background:#22c55e;}
+.dot-late{background:#f59e0b;}
+.dot-absent{background:#ef4444;}
+.dot-none{background:#e5e7eb;border:1.5px solid #d1d5db;}
+
+/* フィルター */
+.filter-select{padding:5px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.75rem;font-family:inherit;color:var(--navy);background:#fff;outline:none;cursor:pointer;}
+
+/* 次回練習バナー */
+.next-banner{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  border-radius:var(--radius);padding:1.2rem 1.5rem;
+  margin-bottom:20px;display:flex;align-items:center;gap:16px;
+  box-shadow:var(--shadow);
+}
+.next-banner-icon{font-size:1.5rem;flex-shrink:0;}
+.next-banner-date{font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;line-height:1.1;}
+.next-banner-sub{font-size:.75rem;color:rgba(255,255,255,.65);margin-top:3px;}
+.next-banner-days{margin-left:auto;font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:var(--gold);line-height:1;}
+.next-banner-days-label{font-size:.65rem;color:rgba(255,255,255,.5);text-align:right;}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,43,74,.65);z-index:300;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:680px;padding:1.5rem 1.5rem 2.5rem;max-height:92vh;overflow-y:auto;}
+.modal-drag{width:36px;height:4px;background:#e5e7eb;border-radius:2px;margin:0 auto 1.2rem;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;}
+.modal-fg{margin-bottom:1rem;}
+.modal-fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.modal-fg input,.modal-fg select,.modal-fg textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.88rem;font-family:inherit;background:var(--bg);outline:none;transition:border-color .2s;}
+.modal-fg input:focus,.modal-fg select:focus,.modal-fg textarea:focus{border-color:var(--blue);background:#fff;}
+.modal-fg textarea{resize:vertical;min-height:80px;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:10px;margin-top:1.2rem;}
+.btn-cancel{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;}
+.btn-save{flex:2;padding:12px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;}
+.btn-save:hover{background:#1a3d85;}
+.btn-danger{flex:1;padding:12px;border:none;border-radius:10px;background:#fee2e2;color:var(--red);font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+.modal-msg{display:none;border-radius:8px;padding:.7rem 1rem;font-size:.78rem;margin-top:.8rem;}
+.modal-msg.success{display:block;background:#dcfce7;color:#15803d;}
+.modal-msg.error{display:block;background:#fee2e2;color:#991b1b;}
+
+/* LINE通知モーダル */
+.line-preview{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:1rem;font-size:.8rem;line-height:1.8;color:var(--text);margin-bottom:1rem;white-space:pre-wrap;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="panel-nav">
+  <button id="back-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i></button>
+  <div id="panel-title">予約管理委員会</div>
+  <div id="panel-badge">VENUE</div>
+</nav>
+
+<!-- LOCK -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-eyebrow">COMMITTEE PANEL</div>
+    <div class="lock-title">予約管理委員会</div>
+    <div class="lock-sub">パネルコードを入力してください。<br>担当者のみアクセスできます。</div>
+    <input class="lock-input" type="password" id="codeInput" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="lock-btn" onclick="tryUnlock()"><i class="fa-solid fa-unlock"></i> アクセス</button>
+    <div class="lock-error" id="lockError">パネルコードが違います。</div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="stateLoading" style="display:none;">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">データを読み込み中…</p>
+</div>
+
+<!-- MAIN -->
+<div id="mainContent">
+  <div class="inner">
+
+    <!-- 次回練習バナー -->
+    <div class="next-banner" id="nextBanner">
+      <div class="next-banner-icon">🎵</div>
+      <div>
+        <div class="next-banner-date" id="nextDate">―</div>
+        <div class="next-banner-sub" id="nextVenue">―</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="next-banner-days" id="nextDays">―</div>
+        <div class="next-banner-days-label">日後</div>
+      </div>
+    </div>
+
+    <!-- サマリー -->
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="statThis">―</div><div class="stat-label">今月の練習回数</div></div>
+      <div class="stat-card"><div class="stat-num" id="statNext">―</div><div class="stat-label">来月の練習回数</div></div>
+      <div class="stat-card"><div class="stat-num" id="statVenues">―</div><div class="stat-label">使用会場数</div></div>
+      <div class="stat-card"><div class="stat-num" id="statMembers">―</div><div class="stat-label">在籍団員数</div></div>
+    </div>
+
+    <!-- アクション -->
+    <div class="action-row">
+      <button class="btn-primary" onclick="openModal()">
+        <i class="fa-solid fa-plus"></i> 練習日を追加
+      </button>
+      <button class="btn-line" onclick="openLineModal()">
+        <i class="fa-brands fa-line"></i> LINE通知を送る
+      </button>
+      <a class="btn-secondary" href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds@gmail.com" target="_blank">
+        <i class="fa-solid fa-calendar"></i> Googleカレンダー
+      </a>
+    </div>
+
+    <!-- スケジュール一覧 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-left">
+          <div class="card-icon" style="background:rgba(14,165,233,.1);color:#0369a1;"><i class="fa-solid fa-calendar-days"></i></div>
+          <div class="card-title">練習スケジュール</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select class="filter-select" id="filterMonth" onchange="renderSchedule()">
+            <option value="">全期間</option>
+          </select>
+          <button class="btn-secondary" onclick="loadAll()" style="padding:5px 12px;font-size:.72rem;">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+        </div>
+      </div>
+      <div style="padding:0;">
+        <div class="tbl-wrap">
+          <table class="data-table" style="min-width:580px;">
+            <thead>
+              <tr><th>日付</th><th>曜日</th><th>会場</th><th>時間</th><th>参加</th><th>欠席</th><th>遅刻</th><th>未回答</th><th></th></tr>
+            </thead>
+            <tbody id="scheduleTable">
+              <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- フォローアップ -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-left">
+          <div class="card-icon" style="background:rgba(239,68,68,.1);color:#b91c1c;"><i class="fa-solid fa-heart"></i></div>
+          <div class="card-title">出席フォローアップ</div>
+        </div>
+        <span style="font-size:.72rem;color:var(--muted);">直近5回</span>
+      </div>
+      <div style="padding:0;">
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <thead><tr><th>氏名</th><th>パート</th><th>直近5回</th><th>出席率</th><th>最終出席</th></tr></thead>
+            <tbody id="followTable">
+              <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 練習日追加・編集モーダル -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="modalTitle">練習日を追加</div>
+    <input type="hidden" id="editId">
+    <div class="modal-fg">
+      <label>日付 <span style="color:var(--gold)">*</span></label>
+      <input type="date" id="inputDate">
+    </div>
+    <div class="fg-row">
+      <div class="modal-fg">
+        <label>開始時間</label>
+        <input type="time" id="inputStart" value="13:00">
+      </div>
+      <div class="modal-fg">
+        <label>終了時間</label>
+        <input type="time" id="inputEnd" value="17:00">
+      </div>
+    </div>
+    <div class="modal-fg">
+      <label>会場 <span style="color:var(--gold)">*</span></label>
+      <input type="text" id="inputVenue" placeholder="例：東大阪文化創造館・第1練習室" list="venueList">
+      <datalist id="venueList">
+        <option value="東大阪文化創造館">
+        <option value="東大阪文化創造館・小ホール">
+        <option value="東大阪文化創造館・第1練習室">
+        <option value="荒本人権文化センター">
+      </datalist>
+    </div>
+    <div class="modal-fg">
+      <label>メモ（任意）</label>
+      <textarea id="inputNote" placeholder="例：定期演奏会前の合奏練習。楽器搬入あり。"></textarea>
+    </div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="btn-danger" id="btnDelete" onclick="deletePractice()" style="display:none;">削除</button>
+      <button class="btn-save" onclick="savePractice()"><i class="fa-solid fa-check"></i> 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- LINE通知モーダル -->
+<div class="modal-overlay" id="lineModal">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">LINE通知を送る</div>
+    <div class="modal-fg">
+      <label>対象の練習日</label>
+      <select id="lineTargetPractice" onchange="updateLinePreview()">
+        <option value="">選択してください</option>
+      </select>
+    </div>
+    <div class="modal-fg">
+      <label>通知タイプ</label>
+      <select id="lineType" onchange="updateLinePreview()">
+        <option value="weekly">今週の練習案内</option>
+        <option value="reminder">前日リマインド</option>
+        <option value="cancel">練習中止のお知らせ</option>
+      </select>
+    </div>
+    <div class="modal-fg">
+      <label>メッセージプレビュー</label>
+      <div class="line-preview" id="linePreview">練習日を選択してください</div>
+    </div>
+    <div class="modal-msg" id="lineMsgEl"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeLineModal()">キャンセル</button>
+      <button class="btn-save" style="background:#06C755;" onclick="sendLineNotify()">
+        <i class="fa-brands fa-line"></i> 送信する
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const GAS_URL     = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSgXXJGuzEgaXWcZaRfsVtnIHoaAmRG-WkuR12XypADT-jG6w/exec';
+const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+const PANEL_CODE  = 'VENUE';
+const WEEK        = ['日','月','火','水','木','金','土'];
+
+// =============================================
+//  状態
+// =============================================
+let memberToken  = null;
+let memberData   = null;
+let practices    = [];
+let attendances  = [];
+let members      = [];
+
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  memberToken = params.get('token');
+
+  if (!memberToken) return;
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+      SB
+    );
+    const mems = await res.json();
+    if (!mems || mems.length === 0) return;
+    memberData = mems[0];
+
+    const role      = memberData.role      || '';
+    const committee = memberData.committee || '';
+    const FULL      = ['president', 'vice_president', 'director'];
+    const hasAccess = FULL.includes(role) || role === 'venue' || committee === 'venue';
+    if (hasAccess) showMain();
+  } catch(e) { console.error(e); }
+});
+
+function tryUnlock() {
+  const input = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (input === PANEL_CODE) {
+    sessionStorage.setItem('panel_venue_unlocked', 'true');
+    showMain();
+  } else {
+    document.getElementById('lockError').classList.add('show');
+    document.getElementById('codeInput').select();
+  }
+}
+
+async function showMain() {
+  document.getElementById('lockScreen').style.display  = 'none';
+  document.getElementById('stateLoading').style.display = 'flex';
+  await loadAll();
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('mainContent').style.display  = 'block';
+}
+
+// =============================================
+//  データ取得
+// =============================================
+async function loadAll() {
+  try {
+    // 練習スケジュール（全件）
+    const pRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/practices?order=date.asc`,
+      SB
+    );
+    practices = await pRes.json() || [];
+
+    // 団員一覧
+    const mRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type&status=eq.active&order=name.asc`,
+      SB
+    );
+    members = await mRes.json() || [];
+
+    // 出欠データ（直近3ヶ月分）
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    const fromDate = threeMonthsAgo.toISOString().split('T')[0];
+    const recentPractices = practices.filter(p => p.date >= fromDate);
+    if (recentPractices.length > 0) {
+      const ids = recentPractices.map(p => p.id).join(',');
+      const aRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/attendances?practice_id=in.(${ids})`,
+        SB
+      );
+      attendances = await aRes.json() || [];
+    }
+  } catch(e) {
+    console.error('データ取得エラー:', e);
+  }
+
+  renderAll();
+}
+
+// =============================================
+//  描画
+// =============================================
+function renderAll() {
+  renderNextBanner();
+  renderSummary();
+  populateMonthFilter();
+  renderSchedule();
+  renderFollowUp();
+  populateLineSelect();
+}
+
+function renderNextBanner() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const next = practices.find(p => new Date(p.date) >= today);
+  if (!next) return;
+
+  const d = new Date(next.date);
+  const diff = Math.round((d - today) / (1000*60*60*24));
+  document.getElementById('nextDate').textContent =
+    `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${WEEK[d.getDay()]}）`;
+  document.getElementById('nextVenue').textContent =
+    `${next.venue || '会場未定'} ${next.start_time ? next.start_time.slice(0,5) : ''}〜${next.end_time ? next.end_time.slice(0,5) : ''}`;
+  document.getElementById('nextDays').textContent = diff === 0 ? '今日' : diff;
+  if (diff === 0) document.querySelector('.next-banner-days-label').textContent = '';
+}
+
+function renderSummary() {
+  const now   = new Date();
+  const thisY = now.getFullYear(), thisM = now.getMonth();
+  const nextM = thisM === 11 ? 0 : thisM + 1;
+  const nextY = thisM === 11 ? thisY + 1 : thisY;
+
+  const thisCount  = practices.filter(p => { const d = new Date(p.date); return d.getFullYear()===thisY && d.getMonth()===thisM; }).length;
+  const nextCount  = practices.filter(p => { const d = new Date(p.date); return d.getFullYear()===nextY && d.getMonth()===nextM; }).length;
+  const venueCount = new Set(practices.map(p => p.venue).filter(Boolean)).size;
+
+  document.getElementById('statThis').textContent    = thisCount + '回';
+  document.getElementById('statNext').textContent    = nextCount + '回';
+  document.getElementById('statVenues').textContent  = venueCount + '箇所';
+  document.getElementById('statMembers').textContent = members.length + '名';
+}
+
+function populateMonthFilter() {
+  const sel   = document.getElementById('filterMonth');
+  const prev  = sel.value;
+  const months = [...new Set(practices.map(p => p.date.slice(0,7)))].sort().reverse();
+  sel.innerHTML = '<option value="">全期間</option>' + months.map(m => {
+    const [y, mo] = m.split('-');
+    return `<option value="${m}"${m===prev?' selected':''}>${y}年${parseInt(mo)}月</option>`;
+  }).join('');
+}
+
+function renderSchedule() {
+  const filter = document.getElementById('filterMonth').value;
+  const today  = new Date(); today.setHours(0,0,0,0);
+
+  let rows = [...practices].sort((a,b) => a.date.localeCompare(b.date));
+  if (filter) {
+    rows = rows.filter(p => p.date.startsWith(filter));
+  } else {
+    // フィルターなし：過去2回 + 今後8回
+    const past   = rows.filter(p => new Date(p.date) < today).slice(-2);
+    const future = rows.filter(p => new Date(p.date) >= today).slice(0, 8);
+    rows = [...past, ...future];
+  }
+
+  if (!rows.length) {
+    document.getElementById('scheduleTable').innerHTML =
+      '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem;">データがありません</td></tr>';
+    return;
+  }
+
+  document.getElementById('scheduleTable').innerHTML = rows.map(p => {
+    const d       = new Date(p.date);
+    const isPast  = d < today;
+    const dayColor = d.getDay()===0?'#dc2626':d.getDay()===6?'var(--blue)':'var(--text)';
+    const att     = attendances.filter(a => a.practice_id === p.id);
+    const attend  = att.filter(a => a.status === 'attend').length;
+    const absent  = att.filter(a => a.status === 'absent').length;
+    const late    = att.filter(a => a.status === 'late').length;
+    const noAns   = Math.max(0, members.length - att.length);
+
+    return `<tr style="${isPast ? 'opacity:.55;' : ''}">
+      <td style="font-weight:700;white-space:nowrap;">${p.date}</td>
+      <td><span style="font-weight:700;color:${dayColor};">${WEEK[d.getDay()]}</span></td>
+      <td style="font-size:.78rem;">${p.venue || '―'}</td>
+      <td style="font-size:.75rem;color:var(--muted);white-space:nowrap;">${p.start_time ? p.start_time.slice(0,5) : '―'}〜${p.end_time ? p.end_time.slice(0,5) : '―'}</td>
+      <td><span style="color:#16a34a;font-weight:700;">${attend}名</span></td>
+      <td><span style="color:#dc2626;font-weight:700;">${absent}名</span></td>
+      <td><span style="color:#d97706;font-weight:700;">${late}名</span></td>
+      <td><span style="color:var(--muted);">${noAns}名</span></td>
+      <td>
+        <button onclick="openEditModal('${p.id}')"
+          style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:.68rem;cursor:pointer;color:var(--navy);">
+          編集
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderFollowUp() {
+  if (!members.length) {
+    document.getElementById('followTable').innerHTML =
+      '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem;">団員データがありません</td></tr>';
+    return;
+  }
+
+  const today   = new Date(); today.setHours(0,0,0,0);
+  const recent5 = [...practices]
+    .filter(p => new Date(p.date) <= today)
+    .sort((a,b) => b.date.localeCompare(a.date))
+    .slice(0, 5);
+
+  const rows = members.map(m => {
+    const myAtt   = attendances.filter(a => a.member_id === m.id);
+    const dots    = recent5.map(p => {
+      const a = myAtt.find(a => a.practice_id === p.id);
+      if (!a)                   return `<span class="dot dot-none" title="未回答"></span>`;
+      if (a.status === 'attend') return `<span class="dot dot-attend" title="参加"></span>`;
+      if (a.status === 'late')   return `<span class="dot dot-late" title="遅刻"></span>`;
+      return `<span class="dot dot-absent" title="欠席"></span>`;
+    }).join('');
+
+    const attended = recent5.filter(p => {
+      const a = myAtt.find(a => a.practice_id === p.id);
+      return a && (a.status === 'attend' || a.status === 'late');
+    }).length;
+    const rate = recent5.length ? Math.round(attended / recent5.length * 100) : null;
+    const rateColor = rate === null ? 'var(--muted)' : rate >= 80 ? '#16a34a' : rate >= 50 ? '#d97706' : '#dc2626';
+
+    // 最終出席日
+    const lastAtt = myAtt
+      .filter(a => a.status === 'attend' || a.status === 'late')
+      .map(a => practices.find(p => p.id === a.practice_id))
+      .filter(Boolean)
+      .sort((a,b) => b.date.localeCompare(a.date))[0];
+    const lastDate = lastAtt ? lastAtt.date.slice(5).replace('-','/') : '記録なし';
+
+    // 要フォロー判定（直近3回連続欠席 or 出席率40%以下）
+    const last3    = recent5.slice(0, 3);
+    const allAbs   = last3.length >= 2 && last3.every(p => {
+      const a = myAtt.find(a => a.practice_id === p.id);
+      return !a || a.status === 'absent';
+    });
+    const needFollow = allAbs || (rate !== null && rate <= 40);
+
+    return { m, dots, rate, rateColor, lastDate, needFollow };
+  }).sort((a,b) => (b.needFollow ? 1 : 0) - (a.needFollow ? 1 : 0));
+
+  document.getElementById('followTable').innerHTML = rows.map(({ m, dots, rate, rateColor, lastDate, needFollow }) =>
+    `<tr style="${needFollow ? 'background:#fff8f8;' : ''}">
+      <td>
+        ${needFollow ? '<i class="fa-solid fa-heart" style="color:#dc2626;margin-right:6px;font-size:.72rem;"></i>' : ''}
+        <span style="font-weight:${needFollow ? 700 : 400};">${m.name}</span>
+      </td>
+      <td style="color:var(--muted);font-size:.75rem;">${m.part || '―'}</td>
+      <td>${dots}</td>
+      <td><span style="font-weight:700;color:${rateColor};">${rate !== null ? rate + '%' : '―'}</span></td>
+      <td style="font-size:.78rem;color:var(--muted);">${lastDate}</td>
+    </tr>`
+  ).join('');
+}
+
+// =============================================
+//  練習日モーダル
+// =============================================
+function openModal() {
+  document.getElementById('editId').value      = '';
+  document.getElementById('inputDate').value   = '';
+  document.getElementById('inputStart').value  = '13:00';
+  document.getElementById('inputEnd').value    = '17:00';
+  document.getElementById('inputVenue').value  = '';
+  document.getElementById('inputNote').value   = '';
+  document.getElementById('modalTitle').textContent = '練習日を追加';
+  document.getElementById('btnDelete').style.display = 'none';
+  document.getElementById('modalMsg').className = 'modal-msg';
+  document.getElementById('scheduleModal').classList.add('open');
+}
+
+function openEditModal(id) {
+  const p = practices.find(p => p.id === id);
+  if (!p) return;
+  document.getElementById('editId').value      = p.id;
+  document.getElementById('inputDate').value   = p.date;
+  document.getElementById('inputStart').value  = p.start_time ? p.start_time.slice(0,5) : '';
+  document.getElementById('inputEnd').value    = p.end_time   ? p.end_time.slice(0,5)   : '';
+  document.getElementById('inputVenue').value  = p.venue || '';
+  document.getElementById('inputNote').value   = p.note  || '';
+  document.getElementById('modalTitle').textContent = '練習日を編集';
+  document.getElementById('btnDelete').style.display = '';
+  document.getElementById('modalMsg').className = 'modal-msg';
+  document.getElementById('scheduleModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('scheduleModal').classList.remove('open'); }
+
+async function savePractice() {
+  const id    = document.getElementById('editId').value;
+  const date  = document.getElementById('inputDate').value;
+  const start = document.getElementById('inputStart').value;
+  const end   = document.getElementById('inputEnd').value;
+  const venue = document.getElementById('inputVenue').value.trim();
+  const note  = document.getElementById('inputNote').value.trim();
+  const msgEl = document.getElementById('modalMsg');
+
+  msgEl.className = 'modal-msg';
+  if (!date || !venue) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '日付と会場は必須です。';
+    return;
+  }
+
+  const payload = {
+    date, venue, note: note || null,
+    start_time: start || null,
+    end_time:   end   || null,
+    org_id: memberData?.org_id || null,
+  };
+
+  try {
+    const url = id
+      ? `${SUPABASE_URL}/rest/v1/practices?id=eq.${id}`
+      : `${SUPABASE_URL}/rest/v1/practices`;
+    const res = await fetch(url, {
+      method: id ? 'PATCH' : 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok || res.status === 201 || res.status === 204) {
+      msgEl.className = 'modal-msg success';
+      msgEl.textContent = '✓ 保存しました。';
+      await loadAll();
+      setTimeout(closeModal, 1200);
+    } else {
+      throw new Error('save failed: ' + res.status);
+    }
+  } catch(e) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
+  }
+}
+
+async function deletePractice() {
+  const id = document.getElementById('editId').value;
+  if (!id || !confirm('この練習日を削除しますか？')) return;
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/practices?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+    });
+    if (res.ok || res.status === 204) {
+      closeModal();
+      await loadAll();
+    }
+  } catch(e) {
+    document.getElementById('modalMsg').className = 'modal-msg error';
+    document.getElementById('modalMsg').textContent = '削除に失敗しました。';
+  }
+}
+
+// =============================================
+//  LINE通知モーダル
+// =============================================
+function populateLineSelect() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = practices
+    .filter(p => new Date(p.date) >= today)
+    .slice(0, 5);
+
+  const sel = document.getElementById('lineTargetPractice');
+  sel.innerHTML = '<option value="">選択してください</option>' + upcoming.map(p => {
+    const d = new Date(p.date);
+    return `<option value="${p.id}">${p.date}（${WEEK[d.getDay()]}） ${p.venue || ''}</option>`;
+  }).join('');
+}
+
+function openLineModal() {
+  document.getElementById('lineMsgEl').className = 'modal-msg';
+  populateLineSelect();
+  updateLinePreview();
+  document.getElementById('lineModal').classList.add('open');
+}
+function closeLineModal() { document.getElementById('lineModal').classList.remove('open'); }
+
+function updateLinePreview() {
+  const pid  = document.getElementById('lineTargetPractice').value;
+  const type = document.getElementById('lineType').value;
+  const p    = practices.find(p => p.id === pid);
+  const prev = document.getElementById('linePreview');
+
+  if (!p) { prev.textContent = '練習日を選択してください'; return; }
+
+  const d       = new Date(p.date);
+  const dateStr = `${d.getMonth()+1}月${d.getDate()}日（${WEEK[d.getDay()]}）`;
+  const timeStr = p.start_time ? `${p.start_time.slice(0,5)}〜${p.end_time ? p.end_time.slice(0,5) : ''}` : '';
+
+  const templates = {
+    weekly:
+`🎵 今週の練習のご案内
+
+📅 ${dateStr}
+🏢 ${p.venue || '会場未定'}
+⏰ ${timeStr}
+${p.note ? `\n📝 ${p.note}` : ''}
+出欠回答をお願いします！`,
+    reminder:
+`⏰ 明日は練習日です！
+
+📅 ${dateStr}
+🏢 ${p.venue || '会場未定'}
+⏰ ${timeStr}
+${p.note ? `\n📝 ${p.note}` : ''}
+忘れずご参加ください🎶`,
+    cancel:
+`❌ 練習中止のお知らせ
+
+${dateStr}の練習は中止となりました。
+${p.note ? `\n理由：${p.note}` : ''}
+ご確認をお願いいたします。`,
+  };
+
+  prev.textContent = templates[type] || '';
+}
+
+async function sendLineNotify() {
+  const pid  = document.getElementById('lineTargetPractice').value;
+  const type = document.getElementById('lineType').value;
+  const msg  = document.getElementById('linePreview').textContent;
+  const msgEl = document.getElementById('lineMsgEl');
+
+  if (!pid) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '練習日を選択してください。';
+    return;
+  }
+
+  try {
+    const body = new URLSearchParams({
+      action:  'sendBroadcast',
+      message: msg,
+      token:   memberToken || '',
+    });
+    const res = await fetch(GAS_URL, { method: 'POST', body });
+    const data = await res.json();
+
+    if (data.success) {
+      msgEl.className = 'modal-msg success';
+      msgEl.textContent = '✓ LINE通知を送信しました！';
+      setTimeout(closeLineModal, 2000);
+    } else {
+      throw new Error(data.error || 'failed');
+    }
+  } catch(e) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'エラーが発生しました。GASの設定を確認してください。';
+  }
+}
+
+// =============================================
+//  戻るボタン・ユーティリティ
+// =============================================
+function goBack() {
+  location.href = memberToken
+    ? `./member.html?token=${encodeURIComponent(memberToken)}`
+    : './member.html';
+}
+</script>
+</body>
+</html>
