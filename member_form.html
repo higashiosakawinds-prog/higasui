@@ -190,22 +190,12 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
             </select>
           </div>
           <div class="fg-section"><span class="fg-section-title">連絡先</span></div>
-          <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="j-email" placeholder="example@gmail.com" required></div>
           <div class="fg-row">
+            <div class="fg"><label>メールアドレス<span class="req">*</span></label><input type="email" id="j-email" placeholder="example@gmail.com" required></div>
             <div class="fg"><label>電話番号<span class="req">*</span></label><input type="tel" id="j-phone" placeholder="090-0000-0000" required></div>
-            <div class="fg"><label>緊急連絡先<span class="opt">任意</span></label><input type="tel" id="j-emergency" placeholder="090-0000-0000"></div>
           </div>
-          <div class="fg-section"><span class="fg-section-title">LINE連携</span></div>
-          <div class="fg">
-            <label>LINE ID<span class="opt">任意・推奨</span></label>
-            <input type="text" id="j-lineid" placeholder="例：@higasui_taro（@から始まる文字列）">
-            <p style="font-size:.72rem;color:var(--muted);margin-top:4px;line-height:1.6;">
-              <i class="fa-brands fa-line" style="color:#06C755;"></i>
-              LINEアプリ → プロフィール → 「ID」に表示されている文字列を入力してください。<br>
-              入力いただくと入団承認後にマイページURLをLINEでお送りできます。
-            </p>
-          </div>
-          <div class="fg-section"><span class="fg-section-title">その他</span></div>
+          <div class="fg"><label>緊急連絡先<span class="req">*</span></label><input type="text" id="j-emergency" placeholder="保護者名・続柄・電話番号（未成年の方は必須）" required></div>
+          <div class="fg"><label>LINE ID<span class="opt">任意</span></label><input type="text" id="j-lineid" placeholder="例：higasui_taro"></div>
           <div class="fg"><label>ひとこと<span class="opt">任意</span></label><textarea id="j-msg" rows="3" placeholder="演奏歴・ブランク年数・意気込みなどお気軽にどうぞ！"></textarea></div>
           <div class="agree-box">
             入団にあたり、以下の事項に同意いただく必要があります。<br>
@@ -328,7 +318,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
   <div class="inner">
     <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
     <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
-        <div class="footer-links">
+    <div class="footer-links">
       <a href="/higasui/about.html">団について</a>
       <a href="/higasui/join.html">練習案内</a>
       <a href="/higasui/faq.html">よくある質問</a>
@@ -347,16 +337,38 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-const GAS='https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
-const ham=document.getElementById('ham-btn');
-const drawer=document.getElementById('site-drawer');
-ham.addEventListener('click',function(){
-  var o=drawer.classList.contains('open');
-  drawer.classList.toggle('open',!o);
-  document.body.style.overflow=o?'':'hidden';
-});
-function closeNav(){drawer.classList.remove('open');document.body.style.overflow='';}
+// ==============================
+// 設定値
+// ==============================
+const SUPABASE_URL = 'https://eqnacealnmmipapdguc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_09pd5yiuCBENloDwHZTs9A_3uQmSKqy';
 
+// ==============================
+// ハンバーガーメニュー
+// ==============================
+const ham = document.getElementById('ham-btn');
+const drawer = document.getElementById('site-drawer');
+ham.addEventListener('click', function() {
+  var o = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !o);
+  document.body.style.overflow = o ? '' : 'hidden';
+});
+function closeNav() { drawer.classList.remove('open'); document.body.style.overflow = ''; }
+
+// ==============================
+// タブ切り替え
+// ==============================
+function switchTab(name, btn) {
+  document.querySelectorAll('.form-section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ==============================
+// 休団/復団 ラベル切り替え
+// ==============================
 function toggleRestType(val) {
   var label = document.getElementById('r-date-label');
   var rlabel = document.getElementById('r-reason-label');
@@ -376,103 +388,134 @@ function toggleRestType(val) {
   }
 }
 
-function switchTab(name,btn){
-  document.querySelectorAll('.form-section').forEach(function(s){s.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('tab-'+name).classList.add('active');
-  btn.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+// ==============================
+// Supabaseへの送信共通関数
+// ==============================
+async function sendToSupabase(table, payload, ids, okCallback) {
+  const err = document.getElementById(ids.err);
+  err.style.display = 'none';
+  const btn = document.getElementById(ids.btn);
+  btn.disabled = true;
+  document.getElementById(ids.txt).textContent = '送信中...';
+  document.getElementById(ids.sp).style.display = 'block';
 
-function send(type,fields,ids){
-  var err=document.getElementById(ids.err);
-  err.style.display='none';
-  var ok=true;
-  fields.forEach(function(f){if(!f.optional && !f.val)ok=false;});
-  if(type==='join'){
-    var agree=document.getElementById('j-agree');
-    if(!agree.checked)ok=false;
-  }
-  if(!ok){err.textContent='※ 必須項目をすべて入力・同意してください。';err.style.display='block';return;}
-  var btn=document.getElementById(ids.btn);
-  btn.disabled=true;
-  document.getElementById(ids.txt).textContent='送信中...';
-  document.getElementById(ids.sp).style.display='block';
-  var fd=new FormData();
-  fd.append('type',type);
-  fields.forEach(function(f){fd.append(f.k,f.val);});
-  fetch(GAS,{method:'POST',mode:'no-cors',body:fd})
-    .then(function(){
-      document.getElementById(ids.form).style.display='none';
-      document.getElementById(ids.ok).style.display='block';
-      // 休団・復団で完了メッセージを変える
-      if(type==='rest'){
-        var rt=document.getElementById('r-type').value;
-        var t=document.getElementById('restOkTitle');
-        var tx=document.getElementById('restOkText');
-        if(t&&tx){
-          if(rt==='復団'){
-            t.textContent='復団申請を受け付けました！';
-            tx.innerHTML='担当者より2〜3営業日以内にご連絡します。<br>おかえりなさい！一緒に音楽を楽しみましょう🎺<br><br>東大阪吹奏楽団';
-          } else {
-            t.textContent='休団申請を受け付けました';
-            tx.innerHTML='担当者より2〜3営業日以内にご連絡します。<br>また元気なときに戻ってきてください！<br><br>東大阪吹奏楽団';
-          }
-        }
-      }
-    })
-    .catch(function(){
-      err.textContent='送信に失敗しました。時間をおいて再度お試しください。';
-      err.style.display='block';
-      btn.disabled=false;
-      document.getElementById(ids.txt).textContent=ids.label;
-      document.getElementById(ids.sp).style.display='none';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
     });
+    if (!res.ok) throw new Error('送信失敗');
+    document.getElementById(ids.form).style.display = 'none';
+    document.getElementById(ids.ok).style.display = 'block';
+    if (okCallback) okCallback();
+  } catch(e) {
+    err.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
+    err.style.display = 'block';
+    btn.disabled = false;
+    document.getElementById(ids.txt).textContent = ids.label;
+    document.getElementById(ids.sp).style.display = 'none';
+  }
 }
 
-document.getElementById('joinForm').addEventListener('submit',function(e){
+// ==============================
+// 入団申込
+// ==============================
+document.getElementById('joinForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  send('join',[
-    {k:'name',val:document.getElementById('j-name').value.trim()},
-    {k:'kana',val:document.getElementById('j-kana').value.trim()},
-    {k:'birth',val:document.getElementById('j-birth').value},
-    {k:'member_type',val:document.getElementById('j-type').value},
-    {k:'instrument',val:document.getElementById('j-inst').value},
-    {k:'email',val:document.getElementById('j-email').value.trim()},
-    {k:'phone',val:document.getElementById('j-phone').value.trim()},
-    {k:'emergency',val:document.getElementById('j-emergency').value.trim(),optional:true},
-    {k:'message',val:document.getElementById('j-msg').value.trim(),optional:true},
-    {k:'line_id',val:document.getElementById('j-lineid').value.trim(),optional:true}
-  ],{btn:'j-btn',sp:'j-spinner',txt:'j-btn-text',err:'joinErr',form:'joinForm',ok:'joinOk',label:'入団を申し込む'});
+  const err = document.getElementById('joinErr');
+  const agree = document.getElementById('j-agree');
+  if (!agree.checked) {
+    err.textContent = '※ 定款への同意が必要です。';
+    err.style.display = 'block';
+    return;
+  }
+  const payload = {
+    name:         document.getElementById('j-name').value.trim(),
+    yomi:         document.getElementById('j-kana').value.trim(),
+    birthday:     document.getElementById('j-birth').value || null,
+    member_type:  document.getElementById('j-type').value,
+    part:         document.getElementById('j-inst').value,
+    email:        document.getElementById('j-email').value.trim(),
+    phone:        document.getElementById('j-phone').value.trim(),
+    emergency_phone: document.getElementById('j-emergency').value.trim(),
+    line_id:      document.getElementById('j-lineid').value.trim() || null,
+    comment:      document.getElementById('j-msg').value.trim() || null,
+    status:       'pending'
+  };
+  sendToSupabase('applications', payload,
+    { btn:'j-btn', sp:'j-spinner', txt:'j-btn-text', err:'joinErr', form:'joinForm', ok:'joinOk', label:'入団を申し込む' }
+  );
 });
 
-document.getElementById('restForm').addEventListener('submit',function(e){
+// ==============================
+// 休団・復団申請
+// ==============================
+document.getElementById('restForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  send('rest',[
-    {k:'rest_type',val:document.getElementById('r-type').value},
-    {k:'name',val:document.getElementById('r-name').value.trim()},
-    {k:'email',val:document.getElementById('r-email').value.trim()},
-    {k:'start_date',val:document.getElementById('r-start').value},
-    {k:'reason',val:document.getElementById('r-reason').value.trim()}
-  ],{btn:'r-btn',sp:'r-spinner',txt:'r-btn-text',err:'restErr',form:'restForm',ok:'restOk',label:'申請する'});
+  const restType = document.getElementById('r-type').value;
+  const payload = {
+    type:    restType === '復団' ? 'return' : 'leave_temp',
+    status:  'pending',
+    payload: {
+      rest_type:  restType,
+      name:       document.getElementById('r-name').value.trim(),
+      email:      document.getElementById('r-email').value.trim(),
+      start_date: document.getElementById('r-start').value || null,
+      reason:     document.getElementById('r-reason').value.trim() || null
+    }
+  };
+  sendToSupabase('requests', payload,
+    { btn:'r-btn', sp:'r-spinner', txt:'r-btn-text', err:'restErr', form:'restForm', ok:'restOk', label:'申請する' },
+    function() {
+      const t = document.getElementById('restOkTitle');
+      const tx = document.getElementById('restOkText');
+      if (restType === '復団') {
+        t.textContent = '復団申請を受け付けました！';
+        tx.innerHTML = '担当者より2〜3営業日以内にご連絡します。<br>おかえりなさい！一緒に音楽を楽しみましょう🎺<br><br>東大阪吹奏楽団';
+      } else {
+        t.textContent = '休団申請を受け付けました';
+        tx.innerHTML = '担当者より2〜3営業日以内にご連絡します。<br>また元気なときに戻ってきてください！<br><br>東大阪吹奏楽団';
+      }
+    }
+  );
 });
 
-document.getElementById('leaveForm').addEventListener('submit',function(e){
+// ==============================
+// 退団申請
+// ==============================
+document.getElementById('leaveForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  send('leave',[
-    {k:'name',val:document.getElementById('l-name').value.trim()},
-    {k:'email',val:document.getElementById('l-email').value.trim()},
-    {k:'leave_date',val:document.getElementById('l-date').value},
-    {k:'reason',val:document.getElementById('l-reason').value.trim()}
-  ],{btn:'l-btn',sp:'l-spinner',txt:'l-btn-text',err:'leaveErr',form:'leaveForm',ok:'leaveOk',label:'退団を申請する'});
+  const payload = {
+    type:   'withdraw',
+    status: 'pending',
+    payload: {
+      name:       document.getElementById('l-name').value.trim(),
+      email:      document.getElementById('l-email').value.trim(),
+      leave_date: document.getElementById('l-date').value || null,
+      reason:     document.getElementById('l-reason').value.trim()
+    }
+  };
+  sendToSupabase('requests', payload,
+    { btn:'l-btn', sp:'l-spinner', txt:'l-btn-text', err:'leaveErr', form:'leaveForm', ok:'leaveOk', label:'退団を申請する' }
+  );
 });
 
-var obs=new IntersectionObserver(function(entries){
-  entries.forEach(function(e,i){if(e.isIntersecting)setTimeout(function(){e.target.classList.add('visible');},i*80);});
-},{threshold:0.08});
-document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
-var st=document.getElementById('scrollTop');
-window.addEventListener('scroll',function(){st.classList.toggle('show',scrollY>400);});
+// ==============================
+// スクロールリビール
+// ==============================
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) { if(e.isIntersecting) setTimeout(function() { e.target.classList.add('visible'); }, i*80); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+var st = document.getElementById('scrollTop');
+window.addEventListener('scroll', function() { st.classList.toggle('show', scrollY > 400); });
 </script>
 </body>
 </html>
