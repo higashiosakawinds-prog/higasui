@@ -375,6 +375,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(location.search);
   memberToken = params.get('token');
 
+  // tokenなし → ロック画面のまま（パネルコードで入れる）
   if (!memberToken) return;
 
   try {
@@ -390,7 +391,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     const committee = memberData.committee || '';
     const FULL      = ['president', 'vice_president', 'director'];
     const hasAccess = FULL.includes(role) || role === 'venue' || committee === 'venue';
-    if (hasAccess) showMain();
+
+    if (hasAccess) {
+      // 権限あり → 自動ログイン
+      showMain();
+    }
+    // 権限なし → ロック画面のまま（パネルコードでも入れる）
   } catch(e) { console.error(e); }
 });
 
