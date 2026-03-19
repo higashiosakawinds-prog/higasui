@@ -381,7 +381,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
-      SB
+      { headers: SB_HEADERS }
     );
     const mems = await res.json();
     if (!mems || mems.length === 0) return;
@@ -422,23 +422,25 @@ async function showMain() {
 // =============================================
 //  データ取得
 // =============================================
+const SB_HEADERS = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+};
+
 async function loadAll() {
   try {
-    // 練習スケジュール（全件）
     const pRes = await fetch(
       `${SUPABASE_URL}/rest/v1/practices?order=date.asc`,
-      SB
+      { headers: SB_HEADERS }
     );
     practices = await pRes.json() || [];
 
-    // 団員一覧
     const mRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type&status=eq.active&order=name.asc`,
-      SB
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type&order=name.asc`,
+      { headers: SB_HEADERS }
     );
     members = await mRes.json() || [];
 
-    // 出欠データ（直近3ヶ月分）
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
     const fromDate = threeMonthsAgo.toISOString().split('T')[0];
@@ -447,14 +449,13 @@ async function loadAll() {
       const ids = recentPractices.map(p => p.id).join(',');
       const aRes = await fetch(
         `${SUPABASE_URL}/rest/v1/attendances?practice_id=in.(${ids})`,
-        SB
+        { headers: SB_HEADERS }
       );
       attendances = await aRes.json() || [];
     }
   } catch(e) {
     console.error('データ取得エラー:', e);
   }
-
   renderAll();
 }
 
