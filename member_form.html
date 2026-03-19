@@ -127,7 +127,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
   <div class="page-header-inner">
     <p class="page-eyebrow">Member Form</p>
     <h1>入団・休団・復団・退団申請</h1>
-    <p>各種お手続きはこちらのフォームからお願いします。<br>送信後、higashiosaka.winds@gmail.com よりご連絡します。</p>
+    <p>各種お手続きはこちらのフォームからお願いします。<br>送信後、<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d9b1b0beb8aab1b0b6aab8b2b8f7aeb0b7bdaa99beb4b8b0b5f7bab6b4">[email&#160;protected]</a> よりご連絡します。</p>
   </div>
 </div>
 
@@ -213,7 +213,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
             <span id="j-btn-text">入団を申し込む</span>
             <div class="spinner" id="j-spinner"></div>
           </button>
-          <p class="form-note">送信内容は自動で記録され、higashiosaka.winds@gmail.com よりご連絡します。</p>
+          <p class="form-note">送信内容は自動で記録され、<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="036b6a6462706b6a6c706268622d746a6d677043646e626a6f2d606c6e">[email&#160;protected]</a> よりご連絡します。</p>
         </form>
         <div class="ok-box" id="joinOk">
           <div class="ok-icon">🎺</div>
@@ -261,7 +261,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
             <span id="r-btn-text">申請する</span>
             <div class="spinner" id="r-spinner"></div>
           </button>
-          <p class="form-note">送信内容は自動で記録され、higashiosaka.winds@gmail.com よりご連絡します。</p>
+          <p class="form-note">送信内容は自動で記録され、<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="afc7c6c8cedcc7c6c0dccec4ce81d8c6c1cbdcefc8c2cec6c381ccc0c2">[email&#160;protected]</a> よりご連絡します。</p>
         </form>
         <div class="ok-box" id="restOk">
           <div class="ok-icon">⏸️</div>
@@ -302,7 +302,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
             <span id="l-btn-text">退団を申請する</span>
             <div class="spinner" id="l-spinner"></div>
           </button>
-          <p class="form-note">送信内容は自動で記録され、higashiosaka.winds@gmail.com よりご連絡します。</p>
+          <p class="form-note">送信内容は自動で記録され、<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c2aaaba5a3b1aaabadb1a3a9a3ecb5abaca6b182a5afa3abaeeca1adaf">[email&#160;protected]</a> よりご連絡します。</p>
         </form>
         <div class="ok-box" id="leaveOk">
           <div class="ok-icon">👋</div>
@@ -336,7 +336,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ==============================
 // 設定値
 // ==============================
@@ -362,19 +362,19 @@ document.getElementById('j-type').addEventListener('change', function() {
   const emergency = document.getElementById('j-emergency');
   const guardian = document.getElementById('j-guardian');
   const guardianAgree = document.getElementById('j-guardian-agree');
- const emergencyLabel = document.querySelector('label[for="j-emergency"], #j-emergency').closest('.fg')?.querySelector('label');
+  const emergencyLabel = document.querySelector('label[for="j-emergency"], #j-emergency').closest('.fg')?.querySelector('label');
   if (isStudent) {
     guardianSection.style.display = 'block';
     emergency.required = true;
     emergency.placeholder = '保護者名・続柄・電話番号（必須）';
-    if (emergencyLabel) emergencyLabel.innerHTML = '緊急連絡先<span class="req">*</span>';
+ if (emergencyLabel) emergencyLabel.innerHTML = '緊急連絡先<span class="opt">任意</span>';
     guardian.required = true;
     guardianAgree.required = true;
   } else {
     guardianSection.style.display = 'none';
     emergency.required = false;
     emergency.placeholder = '緊急時の連絡先（氏名・続柄・電話番号）';
-if (emergencyLabel) emergencyLabel.innerHTML = '緊急連絡先<span class="opt">任意</span>';
+    emergencyLabel.innerHTML = '緊急連絡先<span class=\"opt\">任意</span>';
     guardian.required = false;
     guardianAgree.required = false;
   }
@@ -512,6 +512,7 @@ document.getElementById('restForm').addEventListener('submit', function(e) {
   );
 });
 
+
 // ==============================
 // 退団申請
 // ==============================
@@ -528,4 +529,20 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
     }
   };
   sendToSupabase('requests', payload,
-    { btn:'l-btn', sp:'l-spinner', txt:'l-btn-text', err:'leaveErr',
+    { btn:'l-btn', sp:'l-spinner', txt:'l-btn-text', err:'leaveErr', form:'leaveForm', ok:'leaveOk', label:'退団を申請する' }
+  );
+});
+
+// ==============================
+// スクロールリビール
+// ==============================
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) { if(e.isIntersecting) setTimeout(function() { e.target.classList.add('visible'); }, i*80); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+var st = document.getElementById('scrollTop');
+window.addEventListener('scroll', function() { st.classList.toggle('show', scrollY > 400); });
+</script>
+</body>
+</html>
