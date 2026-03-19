@@ -630,24 +630,13 @@ function renderHeader(d) {
     guardian:'保護者', instructor:'外部指導者',
   };
 
-  // 役職バッジ（複数対応：roles配列 or 単一role）
-  const roles = Array.isArray(d.roles) ? d.roles : (d.role ? [d.role] : []);
+  // roleカラム（単一）→ バッジ表示
   const roleEl = document.getElementById('headerRole');
-  if (roles.length > 0) {
-    roleEl.outerHTML = roles.map(r =>
-      `<span class="badge badge-role">${ROLE_LABEL[r] || r}</span>`
-    ).join('') +
-    // パートバッジ（複数対応）
-    (Array.isArray(d.parts)
-      ? d.parts.map(p => `<span class="badge badge-part">${p}</span>`).join('')
-      : d.part ? `<span class="badge badge-part">${d.part}</span>` : ''
-    );
-  } else {
-    roleEl.textContent  = d.member_type || '正会員';
-    const partEl = document.getElementById('headerPart');
-    if (d.part) { partEl.textContent = d.part; partEl.style.display = ''; }
-    else { partEl.style.display = 'none'; }
-  }
+  roleEl.textContent = ROLE_LABEL[d.role] || d.member_type || '正会員';
+
+  const partEl = document.getElementById('headerPart');
+  if (d.part) { partEl.textContent = d.part; partEl.style.display = ''; }
+  else { partEl.style.display = 'none'; }
 
   if (d.fee_status === 'unpaid') {
     document.getElementById('feeWarning').style.display = 'flex';
@@ -667,26 +656,18 @@ function renderFeeCard(d) {
 }
 
 function renderInfoCard(d) {
-  // パート表示（配列 or 単一）
-  const partDisplay = Array.isArray(d.parts) && d.parts.length
-    ? d.parts.join('、') : (d.part || null);
-
-  // 役職表示（配列 or 単一）
   const ROLE_LABEL = {
     president:'団長', vice_president:'副団長', conductor:'指揮者',
     director:'理事/GM', committee:'委員', member:'正会員',
     guardian:'保護者', instructor:'外部指導者',
   };
-  const roleDisplay = Array.isArray(d.roles) && d.roles.length
-    ? d.roles.map(r => ROLE_LABEL[r] || r).join('、')
-    : (ROLE_LABEL[d.role] || d.member_type || null);
 
   const rows = [
-    { label:'氏名',   value: d.name },
-    { label:'役職',   value: roleDisplay },
-    { label:'パート', value: partDisplay },
-    { label:'区分',   value: d.member_type },
-    { label:'メール', value: d.email },
+    { label:'氏名',     value: d.name },
+    { label:'役職',     value: ROLE_LABEL[d.role] || d.member_type || null },
+    { label:'パート',   value: d.part },
+    { label:'区分',     value: d.member_type },
+    { label:'メール',   value: d.email },
     { label:'在籍開始', value: d.joined_at ? d.joined_at.slice(0,10) : null },
   ];
   document.getElementById('infoList').innerHTML = rows.map(r =>
@@ -698,7 +679,7 @@ function renderInfoCard(d) {
 
   // 編集モーダル初期値
   document.getElementById('editName').value  = d.name  || '';
-  document.getElementById('editPart').value  = partDisplay || '';
+  document.getElementById('editPart').value  = d.part  || '';
   document.getElementById('editEmail').value = d.email || '';
 }
 
