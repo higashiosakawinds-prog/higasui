@@ -1,0 +1,101 @@
+table_name,column_name,data_type,is_nullable,column_default
+applications,id,uuid,NO,uuid_generate_v4()
+applications,org_id,uuid,YES,null
+applications,name,text,NO,null
+applications,yomi,text,YES,null
+applications,birthday,date,YES,null
+applications,member_type,text,YES,null
+applications,part,text,YES,null
+applications,email,text,YES,null
+applications,phone,text,YES,null
+applications,emergency_phone,text,YES,null
+applications,comment,text,YES,null
+applications,line_id,text,YES,null
+applications,status,text,YES,'pending'::text
+applications,assigned_to,text,YES,null
+applications,created_at,timestamp without time zone,YES,now()
+applications,guardian_name,text,YES,null
+attendances,id,uuid,NO,uuid_generate_v4()
+attendances,practice_id,uuid,YES,null
+attendances,member_id,uuid,YES,null
+attendances,status,text,YES,null
+attendances,note,text,YES,null
+attendances,created_at,timestamp without time zone,YES,now()
+concert_entries,id,uuid,NO,uuid_generate_v4()
+concert_entries,concert_id,uuid,YES,null
+concert_entries,member_id,uuid,YES,null
+concert_entries,status,text,YES,null
+concert_entries,note,text,YES,null
+concert_entries,created_at,timestamp without time zone,YES,now()
+concerts,id,uuid,NO,uuid_generate_v4()
+concerts,org_id,uuid,YES,null
+concerts,title,text,NO,null
+concerts,date,date,YES,null
+concerts,venue,text,YES,null
+concerts,note,text,YES,null
+concerts,created_at,timestamp without time zone,YES,now()
+emergency_contacts,id,uuid,NO,uuid_generate_v4()
+emergency_contacts,member_id,uuid,YES,null
+emergency_contacts,name,text,NO,null
+emergency_contacts,relationship,text,YES,null
+emergency_contacts,phone,text,YES,null
+emergency_contacts,note,text,YES,null
+emergency_contacts,created_at,timestamp without time zone,YES,now()
+files,id,uuid,NO,uuid_generate_v4()
+files,org_id,uuid,YES,null
+files,name,text,NO,null
+files,file_url,text,NO,null
+files,category,text,YES,null
+files,uploaded_by,uuid,YES,null
+files,created_at,timestamp without time zone,YES,now()
+guardians,id,uuid,NO,uuid_generate_v4()
+guardians,member_id,uuid,YES,null
+guardians,name,text,NO,null
+guardians,email,text,YES,null
+guardians,phone,text,YES,null
+guardians,line_id,text,YES,null
+guardians,relation,text,YES,null
+guardians,created_at,timestamp without time zone,YES,now()
+inspections,id,uuid,NO,uuid_generate_v4()
+inspections,instrument_id,uuid,YES,null
+inspections,inspected_at,date,YES,null
+inspections,result,text,YES,null
+inspections,note,text,YES,null
+inspections,created_at,timestamp without time zone,YES,now()
+instrument_loans,id,uuid,NO,uuid_generate_v4()
+instrument_loans,instrument_id,uuid,YES,null
+instrument_loans,member_id,uuid,YES,null
+instrument_loans,loaned_at,date,YES,null
+instrument_loans,returned_at,date,YES,null
+instrument_loans,created_at,timestamp without time zone,YES,now()
+instruments,id,uuid,NO,uuid_generate_v4()
+instruments,org_id,uuid,YES,null
+instruments,name,text,NO,null
+instruments,maker,text,YES,null
+instruments,model,text,YES,null
+instruments,serial,text,YES,null
+instruments,condition,text,YES,null
+instruments,image_url,text,YES,null
+instruments,note,text,YES,null
+instruments,created_at,timestamp without time zone,YES,now()
+ledger,id,uuid,NO,uuid_generate_v4()
+ledger,org_id,uuid,YES,null
+ledger,date,date,NO,null
+ledger,type,text,YES,null
+ledger,category,text,YES,null
+ledger,amount,integer,NO,null
+ledger,description,text,YES,null
+ledger,member_id,uuid,YES,null
+ledger,created_at,timestamp without time zone,YES,now()
+members,id,uuid,NO,uuid_generate_v4()
+members,org_id,uuid,YES,null
+members,name,text,NO,null
+members,yomi,text,YES,null
+members,email,text,YES,null
+members,line_id,text,YES,null
+members,part,text,YES,null
+members,member_type,text,YES,null
+members,status,text,YES,'active'::text
+members,joined_at,date,YES,null
+members,token,text,YES,null
+members,stripe_id,text,YES,null

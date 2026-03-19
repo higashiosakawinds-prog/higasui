@@ -468,20 +468,44 @@ let chartInstance = null;
 // =============================================
 //  初期化
 // =============================================
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(location.search);
   memberToken = params.get('token');
 
-  // sessionStorageにアンロック済みなら直接表示
-  const unlocked = sessionStorage.getItem('panel_finance_unlocked');
-  if (unlocked === 'true') {
-    showMain();
+  if (!memberToken) {
+    // tokenなし → ロック画面表示（パネルコードで入れる）
+    return;
   }
-  // tokenなければロック画面だけ表示
+
+  // tokenあり → Supabaseで権限確認
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+      SB
+    );
+    const members = await res.json();
+    if (!members || members.length === 0) return; // tokenが無効 → ロック画面のまま
+
+    memberData = members[0];
+    const role      = memberData.role      || '';
+    const committee = memberData.committee || '';
+
+    // 権限チェック
+    const FULL_ACCESS = ['president', 'vice_president', 'director'];
+    const hasAccess   = FULL_ACCESS.includes(role) || role === 'finance' || committee === 'finance';
+
+    if (hasAccess) {
+      showMain();
+    }
+    // 権限なし → ロック画面のまま（パネルコードでも入れる）
+  } catch(e) {
+    console.error(e);
+    // エラー時はロック画面のまま
+  }
 });
 
 // =============================================
-//  ロック解除
+//  ロック解除（パネルコード）
 // =============================================
 function tryUnlock() {
   const input = document.getElementById('codeInput').value.trim().toUpperCase();

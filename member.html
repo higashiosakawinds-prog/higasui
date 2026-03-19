@@ -416,6 +416,14 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
         <a class="app-link" href="./member_form.html">
           <i class="fa-solid fa-person-walking-arrow-loop-left lead"></i>
           <div>
+            <div>復団申請</div>
+            <div class="app-link-desc">休団から活動を再開する場合</div>
+          </div>
+          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
+        </a>
+        <a class="app-link" href="./member_form.html">
+          <i class="fa-solid fa-right-from-bracket lead"></i>
+          <div>
             <div>退団申請</div>
             <div class="app-link-desc">団を離れる場合</div>
           </div>
@@ -528,7 +536,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   memberToken  = params.get('token');
   if (!memberToken) { showState('error'); return; }
 
-  renderPanelGrid(); // パネルはtokenなしでも描画可能
+  renderPanelGrid(null); // tokenなし・権限なしで初期描画
   await loadMemberData();
 });
 
@@ -550,6 +558,7 @@ async function loadMemberData() {
     renderHeader(memberData);
     renderInfoCard(memberData);
     renderFeeCard(memberData);
+    renderPanelGrid(memberData); // role+committeeで権限判定
 
     // 3. 出欠履歴（直近5回の練習 + 自分の回答）
     const today = new Date().toISOString().split('T')[0];
@@ -593,10 +602,11 @@ async function loadMemberData() {
   } catch (e) {
     console.error('Supabase error:', e);
     // フォールバック：モックで表示
-    const mock = { name:'山田 太郎', part:'Clarinet', role:'member', member_type:'正会員', fee_status:'paid', email:'' };
+    const mock = { name:'山田 太郎', part:'Clarinet', role:'member', member_type:'正会員', fee_status:'paid', email:'', committee:null };
     renderHeader(mock);
     renderFeeCard(mock);
     renderInfoCard(mock);
+    renderPanelGrid(mock);
     renderAttendCard([
       { date:'3月15日（土）', answer:'attend', note:'' },
       { date:'3月 8日（土）', answer:'late',   note:'15分遅刻' },
@@ -698,19 +708,52 @@ function renderAttendCard(history, nextPid) {
     nextPid ? `${attendBase}&pid=${nextPid}` : attendBase;
 }
 
-function renderPanelGrid() {
+// role+committeeからパネルアクセス権限を判定
+function canAccessPanel(panelId, d) {
+  if (!d) return false;
+  const role      = d.role      || '';
+  const committee = d.committee || '';
+  // 全パネル開放ロール
+  if (['president', 'vice_president', 'director'].includes(role)) return true;
+  // 担当委員会と一致
+  if (role === panelId || committee === panelId) return true;
+  return false;
+}
+
+function renderPanelGrid(d) {
   document.getElementById('panelGrid').innerHTML = PANELS.map(p => {
-    const href = p.ready && memberToken
+    const hasAccess = p.ready && canAccessPanel(p.id, d);
+    const isReady   = p.ready;
+    const href = hasAccess && memberToken
       ? `./${p.file}?token=${encodeURIComponent(memberToken)}`
       : '#';
+
+    let tagText, arrowIcon, linkClass;
+    if (!isReady) {
+      // 未実装
+      tagText   = '準備中';
+      arrowIcon = 'fa-solid fa-clock';
+      linkClass = 'panel-link wip';
+    } else if (hasAccess) {
+      // アクセス可
+      tagText   = 'アクセス可';
+      arrowIcon = 'fa-solid fa-chevron-right';
+      linkClass = 'panel-link';
+    } else {
+      // 権限なし
+      tagText   = 'アクセス権限なし';
+      arrowIcon = 'fa-solid fa-lock';
+      linkClass = 'panel-link wip';
+    }
+
     return `
-    <a class="panel-link${p.ready ? '' : ' wip'}" href="${href}">
+    <a class="${linkClass}" href="${href}">
       <div class="panel-icon ${p.colorClass}"><i class="${p.icon}"></i></div>
       <div style="min-width:0;">
         <div class="panel-name">${p.name}</div>
-        <div class="panel-tag">${p.ready ? 'アクセス可' : '準備中'}</div>
+        <div class="panel-tag">${tagText}</div>
       </div>
-      <i class="${p.ready ? 'fa-solid fa-chevron-right' : 'fa-solid fa-clock'} panel-arrow" style="${p.ready ? '' : 'font-size:.6rem;'}"></i>
+      <i class="${arrowIcon} panel-arrow" style="${isReady && hasAccess ? '' : 'font-size:.6rem;'}"></i>
     </a>`;
   }).join('');
 }
