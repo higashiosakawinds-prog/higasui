@@ -413,105 +413,171 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-const GAS='https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
-const ham=document.getElementById('ham-btn');
-const drawer=document.getElementById('site-drawer');
-ham.addEventListener('click',function(){var o=drawer.classList.contains('open');drawer.classList.toggle('open',!o);document.body.style.overflow=o?'':'hidden';});
-function closeNav(){drawer.classList.remove('open');document.body.style.overflow='';}
+// ==============================
+// 設定値
+// ==============================
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
 
-function switchTab(name,btn){
-  document.querySelectorAll('.form-section').forEach(function(s){s.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('tab-'+name).classList.add('active');
+// ==============================
+// ハンバーガーメニュー
+// ==============================
+const ham = document.getElementById('ham-btn');
+const drawer = document.getElementById('site-drawer');
+ham.addEventListener('click', function() {
+  var o = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !o);
+  document.body.style.overflow = o ? '' : 'hidden';
+});
+function closeNav() { drawer.classList.remove('open'); document.body.style.overflow = ''; }
+
+// ==============================
+// タブ切り替え
+// ==============================
+function switchTab(name, btn) {
+  document.querySelectorAll('.form-section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function send(type,fields,ids){
-  var err=document.getElementById(ids.err);
-  err.style.display='none';
-  var ok=true;
-  fields.forEach(function(f){if(f.req&&!f.val)ok=false;});
-  if(!ok){err.textContent='※ 必須項目をすべて入力してください。';err.style.display='block';return;}
-  var btn=document.getElementById(ids.btn);
-  btn.disabled=true;
-  document.getElementById(ids.txt).textContent='送信中...';
-  document.getElementById(ids.sp).style.display='block';
-  var fd=new FormData();
-  fd.append('type',type);
-  fields.forEach(function(f){fd.append(f.k,f.val);});
-  fetch(GAS,{method:'POST',mode:'no-cors',body:fd})
-    .then(function(){document.getElementById(ids.form).style.display='none';document.getElementById(ids.ok).style.display='block';})
-    .catch(function(){err.textContent='送信に失敗しました。時間をおいて再度お試しください。';err.style.display='block';btn.disabled=false;document.getElementById(ids.txt).textContent=ids.label;document.getElementById(ids.sp).style.display='none';});
+// ==============================
+// Supabaseへの送信共通関数
+// ==============================
+async function send(type, payload, ids) {
+  const err = document.getElementById(ids.err);
+  err.style.display = 'none';
+  const btn = document.getElementById(ids.btn);
+  btn.disabled = true;
+  document.getElementById(ids.txt).textContent = '送信中...';
+  document.getElementById(ids.sp).style.display = 'block';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/requests`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ type: type, status: 'pending', payload: payload })
+    });
+    if (!res.ok) throw new Error('送信失敗');
+    document.getElementById(ids.form).style.display = 'none';
+    document.getElementById(ids.ok).style.display = 'block';
+  } catch(e) {
+    err.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
+    err.style.display = 'block';
+    btn.disabled = false;
+    document.getElementById(ids.txt).textContent = ids.label;
+    document.getElementById(ids.sp).style.display = 'none';
+  }
 }
 
+// ==============================
 // 楽譜・楽器貸出
-document.getElementById('loanForm').addEventListener('submit',function(e){e.preventDefault();send('loan',[
-  {k:'name',val:document.getElementById('ln-name').value.trim(),req:true},
-  {k:'email',val:document.getElementById('ln-email').value.trim(),req:true},
-  {k:'loan_type',val:document.getElementById('ln-type').value,req:true},
-  {k:'loan_to',val:document.getElementById('ln-to').value.trim(),req:true},
-  {k:'items',val:document.getElementById('ln-items').value.trim(),req:true},
-  {k:'start_date',val:document.getElementById('ln-start').value,req:true},
-  {k:'end_date',val:document.getElementById('ln-end').value,req:true},
-  {k:'note',val:document.getElementById('ln-note').value.trim(),req:false}
-],{btn:'ln-btn',sp:'ln-sp',txt:'ln-btn-text',err:'loanErr',form:'loanForm',ok:'loanOk',label:'貸出を申請する'});});
+// ==============================
+document.getElementById('loanForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  send('loan', {
+    name:       document.getElementById('ln-name').value.trim(),
+    email:      document.getElementById('ln-email').value.trim(),
+    loan_type:  document.getElementById('ln-type').value,
+    loan_to:    document.getElementById('ln-to').value.trim(),
+    items:      document.getElementById('ln-items').value.trim(),
+    start_date: document.getElementById('ln-start').value,
+    end_date:   document.getElementById('ln-end').value,
+    note:       document.getElementById('ln-note').value.trim() || null
+  }, { btn:'ln-btn', sp:'ln-sp', txt:'ln-btn-text', err:'loanErr', form:'loanForm', ok:'loanOk', label:'貸出を申請する' });
+});
 
-// WS参加
-document.getElementById('wsjForm').addEventListener('submit',function(e){e.preventDefault();send('ws_join',[
-  {k:'name',val:document.getElementById('wj-name').value.trim(),req:true},
-  {k:'instrument',val:document.getElementById('wj-inst').value.trim(),req:true},
-  {k:'email',val:document.getElementById('wj-email').value.trim(),req:true},
-  {k:'workshop',val:document.getElementById('wj-ws').value.trim(),req:true},
-  {k:'note',val:document.getElementById('wj-note').value.trim(),req:false},
-  {k:'parent',val:document.getElementById('wj-parent').value,req:false}
-],{btn:'wj-btn',sp:'wj-sp',txt:'wj-btn-text',err:'wsjErr',form:'wsjForm',ok:'wsjOk',label:'参加を申請する'});});
+// ==============================
+// WS参加申請
+// ==============================
+document.getElementById('wsjForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  send('ws_join', {
+    name:       document.getElementById('wj-name').value.trim(),
+    instrument: document.getElementById('wj-inst').value.trim(),
+    email:      document.getElementById('wj-email').value.trim(),
+    workshop:   document.getElementById('wj-ws').value.trim(),
+    note:       document.getElementById('wj-note').value.trim() || null,
+    parent:     document.getElementById('wj-parent').value
+  }, { btn:'wj-btn', sp:'wj-sp', txt:'wj-btn-text', err:'wsjErr', form:'wsjForm', ok:'wsjOk', label:'参加を申請する' });
+});
 
+// ==============================
 // WS開催希望
-document.getElementById('wsrForm').addEventListener('submit',function(e){e.preventDefault();send('ws_request',[
-  {k:'name',val:document.getElementById('wr-name').value.trim(),req:true},
-  {k:'instrument',val:document.getElementById('wr-inst').value.trim(),req:true},
-  {k:'email',val:document.getElementById('wr-email').value.trim(),req:true},
-  {k:'content',val:document.getElementById('wr-content').value.trim(),req:true},
-  {k:'target',val:document.getElementById('wr-target').value.trim(),req:false},
-  {k:'timing',val:document.getElementById('wr-timing').value.trim(),req:false},
-  {k:'note',val:document.getElementById('wr-note').value.trim(),req:false}
-],{btn:'wr-btn',sp:'wr-sp',txt:'wr-btn-text',err:'wsrErr',form:'wsrForm',ok:'wsrOk',label:'リクエストを送る'});});
+// ==============================
+document.getElementById('wsrForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  send('ws_request', {
+    name:       document.getElementById('wr-name').value.trim(),
+    instrument: document.getElementById('wr-inst').value.trim(),
+    email:      document.getElementById('wr-email').value.trim(),
+    content:    document.getElementById('wr-content').value.trim(),
+    target:     document.getElementById('wr-target').value.trim() || null,
+    timing:     document.getElementById('wr-timing').value.trim() || null,
+    note:       document.getElementById('wr-note').value.trim() || null
+  }, { btn:'wr-btn', sp:'wr-sp', txt:'wr-btn-text', err:'wsrErr', form:'wsrForm', ok:'wsrOk', label:'リクエストを送る' });
+});
 
+// ==============================
 // 演奏会参加意向
-document.getElementById('evForm').addEventListener('submit',function(e){e.preventDefault();send('event_intent',[
-  {k:'name',val:document.getElementById('ev-name').value.trim(),req:true},
-  {k:'instrument',val:document.getElementById('ev-inst').value.trim(),req:true},
-  {k:'email',val:document.getElementById('ev-email').value.trim(),req:true},
-  {k:'event_name',val:document.getElementById('ev-name2').value.trim(),req:true},
-  {k:'intent',val:document.getElementById('ev-intent').value,req:true},
-  {k:'note',val:document.getElementById('ev-note').value.trim(),req:false}
-],{btn:'ev-btn',sp:'ev-sp',txt:'ev-btn-text',err:'evErr',form:'evForm',ok:'evOk',label:'意向を送信する'});});
+// ==============================
+document.getElementById('evForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  send('event_intent', {
+    name:       document.getElementById('ev-name').value.trim(),
+    instrument: document.getElementById('ev-inst').value.trim(),
+    email:      document.getElementById('ev-email').value.trim(),
+    event_name: document.getElementById('ev-name2').value.trim(),
+    intent:     document.getElementById('ev-intent').value,
+    note:       document.getElementById('ev-note').value.trim() || null
+  }, { btn:'ev-btn', sp:'ev-sp', txt:'ev-btn-text', err:'evErr', form:'evForm', ok:'evOk', label:'意向を送信する' });
+});
 
-// 備品購入
-document.getElementById('puForm').addEventListener('submit',function(e){e.preventDefault();send('purchase',[
-  {k:'name',val:document.getElementById('pu-name').value.trim(),req:true},
-  {k:'email',val:document.getElementById('pu-email').value.trim(),req:true},
-  {k:'item',val:document.getElementById('pu-item').value.trim(),req:true},
-  {k:'price',val:document.getElementById('pu-price').value.trim(),req:false},
-  {k:'reason',val:document.getElementById('pu-reason').value.trim(),req:true},
-  {k:'urgency',val:document.getElementById('pu-urgency').value,req:true}
-],{btn:'pu-btn',sp:'pu-sp',txt:'pu-btn-text',err:'puErr',form:'puForm',ok:'puOk',label:'リクエストを送る'});});
+// ==============================
+// 備品購入リクエスト
+// ==============================
+document.getElementById('puForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  send('purchase', {
+    name:     document.getElementById('pu-name').value.trim(),
+    email:    document.getElementById('pu-email').value.trim(),
+    item:     document.getElementById('pu-item').value.trim(),
+    price:    document.getElementById('pu-price').value.trim() || null,
+    reason:   document.getElementById('pu-reason').value.trim(),
+    urgency:  document.getElementById('pu-urgency').value
+  }, { btn:'pu-btn', sp:'pu-sp', txt:'pu-btn-text', err:'puErr', form:'puForm', ok:'puOk', label:'リクエストを送る' });
+});
 
+// ==============================
 // 練習日程アンケート
-document.getElementById('scForm').addEventListener('submit',function(e){e.preventDefault();send('schedule',[
-  {k:'name',val:document.getElementById('sc-name').value.trim(),req:true},
-  {k:'email',val:document.getElementById('sc-email').value.trim(),req:true},
-  {k:'month',val:document.getElementById('sc-month').value,req:true},
-  {k:'dates',val:document.getElementById('sc-dates').value.trim(),req:true},
-  {k:'sunday',val:document.getElementById('sc-sun').value,req:true},
-  {k:'note',val:document.getElementById('sc-note').value.trim(),req:false}
-],{btn:'sc-btn',sp:'sc-sp',txt:'sc-btn-text',err:'scErr',form:'scForm',ok:'scOk',label:'回答を送信する'});});
+// ==============================
+document.getElementById('scForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  send('schedule', {
+    name:   document.getElementById('sc-name').value.trim(),
+    email:  document.getElementById('sc-email').value.trim(),
+    month:  document.getElementById('sc-month').value,
+    dates:  document.getElementById('sc-dates').value.trim(),
+    sunday: document.getElementById('sc-sun').value,
+    note:   document.getElementById('sc-note').value.trim() || null
+  }, { btn:'sc-btn', sp:'sc-sp', txt:'sc-btn-text', err:'scErr', form:'scForm', ok:'scOk', label:'回答を送信する' });
+});
 
-var obs=new IntersectionObserver(function(entries){entries.forEach(function(e,i){if(e.isIntersecting)setTimeout(function(){e.target.classList.add('visible');},i*80);});},{threshold:0.08});
-document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
-var st=document.getElementById('scrollTop');
-window.addEventListener('scroll',function(){st.classList.toggle('show',scrollY>400);});
+// ==============================
+// スクロールリビール
+// ==============================
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) { if(e.isIntersecting) setTimeout(function() { e.target.classList.add('visible'); }, i*80); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+var st = document.getElementById('scrollTop');
+window.addEventListener('scroll', function() { st.classList.toggle('show', scrollY > 400); });
 </script>
 </body>
 </html>
