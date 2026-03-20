@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>見学申込 | 東大阪吹奏楽団</title>
+<meta name="description" content="東大阪吹奏楽団の見学申込ページ。見学費¥500。毎週土曜日練習。未成年の方も保護者の方も安心してご参加ください。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC; --green:#1D9E75;
+  --radius:20px; --radius-sm:12px;
+  --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:720px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* ===== NAV ===== */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;}
+#nav-logo{display:flex;align-items:center;text-decoration:none;}
+#nav-logo img{height:28px;width:auto;filter:brightness(0) invert(1);opacity:.92;}
+#ham-btn{width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+#ham-btn span{display:block;width:20px;height:2px;background:white;border-radius:2px;transition:all .3s;}
+#site-drawer{display:none;position:fixed;top:56px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{display:flex;align-items:center;gap:.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.85);text-decoration:none;font-size:.95rem;font-weight:500;}
+#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:14px;border-radius:14px;font-weight:700;text-decoration:none;}
+
+/* ===== HERO ===== */
+.hero{
+  padding-top:56px;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(200,164,77,.07);}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03);}
+.hero-inner{position:relative;z-index:1;padding:3rem 1.25rem 3.5rem;max-width:720px;margin:0 auto;}
+.eyebrow{font-family:'Outfit',sans-serif;font-size:.6rem;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.8rem;}
+.eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;color:#fff;line-height:1.3;margin-bottom:.8rem;}
+.hero-lead{font-size:.9rem;color:rgba(255,255,255,.7);line-height:1.8;max-width:480px;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:1.5rem;padding:8px 16px;
+  background:rgba(200,164,77,.15);border:1px solid rgba(200,164,77,.3);
+  border-radius:20px;font-family:'Outfit',sans-serif;
+  font-size:.78rem;font-weight:700;color:var(--gold);
+}
+
+/* ===== SECTION ===== */
+.section{padding:48px 0;}
+.section-eyebrow{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:.6rem;}
+.section-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.section-title{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;}
+.section-lead{font-size:.85rem;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
+
+/* ===== STEPS ===== */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:20px;position:relative;padding-bottom:32px;}
+.step:last-child{padding-bottom:0;}
+.step:not(:last-child)::after{content:'';position:absolute;left:19px;top:40px;bottom:0;width:2px;background:linear-gradient(var(--border),var(--border)) center/2px 100% no-repeat;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1;}
+.step-body{flex:1;padding-top:6px;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.step-desc{font-size:.82rem;color:var(--muted);line-height:1.7;}
+.step-tag{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:20px;background:rgba(200,164,77,.12);color:#92680a;font-size:.68rem;font-weight:700;}
+
+/* ===== INFO CARDS ===== */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:2rem;}
+@media(max-width:480px){.info-grid{grid-template-columns:1fr;}}
+.info-card{background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--border);box-shadow:var(--shadow);padding:1.2rem;}
+.info-card-icon{font-size:1.3rem;margin-bottom:.6rem;}
+.info-card-title{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.info-card-text{font-size:.78rem;color:var(--muted);line-height:1.7;}
+
+/* ===== 保護者セクション ===== */
+.guardian-box{
+  background:linear-gradient(135deg,rgba(29,158,117,.06),rgba(29,158,117,.02));
+  border:1px solid rgba(29,158,117,.2);border-radius:var(--radius);
+  padding:1.5rem;margin-bottom:2rem;
+}
+.guardian-box-head{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.guardian-box-icon{width:36px;height:36px;border-radius:10px;background:rgba(29,158,117,.12);color:#136b4e;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.guardian-box-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#136b4e;}
+.guardian-list{display:flex;flex-direction:column;gap:8px;}
+.guardian-item{display:flex;align-items:flex-start;gap:8px;font-size:.8rem;color:var(--text);line-height:1.6;}
+.guardian-item::before{content:'✓';color:#136b4e;font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* ===== FORM ===== */
+.form-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:32px;}
+.form-head{padding:1.2rem 1.5rem;background:linear-gradient(135deg,var(--navy),var(--blue));display:flex;align-items:center;gap:10px;}
+.form-head-icon{width:32px;height:32px;border-radius:8px;background:rgba(200,164,77,.2);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.form-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.form-head-sub{font-size:.72rem;color:rgba(255,255,255,.6);margin-top:1px;}
+.form-body{padding:1.5rem;}
+.form-section-label{font-family:'Outfit',sans-serif;font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin:1.5rem 0 .8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
+.form-section-label:first-child{margin-top:0;}
+.fg{margin-bottom:1rem;}
+.fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.fg label span.req{color:var(--gold);margin-left:2px;}
+.fg label span.opt{color:var(--muted);font-weight:400;font-size:.68rem;margin-left:4px;}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:11px 13px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:.88rem;font-family:inherit;
+  background:var(--bg);outline:none;transition:border-color .2s;color:var(--text);
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);background:#fff;}
+.fg textarea{resize:vertical;min-height:80px;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:480px){.fg-row{grid-template-columns:1fr;}}
+
+/* 未成年トグル */
+.minor-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;background:var(--bg);border-radius:10px;
+  border:1.5px solid var(--border);cursor:pointer;margin-bottom:1rem;
+  transition:border-color .2s;
+}
+.minor-toggle:hover{border-color:var(--blue);}
+.minor-toggle input[type="checkbox"]{width:18px;height:18px;cursor:pointer;accent-color:var(--blue);}
+.minor-toggle-label{font-size:.82rem;font-weight:500;color:var(--navy);cursor:pointer;}
+.guardian-section{display:none;}
+.guardian-section.show{display:block;}
+
+/* 料金説明 */
+.fee-note{
+  background:rgba(200,164,77,.08);border:1px solid rgba(200,164,77,.2);
+  border-radius:var(--radius-sm);padding:1rem 1.2rem;
+  margin-bottom:1.2rem;
+}
+.fee-note-title{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:#92680a;margin-bottom:.4rem;display:flex;align-items:center;gap:6px;}
+.fee-note-text{font-size:.78rem;color:var(--muted);line-height:1.7;}
+
+/* 送信ボタン */
+.btn-submit{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:14px;border-radius:var(--radius-sm);
+  background:#635bff;color:#fff;font-size:.9rem;font-weight:700;
+  border:none;cursor:pointer;font-family:inherit;
+  transition:opacity .2s;
+}
+.btn-submit:hover{opacity:.88;}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+
+/* メッセージ */
+.form-msg{display:none;border-radius:10px;padding:1rem 1.2rem;font-size:.82rem;margin-top:1rem;line-height:1.6;}
+.form-msg.success{display:block;background:#dcfce7;color:#15803d;border:1px solid #86efac;}
+.form-msg.error{display:block;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+
+/* ===== FAQ ===== */
+.faq-list{display:flex;flex-direction:column;gap:10px;}
+.faq-item{background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--border);overflow:hidden;}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.2rem;cursor:pointer;transition:background .2s;
+  font-size:.85rem;font-weight:700;color:var(--navy);gap:10px;
+}
+.faq-q:hover{background:#f8faff;}
+.faq-q-icon{color:var(--blue);font-size:.7rem;flex-shrink:0;transition:transform .2s;}
+.faq-q-icon.open{transform:rotate(180deg);}
+.faq-a{display:none;padding:0 1.2rem 1rem;font-size:.8rem;color:var(--muted);line-height:1.8;border-top:1px solid var(--border);}
+.faq-a.open{display:block;}
+
+/* ===== FOOTER ===== */
+footer{background:var(--navy);padding:28px 0;text-align:center;}
+footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="site-nav">
+  <div class="nav-inner">
+    <a id="nav-logo" href="./index.html">
+      <img src="./higasui.svg" alt="東大阪吹奏楽団">
+    </a>
+    <button id="ham-btn" onclick="toggleDrawer()" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div id="site-drawer">
+  <ul>
+    <li><a href="./index.html"><i class="fa-solid fa-house" style="width:18px"></i> トップ</a></li>
+    <li><a href="./join.html"><i class="fa-solid fa-music" style="width:18px"></i> 練習案内・入団</a></li>
+    <li><a href="./faq.html"><i class="fa-solid fa-circle-question" style="width:18px"></i> よくある質問</a></li>
+  </ul>
+  <a class="btn" id="drawer-cta" href="#form">見学を申し込む</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span>VISIT US</span></div>
+    <h1>まず、聴きにきてください。</h1>
+    <p class="hero-lead">
+      入団を決めなくてもOK。雰囲気を確かめるだけでも大歓迎です。
+      東大阪吹奏楽団の練習を、ぜひ一度体験してみてください。
+    </p>
+    <div class="hero-badge">
+      <i class="fa-solid fa-yen-sign"></i> 見学費 ¥500 / 回（最大3回まで）
+    </div>
+  </div>
+</div>
+
+<!-- 見学の流れ -->
+<section class="section">
+  <div class="inner">
+    <div class="section-eyebrow"><span>FLOW</span></div>
+    <div class="section-title">見学の流れ</div>
+    <p class="section-lead">申込から当日まで、簡単3ステップです。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">申込フォームに入力</div>
+          <div class="step-desc">このページ下部のフォームに必要事項を入力してください。希望日程もお知らせください。</div>
+          <span class="step-tag">所要時間 約3分</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">見学費をお支払い</div>
+          <div class="step-desc">フォーム送信後、Stripeの安全な決済ページへ移動します。クレジットカードで¥500をお支払いください。</div>
+          <span class="step-tag">¥500 / 回</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">当日練習場所へお越しください</div>
+          <div class="step-desc">確認後、担当者よりLINEまたはメールでご連絡します。当日は練習開始時間の少し前にお越しください。</div>
+          <span class="step-tag">毎週土曜 13:00〜</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 練習情報 -->
+<section class="section" style="padding-top:0;">
+  <div class="inner">
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-icon">📅</div>
+        <div class="info-card-title">練習日</div>
+        <div class="info-card-text">毎週土曜日<br>13:00〜17:00（目安）</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🏢</div>
+        <div class="info-card-title">練習場所</div>
+        <div class="info-card-text">東大阪文化創造館（主軸）<br>荒本人権文化センター 他</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🎺</div>
+        <div class="info-card-title">対象</div>
+        <div class="info-card-text">中学生以上〜大人まで<br>経験者・初心者どちらも歓迎</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">💰</div>
+        <div class="info-card-title">見学費</div>
+        <div class="info-card-text">¥500 / 回<br>最大3回まで見学できます</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 保護者の方へ -->
+<section class="section" style="padding-top:0;">
+  <div class="inner">
+    <div class="section-eyebrow"><span>FOR PARENTS</span></div>
+    <div class="section-title">保護者の方へ</div>
+    <p class="section-lead">未成年のお子様がご参加の場合、安心してお送り出しいただけるよう取り組んでいます。</p>
+
+    <div class="guardian-box">
+      <div class="guardian-box-head">
+        <div class="guardian-box-icon"><i class="fa-solid fa-shield-heart"></i></div>
+        <div class="guardian-box-title">安心・安全への取り組み</div>
+      </div>
+      <div class="guardian-list">
+        <div class="guardian-item">後援：東大阪市・東大阪市教育委員会・公益財団法人音楽文化創造</div>
+        <div class="guardian-item">練習場所は公共施設（東大阪文化創造館等）を使用しています</div>
+        <div class="guardian-item">未成年の方は入団時に保護者同意書をご提出いただきます</div>
+        <div class="guardian-item">緊急連絡先として保護者の方の連絡先を登録していただきます</div>
+        <div class="guardian-item">安全サポート委員会が団員のフォローを担当しています</div>
+        <div class="guardian-item">ご不安な点はお気軽にLINE公式アカウントへご相談ください</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 申込フォーム -->
+<section class="section" style="padding-top:0;" id="form">
+  <div class="inner">
+    <div class="section-eyebrow"><span>APPLICATION</span></div>
+    <div class="section-title">見学を申し込む</div>
+    <p class="section-lead">フォームを送信後、Stripeの決済ページに移動します。</p>
+
+    <div class="form-card">
+      <div class="form-head">
+        <div class="form-head-icon"><i class="fa-solid fa-pen"></i></div>
+        <div>
+          <div class="form-head-title">見学申込フォーム</div>
+          <div class="form-head-sub">入力内容は暗号化されて送信されます</div>
+        </div>
+      </div>
+      <div class="form-body">
+
+        <div class="form-section-label">基本情報</div>
+
+        <div class="fg-row">
+          <div class="fg">
+            <label>お名前<span class="req">*</span></label>
+            <input type="text" id="fName" placeholder="例：山田 太郎">
+          </div>
+          <div class="fg">
+            <label>ふりがな<span class="req">*</span></label>
+            <input type="text" id="fYomi" placeholder="例：やまだ たろう">
+          </div>
+        </div>
+
+        <div class="fg-row">
+          <div class="fg">
+            <label>生年月日<span class="req">*</span></label>
+            <input type="date" id="fBirthday">
+          </div>
+          <div class="fg">
+            <label>希望パート<span class="opt">任意</span></label>
+            <select id="fPart">
+              <option value="">選択してください</option>
+              <optgroup label="木管">
+                <option>Flute</option><option>Oboe</option><option>Clarinet</option>
+                <option>Bass Clarinet</option><option>Fagotto</option>
+                <option>Alto Saxophone</option><option>Tenor Saxophone</option><option>Baritone Saxophone</option>
+              </optgroup>
+              <optgroup label="金管">
+                <option>Trumpet</option><option>Horn</option>
+                <option>Trombone</option><option>Euphonium</option><option>Tuba</option>
+              </optgroup>
+              <optgroup label="打楽器"><option>Percussion</option></optgroup>
+              <optgroup label="その他"><option>String Bass</option><option>Piano</option><option>未定・相談したい</option></optgroup>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-section-label">連絡先</div>
+
+        <div class="fg">
+          <label>メールアドレス<span class="req">*</span></label>
+          <input type="email" id="fEmail" placeholder="例：your@email.com">
+        </div>
+        <div class="fg">
+          <label>電話番号<span class="opt">任意</span></label>
+          <input type="tel" id="fPhone" placeholder="例：090-1234-5678">
+        </div>
+
+        <div class="form-section-label">未成年の方</div>
+
+        <label class="minor-toggle">
+          <input type="checkbox" id="fMinor" onchange="toggleGuardian()">
+          <span class="minor-toggle-label">未成年です（保護者情報を入力する）</span>
+        </label>
+
+        <div class="guardian-section" id="guardianSection">
+          <div class="fg">
+            <label>保護者氏名<span class="req">*</span></label>
+            <input type="text" id="fGuardianName" placeholder="例：山田 花子">
+          </div>
+          <div class="fg">
+            <label>保護者連絡先<span class="req">*</span></label>
+            <input type="tel" id="fEmergencyPhone" placeholder="例：090-0000-0000">
+          </div>
+        </div>
+
+        <div class="form-section-label">見学希望日程</div>
+
+        <div class="fg">
+          <label>希望日程<span class="req">*</span></label>
+          <input type="text" id="fComment" placeholder="例：4月5日・4月12日・4月19日のいずれかで希望。午後から参加可能です。">
+        </div>
+
+        <div class="form-section-label">お支払い</div>
+
+        <div class="fee-note">
+          <div class="fee-note-title"><i class="fa-solid fa-yen-sign"></i> 見学費について</div>
+          <div class="fee-note-text">
+            見学費は¥500 / 回です。フォーム送信後にStripeの安全な決済ページへ移動します。
+            見学は最大3回まで可能です。入団後は月額会費（一般¥3,000 / 学生¥1,500）に切り替わります。
+          </div>
+        </div>
+
+        <div class="form-msg" id="formMsg"></div>
+
+        <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+          <i class="fa-brands fa-stripe"></i> 申込内容を確認して支払いへ進む
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- よくある質問 -->
+<section class="section" style="padding-top:0;padding-bottom:64px;">
+  <div class="inner">
+    <div class="section-eyebrow"><span>FAQ</span></div>
+    <div class="section-title">よくある質問</div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(0)">
+          楽器を持っていなくても大丈夫ですか？
+          <i class="fa-solid fa-chevron-down faq-q-icon" id="faq-icon-0"></i>
+        </div>
+        <div class="faq-a" id="faq-a-0">
+          見学時は楽器がなくても全く問題ありません。まずは練習の雰囲気を見ていただくだけでOKです。入団後の楽器についてはご相談ください。
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(1)">
+          経験がなくても参加できますか？
+          <i class="fa-solid fa-chevron-down faq-q-icon" id="faq-icon-1"></i>
+        </div>
+        <div class="faq-a" id="faq-a-1">
+          はい、初心者の方も歓迎しています。ただし現在は経験者の方を優先してお声がけしている場合があります。まずはお気軽にご相談ください。
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(2)">
+          見学だけで入団しなくても大丈夫ですか？
+          <i class="fa-solid fa-chevron-down faq-q-icon" id="faq-icon-2"></i>
+        </div>
+        <div class="faq-a" id="faq-a-2">
+          もちろんです。入団するかどうかは見学後にゆっくり決めていただいて構いません。最大3回まで見学していただけます。
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(3)">
+          中学生・高校生でも参加できますか？
+          <i class="fa-solid fa-chevron-down faq-q-icon" id="faq-icon-3"></i>
+        </div>
+        <div class="faq-a" id="faq-a-3">
+          中学生以上の方を対象としています。未成年の方は保護者の方の同意が必要です。申込フォームの「未成年です」にチェックを入れて保護者情報もご入力ください。
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(4)">
+          見学費の返金はできますか？
+          <i class="fa-solid fa-chevron-down faq-q-icon" id="faq-icon-4"></i>
+        </div>
+        <div class="faq-a" id="faq-a-4">
+          原則として見学費の返金はお受けしておりません。ご都合が悪くなった場合は日程の振替で対応しますので、お早めにLINEまたはメールでご連絡ください。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 東大阪吹奏楽団 | 後援：東大阪市・東大阪市教育委員会</p>
+</footer>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const ORG_ID       = '37cf6fef-551a-4159-b6ab-5010c3951aa8';
+
+// Stripe Payment Link（見学料 ¥500）
+const STRIPE_VISIT_URL = 'https://buy.stripe.com/test_28E00k2mEgsk4AC85004802';
+
+// =============================================
+//  フォーム送信
+// =============================================
+async function submitForm() {
+  const name     = document.getElementById('fName').value.trim();
+  const yomi     = document.getElementById('fYomi').value.trim();
+  const birthday = document.getElementById('fBirthday').value;
+  const part     = document.getElementById('fPart').value;
+  const email    = document.getElementById('fEmail').value.trim();
+  const phone    = document.getElementById('fPhone').value.trim();
+  const comment  = document.getElementById('fComment').value.trim();
+  const isMinor  = document.getElementById('fMinor').checked;
+  const guardianName    = document.getElementById('fGuardianName').value.trim();
+  const emergencyPhone  = document.getElementById('fEmergencyPhone').value.trim();
+
+  const msgEl = document.getElementById('formMsg');
+  const btn   = document.getElementById('submitBtn');
+  msgEl.className = 'form-msg';
+
+  // バリデーション
+  if (!name || !yomi || !birthday || !email || !comment) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = '氏名・ふりがな・生年月日・メールアドレス・希望日程は必須です。';
+    return;
+  }
+  if (isMinor && (!guardianName || !emergencyPhone)) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = '未成年の方は保護者氏名と保護者連絡先を入力してください。';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 送信中…';
+
+  try {
+    // applicationsテーブルに記録
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/applications`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        org_id:          ORG_ID,
+        name,
+        yomi,
+        birthday:        birthday || null,
+        part:            part || null,
+        email,
+        phone:           phone || null,
+        comment,
+        guardian_name:   isMinor ? guardianName : null,
+        emergency_phone: isMinor ? emergencyPhone : null,
+        member_type:     '見学',
+        status:          'pending',
+      }),
+    });
+
+    if (res.ok || res.status === 201) {
+      // Stripe決済ページへリダイレクト
+      msgEl.className = 'form-msg success';
+      msgEl.textContent = '✓ 申込を受け付けました！Stripeの決済ページへ移動します…';
+      setTimeout(() => {
+        window.location.href = STRIPE_VISIT_URL;
+      }, 1500);
+    } else {
+      throw new Error('submit failed: ' + res.status);
+    }
+  } catch(e) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = 'エラーが発生しました。時間をおいて再度お試しください。';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-brands fa-stripe"></i> 申込内容を確認して支払いへ進む';
+  }
+}
+
+// =============================================
+//  未成年トグル
+// =============================================
+function toggleGuardian() {
+  const isMinor = document.getElementById('fMinor').checked;
+  const section = document.getElementById('guardianSection');
+  section.classList.toggle('show', isMinor);
+}
+
+// =============================================
+//  FAQ アコーディオン
+// =============================================
+function toggleFaq(idx) {
+  const a    = document.getElementById(`faq-a-${idx}`);
+  const icon = document.getElementById(`faq-icon-${idx}`);
+  a.classList.toggle('open');
+  icon.classList.toggle('open');
+}
+
+// =============================================
+//  NAV
+// =============================================
+function toggleDrawer() {
+  document.getElementById('site-drawer').classList.toggle('open');
+}
+</script>
+</body>
+</html>
