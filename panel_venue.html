@@ -797,9 +797,9 @@ ${p.note ? `\n理由：${p.note}` : ''}
 }
 
 async function sendLineNotify() {
-  const pid  = document.getElementById('lineTargetPractice').value;
-  const type = document.getElementById('lineType').value;
-  const msg  = document.getElementById('linePreview').textContent;
+  const pid   = document.getElementById('lineTargetPractice').value;
+  const type  = document.getElementById('lineType').value;
+  const msg   = document.getElementById('linePreview').textContent;
   const msgEl = document.getElementById('lineMsgEl');
 
   if (!pid) {
@@ -809,12 +809,18 @@ async function sendLineNotify() {
   }
 
   try {
-    const body = new URLSearchParams({
-      action:  'sendBroadcast',
-      message: msg,
-      token:   memberToken || '',
-    });
-    const res = await fetch(GAS_URL, { method: 'POST', body });
+    const res = await fetch(
+      'https://eqnacealnnmpipapdguc.supabase.co/functions/v1/line-notify',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+        },
+        body: JSON.stringify({ message: msg, type }),
+      }
+    );
     const data = await res.json();
 
     if (data.success) {
@@ -826,7 +832,7 @@ async function sendLineNotify() {
     }
   } catch(e) {
     msgEl.className = 'modal-msg error';
-    msgEl.textContent = 'エラーが発生しました。GASの設定を確認してください。';
+    msgEl.textContent = 'エラーが発生しました。LINE設定を確認してください。';
   }
 }
 
