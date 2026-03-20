@@ -627,7 +627,7 @@ async function loadMemberData() {
     // 1. tokenで団員情報取得
     const mRes = await fetch(
       `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
-      SB
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
     );
     const members = await mRes.json();
     if (!members || members.length === 0) { showState('error'); return; }
@@ -641,9 +641,10 @@ async function loadMemberData() {
 
     // 3. 出欠履歴（直近5回の練習 + 自分の回答）
     const today = new Date().toISOString().split('T')[0];
+    const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
     const pRes = await fetch(
       `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=lte.${today}&order=date.desc&limit=5`,
-      SB
+      SB_H
     );
     const practices = await pRes.json() || [];
 
@@ -654,7 +655,7 @@ async function loadMemberData() {
       const ids = practices.map(p => p.id).join(',');
       const aRes = await fetch(
         `${SUPABASE_URL}/rest/v1/attendances?member_id=eq.${memberData.id}&practice_id=in.(${ids})`,
-        SB
+        SB_H
       );
       const attendances = await aRes.json() || [];
 
@@ -669,7 +670,7 @@ async function loadMemberData() {
       // 4. 次回練習（出欠リンクに pid をセット）
       const nRes = await fetch(
         `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=gte.${today}&order=date.asc&limit=1`,
-        SB
+        SB_H
       );
       const nextP = await nRes.json() || [];
       if (nextP.length > 0) nextPracticeId = nextP[0].id;
@@ -998,7 +999,8 @@ async function submitEdit() {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/requests`, {
       method: 'POST',
       headers: {
-        ...SB.headers,
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal',
       },
