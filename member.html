@@ -143,6 +143,28 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .dot-ng{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.12);}
 .fee-label{font-size:.95rem;font-weight:700;color:var(--navy);}
 .fee-sub{font-size:.72rem;color:var(--muted);margin-top:1px;}
+.plan-select{
+  width:100%;padding:11px 13px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:.85rem;font-family:inherit;
+  background:var(--bg);outline:none;color:var(--navy);
+  margin-bottom:10px;cursor:pointer;
+}
+.plan-select:focus{border-color:var(--blue);background:#fff;}
+.btn-stripe{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:12px;border-radius:var(--radius-sm);
+  background:#635bff;color:#fff;font-size:.85rem;font-weight:700;
+  text-decoration:none;border:none;cursor:pointer;
+  font-family:inherit;transition:opacity .2s;
+}
+.btn-stripe:hover{opacity:.88;}
+.btn-stripe-paid{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:11px;border-radius:var(--radius-sm);
+  background:none;border:1.5px solid var(--border);
+  color:var(--muted);font-size:.8rem;font-weight:700;
+  text-decoration:none;cursor:pointer;font-family:inherit;
+}
 .stripe-note{
   background:#f8fafc;border-radius:var(--radius-sm);
   padding:.75rem 1rem;font-size:.75rem;color:var(--muted);
@@ -399,9 +421,22 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
               <div class="fee-sub" id="feeSub">―</div>
             </div>
           </div>
-          <div class="stripe-note">
-            <i class="fa-solid fa-info-circle" style="color:var(--blue);flex-shrink:0;"></i>
-            Stripe導入後はこちらから支払い方法の管理・履歴確認ができるようになります。
+          <!-- 未納・未契約時：プラン選択＋支払いボタン -->
+          <div id="feePayArea" style="display:none;">
+            <select class="plan-select" id="planSelect">
+              <option value="">プランを選択してください</option>
+              <option value="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800">一般団員・月額 ¥3,000</option>
+              <option value="https://buy.stripe.com/test_14A14oe5m8ZSc343OK04801">学生団員・月額 ¥1,500</option>
+            </select>
+            <button class="btn-stripe" onclick="goToStripe()">
+              <i class="fa-brands fa-stripe"></i> 会費を支払う
+            </button>
+          </div>
+          <!-- 支払い済み -->
+          <div id="feePortalArea" style="display:none;">
+            <a class="btn-stripe-paid" href="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800" target="_blank">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Stripeで支払い情報を確認
+            </a>
           </div>
         </div>
       </div>
@@ -803,14 +838,31 @@ function renderHeader(d) {
 
 function renderFeeCard(d) {
   const MAP = {
-    paid:    { cls:'dot-ok',   text:'支払い済み',     sub:'直近の会費をお支払いいただいています' },
-    unpaid:  { cls:'dot-ng',   text:'未納があります',  sub:'幹部までご連絡ください' },
+    paid:    { cls:'dot-ok',   text:'支払い済み',     sub:'毎月自動で請求されます' },
+    unpaid:  { cls:'dot-ng',   text:'未納があります',  sub:'以下からお支払いをお願いします' },
     pending: { cls:'dot-warn', text:'確認中',         sub:'しばらくお待ちください' },
   };
-  const s = MAP[d.fee_status] || MAP['pending'];
+  const s = MAP[d.fee_status] || { cls:'dot-warn', text:'未設定', sub:'プランを選択してお支払いください' };
   document.getElementById('feeDot').className   = 'fee-dot ' + s.cls;
   document.getElementById('feeLabel').textContent = s.text;
   document.getElementById('feeSub').textContent   = s.sub;
+
+  // ボタン表示切り替え
+  const payArea    = document.getElementById('feePayArea');
+  const portalArea = document.getElementById('feePortalArea');
+  if (d.fee_status === 'paid') {
+    payArea.style.display    = 'none';
+    portalArea.style.display = 'block';
+  } else {
+    payArea.style.display    = 'block';
+    portalArea.style.display = 'none';
+  }
+}
+
+function goToStripe() {
+  const url = document.getElementById('planSelect').value;
+  if (!url) { alert('プランを選択してください。'); return; }
+  window.open(url, '_blank');
 }
 
 function renderInfoCard(d) {
