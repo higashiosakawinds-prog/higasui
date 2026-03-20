@@ -640,19 +640,34 @@ async function loadMemberData() {
     renderPanelGrid(memberData); // role+committeeで権限判定
 
     // 3. 出欠履歴（直近5回の練習 + 自分の回答）
+    // 過去3回 + 今後2回を取得（回答済みのものを表示）
     const today = new Date().toISOString().split('T')[0];
     const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
-    const pRes = await fetch(
+
+    // 過去の練習（最大5回）
+    const pPastRes = await fetch(
       `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=lte.${today}&order=date.desc&limit=5`,
       SB_H
     );
-    const practices = await pRes.json() || [];
+    const pastPractices = await pPastRes.json() || [];
+
+    // 今後の練習（最大3回）
+    const pFutureRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=gt.${today}&order=date.asc&limit=3`,
+      SB_H
+    );
+    const futurePractices = await pFutureRes.json() || [];
+
+    // 合わせて日付順に並べる
+    const allPractices = [...futurePractices, ...pastPractices]
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 5);
 
     let attendHistory  = [];
     let nextPracticeId = null;
 
-    if (practices.length > 0) {
-      const ids = practices.map(p => p.id).join(',');
+    if (allPractices.length > 0) {
+      const ids = allPractices.map(p => p.id).join(',');
       const aRes = await fetch(
         `${SUPABASE_URL}/rest/v1/attendances?member_id=eq.${memberData.id}&practice_id=in.(${ids})`,
         SB_H
@@ -660,20 +675,18 @@ async function loadMemberData() {
       const attendances = await aRes.json() || [];
 
       const WEEK = ['日','月','火','水','木','金','土'];
-      attendHistory = practices.map(p => {
+      attendHistory = allPractices.map(p => {
         const d = new Date(p.date);
         const label = (d.getMonth()+1) + '月' + d.getDate() + '日（' + WEEK[d.getDay()] + '）';
         const att = attendances.find(a => a.practice_id === p.id);
-        return { date: label, answer: att?.answer || null, note: att?.note || '' };
+        // statusカラム名で取得（answerではなくstatus）
+        return { date: label, answer: att?.status || null, note: att?.note || '' };
       });
 
       // 4. 次回練習（出欠リンクに pid をセット）
-      const nRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=gte.${today}&order=date.asc&limit=1`,
-        SB_H
-      );
-      const nextP = await nRes.json() || [];
-      if (nextP.length > 0) nextPracticeId = nextP[0].id;
+      if (futurePractices.length > 0) {
+        nextPracticeId = futurePractices[0].id;
+      }
     }
 
     renderAttendCard(attendHistory, nextPracticeId);
