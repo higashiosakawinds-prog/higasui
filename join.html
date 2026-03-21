@@ -338,7 +338,7 @@ footer {
 <!-- NAV -->
 <nav id="site-nav">
   <div class="inner nav-inner">
-    <a href="/higasui/" id="nav-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></a>
+    <a href="" id="nav-logo"><img src="higasui.svg" alt="東大阪吹奏楽団"></a>
     <button id="ham-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button>
   </div>
 </nav>
@@ -346,12 +346,12 @@ footer {
 <!-- DRAWER -->
 <div id="site-drawer">
   <ul>
-    <li><a href="/higasui/about.html" onclick="closeNav()">🎷 団について</a></li>
-    <li><a href="/higasui/join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
-    <li><a href="/higasui/faq.html" onclick="closeNav()">❓ よくある質問</a></li>
-    <li><a href="/higasui/visit.html" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="about.html" onclick="closeNav()">🎷 団について</a></li>
+    <li><a href="join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
+    <li><a href="faq.html" onclick="closeNav()">❓ よくある質問</a></li>
+    <li><a href="visit.html" onclick="closeNav()">📝 見学申込</a></li>
   </ul>
-  <a href="/higasui/visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+  <a href="visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
 </div>
 
 <!-- PAGE HEADER -->
@@ -366,7 +366,7 @@ footer {
 <!-- BREADCRUMB -->
 <div class="breadcrumb">
   <div class="inner breadcrumb-inner">
-    <a href="/higasui/">TOP</a>
+    <a href="">TOP</a>
     <span>›</span>
     <span>練習案内・入団申込</span>
   </div>
@@ -611,14 +611,14 @@ footer {
 <!-- FOOTER -->
 <footer>
   <div class="inner">
-    <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
+    <div class="footer-logo"><img src="higasui.svg" alt="東大阪吹奏楽団"></div>
     <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
         <div class="footer-links">
-      <a href="/higasui/about.html">団について</a>
-      <a href="/higasui/join.html">練習案内</a>
-      <a href="/higasui/faq.html">よくある質問</a>
-      <a href="/higasui/visit.html">見学申込</a>
-      <a href="/higasui/yakkan.html">定款</a>
+      <a href="about.html">団について</a>
+      <a href="join.html">練習案内</a>
+      <a href="faq.html">よくある質問</a>
+      <a href="visit.html">見学申込</a>
+      <a href="yakkan.html">定款</a>
     </div>
     <div class="footer-sns">
       <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -631,7 +631,6 @@ footer {
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const CAL_PROXY = 'https://script.google.com/macros/s/AKfycbxDsZjj2G6lsjx7Knz8HQ1cyIcSt8WjCVm4I1fCy2G7pQLQlJMELH1NJm5zXxc6WMoNQA/exec';
 const GAS = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
 
@@ -728,4 +727,18 @@ document.getElementById('theForm').addEventListener('submit', function(e) {
 // スクロールリビール
 const obs = new IntersectionObserver(function(entries) {
   entries.forEach(function(e, i) {
-    if (e.isIntersecting) setTimeout(f
+// スクロールリビール
+const obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) {
+    if (e.isIntersecting) setTimeout(function() { e.target.classList.add('visible'); }, i * 80);
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+// スクロールトップボタン
+window.addEventListener('scroll', function() {
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
+});
+</script>
+</body>
+</html>
