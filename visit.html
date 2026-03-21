@@ -389,13 +389,33 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
           <input type="text" id="fComment" placeholder="例：4月5日・4月12日・4月19日のいずれかで希望。午後から参加可能です。">
         </div>
 
-        <div class="form-section-label">お支払い</div>
+        <div class="form-section-label">お支払い方法</div>
 
         <div class="fee-note">
           <div class="fee-note-title"><i class="fa-solid fa-yen-sign"></i> 見学費について</div>
           <div class="fee-note-text">
-            見学費は¥500 / 回です。フォーム送信後にStripeの安全な決済ページへ移動します。
-            見学は最大3回まで可能です。入団後は月額会費（一般¥3,000 / 学生¥1,500）に切り替わります。
+            見学費は¥500 / 回です。最大3回まで見学していただけます。
+            入団後は月額会費（一般¥3,000 / 学生¥1,500）に切り替わります。
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>お支払い方法を選択<span class="req">*</span></label>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1.5px solid var(--border);cursor:pointer;transition:border-color .2s;" id="payCardLabel">
+              <input type="radio" name="payMethod" value="card" checked onchange="updatePayMethod()" style="accent-color:var(--blue);width:16px;height:16px;cursor:pointer;">
+              <div>
+                <div style="font-size:.85rem;font-weight:700;color:var(--navy);">💳 カード払い（おすすめ）</div>
+                <div style="font-size:.72rem;color:var(--muted);margin-top:1px;">Stripeの安全な決済ページへ移動します</div>
+              </div>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1.5px solid var(--border);cursor:pointer;transition:border-color .2s;" id="payCashLabel">
+              <input type="radio" name="payMethod" value="cash" onchange="updatePayMethod()" style="accent-color:var(--blue);width:16px;height:16px;cursor:pointer;">
+              <div>
+                <div style="font-size:.85rem;font-weight:700;color:var(--navy);">💴 現金払い（当日受付にて）</div>
+                <div style="font-size:.72rem;color:var(--muted);margin-top:1px;">練習当日に担当者へお支払いください</div>
+              </div>
+            </label>
           </div>
         </div>
 
@@ -467,7 +487,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
 </section>
 
 <footer>
-  <p>© 東大阪吹奏楽団 | 後援：東大阪市・東大阪市教育委員会</p>
+  <p>© 東大阪吹奏楽団</p>
 </footer>
 
 <script>
@@ -542,12 +562,21 @@ async function submitForm() {
     });
 
     if (res.ok || res.status === 201) {
-      // Stripe決済ページへリダイレクト
-      msgEl.className = 'form-msg success';
-      msgEl.textContent = '✓ 申込を受け付けました！Stripeの決済ページへ移動します…';
-      setTimeout(() => {
-        window.location.href = STRIPE_VISIT_URL;
-      }, 1500);
+      const method = document.querySelector('input[name="payMethod"]:checked').value;
+      if (method === 'card') {
+        // Stripe決済ページへリダイレクト
+        msgEl.className = 'form-msg success';
+        msgEl.textContent = '✓ 申込を受け付けました！Stripeの決済ページへ移動します…';
+        setTimeout(() => {
+          window.location.href = STRIPE_VISIT_URL;
+        }, 1500);
+      } else {
+        // 現金払い
+        msgEl.className = 'form-msg success';
+        msgEl.innerHTML = '✓ 申込を受け付けました！<br>見学当日に担当者へ¥500をお支払いください。<br>担当者よりLINEまたはメールでご連絡します。';
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> 送信完了';
+      }
     } else {
       throw new Error('submit failed: ' + res.status);
     }
@@ -560,8 +589,17 @@ async function submitForm() {
 }
 
 // =============================================
-//  未成年トグル
+//  支払い方法切り替え
 // =============================================
+function updatePayMethod() {
+  const method = document.querySelector('input[name="payMethod"]:checked').value;
+  const btn    = document.getElementById('submitBtn');
+  if (method === 'card') {
+    btn.innerHTML = '<i class="fa-brands fa-stripe"></i> 申込内容を確認して支払いへ進む';
+  } else {
+    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 申込を送信する（現金払い）';
+  }
+}
 function toggleGuardian() {
   const isMinor = document.getElementById('fMinor').checked;
   const section = document.getElementById('guardianSection');
