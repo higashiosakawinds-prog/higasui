@@ -416,7 +416,7 @@ async function loadNews() {
   const el = document.getElementById('news-list');
   try {
     const res = await fetch(
-`${SUPABASE_URL}/rest/v1/news?is_published=eq.true&order=published_at.desc&limit=5`,
+      `${SUPABASE_URL}/rest/v1/news?is_published=eq.true&order=published_at.desc&limit=5`,
       { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
     );
     if (!res.ok) throw new Error('fetch error');
@@ -424,23 +424,23 @@ async function loadNews() {
     if (!data || data.length === 0) throw new Error('empty');
 
     el.innerHTML = data.map(item => {
-  const date = item.published_at ? item.published_at.replace(/-/g, '.').slice(0, 10) : '';
-  const firstTag = (item.tags && item.tags.length > 0) ? item.tags[0] : 'info';
-  const tagLabel = firstTag === '演奏会' ? '演奏会' : firstTag === 'NEWS' ? 'NEWS' : 'INFO';
-  const tagClass = firstTag === '演奏会' ? 'concert' : firstTag === 'NEWS' ? 'news' : 'info';
-  return `
-    <div class="news-row">
-      <span class="news-date">${date}</span>
-      <span class="news-tag tag-${tagClass}">${tagLabel}</span>
-      <span>${item.url
-        ? `<a href="${item.url}" style="color:white;text-decoration:none;">${item.title}</a>`
-        : item.title}</span>
-    </div>
-  `;
-}).join('');
+      const date = item.published_at ? item.published_at.replace(/-/g, '.').slice(0, 10) : '';
+      const firstTag = (item.tags && item.tags.length > 0) ? item.tags[0] : 'info';
+      const tagLabel = firstTag === '演奏会' ? '演奏会' : firstTag === 'NEWS' ? 'NEWS' : 'INFO';
+      const tagClass = firstTag === '演奏会' ? 'concert' : firstTag === 'NEWS' ? 'news' : 'info';
+      return `
+        <div class="news-row">
+          <span class="news-date">${date}</span>
+          <span class="news-tag tag-${tagClass}">${tagLabel}</span>
+          <span>${item.url
+            ? `<a href="${item.url}" style="color:white;text-decoration:none;">${item.title}</a>`
+            : item.title}</span>
+        </div>
+      `;
+    }).join('');
 
-const bannerItems = data.filter(d => d.banner_url);
-initCarousel(bannerItems.length > 0 ? bannerItems : null);
+    const bannerItems = data.filter(d => d.banner_url);
+    initCarousel(bannerItems.length > 0 ? bannerItems : null);
 
   } catch(e) {
     initCarousel(null);
