@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>NEWS管理 | 広報委員会 | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="storage.js"></script>
+<style>
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC;
+  --green:#1D9E75; --red:#C0392B;
+  --radius:16px; --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* ===== PANEL NAV ===== */
+#panel-nav{
+  position:sticky;top:0;z-index:100;height:52px;
+  background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);
+  display:flex;align-items:center;padding:0 1.25rem;gap:12px;
+}
+#back-btn{
+  width:34px;height:34px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;flex-shrink:0;
+}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{
+  margin-left:auto;padding:3px 12px;border-radius:20px;
+  font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;
+  background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;
+}
+
+/* ===== LOCK SCREEN ===== */
+#lockScreen{
+  position:fixed;inset:0;z-index:200;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+}
+.lock-card{
+  background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);
+  border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;
+  backdrop-filter:blur(12px);
+}
+.lock-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;
+}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input{
+  width:100%;padding:13px 16px;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+  color:#fff;font-size:1rem;font-family:inherit;outline:none;
+  text-align:center;letter-spacing:.2em;margin-bottom:.8rem;
+  transition:border-color .2s;
+}
+.lock-input:focus{border-color:var(--gold);}
+.lock-btn{
+  width:100%;padding:13px;border:none;border-radius:12px;
+  background:var(--gold);color:var(--navy);font-family:inherit;
+  font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;
+}
+.lock-btn:hover{opacity:.9;}
+.lock-error{
+  display:none;margin-top:.8rem;padding:.6rem 1rem;
+  background:rgba(192,57,43,.2);border-radius:8px;
+  font-size:.75rem;color:#fca5a5;
+}
+.lock-error.show{display:block;}
+
+/* ===== STATES ===== */
+#stateLoading{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:60vh;gap:14px;
+}
+.spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== MAIN ===== */
+#mainContent{display:none;padding:28px 0 80px;}
+
+/* ===== PAGE HEADER ===== */
+.page-header{
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
+  position:relative;overflow:hidden;margin-bottom:28px;
+}
+.page-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,.1) 0%,transparent 55%);
+}
+.page-header-inner{position:relative;z-index:1;padding:2rem 1.5rem 2.5rem;max-width:900px;margin:0 auto;}
+.page-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:8px;margin-bottom:.7rem;
+}
+.page-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.page-header h1{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;color:#fff;
+  line-height:1.3;margin-bottom:.4rem;
+}
+.page-header p{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.8;}
+
+/* ===== セクション ===== */
+.sec{margin-bottom:28px;}
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;gap:12px;flex-wrap:wrap;
+}
+.sec-label{
+  font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--blue);
+  display:flex;align-items:center;gap:8px;
+}
+.sec-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+
+/* ===== ボタン ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 18px;border-radius:10px;border:none;cursor:pointer;
+  font-family:inherit;font-size:.82rem;font-weight:700;
+  transition:opacity .2s,transform .15s;
+}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-danger{background:rgba(192,57,43,.1);color:var(--red);border:1.5px solid rgba(192,57,43,.2);}
+.btn-sm{padding:6px 12px;font-size:.75rem;}
+
+/* ===== フィルター ===== */
+.filter-bar{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;
+}
+.filter-btn{
+  padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--white);font-size:.75rem;font-weight:700;color:var(--muted);
+  cursor:pointer;transition:all .15s;font-family:inherit;
+}
+.filter-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* ===== NEWS一覧 ===== */
+.news-list{display:flex;flex-direction:column;gap:12px;}
+.news-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.1rem 1.3rem;display:flex;gap:14px;align-items:flex-start;
+  box-shadow:var(--shadow);transition:box-shadow .2s;
+}
+.news-card:hover{box-shadow:0 6px 24px rgba(33,74,154,.1);}
+.news-thumb{
+  width:72px;height:50px;border-radius:8px;object-fit:cover;
+  background:var(--bg);border:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.7rem;
+  overflow:hidden;
+}
+.news-thumb img{width:100%;height:100%;object-fit:cover;}
+.news-body{flex:1;min-width:0;}
+.news-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;}
+.news-date{font-family:'Outfit',sans-serif;font-size:.7rem;color:var(--muted);}
+.badge{
+  display:inline-flex;padding:2px 8px;border-radius:20px;
+  font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.05em;
+}
+.badge-pub{background:rgba(29,158,117,.12);color:var(--green);}
+.badge-draft{background:rgba(200,164,77,.12);color:#a07a20;}
+.news-title{font-weight:700;font-size:.92rem;line-height:1.4;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.news-tags{font-size:.72rem;color:var(--muted);}
+.news-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;}
+
+/* ===== 空状態 ===== */
+.empty-state{
+  text-align:center;padding:3rem 1rem;
+  color:var(--muted);font-size:.85rem;line-height:1.9;
+}
+.empty-state i{font-size:2rem;margin-bottom:.8rem;color:var(--border);}
+
+/* ===== MODAL ===== */
+.modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
+  display:none;align-items:flex-start;justify-content:center;padding:1.5rem;
+  overflow-y:auto;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--white);border-radius:20px;width:100%;max-width:600px;
+  margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+.modal-head{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;
+}
+.modal-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.modal-close{
+  background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;
+  font-size:1.1rem;transition:color .2s;padding:4px;
+}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:1.4rem;}
+
+/* ===== フォーム ===== */
+.form-group{margin-bottom:1rem;}
+.form-label{
+  display:block;font-size:.78rem;font-weight:700;color:var(--navy);
+  margin-bottom:.4rem;
+}
+.form-required{color:var(--red);margin-left:3px;}
+.form-input,.form-textarea,.form-select{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);
+  outline:none;transition:border-color .2s;
+}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--blue);}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.7;}
+.form-hint{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+
+/* バナーアップロード */
+.upload-area{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:1.5rem;text-align:center;cursor:pointer;
+  transition:border-color .2s,background .2s;background:var(--bg);
+}
+.upload-area:hover,.upload-area.drag-over{border-color:var(--blue);background:#f0f4ff;}
+.upload-area input[type=file]{display:none;}
+.upload-icon{font-size:1.6rem;color:var(--muted);margin-bottom:.4rem;}
+.upload-label{font-size:.8rem;color:var(--muted);line-height:1.7;}
+.upload-label strong{color:var(--blue);}
+.upload-preview{
+  margin-top:.8rem;border-radius:8px;overflow:hidden;
+  max-height:140px;display:none;
+}
+.upload-preview img{width:100%;height:140px;object-fit:cover;}
+.upload-progress{
+  margin-top:.8rem;display:none;
+}
+.progress-bar{
+  width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--blue);border-radius:3px;
+  width:0;transition:width .3s;
+}
+.progress-text{font-size:.72rem;color:var(--muted);margin-top:.3rem;text-align:center;}
+
+/* 公開トグル */
+.toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.8rem 1rem;background:var(--bg);border-radius:10px;
+}
+.toggle-label{font-size:.85rem;font-weight:700;}
+.toggle-desc{font-size:.72rem;color:var(--muted);}
+.toggle{position:relative;display:inline-block;width:44px;height:24px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;cursor:pointer;inset:0;
+  background:var(--border);border-radius:24px;transition:.2s;
+}
+.toggle-slider::before{
+  content:'';position:absolute;height:18px;width:18px;
+  left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;
+}
+.toggle input:checked + .toggle-slider{background:var(--green);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px);}
+
+.modal-footer{
+  padding:1rem 1.4rem;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:8px;
+}
+
+/* ===== TOAST ===== */
+#toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--navy);color:#fff;padding:.8rem 1.4rem;border-radius:12px;
+  font-size:.82rem;font-weight:700;z-index:9999;opacity:0;
+  transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===== レスポンシブ ===== */
+@media(max-width:600px){
+  .news-card{flex-wrap:wrap;}
+  .news-actions{width:100%;justify-content:flex-end;}
+}
+</style>
+</head>
+<body>
+
+<!-- ロック画面 -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-eyebrow">Committee Panel</div>
+    <div class="lock-title">📣 広報委員会</div>
+    <p class="lock-sub">NEWS管理パネルにアクセスするには<br>パネルコードを入力してください</p>
+    <input id="codeInput" class="lock-input" type="password" placeholder="パネルコード"
+      onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="lock-btn" onclick="tryUnlock()">ロック解除</button>
+    <div id="lockError" class="lock-error">パネルコードが違います</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="panel-nav" style="display:none;">
+  <button id="back-btn" onclick="goBack()" title="戻る"><i class="fas fa-chevron-left"></i></button>
+  <div id="panel-title">NEWS管理</div>
+  <div id="panel-badge">PR / NEWS</div>
+</nav>
+
+<!-- ローディング -->
+<div id="stateLoading" style="display:none;">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">読み込んでいます…</p>
+</div>
+
+<!-- メインコンテンツ -->
+<div id="mainContent">
+  <!-- ページヘッダー -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">PR Committee — NEWS</div>
+      <h1>📣 NEWS管理</h1>
+      <p>サイトに表示するお知らせを管理します。投稿・編集・削除・公開設定が可能です。</p>
+    </div>
+  </div>
+
+  <div class="inner">
+    <!-- NEWS一覧 -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-label">NEWS 一覧</div>
+        <button class="btn btn-gold" onclick="openCreateModal()">
+          <i class="fas fa-plus"></i> 新規投稿
+        </button>
+      </div>
+
+      <!-- フィルター -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setFilter('all', this)">すべて</button>
+        <button class="filter-btn" onclick="setFilter('published', this)">公開中</button>
+        <button class="filter-btn" onclick="setFilter('draft', this)">下書き</button>
+      </div>
+
+      <!-- 件数表示 -->
+      <p id="newsCount" style="font-size:.75rem;color:var(--muted);margin-bottom:12px;"></p>
+
+      <!-- 一覧 -->
+      <div id="newsList" class="news-list">
+        <div class="empty-state">
+          <i class="fas fa-newspaper"></i>
+          <p>NEWSを読み込んでいます…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS作成・編集モーダル -->
+<div id="newsModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title" id="modalTitle">📝 NEWS新規投稿</div>
+      <button class="modal-close" onclick="closeModal('newsModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+
+      <!-- タイトル -->
+      <div class="form-group">
+        <label class="form-label">タイトル<span class="form-required">*</span></label>
+        <input id="inputTitle" class="form-input" type="text" placeholder="例：第1回定期演奏会のお知らせ" maxlength="100">
+      </div>
+
+      <!-- タグ -->
+      <div class="form-group">
+        <label class="form-label">タグ</label>
+        <input id="inputTags" class="form-input" type="text" placeholder="例：演奏会, お知らせ（カンマ区切り）">
+        <p class="form-hint">カンマ（,）で区切って複数入力できます</p>
+      </div>
+
+      <!-- 本文リンク（任意） -->
+      <div class="form-group">
+        <label class="form-label">リンクURL（任意）</label>
+        <input id="inputUrl" class="form-input" type="url" placeholder="https://...">
+        <p class="form-hint">詳細ページや外部サイトへのリンク</p>
+      </div>
+
+      <!-- バナー画像 -->
+      <div class="form-group">
+        <label class="form-label">バナー画像（任意）</label>
+        <div class="upload-area" id="uploadArea"
+          onclick="document.getElementById('bannerFile').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)">
+          <input type="file" id="bannerFile" accept="image/*" onchange="handleFileSelect(event)">
+          <div class="upload-icon"><i class="fas fa-image"></i></div>
+          <div class="upload-label">
+            <strong>クリックして選択</strong> またはドラッグ＆ドロップ<br>
+            JPG / PNG / WebP・上限5MB
+          </div>
+          <div class="upload-preview" id="uploadPreview">
+            <img id="previewImg" src="" alt="プレビュー">
+          </div>
+        </div>
+        <div class="upload-progress" id="uploadProgress">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-text" id="progressText">アップロード中…</div>
+        </div>
+        <p class="form-hint" style="margin-top:.5rem;">
+          既存のバナーを変更する場合は新しい画像を選択してください
+        </p>
+        <!-- 現在のバナーURL（編集時に保持） -->
+        <input type="hidden" id="currentBannerUrl">
+        <input type="hidden" id="currentBannerPath">
+      </div>
+
+      <!-- 公開設定 -->
+      <div class="form-group">
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">公開する</div>
+            <div class="toggle-desc">オフにすると下書きとして保存されます</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="inputPublished" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- モーダルメッセージ -->
+      <div id="modalMsg" style="font-size:.78rem;color:var(--red);min-height:1.2em;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('newsModal')">キャンセル</button>
+      <button id="saveBtn" class="btn btn-gold" onclick="saveNews()">
+        <i class="fas fa-save"></i> 保存する
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 削除確認モーダル -->
+<div id="deleteModal" class="modal-overlay">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-head">
+      <div class="modal-head-title">🗑️ 削除の確認</div>
+      <button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.88rem;line-height:1.8;">
+        「<strong id="deleteTitle"></strong>」を削除しますか？<br>
+        <span style="color:var(--red);font-size:.8rem;">この操作は元に戻せません。バナー画像も削除されます。</span>
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('deleteModal')">キャンセル</button>
+      <button class="btn btn-danger" onclick="confirmDelete()"><i class="fas fa-trash"></i> 削除する</button>
+    </div>
+  </div>
+</div>
+
+<!-- トースト -->
+<div id="toast"></div>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+const PANEL_CODE = 'PR';
+
+// =============================================
+//  状態
+// =============================================
+let memberToken   = null;
+let newsData      = [];
+let currentFilter = 'all';
+let deleteTargetId = null;
+let selectedFile  = null;
+
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  memberToken = params.get('token');
+
+  if (memberToken) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+        SB
+      );
+      const members = await res.json();
+      if (members && members.length > 0) {
+        const role      = members[0].role      || '';
+        const committee = members[0].committee || '';
+        const FULL_ACCESS = ['president', 'vice_president', 'director'];
+        if (FULL_ACCESS.includes(role) || role === 'pr' || committee === 'pr') {
+          showMain();
+          return;
+        }
+      }
+    } catch(e) { console.error(e); }
+  }
+  // tokenなし or 権限なし → ロック画面のまま
+});
+
+// =============================================
+//  ロック解除
+// =============================================
+function tryUnlock() {
+  const input = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (input === PANEL_CODE) {
+    sessionStorage.setItem('panel_pr_news_unlocked', 'true');
+    showMain();
+  } else {
+    document.getElementById('lockError').classList.add('show');
+    document.getElementById('codeInput').select();
+  }
+}
+
+async function showMain() {
+  document.getElementById('lockScreen').style.display   = 'none';
+  document.getElementById('panel-nav').style.display    = 'flex';
+  document.getElementById('stateLoading').style.display = 'flex';
+  await loadNews();
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('mainContent').style.display  = 'block';
+}
+
+// =============================================
+//  NEWS取得
+// =============================================
+async function loadNews() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/news?order=published_at.desc`,
+      SB
+    );
+    newsData = await res.json() || [];
+    renderNews();
+  } catch(e) {
+    showToast('⚠️ NEWS取得に失敗しました');
+    document.getElementById('newsList').innerHTML =
+      '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>データを取得できませんでした</p></div>';
+  }
+}
+
+// =============================================
+//  フィルター
+// =============================================
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNews();
+}
+
+// =============================================
+//  NEWS一覧レンダリング
+// =============================================
+function renderNews() {
+  let items = [...newsData];
+
+  if (currentFilter === 'published') items = items.filter(n => n.is_published);
+  if (currentFilter === 'draft')     items = items.filter(n => !n.is_published);
+
+  document.getElementById('newsCount').textContent = `${items.length}件`;
+
+  if (!items.length) {
+    document.getElementById('newsList').innerHTML =
+      `<div class="empty-state"><i class="fas fa-newspaper"></i><p>該当するNEWSがありません</p></div>`;
+    return;
+  }
+
+  document.getElementById('newsList').innerHTML = items.map(n => {
+    const date  = n.published_at ? new Date(n.published_at).toLocaleDateString('ja-JP') : '日付未設定';
+    const badge = n.is_published
+      ? '<span class="badge badge-pub">公開中</span>'
+      : '<span class="badge badge-draft">下書き</span>';
+    const tags  = (n.tags || []).map(t => `#${esc(t)}`).join(' ');
+    const thumb = n.banner_url
+      ? `<div class="news-thumb"><img src="${esc(n.banner_url)}" alt="バナー" loading="lazy"></div>`
+      : `<div class="news-thumb"><i class="fas fa-image"></i></div>`;
+
+    return `
+      <div class="news-card">
+        ${thumb}
+        <div class="news-body">
+          <div class="news-meta">
+            <span class="news-date">${date}</span>
+            ${badge}
+          </div>
+          <div class="news-title" title="${esc(n.title)}">${esc(n.title)}</div>
+          ${tags ? `<div class="news-tags">${tags}</div>` : ''}
+        </div>
+        <div class="news-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditModal('${n.id}')">
+            <i class="fas fa-edit"></i> 編集
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${n.id}', '${esc(n.title)}')">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// =============================================
+//  新規投稿モーダルを開く
+// =============================================
+function openCreateModal() {
+  document.getElementById('editId').value         = '';
+  document.getElementById('inputTitle').value     = '';
+  document.getElementById('inputTags').value      = '';
+  document.getElementById('inputUrl').value       = '';
+  document.getElementById('inputPublished').checked = true;
+  document.getElementById('currentBannerUrl').value = '';
+  document.getElementById('currentBannerPath').value = '';
+  document.getElementById('modalTitle').textContent = '📝 NEWS新規投稿';
+  document.getElementById('saveBtn').textContent   = '投稿する';
+  document.getElementById('modalMsg').textContent  = '';
+  resetUploadUI();
+  selectedFile = null;
+  openModal('newsModal');
+}
+
+// =============================================
+//  編集モーダルを開く
+// =============================================
+function openEditModal(id) {
+  const n = newsData.find(n => n.id === id);
+  if (!n) return;
+  document.getElementById('editId').value           = n.id;
+  document.getElementById('inputTitle').value       = n.title || '';
+  document.getElementById('inputTags').value        = (n.tags || []).join(', ');
+  document.getElementById('inputUrl').value         = n.url || '';
+  document.getElementById('inputPublished').checked = n.is_published || false;
+  document.getElementById('currentBannerUrl').value  = n.banner_url  || '';
+  document.getElementById('currentBannerPath').value = n.banner_path || '';
+  document.getElementById('modalTitle').textContent  = '✏️ NEWS編集';
+  document.getElementById('saveBtn').textContent     = '保存する';
+  document.getElementById('modalMsg').textContent    = '';
+
+  // 既存バナーをプレビューに表示
+  if (n.banner_url) {
+    document.getElementById('previewImg').src        = n.banner_url;
+    document.getElementById('uploadPreview').style.display = 'block';
+  } else {
+    resetUploadUI();
+  }
+  selectedFile = null;
+  openModal('newsModal');
+}
+
+// =============================================
+//  NEWS保存（新規 / 更新）
+// =============================================
+async function saveNews() {
+  const title = document.getElementById('inputTitle').value.trim();
+  if (!title) {
+    document.getElementById('modalMsg').textContent = '⚠️ タイトルを入力してください';
+    return;
+  }
+
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中…';
+  document.getElementById('modalMsg').textContent = '';
+
+  try {
+    // バナー画像アップロード（storage.jsを使用）
+    let bannerUrl  = document.getElementById('currentBannerUrl').value  || null;
+    let bannerPath = document.getElementById('currentBannerPath').value || null;
+
+    if (selectedFile) {
+      showUploadProgress(true);
+      const path   = `news/${storageSafeName(selectedFile)}`;
+      const result = await storageUpload('banners', selectedFile, path);
+      bannerUrl    = result.url;
+      bannerPath   = result.path;
+      showUploadProgress(false);
+    }
+
+    // タグをパース
+    const tagsRaw = document.getElementById('inputTags').value.trim();
+    const tags    = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+    const payload = {
+      title,
+      tags,
+      url:          document.getElementById('inputUrl').value.trim() || null,
+      banner_url:   bannerUrl,
+      banner_path:  bannerPath,
+      is_published: document.getElementById('inputPublished').checked,
+      published_at: new Date().toISOString(),
+    };
+
+    const editId = document.getElementById('editId').value;
+
+    if (editId) {
+      // 更新
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${editId}`, {
+        method:  'PATCH',
+        headers: { ...SB.headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body:    JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('更新失敗');
+      showToast('✅ NEWSを更新しました');
+    } else {
+      // 新規
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/news`, {
+        method:  'POST',
+        headers: { ...SB.headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body:    JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('投稿失敗');
+      showToast('✅ NEWSを投稿しました');
+    }
+
+    closeModal('newsModal');
+    await loadNews();
+  } catch(e) {
+    document.getElementById('modalMsg').textContent = `⚠️ ${e.message}`;
+    showUploadProgress(false);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> 保存する';
+  }
+}
+
+// =============================================
+//  削除モーダルを開く
+// =============================================
+function openDeleteModal(id, title) {
+  deleteTargetId = id;
+  document.getElementById('deleteTitle').textContent = title;
+  openModal('deleteModal');
+}
+
+// =============================================
+//  削除実行
+// =============================================
+async function confirmDelete() {
+  if (!deleteTargetId) return;
+
+  const n = newsData.find(n => n.id === deleteTargetId);
+
+  try {
+    // Supabaseからレコード削除
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${deleteTargetId}`, {
+      method:  'DELETE',
+      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+    });
+    if (!res.ok) throw new Error('削除失敗');
+
+    // バナー画像も削除（storage.jsを使用）
+    if (n && n.banner_path) {
+      await storageDelete('banners', n.banner_path).catch(() => {});
+      // 画像削除失敗は無視（データ本体は消えている）
+    }
+
+    showToast('🗑️ 削除しました');
+    closeModal('deleteModal');
+    await loadNews();
+  } catch(e) {
+    showToast('⚠️ 削除に失敗しました');
+  }
+  deleteTargetId = null;
+}
+
+// =============================================
+//  ファイル選択 / ドラッグ＆ドロップ
+// =============================================
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) setSelectedFile(file);
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+  document.getElementById('uploadArea').classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) setSelectedFile(file);
+  else showToast('⚠️ 画像ファイルを選択してください');
+}
+
+function setSelectedFile(file) {
+  const info = storageInfo('banners');
+  if (file.size / 1024 / 1024 > info.maxMB) {
+    showToast(`⚠️ ファイルサイズが上限（${info.maxMB}MB）を超えています`);
+    return;
+  }
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('previewImg').src             = e.target.result;
+    document.getElementById('uploadPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetUploadUI() {
+  document.getElementById('uploadPreview').style.display = 'none';
+  document.getElementById('previewImg').src = '';
+  document.getElementById('uploadProgress').style.display = 'none';
+  document.getElementById('progressFill').style.width = '0';
+}
+
+function showUploadProgress(show) {
+  document.getElementById('uploadProgress').style.display = show ? 'block' : 'none';
+  if (show) {
+    // アニメーションで進捗を演出（実際は完了時に一気に100%）
+    let p = 0;
+    const iv = setInterval(() => {
+      p = Math.min(p + 10, 85);
+      document.getElementById('progressFill').style.width = p + '%';
+      if (p >= 85) clearInterval(iv);
+    }, 100);
+  } else {
+    document.getElementById('progressFill').style.width = '100%';
+    setTimeout(resetUploadUI, 400);
+  }
+}
+
+// =============================================
+//  ユーティリティ
+// =============================================
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function goBack() { history.back(); }
+
+// モーダルオーバーレイクリックで閉じる
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
