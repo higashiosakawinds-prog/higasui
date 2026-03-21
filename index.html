@@ -17,10 +17,8 @@
 html{scroll-behavior:smooth;}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 
-/* センターボックス共通設定 */
 .inner { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; width: 100%; }
 
-/* NAV */
 #site-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   height: 56px; background: rgba(28,43,74,0.97); backdrop-filter: blur(12px);
@@ -34,7 +32,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 #ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
 
-/* DRAWER */
 #site-drawer{
   display:none; position:fixed; top:56px; left:0; right:0; bottom:0;
   z-index:999; background:var(--navy); overflow-y:auto; padding:1.5rem 1.5rem 3rem;
@@ -50,7 +47,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   padding:16px; border-radius:14px; font-weight:700; text-decoration:none;
 }
 
-/* HERO */
 .hero { background: var(--navy); padding-top: 56px; }
 .hero-photo-wrap { position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; max-height: 80vh; }
 .hero-photo-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
@@ -65,11 +61,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .hero-desc strong { color: #FFE585; }
 .hero-btns { display: flex; flex-direction: column; gap: 0.8rem; max-width: 340px; margin: 0 auto; }
 
-/* STATS */
 .stats { background: var(--navy); display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(255,255,255,0.1); }
 
-/* BANNER GRID / CAROUSEL */
-/* スマホ：カルーセル / PC(680px以上)：3列グリッド */
 .carousel-wrap { position:relative; background:linear-gradient(135deg, #1C2B4A 0%, #214A9A 100%); overflow:hidden; width:100%; min-height: 120px; }
 .carousel-track { display:flex; transition:transform 0.4s ease; }
 .carousel-slide { flex:0 0 100%; }
@@ -104,11 +97,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .stat-num { display: block; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--gold); }
 .stat-label { font-size: 0.65rem; color: rgba(255,255,255,0.5); }
 
-/* BUTTONS */
 .btn-gold { background: var(--gold); color: white; padding: 16px; border-radius: 12px; font-weight: 700; text-decoration: none; display: block; }
 .btn-ghost { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 14px; border-radius: 12px; text-decoration: none; display: block; }
 
-/* NEWS */
 .news-bar { background: var(--navy); padding: 30px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .news-bar-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
 .news-bar-title { font-family:'Outfit',sans-serif; font-size:0.65rem; font-weight:800; letter-spacing:0.2em; color:var(--gold); text-transform:uppercase; }
@@ -120,7 +111,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .tag-news { background:rgba(33,74,154,0.4); color:#9BB3E8; }
 .tag-info { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.65); }
 
-/* SECTIONS */
 .sec { padding: 80px 0; }
 .sec-bg { background: var(--bg); }
 .sec-white { background: var(--white); }
@@ -132,7 +122,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .h2-white { color: white; }
 .lead { color: var(--muted); line-height: 1.8; margin-bottom: 3rem; }
 
-/* PERSONAS (4枚) */
 .personas { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem; }
 .persona { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
 .persona img { width: 100%; height: 180px; object-fit: cover; }
@@ -141,20 +130,17 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .persona-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
 .persona-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
 
-/* FEATURES (3つ) */
 .features { display: grid; gap: 1.2rem; }
 .feat { display: flex; gap: 1.5rem; background: white; padding: 2rem; border-radius: 16px; align-items: flex-start; border: 1px solid var(--border); }
 .feat-num { font-family: 'Outfit'; font-size: 2rem; font-weight: 800; color: var(--border); line-height: 1; }
 .feat-title { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
 .feat-text { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
 
-/* VISION (復活！) */
 .vision-bg { position: absolute; inset: 0; background-image: url('concert.png'); background-size: cover; background-position: center; opacity: 0.08; }
 .vision-quote { border-left: 3px solid var(--gold); padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 0 12px 12px 0; margin: 2rem 0; }
 .vision-quote p { font-family: 'Shippori Mincho', serif; font-size: 1.1rem; line-height: 2; }
 .vision-quote span { color: #E0C876; font-weight: 700; }
 
-/* PRACTICE (4枚カード復活！) */
 .pcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 .pcard { background: white; padding: 1.5rem; border-radius: 14px; border: 1px solid var(--border); display: flex; gap: 1rem; align-items: flex-start; }
 .pcard-icon { font-size: 1.4rem; }
@@ -162,13 +148,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .pcard-val { font-weight: 700; color: var(--navy); font-size: 0.95rem; }
 .pcard-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
 
-/* RECRUIT (詳細復活！) */
 .recruit-num { font-family: 'Outfit'; font-size: 4rem; font-weight: 800; line-height: 1; }
 .recruit-num span { font-size: 1.2rem; vertical-align: super; }
 .parts { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin: 2rem 0; }
 .part { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; }
 
-/* FORM (デザイン復活！) */
 .form-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; color: var(--text); }
 .form-head { background: var(--navy); color: white; padding: 1.5rem; text-align: center; border-bottom: 2px solid var(--gold); }
 .form-body { padding: 2rem; }
@@ -178,7 +162,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .fg input, .fg select, .fg textarea { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; }
 .form-note { font-size: 0.7rem; color: var(--muted); margin-top: 1rem; line-height: 1.6; text-align: center; }
 
-/* FOOTER (SNS復活！) */
 footer { background: var(--navy); padding: 4rem 0; text-align: center; border-top: 2px solid var(--gold); color: white; }
 .footer-logo img { height: 40px; filter: brightness(0) invert(1); margin-bottom: 1.5rem; }
 .footer-sns { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
@@ -223,12 +206,10 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 </div>
 
 <section class="hero">
-  <!-- 写真：全幅表示 -->
   <div class="hero-photo-wrap">
     <img src="trumpet_girl.jpg" alt="吹奏楽">
     <div class="hero-logo-over"><img src="higasui.svg" alt="ロゴ"></div>
   </div>
-  <!-- テキスト：センター配置 -->
   <div class="hero-body">
     <div class="inner">
       <h1 class="hero-h1">楽しく楽器、<br>一緒に吹きましょう！</h1>
@@ -247,10 +228,8 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
   </div>
 </section>
 
-<!-- カルーセルバナー -->
 <div class="carousel-wrap">
-  <div class="carousel-track" id="carouselTrack">
-  </div>
+  <div class="carousel-track" id="carouselTrack"></div>
   <button class="carousel-btn carousel-prev" id="carouselPrev">&#8249;</button>
   <button class="carousel-btn carousel-next" id="carouselNext">&#8250;</button>
   <div class="carousel-dots" id="carouselDots">
@@ -416,15 +395,10 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 </footer>
 
 <script>
-// ==============================
-// 設定値
-// ==============================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0'; // ← Publishable keyに差し替え済み
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
 
-// ==============================
 // ハンバーガーメニュー
-// ==============================
 const ham = document.getElementById('ham-btn');
 const drawer = document.getElementById('site-drawer');
 ham.addEventListener('click', function() {
@@ -437,32 +411,21 @@ function closeNav() {
   document.body.style.overflow = '';
 }
 
-// ==============================
 // NEWS（Supabase版）
-// ==============================
 async function loadNews() {
   const el = document.getElementById('news-list');
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/news?is_public=eq.true&order=published_at.desc&limit=5`,
-      {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
-      }
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
     );
     if (!res.ok) throw new Error('fetch error');
     const data = await res.json();
     if (!data || data.length === 0) throw new Error('empty');
 
     el.innerHTML = data.map(item => {
-      const date = item.published_at
-        ? item.published_at.replace(/-/g, '.').slice(0, 10)
-        : '';
-      const tagLabel = item.tag === 'concert' ? '演奏会'
-                     : item.tag === 'news'    ? 'NEWS'
-                     : 'INFO';
+      const date = item.published_at ? item.published_at.replace(/-/g, '.').slice(0, 10) : '';
+      const tagLabel = item.tag === 'concert' ? '演奏会' : item.tag === 'news' ? 'NEWS' : 'INFO';
       return `
         <div class="news-row">
           <span class="news-date">${date}</span>
@@ -474,12 +437,10 @@ async function loadNews() {
       `;
     }).join('');
 
-    // バナー用スライドデータ
     const bannerItems = data.filter(d => d.show_banner && d.banner_url);
     initCarousel(bannerItems.length > 0 ? bannerItems : null);
 
   } catch(e) {
-    // フォールバック
     initCarousel(null);
     el.innerHTML = `
       <div class="news-row"><span class="news-date">2026.03.16</span><span class="news-tag tag-concert">演奏会</span><span>第一回定期演奏会 2026年12月13日（土）東大阪文化創造館小ホール</span></div>
@@ -490,9 +451,7 @@ async function loadNews() {
 }
 loadNews();
 
-// ==============================
-// フォーム送信（GASのまま維持）
-// ==============================
+// フォーム送信
 const GAS = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
 const theForm = document.getElementById('theForm');
 if (theForm) {
@@ -526,9 +485,7 @@ if (theForm) {
   });
 }
 
-// ==============================
 // カルーセル
-// ==============================
 function initCarousel(slides) {
   const track = document.getElementById('carouselTrack');
   const dotsWrap = document.getElementById('carouselDots');
@@ -559,10 +516,16 @@ function initCarousel(slides) {
   setInterval(() => goSlide(cur + 1), 4000);
 }
 
-// ==============================
 // スクロールリビール
-// ==============================
 const obs = new IntersectionObserver(entries => {
   entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i*80); });
 }, {threshold:0.08});
-document.querySelectorAll('
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// スクロールトップボタン
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
+});
+</script>
+</body>
+</html>
