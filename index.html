@@ -442,12 +442,12 @@ async function loadNews() {
     const bannerItems = data.filter(d => d.banner_url);
     initCarousel(bannerItems.length > 0 ? bannerItems : null);
 
-  } catch(e) {
+} catch(e) {
     initCarousel(null);
     el.innerHTML = `
-      <div class="news-row"><span class="news-date">2026.03.16</span><span class="news-tag tag-concert">演奏会</span><span>第一回定期演奏会 2026年12月13日（土）東大阪文化創造館小ホール</span></div>
-      <div class="news-row"><span class="news-date">2026.03.16</span><span class="news-tag tag-news">NEWS</span><span>東大阪吹奏楽団、誕生しました！見学・体験申込受付スタート。</span></div>
-      <div class="news-row"><span class="news-date">2026.03.16</span><span class="news-tag tag-info">INFO</span><span>東大阪市・東大阪市教育委員会より後援をいただきました。</span></div>
+      <div class="news-row">
+        <span style="color:rgba(255,255,255,0.4);font-size:0.82rem;">現在ニュースを読み込めません。しばらくしてから再度お試しください。</span>
+      </div>
     `;
   }
 }
