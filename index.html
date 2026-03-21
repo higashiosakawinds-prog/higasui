@@ -217,9 +217,9 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
     <li><a href="/higasui/about.html" onclick="closeNav()">🎷 団について</a></li>
     <li><a href="/higasui/join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
     <li><a href="/higasui/faq.html" onclick="closeNav()">❓ よくある質問</a></li>
-    <li><a href="/higasui/join.html#form" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="/higasui/visit.html" onclick="closeNav()">📝 見学申込</a></li>
   </ul>
-  <a href="/higasui/join.html#form" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+  <a href="/higasui/visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
 </div>
 
 <section class="hero">
@@ -235,7 +235,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p class="hero-en">Higashi Osaka Wind Orchestra</p>
       <p class="hero-desc"><strong>ブランク何年でも大歓迎。</strong><br>東大阪に、大人も子供も一緒に音楽を楽しめる場所を作りたい。毎週土曜日は一緒に奏でましょう！</p>
       <div class="hero-btns">
-        <a href="#join" class="btn-gold">🎺 見学・体験を申し込む（¥500〜）</a>
+        <a href="/higasui/visit.html" class="btn-gold">🎺 見学・体験を申し込む（¥500〜）</a>
         <a href="/higasui/about.html" class="btn-ghost">団について詳しく見る</a>
       </div>
     </div>
@@ -339,7 +339,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p>ウィーンに世界中から人が集まる音楽の殿堂があるように、<br>東大阪にも<span>地域に根ざし、世代を超えて愛され続ける</span>音楽の場をつくりたい。<br>それが私たちの長期ビジョンです。</p>
     </div>
     <p style="line-height:1.8; margin-bottom:2.5rem; color:rgba(255,255,255,0.8);">でも、始まりはいつも「一緒に楽しもう」というシンプルな気持ちから。まずは一緒に音を出しましょう。</p>
-    <a href="#join" class="btn-gold" style="max-width:280px; margin:0 auto; display:block; text-align:center;">一緒に始めませんか？</a>
+    <a href="/higasui/visit.html" class="btn-gold" style="max-width:280px; margin:0 auto; display:block; text-align:center;">一緒に始めませんか？</a>
   </div>
 </section>
 
@@ -371,7 +371,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <span class="part">Saxophone</span><span class="part">Flute</span><span class="part">Oboe</span>
       <span class="part">Percussion 🥁</span><span class="part">その他</span>
     </div>
-    <a href="#join" class="btn-gold" style="max-width:300px; margin:0 auto;">見学・体験を申し込む</a>
+    <a href="/higasui/visit.html" class="btn-gold" style="max-width:300px; margin:0 auto;">見学・体験を申し込む</a>
   </div>
 </section>
 
@@ -379,30 +379,16 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
   <div class="inner">
     <div class="reveal" style="text-align:center;">
       <p class="eyebrow">Join Us</p>
-      <h2 class="h2">見学・体験申込</h2>
-      <p class="lead">フォームからお申し込みいただくと、折り返しご連絡します。</p>
+      <h2 class="h2">見学・体験を申し込む</h2>
+      <p class="lead">まずは雰囲気を感じに来てください。見学費¥500 / 回（最大3回）。</p>
     </div>
-    <div class="form-card reveal">
-      <div class="form-head">🎺 見学・体験申込フォーム</div>
-      <div class="form-body">
-        <form id="theForm">
-          <div class="fg-row">
-            <div class="fg"><label>お名前 *</label><input type="text" id="f-name" required placeholder="山田 花子"></div>
-            <div class="fg"><label>担当楽器 *</label>
-              <select id="f-inst" required>
-                <option value="">選択</option>
-                <option>フルート/ピッコロ</option><option>オーボエ</option><option>クラリネット</option><option>サックス</option><option>トランペット</option><option>トロンボーン</option><option>ホルン</option><option>ユーフォニアム</option><option>チューバ</option><option>コントラバス</option><option>打楽器</option><option>その他</option>
-              </select>
-            </div>
-          </div>
-          <div class="fg"><label>メールアドレス *</label><input type="email" id="f-email" required placeholder="example@gmail.com"></div>
-          <div class="fg"><label>希望見学日・メッセージ</label><textarea id="f-msg" rows="3" placeholder="質問などあればお気軽に！"></textarea></div>
-          <button type="submit" class="btn-gold" id="f-btn" style="width:100%; border:none; cursor:pointer;"><span id="f-btn-text">見学を申し込む</span></button>
-          <p class="form-note">折り返し higashiosaka.winds@gmail.com よりご連絡します。</p>
-          <div id="errBox" style="display:none; color:red; font-size:0.8rem; margin-top:0.5rem;"></div>
-        </form>
-        <div id="okBox" style="display:none; text-align:center;"><h3>🎵 申込ありがとうございます！</h3><p>追ってご連絡いたします。</p></div>
-      </div>
+    <div class="reveal" style="max-width:480px;margin:2rem auto 0;background:#fff;border-radius:20px;border:1px solid var(--border);padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(33,74,154,.07);">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🎺</div>
+      <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:.6rem;">見学申込フォームへ</div>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;">
+        申込フォームの入力・見学費のお支払いは<br>専用ページからお手続きいただけます。
+      </p>
+      <a href="/higasui/visit.html" class="btn-gold" style="display:block;text-align:center;">🎺 見学・体験を申し込む（¥500〜）</a>
     </div>
   </div>
 </section>
@@ -417,7 +403,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <a href="/higasui/about.html" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">団について</a>
       <a href="/higasui/join.html" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">練習案内</a>
       <a href="/higasui/faq.html" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">よくある質問</a>
-      <a href="/higasui/join.html#form" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">見学申込</a>
+      <a href="/higasui/visit.html" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">見学申込</a>
       <a href="/higasui/yakkan.html" style="font-size:0.75rem;color:rgba(255,255,255,0.3);text-decoration:none;">定款</a>
     </div>
     <div class="footer-sns">
@@ -429,7 +415,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ==============================
 // 設定値
 // ==============================
@@ -579,11 +565,4 @@ function initCarousel(slides) {
 const obs = new IntersectionObserver(entries => {
   entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i*80); });
 }, {threshold:0.08});
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-// スクロールトップ
-const st = document.getElementById('scrollTop');
-if (st) window.addEventListener('scroll', () => st.classList.toggle('show', scrollY > 400));
-</script>
-</body>
-</html>
+document.querySelectorAll('
