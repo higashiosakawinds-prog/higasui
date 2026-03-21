@@ -12,7 +12,7 @@
 :root{
   --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;
   --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
-  --green:#1D9E75;--red:#C0392B;--pink:#E8567A;
+  --green:#1D9E75;--red:#C0392B;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -21,18 +21,18 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 /* ===== ロック画面 ===== */
 #lock-screen{
   position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(160deg,var(--navy) 0%,#3a1060 100%);
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
   display:flex;align-items:center;justify-content:center;padding:1.5rem;
 }
 #lock-screen::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 70% 30%,rgba(232,86,122,0.15) 0%,transparent 60%),
-             radial-gradient(ellipse at 20% 80%,rgba(200,164,77,0.1) 0%,transparent 50%);
+  background:radial-gradient(ellipse at 70% 30%,rgba(200,164,77,0.12) 0%,transparent 60%),
+             radial-gradient(ellipse at 20% 80%,rgba(33,74,154,0.15) 0%,transparent 50%);
 }
 .lock-card{
   position:relative;z-index:1;
   background:rgba(255,255,255,0.05);
-  border:1px solid rgba(232,86,122,0.3);
+  border:1px solid rgba(200,164,77,0.3);
   border-radius:24px;padding:2.5rem 2rem;
   width:100%;max-width:400px;text-align:center;
   backdrop-filter:blur(16px);
@@ -40,7 +40,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .lock-icon{font-size:2.5rem;margin-bottom:1rem;}
 .lock-eyebrow{
   font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
-  letter-spacing:0.28em;text-transform:uppercase;color:var(--pink);margin-bottom:0.6rem;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;
 }
 .lock-title{
   font-family:'Shippori Mincho',serif;
@@ -56,7 +56,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;
 }
 .lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
-.lock-input:focus{border-color:var(--pink);}
+.lock-input:focus{border-color:var(--gold);}
 .lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .eye-btn{
@@ -64,9 +64,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;
 }
 .lock-btn{
-  width:100%;padding:15px;background:linear-gradient(135deg,var(--pink),#c0395a);color:white;
+  width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8933d);color:white;
   border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;
-  box-shadow:0 4px 20px rgba(232,86,122,0.4);transition:opacity 0.2s,transform 0.15s;
+  box-shadow:0 4px 20px rgba(200,164,77,0.35);transition:opacity 0.2s,transform 0.15s;
 }
 .lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
 .lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
@@ -76,15 +76,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 #site-nav{
   position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;
   background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(232,86,122,0.2);display:none;
+  border-bottom:1px solid rgba(200,164,77,0.25);display:none;
 }
 .nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem;}
 #nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
 #nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.35);letter-spacing:.14em;font-weight:400;}
 .nav-badge{
   font-family:'Outfit',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
-  background:rgba(232,86,122,0.2);color:var(--pink);
-  padding:4px 10px;border-radius:20px;border:1px solid rgba(232,86,122,0.3);
+  background:rgba(200,164,77,0.15);color:var(--gold);
+  padding:4px 10px;border-radius:20px;border:1px solid rgba(200,164,77,0.3);
 }
 .nav-logout{
   background:none;border:none;cursor:pointer;
@@ -98,20 +98,20 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 /* PAGE HEADER */
 .page-header{
-  background:linear-gradient(160deg,var(--navy) 0%,#3a1060 100%);
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
   position:relative;overflow:hidden;
 }
 .page-header::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 80% 20%,rgba(232,86,122,0.2) 0%,transparent 55%);
+  background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,0.1) 0%,transparent 55%);
 }
 .page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1100px;margin:0 auto;}
 .page-eyebrow{
   font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;
-  letter-spacing:0.28em;text-transform:uppercase;color:var(--pink);
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);
   display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;
 }
-.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--pink);}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
 .page-header h1{
   font-family:'Shippori Mincho',serif;
   font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;
@@ -126,7 +126,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .sec-head{margin-bottom:1.5rem;}
 .sec-eyebrow{
   font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
-  letter-spacing:0.25em;text-transform:uppercase;color:var(--pink);
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);
   display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;
 }
 .sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
@@ -140,17 +140,17 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .card.alt{background:var(--bg);}
 .card-head{
   padding:1rem 1.2rem;
-  background:linear-gradient(135deg,var(--navy),#3a1060);
+  background:linear-gradient(135deg,var(--navy),var(--blue));
   display:flex;align-items:center;justify-content:space-between;gap:10px;
 }
 .card-head-left{display:flex;align-items:center;gap:10px;}
-.card-head-icon{font-size:1rem;color:var(--pink);}
+.card-head-icon{font-size:1rem;color:var(--gold);}
 .card-head-title{font-family:'Shippori Mincho',serif;font-size:0.95rem;font-weight:700;color:#fff;}
 .card-body{padding:1.2rem 1.4rem;}
 
 /* ===== カウントダウン ===== */
 .countdown-wrap{
-  background:linear-gradient(135deg,var(--navy),#3a1060);
+  background:linear-gradient(135deg,var(--navy),var(--blue));
   border-radius:20px;padding:2rem 1.5rem;text-align:center;
   position:relative;overflow:hidden;margin-bottom:1.5rem;
 }
@@ -160,7 +160,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 .countdown-label{
   font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
-  letter-spacing:0.25em;text-transform:uppercase;color:var(--pink);margin-bottom:0.5rem;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem;
 }
 .countdown-days{
   font-family:'Outfit',sans-serif;font-size:clamp(3rem,10vw,5rem);
@@ -171,11 +171,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .countdown-theme{
   margin-top:1.2rem;
   background:rgba(232,86,122,0.15);
-  border:1px solid rgba(232,86,122,0.3);
+  border:1px solid rgba(200,164,77,0.3);
   border-radius:10px;padding:0.8rem 1rem;
   font-size:0.82rem;color:rgba(255,255,255,0.8);line-height:1.7;
 }
-.countdown-theme strong{color:var(--pink);}
+.countdown-theme strong{color:var(--gold);}
 
 /* ===== 投稿タイムライン ===== */
 .timeline{display:flex;flex-direction:column;gap:0;}
@@ -188,7 +188,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px;
 }
 .dot-done{background:var(--green);}
-.dot-today{background:var(--pink);box-shadow:0 0 0 3px rgba(232,86,122,0.2);}
+.dot-today{background:var(--gold);box-shadow:0 0 0 3px rgba(200,164,77,0.2);}
 .dot-future{background:var(--border);}
 .timeline-date{
   font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:700;
@@ -202,7 +202,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   padding:2px 8px;border-radius:10px;white-space:nowrap;
 }
 .badge-done{background:rgba(29,158,117,0.1);color:var(--green);}
-.badge-today{background:rgba(232,86,122,0.12);color:var(--pink);}
+.badge-today{background:rgba(200,164,77,0.12);color:var(--gold);}
 .badge-plan{background:rgba(33,74,154,0.1);color:var(--blue);}
 
 /* ===== チェックリスト ===== */
@@ -280,7 +280,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .btn:hover{opacity:0.88;transform:translateY(-1px);}
 .btn-primary{background:var(--blue);color:white;}
 .btn-gold{background:var(--gold);color:white;}
-.btn-pink{background:var(--pink);color:white;}
+
 .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
 .btn-sm{padding:7px 14px;font-size:0.78rem;}
 .btn-danger{background:var(--red);color:white;}
@@ -300,7 +300,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.05em;
   padding:2px 8px;border-radius:8px;
 }
-.tag-concert{background:rgba(232,86,122,0.1);color:var(--pink);}
+.tag-concert{background:rgba(33,74,154,0.12);color:var(--blue);}
 .tag-practice{background:rgba(33,74,154,0.1);color:var(--blue);}
 .tag-recruit{background:rgba(29,158,117,0.1);color:var(--green);}
 .tag-other{background:rgba(96,96,112,0.1);color:var(--muted);}
@@ -467,39 +467,30 @@ footer{background:var(--navy);padding:2rem 0 1.5rem;margin-top:40px;}
     </div>
   </div>
 
-  <!-- ① 演奏会カウントダウン + 投稿スケジュール -->
+  <!-- ① 演奏会カウントダウン -->
   <section class="sec">
     <div class="inner">
-      <div class="sec-head reveal">
-        <p class="sec-eyebrow">Countdown</p>
-        <h2 class="sec-title">🗓️ 演奏会カウントダウン</h2>
+      <div class="sec-head reveal" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <p class="sec-eyebrow">Countdown</p>
+          <h2 class="sec-title">🗓️ イベントカウントダウン</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <select id="event-select" class="form-select" style="font-size:0.82rem;padding:7px 12px;" onchange="switchEvent()">
+          </select>
+          <button class="btn btn-sm btn-ghost" onclick="openEventModal()">
+            <i class="fas fa-plus"></i> イベント追加
+          </button>
+        </div>
       </div>
 
       <div class="reveal">
         <div class="countdown-wrap" id="countdown-wrap">
-          <p class="countdown-label">第1回定期演奏会まで</p>
+          <p class="countdown-label" id="countdown-label">読み込み中...</p>
           <div class="countdown-days" id="countdown-days">—<span>days</span></div>
-          <p class="countdown-date">2026年12月13日（土）東大阪文化創造館 小ホール</p>
+          <p class="countdown-date" id="countdown-date"></p>
           <div class="countdown-theme" id="countdown-theme">
             <strong>📌 今週の推奨投稿テーマ：</strong><span id="theme-text">計算中...</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 投稿タイムライン（今後30日） -->
-      <div class="card reveal">
-        <div class="card-head">
-          <div class="card-head-left">
-            <i class="fas fa-stream card-head-icon"></i>
-            <span class="card-head-title">今後の投稿スケジュール（30日）</span>
-          </div>
-          <button class="btn btn-sm btn-ghost" onclick="openAddScheduleModal()" style="color:white;border-color:rgba(255,255,255,0.3);">
-            <i class="fas fa-plus"></i> 追加
-          </button>
-        </div>
-        <div class="card-body">
-          <div class="timeline" id="schedule-list">
-            <div class="loader"><i class="fas fa-spinner"></i>読み込み中...</div>
           </div>
         </div>
       </div>
@@ -532,7 +523,7 @@ footer{background:var(--navy);padding:2rem 0 1.5rem;margin-top:40px;}
         <p class="sec-eyebrow">News</p>
         <div style="display:flex;align-items:center;justify-content:space-between;">
           <h2 class="sec-title">📰 NEWS投稿管理</h2>
-          <button class="btn btn-pink btn-sm" onclick="openNewsModal()">
+          <button class="btn btn-primary btn-sm" onclick="openNewsModal()">
             <i class="fas fa-plus"></i> 新規投稿
           </button>
         </div>
@@ -546,41 +537,20 @@ footer{background:var(--navy);padding:2rem 0 1.5rem;margin-top:40px;}
     </div>
   </section>
 
-  <!-- ④ ビジュアルアセットバンク -->
+  <!-- ④ アセット＆アーカイブバンク -->
   <section class="sec sec-alt">
     <div class="inner">
       <div class="sec-head reveal">
-        <p class="sec-eyebrow">Assets</p>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <h2 class="sec-title">🖼️ ビジュアルアセットバンク</h2>
-          <button class="btn btn-sm btn-ghost" onclick="openAssetModal()">
-            <i class="fas fa-plus"></i> 素材を追加
-          </button>
-        </div>
-      </div>
-      <p class="reveal" style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">
-        チラシ・写真・動画リンクを一元管理。「今日どの素材を使うか」に迷わない。
-      </p>
-      <div class="asset-grid reveal" id="asset-grid">
-        <div class="loader" style="grid-column:1/-1;"><i class="fas fa-spinner"></i>読み込み中...</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ⑤ 過去アーカイブ -->
-  <section class="sec">
-    <div class="inner">
-      <div class="sec-head reveal">
-        <p class="sec-eyebrow">Archive</p>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <h2 class="sec-title">📦 過去アーカイブ</h2>
-          <button class="btn btn-sm btn-ghost" onclick="openArchiveModal()">
+        <p class="sec-eyebrow">Assets &amp; Archive</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <h2 class="sec-title">🗂️ アセット＆アーカイブバンク</h2>
+          <button class="btn btn-sm btn-gold" onclick="openArchiveModal()">
             <i class="fas fa-plus"></i> 追加
           </button>
         </div>
       </div>
       <p class="reveal" style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">
-        「あの時のデータどこ？」防止。演奏会ごとにチラシ・データ・構成案をセット保存。
+        チラシ・写真・動画・Aiデータを演奏会ごとにまとめて管理。「あの素材どこ？」を解決。
       </p>
       <div class="archive-list reveal" id="archive-list"></div>
     </div>
@@ -655,109 +625,44 @@ footer{background:var(--navy);padding:2rem 0 1.5rem;margin-top:40px;}
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('news-modal')">キャンセル</button>
-      <button class="btn btn-pink" onclick="saveNews()">
+      <button class="btn btn-primary" onclick="saveNews()">
         <i class="fas fa-save"></i> 保存
       </button>
     </div>
   </div>
 </div>
 
-<!-- ===== スケジュール追加モーダル ===== -->
-<div class="modal-overlay" id="schedule-modal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 class="modal-title">📅 投稿スケジュール追加</h3>
-      <button class="modal-close" onclick="closeModal('schedule-modal')">✕</button>
-    </div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">投稿日</label>
-        <input type="date" id="sched-date" class="form-input">
-      </div>
-      <div class="form-group">
-        <label class="form-label">投稿内容・テーマ</label>
-        <input type="text" id="sched-title" class="form-input" placeholder="例：演奏会告知・奏者紹介など">
-      </div>
-      <div class="form-group">
-        <label class="form-label">対象プラットフォーム</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:5px;font-size:0.82rem;cursor:pointer;">
-            <input type="checkbox" id="sched-ig" checked> Instagram
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:0.82rem;cursor:pointer;">
-            <input type="checkbox" id="sched-x"> X (Twitter)
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:0.82rem;cursor:pointer;">
-            <input type="checkbox" id="sched-hp"> 公式HP
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:0.82rem;cursor:pointer;">
-            <input type="checkbox" id="sched-line"> LINE
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('schedule-modal')">キャンセル</button>
-      <button class="btn btn-primary" onclick="saveSchedule()">追加</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== アセット追加モーダル ===== -->
-<div class="modal-overlay" id="asset-modal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 class="modal-title">🖼️ 素材を追加</h3>
-      <button class="modal-close" onclick="closeModal('asset-modal')">✕</button>
-    </div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">素材名</label>
-        <input type="text" id="asset-name" class="form-input" placeholder="例：2026定演チラシ（表面）">
-      </div>
-      <div class="form-group">
-        <label class="form-label">種別</label>
-        <select id="asset-type" class="form-select">
-          <option value="flyer">📄 チラシ・フライヤー</option>
-          <option value="photo">📷 写真</option>
-          <option value="video">🎬 動画</option>
-          <option value="other">📁 その他</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">URL <span>Google Drive / YouTube など</span></label>
-        <input type="url" id="asset-url" class="form-input" placeholder="https://drive.google.com/...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">メモ <span>任意</span></label>
-        <input type="text" id="asset-memo" class="form-input" placeholder="例：Illustratorデータあり・A4サイズ">
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('asset-modal')">キャンセル</button>
-      <button class="btn btn-primary" onclick="saveAsset()">追加</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== アーカイブ追加モーダル ===== -->
+<!-- ===== アーカイブ追加・編集モーダル ===== -->
 <div class="modal-overlay" id="archive-modal">
   <div class="modal">
     <div class="modal-head">
-      <h3 class="modal-title">📦 アーカイブ追加</h3>
+      <h3 class="modal-title" id="arch-modal-title">📦 アセット追加</h3>
       <button class="modal-close" onclick="closeModal('archive-modal')">✕</button>
     </div>
+    <input type="hidden" id="arch-edit-id">
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label">演奏会名</label>
-        <input type="text" id="arch-title" class="form-input" placeholder="例：第1回定期演奏会">
+        <label class="form-label">タイトル <span>*必須</span></label>
+        <input type="text" id="arch-title" class="form-input" placeholder="例：第1回定期演奏会チラシ">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">種別</label>
+          <select id="arch-type" class="form-select">
+            <option value="concert">🎵 演奏会</option>
+            <option value="flyer">📄 チラシ</option>
+            <option value="photo">📷 写真</option>
+            <option value="video">🎬 動画</option>
+            <option value="other">📁 その他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">年</label>
+          <input type="number" id="arch-year" class="form-input" value="2026">
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">年</label>
-        <input type="number" id="arch-year" class="form-input" placeholder="2026" value="2026">
-      </div>
-      <div class="form-group">
-        <label class="form-label">チラシPDF URL <span>任意</span></label>
+        <label class="form-label">メインURL <span>Drive / YouTube など</span></label>
         <input type="url" id="arch-flyer" class="form-input" placeholder="https://drive.google.com/...">
       </div>
       <div class="form-group">
@@ -765,13 +670,49 @@ footer{background:var(--navy);padding:2rem 0 1.5rem;margin-top:40px;}
         <input type="url" id="arch-ai" class="form-input" placeholder="https://drive.google.com/...">
       </div>
       <div class="form-group">
-        <label class="form-label">プログラム構成案 URL <span>任意</span></label>
+        <label class="form-label">関連ドキュメント URL <span>任意・構成案など</span></label>
         <input type="url" id="arch-program" class="form-input" placeholder="https://docs.google.com/...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">メモ <span>任意</span></label>
+        <input type="text" id="arch-memo" class="form-input" placeholder="例：A4・両面・400部印刷">
       </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('archive-modal')">キャンセル</button>
-      <button class="btn btn-gold" onclick="saveArchive()">追加</button>
+      <button class="btn btn-gold" id="arch-save-btn" onclick="saveArchive()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== イベント追加モーダル ===== -->
+<div class="modal-overlay" id="event-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 class="modal-title">🗓️ イベント追加</h3>
+      <button class="modal-close" onclick="closeModal('event-modal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">イベント名 <span>*必須</span></label>
+        <input type="text" id="event-name" class="form-input" placeholder="例：第2回定期演奏会">
+      </div>
+      <div class="form-group">
+        <label class="form-label">開催日 <span>*必須</span></label>
+        <input type="date" id="event-date" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">会場 <span>任意</span></label>
+        <input type="text" id="event-venue" class="form-input" placeholder="例：東大阪文化創造館 小ホール">
+      </div>
+      <div class="form-group">
+        <label class="form-label">告知開始日 <span>カウントダウン起点・空白=開催1年前</span></label>
+        <input type="date" id="event-start" class="form-input">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('event-modal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveEvent()">追加</button>
     </div>
   </div>
 </div>
@@ -792,8 +733,6 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 // ローカルストレージキー（Supabase外のローカルデータ）
 const LS_CHECKLIST = 'higasui_pr_checklist';
-const LS_SCHEDULE  = 'higasui_pr_schedule';
-const LS_ASSETS    = 'higasui_pr_assets';
 const LS_ARCHIVES  = 'higasui_pr_archives';
 
 // =============================================
@@ -843,9 +782,7 @@ function showPanel() {
   initReveal();
   initCountdown();
   initChecklist();
-  loadSchedule();
   loadNews();
-  loadAssets();
   renderArchives();
 }
 function logout() { sessionStorage.removeItem(SESSION_KEY); location.reload(); }
@@ -858,25 +795,90 @@ function togglePw() {
 if (sessionStorage.getItem(SESSION_KEY)) showPanel();
 
 // =============================================
-// カウントダウン
+// イベント管理 & カウントダウン
 // =============================================
-function initCountdown() {
-  const now  = new Date();
-  const diff = Math.ceil((CONCERT_DATE - now) / (1000 * 60 * 60 * 24));
-  document.getElementById('countdown-days').innerHTML =
-    `${diff}<span>days</span>`;
+const LS_EVENTS = 'higasui_pr_events';
 
-  // 推奨投稿テーマ
+const DEFAULT_EVENTS = [
+  { id: 'default', name: '第1回定期演奏会', date: '2026-12-13', venue: '東大阪文化創造館 小ホール' }
+];
+
+function getEvents() {
+  const saved = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
+  return [...DEFAULT_EVENTS, ...saved];
+}
+
+function initCountdown() {
+  const events = getEvents();
+  const sel = document.getElementById('event-select');
+  sel.innerHTML = events.map(e =>
+    `<option value="${e.id}">${esc(e.name)}</option>`
+  ).join('');
+  renderCountdown();
+}
+
+function switchEvent() { renderCountdown(); }
+
+function renderCountdown() {
+  const events = getEvents();
+  const selId  = document.getElementById('event-select').value;
+  const ev     = events.find(e => e.id === selId) || events[0];
+  if (!ev) return;
+
+  const now    = new Date(); now.setHours(0,0,0,0);
+  const evDate = new Date(ev.date);
+  const stDate = ev.start ? new Date(ev.start) : new Date(evDate.getFullYear(), 0, 1);
+  const total  = Math.ceil((evDate - stDate) / 86400000);
+  const remain = Math.ceil((evDate - now)    / 86400000);
+  const elapsed = total - remain;
+  const pct    = Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
+
+  document.getElementById('countdown-label').textContent = ev.name + ' まで';
+  document.getElementById('countdown-days').innerHTML = `${Math.max(0,remain)}<span>days</span>`;
+  document.getElementById('countdown-date').textContent =
+    ev.date.replace(/-/g,'/') + (ev.venue ? '　' + ev.venue : '');
+
+  // プログレスバー更新（あれば）
+  const bar = document.getElementById('cd-progress-bar');
+  if (bar) bar.style.width = pct + '%';
+
+  // 経過割合（%）でテーマ自動切替
   let theme = '';
-  if (diff > 180)      theme = '団体紹介・メンバー紹介（認知拡大フェーズ）';
-  else if (diff > 90)  theme = '演奏会告知・チケット情報の準備（期待醸成フェーズ）';
-  else if (diff > 60)  theme = 'プログラム紹介・見どころ発信（集客フェーズ）';
-  else if (diff > 30)  theme = '奏者・パート紹介・リハーサル風景（ラストスパート）';
-  else if (diff > 14)  theme = 'カウントダウン投稿・当日の楽しみ方（直前盛り上げ）';
-  else if (diff > 0)   theme = '前日・当日投稿！会場アクセス・当日券情報など';
-  else                 theme = '演奏会お疲れ様でした！レポート・感謝投稿フェーズ';
+  if (remain <= 0)   theme = 'お疲れさまでした！感謝・レポート投稿フェーズ🎉';
+  else if (pct < 20) theme = '団体紹介・メンバー紹介（認知拡大フェーズ）';
+  else if (pct < 40) theme = '演奏会告知・チケット情報の準備（期待醸成フェーズ）';
+  else if (pct < 60) theme = 'プログラム紹介・見どころ発信（集客フェーズ）';
+  else if (pct < 80) theme = '奏者・パート紹介・リハーサル風景（ラストスパート）';
+  else if (pct < 95) theme = 'カウントダウン投稿・当日の楽しみ方（直前盛り上げ）';
+  else               theme = '前日・当日投稿！会場アクセス・当日券情報など🎺';
 
   document.getElementById('theme-text').textContent = theme;
+}
+
+function openEventModal() {
+  document.getElementById('event-name').value = '';
+  document.getElementById('event-date').value = '';
+  document.getElementById('event-venue').value = '';
+  document.getElementById('event-start').value = '';
+  openModal('event-modal');
+}
+
+function saveEvent() {
+  const name  = document.getElementById('event-name').value.trim();
+  const date  = document.getElementById('event-date').value;
+  if (!name || !date) { showToast('⚠️ イベント名と日付を入力してください'); return; }
+  const events = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
+  const newEv = { id: Date.now().toString(), name, date,
+    venue: document.getElementById('event-venue').value.trim(),
+    start: document.getElementById('event-start').value };
+  events.push(newEv);
+  localStorage.setItem(LS_EVENTS, JSON.stringify(events));
+  closeModal('event-modal');
+  initCountdown();
+  // 新しいイベントを選択状態に
+  document.getElementById('event-select').value = newEv.id;
+  renderCountdown();
+  showToast('✅ イベントを追加しました');
 }
 
 // =============================================
@@ -917,89 +919,6 @@ function resetChecklist() {
   localStorage.removeItem(LS_CHECKLIST);
   initChecklist();
   showToast('✅ チェックリストをリセットしました');
-}
-
-// =============================================
-// 投稿スケジュール（localStorage）
-// =============================================
-function loadSchedule() {
-  const items = JSON.parse(localStorage.getItem(LS_SCHEDULE) || '[]');
-  const today = new Date(); today.setHours(0,0,0,0);
-  const in30  = new Date(today); in30.setDate(today.getDate() + 30);
-
-  const filtered = items
-    .filter(i => new Date(i.date) <= in30)
-    .sort((a,b) => new Date(a.date) - new Date(b.date));
-
-  const wrap = document.getElementById('schedule-list');
-  if (!filtered.length) {
-    wrap.innerHTML = `<div class="empty"><i class="fas fa-calendar-alt"></i><p>スケジュールがありません。「追加」から登録してください。</p></div>`;
-    return;
-  }
-
-  wrap.innerHTML = filtered.map(item => {
-    const d = new Date(item.date); d.setHours(0,0,0,0);
-    const isPast  = d < today;
-    const isToday = d.getTime() === today.getTime();
-    const dotCls  = isPast ? 'dot-done' : isToday ? 'dot-today' : 'dot-future';
-    const badgeCls = isPast ? 'badge-done' : isToday ? 'badge-today' : 'badge-plan';
-    const badgeTxt = isPast ? '済' : isToday ? '今日' : '予定';
-    const mm = d.getMonth()+1, dd = d.getDate();
-    const platforms = [
-      item.ig && '<span class="check-platform plat-ig">IG</span>',
-      item.x  && '<span class="check-platform plat-x">X</span>',
-      item.hp && '<span class="check-platform plat-hp">HP</span>',
-      item.line && '<span class="check-platform plat-line">LINE</span>',
-    ].filter(Boolean).join('');
-
-    return `
-      <div class="timeline-item">
-        <div class="timeline-dot ${dotCls}"></div>
-        <div class="timeline-date">${mm}/${dd}</div>
-        <div class="timeline-content">
-          <div class="timeline-title">${item.title}</div>
-          <div class="timeline-sub" style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;">
-            ${platforms}
-          </div>
-        </div>
-        <span class="timeline-badge ${badgeCls}">${badgeTxt}</span>
-        <button onclick="deleteSchedule('${item.id}')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.8rem;padding:2px 6px;" title="削除">✕</button>
-      </div>`;
-  }).join('');
-}
-
-function openAddScheduleModal() {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('sched-date').value = today;
-  document.getElementById('sched-title').value = '';
-  openModal('schedule-modal');
-}
-
-function saveSchedule() {
-  const date  = document.getElementById('sched-date').value;
-  const title = document.getElementById('sched-title').value.trim();
-  if (!date || !title) { showToast('⚠️ 日付と内容を入力してください'); return; }
-  const items = JSON.parse(localStorage.getItem(LS_SCHEDULE) || '[]');
-  items.push({
-    id: Date.now().toString(),
-    date, title,
-    ig:   document.getElementById('sched-ig').checked,
-    x:    document.getElementById('sched-x').checked,
-    hp:   document.getElementById('sched-hp').checked,
-    line: document.getElementById('sched-line').checked,
-  });
-  localStorage.setItem(LS_SCHEDULE, JSON.stringify(items));
-  closeModal('schedule-modal');
-  loadSchedule();
-  showToast('✅ スケジュールを追加しました');
-}
-
-function deleteSchedule(id) {
-  if (!confirm('削除しますか？')) return;
-  const items = JSON.parse(localStorage.getItem(LS_SCHEDULE) || '[]');
-  localStorage.setItem(LS_SCHEDULE, JSON.stringify(items.filter(i => i.id !== id)));
-  loadSchedule();
-  showToast('🗑️ 削除しました');
 }
 
 // =============================================
@@ -1180,62 +1099,101 @@ function deleteAsset(id) {
 // =============================================
 // アーカイブ（localStorage）
 // =============================================
+const TYPE_ICONS  = { concert:'🎵', flyer:'📄', photo:'📷', video:'🎬', other:'📁' };
+const TYPE_LABELS = { concert:'演奏会', flyer:'チラシ', photo:'写真', video:'動画', other:'その他' };
+const TYPE_BADGE  = { concert:'type-flyer', flyer:'type-flyer', photo:'type-photo', video:'type-video', other:'type-other' };
+
 function renderArchives() {
   const items = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
   const wrap  = document.getElementById('archive-list');
 
-  // デフォルト：2026年12月定演をプリセット
   const displayItems = items.length ? items : [{
-    id: 'preset',
-    year: 2026,
-    title: '第1回定期演奏会',
-    flyer: '', ai: '', program: '',
-    preset: true
+    id:'preset', title:'第1回定期演奏会', type:'concert', year:2026,
+    flyer:'', ai:'', program:'', memo:'', preset:true
   }];
 
   wrap.innerHTML = displayItems.map(a => {
-    const files = [
-      a.flyer   && `<a href="${esc(a.flyer)}"   target="_blank" class="archive-file"><i class="fas fa-file-pdf"></i> チラシPDF</a>`,
+    const links = [
+      a.flyer   && `<a href="${esc(a.flyer)}"   target="_blank" class="archive-file"><i class="fas fa-link"></i> メイン</a>`,
       a.ai      && `<a href="${esc(a.ai)}"      target="_blank" class="archive-file"><i class="fas fa-bezier-curve"></i> Aiデータ</a>`,
-      a.program && `<a href="${esc(a.program)}" target="_blank" class="archive-file"><i class="fas fa-music"></i> 構成案</a>`,
+      a.program && `<a href="${esc(a.program)}" target="_blank" class="archive-file"><i class="fas fa-file-alt"></i> 関連資料</a>`,
     ].filter(Boolean);
     return `
       <div class="archive-card">
-        <div class="archive-year">${a.year}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="archive-year">${a.year}</span>
+            <span class="asset-type-badge ${TYPE_BADGE[a.type] || 'type-other'}">${TYPE_ICONS[a.type]||'📁'} ${TYPE_LABELS[a.type]||'その他'}</span>
+          </div>
+          <div style="display:flex;gap:5px;">
+            ${!a.preset ? `<button onclick="editArchive('${a.id}')" style="font-size:0.72rem;color:var(--blue);background:none;border:none;cursor:pointer;padding:3px 6px;" title="編集">✏️</button>` : ''}
+            ${!a.preset ? `<button onclick="deleteArchive('${a.id}')" style="font-size:0.72rem;color:var(--red);background:none;border:none;cursor:pointer;padding:3px 6px;" title="削除">🗑️</button>` : ''}
+          </div>
+        </div>
         <div class="archive-title">${esc(a.title)}</div>
-        <div class="archive-files">
-          ${files.length ? files.join('') : '<span style="font-size:0.75rem;color:var(--muted);">ファイル未登録</span>'}
-          ${!a.preset ? `<button onclick="deleteArchive('${a.id}')" style="font-size:0.72rem;color:var(--red);background:none;border:none;cursor:pointer;padding:3px 6px;">🗑️</button>` : ''}
+        ${a.memo ? `<div style="font-size:0.75rem;color:var(--muted);margin:4px 0;">${esc(a.memo)}</div>` : ''}
+        <div class="archive-files" style="margin-top:8px;">
+          ${links.length ? links.join('') : '<span style="font-size:0.75rem;color:var(--muted);">ファイル未登録</span>'}
         </div>
       </div>`;
   }).join('');
 }
 
 function openArchiveModal() {
+  document.getElementById('arch-edit-id').value = '';
   document.getElementById('arch-title').value = '';
   document.getElementById('arch-year').value = '2026';
+  document.getElementById('arch-type').value = 'concert';
   document.getElementById('arch-flyer').value = '';
   document.getElementById('arch-ai').value = '';
   document.getElementById('arch-program').value = '';
+  document.getElementById('arch-memo').value = '';
+  document.getElementById('arch-modal-title').textContent = '📦 アセット追加';
+  document.getElementById('arch-save-btn').textContent = '追加';
+  openModal('archive-modal');
+}
+
+function editArchive(id) {
+  const items = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
+  const a = items.find(i => i.id === id);
+  if (!a) return;
+  document.getElementById('arch-edit-id').value = a.id;
+  document.getElementById('arch-title').value   = a.title || '';
+  document.getElementById('arch-year').value    = a.year  || 2026;
+  document.getElementById('arch-type').value    = a.type  || 'other';
+  document.getElementById('arch-flyer').value   = a.flyer || '';
+  document.getElementById('arch-ai').value      = a.ai    || '';
+  document.getElementById('arch-program').value = a.program || '';
+  document.getElementById('arch-memo').value    = a.memo  || '';
+  document.getElementById('arch-modal-title').textContent = '✏️ アセット編集';
+  document.getElementById('arch-save-btn').textContent = '保存';
   openModal('archive-modal');
 }
 
 function saveArchive() {
   const title = document.getElementById('arch-title').value.trim();
-  if (!title) { showToast('⚠️ 演奏会名を入力してください'); return; }
-  const items = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
-  items.unshift({
-    id: Date.now().toString(),
-    title,
-    year:    parseInt(document.getElementById('arch-year').value) || 2026,
+  if (!title) { showToast('⚠️ タイトルを入力してください'); return; }
+  const editId = document.getElementById('arch-edit-id').value;
+  const items  = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
+  const data   = {
+    title, year: parseInt(document.getElementById('arch-year').value) || 2026,
+    type:    document.getElementById('arch-type').value,
     flyer:   document.getElementById('arch-flyer').value.trim(),
     ai:      document.getElementById('arch-ai').value.trim(),
     program: document.getElementById('arch-program').value.trim(),
-  });
+    memo:    document.getElementById('arch-memo').value.trim(),
+  };
+  if (editId) {
+    const idx = items.findIndex(i => i.id === editId);
+    if (idx >= 0) items[idx] = { ...items[idx], ...data };
+    showToast('✅ 更新しました');
+  } else {
+    items.unshift({ id: Date.now().toString(), ...data });
+    showToast('✅ 追加しました');
+  }
   localStorage.setItem(LS_ARCHIVES, JSON.stringify(items));
   closeModal('archive-modal');
   renderArchives();
-  showToast('✅ アーカイブを追加しました');
 }
 
 function deleteArchive(id) {
