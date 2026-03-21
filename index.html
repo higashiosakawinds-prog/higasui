@@ -442,9 +442,6 @@ async function loadNews() {
 const bannerItems = data.filter(d => d.banner_url);
 initCarousel(bannerItems.length > 0 ? bannerItems : null);
 
-    const bannerItems = data.filter(d => d.show_banner && d.banner_url);
-    initCarousel(bannerItems.length > 0 ? bannerItems : null);
-
   } catch(e) {
     initCarousel(null);
     el.innerHTML = `
