@@ -349,9 +349,9 @@ footer {
     <li><a href="about.html" onclick="closeNav()">🎷 団について</a></li>
     <li><a href="join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
     <li><a href="faq.html" onclick="closeNav()">❓ よくある質問</a></li>
-    <li><a href="visit.html" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="join.html#form" onclick="closeNav()">📝 見学申込</a></li>
   </ul>
-  <a href="visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+  <a href="join.html#form" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
 </div>
 
 <!-- PAGE HEADER -->
@@ -523,7 +523,7 @@ footer {
         <div class="flow-num">02</div>
         <div class="flow-body">
           <div class="flow-title">メールでご連絡</div>
-          <div class="flow-desc"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ed85848a8c9e8584829e8c868cc39a8483899ead8a808c8481c38e8280">[email&#160;protected]</a> より練習日程・場所をご案内します。通常2〜3日以内に返信します。</div>
+          <div class="flow-desc"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="066e6f6167756e6f6975676d6728716f68627546616b676f6a2865696b">[email&#160;protected]</a> より練習日程・場所をご案内します。通常2〜3日以内に返信します。</div>
         </div>
       </div>
       <div class="flow-item">
@@ -596,7 +596,7 @@ footer {
             <span id="f-btn-text">見学を申し込む</span>
             <div class="spinner" id="f-spinner"></div>
           </button>
-          <p class="form-note">送信内容は自動でスプレッドシートに記録されます。<br>折り返し <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c6aeafa1a7b5aeafa9b5a7ada7e8b1afa8a2b586a1aba7afaae8a5a9ab">[email&#160;protected]</a> よりご連絡します。</p>
+          <p class="form-note">送信内容は自動でスプレッドシートに記録されます。<br>折り返し <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="650d0c0204160d0c0a16040e044b120c0b0116250208040c094b060a08">[email&#160;protected]</a> よりご連絡します。</p>
         </form>
         <div class="ok-box" id="okBox">
           <div class="ok-icon">🎵</div>
@@ -617,7 +617,7 @@ footer {
       <a href="about.html">団について</a>
       <a href="join.html">練習案内</a>
       <a href="faq.html">よくある質問</a>
-      <a href="visit.html">見学申込</a>
+      <a href="join.html#form">見学申込</a>
       <a href="yakkan.html">定款</a>
     </div>
     <div class="footer-sns">
@@ -631,6 +631,7 @@ footer {
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
+<script>
 const CAL_PROXY = 'https://script.google.com/macros/s/AKfycbxDsZjj2G6lsjx7Knz8HQ1cyIcSt8WjCVm4I1fCy2G7pQLQlJMELH1NJm5zXxc6WMoNQA/exec';
 const GAS = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
 
@@ -724,9 +725,7 @@ document.getElementById('theForm').addEventListener('submit', function(e) {
     });
 });
 
-// スクロールリビール
-const obs = new IntersectionObserver(function(entries) {
-  entries.forEach(function(e, i) {
+
 // スクロールリビール
 const obs = new IntersectionObserver(function(entries) {
   entries.forEach(function(e, i) {
