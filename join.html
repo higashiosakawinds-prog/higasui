@@ -641,42 +641,6 @@ async function loadCalendar() {
 }
 loadCalendar();
 
-// フォーム
-document.getElementById('theForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const name = document.getElementById('f-name').value.trim();
-  const inst = document.getElementById('f-inst').value;
-  const email = document.getElementById('f-email').value.trim();
-  const msg = document.getElementById('f-msg').value.trim();
-  const err = document.getElementById('errBox');
-  err.style.display = 'none';
-  if (!name || !inst || !email) {
-    err.textContent = '※ お名前・楽器・メールアドレスは必須です。';
-    err.style.display = 'block';
-    return;
-  }
-  const btn = document.getElementById('f-btn');
-  btn.disabled = true;
-  document.getElementById('f-btn-text').textContent = '送信中...';
-  document.getElementById('f-spinner').style.display = 'block';
-  const fd = new FormData();
-  fd.append('name', name);
-  fd.append('instrument', inst);
-  fd.append('email', email);
-  fd.append('message', msg);
-  fetch(GAS, { method: 'POST', mode: 'no-cors', body: fd })
-    .then(function() {
-      document.getElementById('theForm').style.display = 'none';
-      document.getElementById('okBox').style.display = 'block';
-    })
-    .catch(function() {
-      err.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
-      err.style.display = 'block';
-      btn.disabled = false;
-      document.getElementById('f-btn-text').textContent = '見学を申し込む';
-      document.getElementById('f-spinner').style.display = 'none';
-    });
-});
 
 
 // スクロールリビール
