@@ -389,8 +389,8 @@ async function storageUpload(bucket, file, path) {
     body: file,
   });
   if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `アップロード失敗（${res.status}）`); }
-  const url = info.public ? `${STORAGE_URL}/object/public/${bucket}/${path}` : await storageSignedUrl(bucket, path);
-  return { url, path };
+const url = info.public ? `${STORAGE_URL}/object/public/${bucket}/${path}` : null;
+return { url, path };
 }
 async function storageDelete(bucket, path) {
   const res = await fetch(`${STORAGE_URL}/object/${bucket}/${path}`, {
