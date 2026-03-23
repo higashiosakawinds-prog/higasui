@@ -3,821 +3,455 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>広報委員会パネル | 東大阪吹奏楽団</title>
 <meta name="robots" content="noindex, nofollow">
+<title>広報委員会パネル | 東大阪吹奏楽団</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
-  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;
-  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
-  --green:#1D9E75;--red:#C0392B;
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC;
+  --green:#1D9E75; --red:#C0392B;
+  --line:#06C755;
+  --radius:16px; --shadow:0 4px 20px rgba(33,74,154,.07);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
 
-/* ===== ロック画面 ===== */
-#lock-screen{
-  position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
-  display:flex;align-items:center;justify-content:center;padding:1.5rem;
-}
-#lock-screen::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 70% 30%,rgba(200,164,77,0.12) 0%,transparent 60%),
-             radial-gradient(ellipse at 20% 80%,rgba(33,74,154,0.15) 0%,transparent 50%);
-}
-.lock-card{
-  position:relative;z-index:1;
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(200,164,77,0.3);
-  border-radius:24px;padding:2.5rem 2rem;
-  width:100%;max-width:400px;text-align:center;
-  backdrop-filter:blur(16px);
-}
-.lock-icon{font-size:2.5rem;margin-bottom:1rem;}
-.lock-eyebrow{
-  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
-  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;
-}
-.lock-title{
-  font-family:'Shippori Mincho',serif;
-  font-size:1.3rem;font-weight:700;color:white;margin-bottom:0.4rem;
-}
-.lock-sub{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;}
-.lock-input-wrap{position:relative;margin-bottom:1rem;}
-.lock-input{
-  width:100%;padding:14px 48px 14px 16px;
-  background:rgba(255,255,255,0.08);
-  border:1.5px solid rgba(255,255,255,0.15);
-  border-radius:12px;color:white;font-size:1rem;font-family:inherit;
-  outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;
-}
-.lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
+#panel-nav{position:sticky;top:0;z-index:100;height:52px;background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);display:flex;align-items:center;padding:0 1.25rem;gap:12px;}
+#back-btn{width:34px;height:34px;border-radius:8px;border:none;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0;}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{margin-left:auto;padding:3px 12px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;}
+
+#lockScreen{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+.lock-card{background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;backdrop-filter:blur(12px);}
+.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-size:1rem;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:.8rem;transition:border-color .2s;}
 .lock-input:focus{border-color:var(--gold);}
-.lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.eye-btn{
-  position:absolute;right:14px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;
-}
-.lock-btn{
-  width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8933d);color:white;
-  border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;
-  box-shadow:0 4px 20px rgba(200,164,77,0.35);transition:opacity 0.2s,transform 0.15s;
-}
-.lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
-.lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
-.lock-note{font-size:0.68rem;color:rgba(255,255,255,0.22);margin-top:1.5rem;line-height:1.7;}
+.lock-btn{width:100%;padding:13px;border:none;border-radius:12px;background:var(--gold);color:var(--navy);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;}
+.lock-btn:hover{opacity:.9;}
+.lock-error{display:none;margin-top:.8rem;padding:.6rem 1rem;background:rgba(192,57,43,.2);border-radius:8px;font-size:.75rem;color:#fca5a5;}
+.lock-error.show{display:block;}
 
-/* ===== NAV ===== */
-#site-nav{
-  position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;
-  background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(200,164,77,0.25);display:none;
-}
-.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem;}
-#nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
-#nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.35);letter-spacing:.14em;font-weight:400;}
-.nav-badge{
-  font-family:'Outfit',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
-  background:rgba(200,164,77,0.15);color:var(--gold);
-  padding:4px 10px;border-radius:20px;border:1px solid rgba(200,164,77,0.3);
-}
-.nav-logout{
-  background:none;border:none;cursor:pointer;
-  font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:inherit;
-  padding:6px 10px;border-radius:8px;transition:color 0.2s;
-}
-.nav-logout:hover{color:rgba(255,255,255,0.8);}
+#stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
+.spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#mainContent{display:none;padding:28px 0 80px;}
 
-/* ===== MAIN ===== */
-#panel-main{display:none;padding-top:56px;}
+.page-header{background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);position:relative;overflow:hidden;margin-bottom:32px;}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,.1) 0%,transparent 55%);}
+.page-header-inner{position:relative;z-index:1;padding:2rem 1.5rem 2.5rem;max-width:900px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.7rem;}
+.page-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;color:#fff;line-height:1.3;margin-bottom:.4rem;}
+.page-header p{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.8;}
 
-/* PAGE HEADER */
-.page-header{
-  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
-  position:relative;overflow:hidden;
-}
-.page-header::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,0.1) 0%,transparent 55%);
-}
-.page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1100px;margin:0 auto;}
-.page-eyebrow{
-  font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;
-  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);
-  display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;
-}
-.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
-.page-header h1{
-  font-family:'Shippori Mincho',serif;
-  font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;
-}
-.page-header p{font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.8;}
+.sec{margin-bottom:32px;}
+.sec-label{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.sec-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
 
-/* ===== LAYOUT ===== */
-.inner{max-width:1100px;margin:0 auto;padding:0 1.5rem;width:100%;}
-.sec{padding:40px 0;}
-.sec-alt{background:var(--white);}
+/* ===== メニューカード ===== */
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.menu-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:1.6rem 1.4rem;cursor:pointer;box-shadow:var(--shadow);transition:box-shadow .2s,transform .15s,border-color .2s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
+.menu-card:hover{box-shadow:0 8px 32px rgba(33,74,154,.12);transform:translateY(-3px);border-color:var(--blue);}
+.menu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--gold));opacity:0;transition:opacity .2s;}
+.menu-card:hover::before{opacity:1;}
+.menu-card-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--navy),var(--blue));display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.menu-card-body{flex:1;}
+.menu-card-label{font-family:'Outfit',sans-serif;font-size:.6rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:.3rem;}
+.menu-card-title{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:.3rem;}
+.menu-card-desc{font-size:.78rem;color:var(--muted);line-height:1.6;}
+.menu-card-arrow{align-self:flex-end;font-size:.8rem;color:var(--blue);transition:transform .2s;}
+.menu-card:hover .menu-card-arrow{transform:translateX(4px);}
 
-.sec-head{margin-bottom:1.5rem;}
-.sec-eyebrow{
-  font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
-  letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);
-  display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;
-}
-.sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
-.sec-title{
-  font-family:'Shippori Mincho',serif;
-  font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:700;color:var(--navy);
-}
+/* ===== SNSボタン ===== */
+.sns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.sns-btn{display:flex;align-items:center;gap:12px;padding:1rem 1.2rem;border-radius:14px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:.88rem;text-decoration:none;transition:opacity .2s,transform .15s;color:#fff;}
+.sns-btn:hover{opacity:.9;transform:translateY(-2px);}
+.sns-btn-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.sns-btn-body{flex:1;}
+.sns-btn-label{font-size:.65rem;font-family:'Outfit',sans-serif;letter-spacing:.1em;opacity:.8;}
+.sns-btn-name{font-size:.92rem;}
+.sns-instagram{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);}
+.sns-youtube{background:#FF0000;}
+.sns-line{background:var(--line);}
 
-/* ===== カード共通 ===== */
-.card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;}
-.card.alt{background:var(--bg);}
-.card-head{
-  padding:1rem 1.2rem;
-  background:linear-gradient(135deg,var(--navy),var(--blue));
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-}
-.card-head-left{display:flex;align-items:center;gap:10px;}
-.card-head-icon{font-size:1rem;color:var(--gold);}
-.card-head-title{font-family:'Shippori Mincho',serif;font-size:0.95rem;font-weight:700;color:#fff;}
-.card-body{padding:1.2rem 1.4rem;}
+/* ===== LINE通知フォーム ===== */
+.line-form{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.line-form-head{background:var(--line);padding:1rem 1.2rem;display:flex;align-items:center;gap:10px;}
+.line-form-head-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:#fff;}
+.line-form-body{padding:1.2rem 1.4rem;}
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.form-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;resize:vertical;min-height:100px;line-height:1.7;}
+.form-textarea:focus{border-color:var(--line);}
+.form-hint{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+.char-count{font-size:.72rem;color:var(--muted);text-align:right;margin-top:.2rem;}
+.char-count.warn{color:var(--red);}
+.line-form-footer{padding:.8rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;}
 
 /* ===== カウントダウン ===== */
-.countdown-wrap{
-  background:linear-gradient(135deg,var(--navy),var(--blue));
-  border-radius:20px;padding:2rem 1.5rem;text-align:center;
-  position:relative;overflow:hidden;margin-bottom:1.5rem;
-}
-.countdown-wrap::before{
-  content:'';position:absolute;top:-40px;right:-40px;
-  width:200px;height:200px;border-radius:50%;background:rgba(232,86,122,0.1);
-}
-.countdown-label{
-  font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
-  letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem;
-}
-.countdown-days{
-  font-family:'Outfit',sans-serif;font-size:clamp(3rem,10vw,5rem);
-  font-weight:800;color:white;line-height:1;
-}
-.countdown-days span{font-size:clamp(1rem,3vw,1.4rem);font-weight:600;color:rgba(255,255,255,0.6);margin-left:6px;}
-.countdown-date{font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;}
-.countdown-theme{
-  margin-top:1.2rem;
-  background:rgba(232,86,122,0.15);
-  border:1px solid rgba(200,164,77,0.3);
-  border-radius:10px;padding:0.8rem 1rem;
-  font-size:0.82rem;color:rgba(255,255,255,0.8);line-height:1.7;
-}
+.countdown-wrap{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:20px;padding:2rem 1.5rem;text-align:center;position:relative;overflow:hidden;margin-bottom:1rem;}
+.countdown-wrap::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(200,164,77,.08);}
+.countdown-label{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem;}
+.countdown-days{font-family:'Outfit',sans-serif;font-size:clamp(3rem,10vw,5rem);font-weight:800;color:white;line-height:1;}
+.countdown-days span{font-size:clamp(1rem,3vw,1.4rem);font-weight:600;color:rgba(255,255,255,.6);margin-left:6px;}
+.countdown-date{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:.5rem;}
+.countdown-theme{margin-top:1.2rem;background:rgba(255,255,255,.05);border:1px solid rgba(200,164,77,.3);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.7;}
 .countdown-theme strong{color:var(--gold);}
 
-/* ===== 投稿タイムライン ===== */
-.timeline{display:flex;flex-direction:column;gap:0;}
-.timeline-item{
-  display:flex;gap:12px;padding:12px 0;
-  border-bottom:1px solid var(--border);
-}
-.timeline-item:last-child{border-bottom:none;}
-.timeline-dot{
-  width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px;
-}
-.dot-done{background:var(--green);}
-.dot-today{background:var(--gold);box-shadow:0 0 0 3px rgba(200,164,77,0.2);}
-.dot-future{background:var(--border);}
-.timeline-date{
-  font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:700;
-  color:var(--muted);width:44px;flex-shrink:0;margin-top:2px;
-}
-.timeline-content{flex:1;}
-.timeline-title{font-size:0.85rem;font-weight:700;color:var(--navy);margin-bottom:2px;}
-.timeline-sub{font-size:0.75rem;color:var(--muted);}
-.timeline-badge{
-  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:700;
-  padding:2px 8px;border-radius:10px;white-space:nowrap;
-}
-.badge-done{background:rgba(29,158,117,0.1);color:var(--green);}
-.badge-today{background:rgba(200,164,77,0.12);color:var(--gold);}
-.badge-plan{background:rgba(33,74,154,0.1);color:var(--blue);}
+.event-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.event-select{padding:7px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.82rem;color:var(--text);background:var(--white);outline:none;flex:1;min-width:0;}
+.event-select:focus{border-color:var(--blue);}
 
-/* ===== チェックリスト ===== */
-.checklist{display:flex;flex-direction:column;gap:8px;}
-.check-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;background:var(--bg);border-radius:12px;
-  border:1.5px solid var(--border);cursor:pointer;
-  transition:border-color 0.2s,background 0.2s;
-}
-.check-item.checked{
-  background:rgba(29,158,117,0.06);border-color:rgba(29,158,117,0.3);
-}
-.check-item.checked .check-label{text-decoration:line-through;color:var(--muted);}
-.check-circle{
-  width:22px;height:22px;border-radius:50%;border:2px solid var(--border);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:0.65rem;color:transparent;transition:all 0.2s;background:var(--white);
-}
-.check-item.checked .check-circle{
-  background:var(--green);border-color:var(--green);color:white;
-}
-.check-platform{
-  font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:700;
-  letter-spacing:0.08em;text-transform:uppercase;
-  padding:2px 8px;border-radius:8px;white-space:nowrap;
-}
-.plat-ig{background:#fce4ec;color:#c2185b;}
-.plat-x{background:#e3f2fd;color:#1565c0;}
-.plat-hp{background:#e8f5e9;color:#2e7d32;}
-.plat-line{background:#e8f5e9;color:#00891a;}
-.check-label{font-size:0.85rem;font-weight:500;color:var(--text);flex:1;}
-.check-date{font-size:0.72rem;color:var(--muted);}
-
-/* チェックリストリセットボタン */
-.reset-btn{
-  font-size:0.75rem;color:var(--muted);background:none;border:none;
-  cursor:pointer;padding:4px 8px;border-radius:6px;transition:color 0.2s;font-family:inherit;
-}
-.reset-btn:hover{color:var(--red);}
-
-/* ===== NEWS投稿 ===== */
-.form-grid{display:grid;gap:12px;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.form-label{font-size:0.78rem;font-weight:700;color:var(--navy);}
-.form-label span{font-size:0.68rem;font-weight:400;color:var(--muted);margin-left:4px;}
-.form-input,.form-select,.form-textarea{
-  padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;
-  font-size:0.88rem;font-family:inherit;color:var(--text);background:var(--white);
-  outline:none;transition:border-color 0.2s;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);}
-.form-textarea{resize:vertical;min-height:100px;line-height:1.7;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-@media(max-width:540px){.form-row{grid-template-columns:1fr;}}
-.toggle-wrap{display:flex;align-items:center;gap:10px;}
-.toggle{position:relative;width:44px;height:24px;}
-.toggle input{opacity:0;width:0;height:0;}
-.toggle-slider{
-  position:absolute;inset:0;background:#ccc;border-radius:24px;cursor:pointer;
-  transition:background 0.2s;
-}
-.toggle-slider::before{
-  content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;
-  background:white;border-radius:50%;transition:transform 0.2s;
-}
-.toggle input:checked + .toggle-slider{background:var(--green);}
-.toggle input:checked + .toggle-slider::before{transform:translateX(20px);}
-.toggle-label{font-size:0.82rem;color:var(--text);}
-
-.btn{
-  padding:10px 20px;border-radius:10px;font-size:0.88rem;font-weight:700;
-  font-family:inherit;cursor:pointer;border:none;transition:opacity 0.2s,transform 0.15s;
-}
-.btn:hover{opacity:0.88;transform:translateY(-1px);}
-.btn-primary{background:var(--blue);color:white;}
-.btn-gold{background:var(--gold);color:white;}
-
-.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
-.btn-sm{padding:7px 14px;font-size:0.78rem;}
-.btn-danger{background:var(--red);color:white;}
-
-/* ===== NEWS一覧 ===== */
-.news-list{display:flex;flex-direction:column;gap:10px;}
-.news-card{
-  background:var(--white);border:1.5px solid var(--border);border-radius:14px;
-  padding:1rem 1.2rem;display:flex;align-items:flex-start;gap:12px;
-}
-.news-card.pinned{border-color:rgba(200,164,77,0.5);background:rgba(200,164,77,0.04);}
-.news-card.draft{opacity:0.6;}
-.news-card-left{flex:1;}
-.news-card-title{font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.news-card-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px;}
-.news-tag{
-  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.05em;
-  padding:2px 8px;border-radius:8px;
-}
-.tag-concert{background:rgba(33,74,154,0.12);color:var(--blue);}
-.tag-practice{background:rgba(33,74,154,0.1);color:var(--blue);}
-.tag-recruit{background:rgba(29,158,117,0.1);color:var(--green);}
-.tag-other{background:rgba(96,96,112,0.1);color:var(--muted);}
-.tag-draft{background:rgba(200,164,77,0.15);color:var(--gold);}
-.tag-members{background:rgba(33,74,154,0.08);color:var(--blue);}
-.tag-pinned{background:rgba(200,164,77,0.15);color:var(--gold);}
-.news-card-body{font-size:0.8rem;color:var(--muted);line-height:1.7;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.news-card-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
-
-/* ===== アセットバンク ===== */
-.asset-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;
-}
-.asset-card{
-  background:var(--white);border:1.5px solid var(--border);border-radius:14px;
-  overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;
-}
-.asset-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(33,74,154,0.1);}
-.asset-thumb{
-  height:90px;display:flex;align-items:center;justify-content:center;
-  font-size:2rem;background:var(--bg);
-}
-.asset-thumb.img-thumb{object-fit:cover;background-size:cover;background-position:center;}
-.asset-info{padding:8px 10px;}
-.asset-name{font-size:0.78rem;font-weight:700;color:var(--navy);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.asset-meta{font-size:0.68rem;color:var(--muted);}
-.asset-type-badge{
-  font-family:'Outfit',sans-serif;font-size:0.55rem;font-weight:700;
-  padding:1px 6px;border-radius:6px;margin-top:3px;display:inline-block;
-}
-.type-flyer{background:#fce4ec;color:#c2185b;}
-.type-photo{background:#e3f2fd;color:#1565c0;}
-.type-video{background:#f3e5f5;color:#7b1fa2;}
-.type-other{background:#f5f5f5;color:#616161;}
-
-/* アセット追加フォーム */
-.asset-add-form{
-  background:var(--bg);border:1.5px dashed var(--border);border-radius:14px;
-  padding:1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s;
-}
-.asset-add-form:hover{border-color:var(--blue);}
-.asset-add-form p{font-size:0.82rem;color:var(--muted);margin-top:8px;}
-
-/* ===== アーカイブ ===== */
-.archive-list{display:flex;flex-direction:column;gap:10px;}
-.archive-card{
-  background:var(--white);border:1.5px solid var(--border);border-radius:14px;
-  padding:1rem 1.2rem;
-}
-.archive-year{
-  font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
-  letter-spacing:0.15em;color:var(--muted);margin-bottom:6px;
-}
-.archive-title{font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
-.archive-files{display:flex;flex-wrap:wrap;gap:6px;}
-.archive-file{
-  display:flex;align-items:center;gap:5px;
-  padding:5px 10px;background:var(--bg);border-radius:8px;
-  font-size:0.75rem;color:var(--blue);text-decoration:none;
-  border:1px solid var(--border);transition:background 0.15s;
-}
-.archive-file:hover{background:#e8f0ff;}
+/* ===== ボタン共通 ===== */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;transition:opacity .2s,transform .15s;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-danger{background:rgba(192,57,43,.1);color:var(--red);border:1.5px solid rgba(192,57,43,.2);}
+.btn-line{background:var(--line);color:#fff;}
+.btn-sm{padding:6px 12px;font-size:.75rem;}
 
 /* ===== モーダル ===== */
-.modal-overlay{
-  position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.5);
-  display:none;align-items:center;justify-content:center;padding:1.5rem;
-}
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
 .modal-overlay.open{display:flex;}
-.modal{
-  background:var(--white);border-radius:20px;width:100%;max-width:560px;
-  max-height:90vh;overflow-y:auto;padding:1.8rem;
-}
-.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
-.modal-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);}
-.modal-close{
-  background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;
-  width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
-  transition:background 0.15s;
-}
-.modal-close:hover{background:var(--bg);}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:480px;margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-head{background:linear-gradient(135deg,var(--navy),var(--blue));padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;}
+.modal-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:1.1rem;transition:color .2s;padding:4px;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:1.4rem;}
+.form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--blue);}
+.modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
+.form-required{color:var(--red);margin-left:3px;}
 
-/* ===== TOAST ===== */
-#toast{
-  position:fixed;bottom:24px;right:24px;z-index:9000;
-  background:var(--navy);color:white;padding:12px 20px;border-radius:12px;
-  font-size:0.85rem;font-weight:500;
-  transform:translateY(80px);opacity:0;
-  transition:transform 0.3s,opacity 0.3s;pointer-events:none;
-  max-width:300px;line-height:1.5;
-}
-#toast.show{transform:translateY(0);opacity:1;}
-
-/* ===== LOADER ===== */
-.loader{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;}
-.loader i{animation:spin 1s linear infinite;display:block;font-size:1.5rem;margin-bottom:0.5rem;color:var(--blue);}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ===== EMPTY ===== */
-.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);}
-.empty i{font-size:2rem;display:block;margin-bottom:0.8rem;opacity:0.3;}
-.empty p{font-size:0.85rem;}
-
-/* ===== FOOTER ===== */
-footer{background:var(--navy);padding:2rem 0 1.5rem;margin-top:40px;}
-.footer-copy{font-size:0.67rem;color:rgba(255,255,255,0.2);}
-
-/* ===== REVEAL ===== */
-.reveal{opacity:0;transform:translateY(16px);transition:opacity 0.55s ease,transform 0.55s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:.8rem 1.4rem;border-radius:12px;font-size:.82rem;font-weight:700;z-index:9999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
 
-<!-- ===== ロック画面 ===== -->
-<div id="lock-screen">
+<!-- ロック画面 -->
+<div id="lockScreen">
   <div class="lock-card">
-    <div class="lock-icon">📣</div>
-    <p class="lock-eyebrow">PR Committee</p>
-    <h1 class="lock-title">広報委員会パネル</h1>
-    <p class="lock-sub">広報委員専用ページです。<br>パスコードを入力してください。</p>
-    <div class="lock-input-wrap">
-      <input type="password" id="pw-input" class="lock-input"
-             placeholder="パスコードを入力" autocomplete="off"
-             onkeydown="if(event.key==='Enter')unlock()">
-      <button class="eye-btn" onclick="togglePw()" id="eye-btn">
-        <i class="fas fa-eye" id="eye-icon"></i>
-      </button>
-    </div>
-    <button class="lock-btn" onclick="unlock()">入室する</button>
-    <p class="lock-err" id="lock-err"></p>
-    <p class="lock-note">パスコードは委員会より共有されます。<br>不明な場合はGMへご連絡ください。</p>
+    <div class="lock-eyebrow">Committee Panel</div>
+    <div class="lock-title">📣 広報委員会</div>
+    <p class="lock-sub">パネルにアクセスするには<br>パネルコードを入力してください</p>
+    <input id="codeInput" class="lock-input" type="password" placeholder="パネルコード"
+      onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="lock-btn" onclick="tryUnlock()">ロック解除</button>
+    <div id="lockError" class="lock-error">パネルコードが違います</div>
   </div>
 </div>
 
-<!-- ===== NAV ===== -->
-<nav id="site-nav">
-  <div class="nav-inner">
-    <a href="/higasui/" id="nav-logo">
-      東大阪吹奏楽団
-      <small>HIGASHIOSAKA WINDS</small>
-    </a>
-    <div style="display:flex;align-items:center;gap:0.8rem;">
-      <span class="nav-badge">📣 PR Panel</span>
-      <button class="nav-logout" onclick="logout()">
-        <i class="fas fa-sign-out-alt"></i> 退室
-      </button>
-    </div>
-  </div>
+<!-- NAV -->
+<nav id="panel-nav" style="display:none;">
+  <button id="back-btn" onclick="goBack()" title="戻る"><i class="fas fa-chevron-left"></i></button>
+  <div id="panel-title">広報委員会</div>
+  <div id="panel-badge">PR</div>
 </nav>
 
-<!-- ===== MAIN ===== -->
-<div id="panel-main">
+<!-- ローディング -->
+<div id="stateLoading" style="display:none;">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">読み込んでいます…</p>
+</div>
 
-  <!-- PAGE HEADER -->
+<!-- メインコンテンツ -->
+<div id="mainContent">
   <div class="page-header">
     <div class="page-header-inner">
-      <p class="page-eyebrow">PR Committee Panel</p>
-      <h1>広報委員会パネル</h1>
-      <p>SNS投稿管理・NEWS発信・ビジュアルアセット管理・過去アーカイブ</p>
+      <div class="page-eyebrow">PR Committee</div>
+      <h1>📣 広報委員会パネル</h1>
+      <p>NEWSの投稿・広報素材の管理・SNS運用・LINE通知をここから行います。</p>
     </div>
   </div>
 
-  <!-- ① 演奏会カウントダウン -->
-  <section class="sec">
-    <div class="inner">
-      <div class="sec-head reveal" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-        <div>
-          <p class="sec-eyebrow">Countdown</p>
-          <h2 class="sec-title">🗓️ イベントカウントダウン</h2>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <select id="event-select" class="form-select" style="font-size:0.82rem;padding:7px 12px;" onchange="switchEvent()">
-          </select>
-          <button class="btn btn-sm btn-ghost" onclick="openEventModal()">
-            <i class="fas fa-plus"></i> イベント追加
-          </button>
-        </div>
-      </div>
+  <div class="inner">
 
-      <div class="reveal">
-        <div class="countdown-wrap" id="countdown-wrap">
-          <p class="countdown-label" id="countdown-label">読み込み中...</p>
-          <div class="countdown-days" id="countdown-days">—<span>days</span></div>
-          <p class="countdown-date" id="countdown-date"></p>
-          <div class="countdown-theme" id="countdown-theme">
-            <strong>📌 今週の推奨投稿テーマ：</strong><span id="theme-text">計算中...</span>
+    <!-- 機能メニュー -->
+    <div class="sec">
+      <div class="sec-label">機能メニュー</div>
+      <div class="menu-grid">
+        <a href="panel_pr_news.html" class="menu-card">
+          <div class="menu-card-icon">📰</div>
+          <div class="menu-card-body">
+            <div class="menu-card-label">News</div>
+            <div class="menu-card-title">NEWS管理</div>
+            <div class="menu-card-desc">サイトのお知らせを投稿・編集・削除。バナー画像のアップロードも可能。</div>
+          </div>
+          <div class="menu-card-arrow"><i class="fas fa-arrow-right"></i></div>
+        </a>
+        <a href="panel_pr_assets.html" class="menu-card">
+          <div class="menu-card-icon">🗂️</div>
+          <div class="menu-card-body">
+            <div class="menu-card-label">Assets</div>
+            <div class="menu-card-title">アセットバンク</div>
+            <div class="menu-card-desc">チラシ・画像・資料などの広報素材を一元管理。公開設定でプレビュー表示も可能。</div>
+          </div>
+          <div class="menu-card-arrow"><i class="fas fa-arrow-right"></i></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- SNSリンク -->
+    <div class="sec">
+      <div class="sec-label">SNSアカウント</div>
+      <div class="sns-grid">
+        <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-btn sns-instagram">
+          <div class="sns-btn-icon"><i class="fab fa-instagram"></i></div>
+          <div class="sns-btn-body">
+            <div class="sns-btn-label">Instagram</div>
+            <div class="sns-btn-name">higashiosaka.winds</div>
+          </div>
+        </a>
+        <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-btn sns-youtube">
+          <div class="sns-btn-icon"><i class="fab fa-youtube"></i></div>
+          <div class="sns-btn-body">
+            <div class="sns-btn-label">YouTube</div>
+            <div class="sns-btn-name">東大阪吹奏楽団</div>
+          </div>
+        </a>
+        <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-btn sns-line">
+          <div class="sns-btn-icon"><i class="fab fa-line"></i></div>
+          <div class="sns-btn-body">
+            <div class="sns-btn-label">LINE公式</div>
+            <div class="sns-btn-name">@798rjgoq</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- LINE一斉通知 -->
+    <div class="sec">
+      <div class="sec-label">LINE一斉通知</div>
+      <div class="line-form">
+        <div class="line-form-head">
+          <i class="fab fa-line" style="font-size:1.2rem;color:#fff;"></i>
+          <div class="line-form-head-title">友達登録者全員に通知を送る</div>
+        </div>
+        <div class="line-form-body">
+          <div class="form-group">
+            <label class="form-label">メッセージ</label>
+            <textarea id="lineMessage" class="form-textarea" placeholder="例：今週土曜の練習場所が変更になりました。東大阪文化創造館 第2練習室です。"
+              oninput="updateCharCount()" maxlength="500"></textarea>
+            <div class="char-count" id="charCount">0 / 500文字</div>
+            <p class="form-hint">※ LINE友達登録者全員に送信されます。送信前に内容をよく確認してください。</p>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ② 投稿チェックリスト -->
-  <section class="sec sec-alt">
-    <div class="inner">
-      <div class="sec-head reveal">
-        <p class="sec-eyebrow">Checklist</p>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <h2 class="sec-title">✅ 投稿チェックリスト</h2>
-          <button class="reset-btn" onclick="resetChecklist()">
-            <i class="fas fa-undo"></i> リセット
+        <div class="line-form-footer">
+          <button class="btn btn-line" onclick="sendLineNotify()" id="lineSendBtn">
+            <i class="fab fa-line"></i> 通知を送信する
           </button>
         </div>
       </div>
-      <div class="reveal">
-        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">練習・イベントごとに更新したら「リセット」で次回用にクリア。</p>
-        <div class="checklist" id="checklist"></div>
-      </div>
     </div>
-  </section>
 
-  <!-- ③ NEWS投稿管理 -->
-  <section class="sec">
-    <div class="inner">
-      <div class="sec-head reveal">
-        <p class="sec-eyebrow">News</p>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <h2 class="sec-title">📰 NEWS投稿管理</h2>
-          <button class="btn btn-primary btn-sm" onclick="openNewsModal()">
-            <i class="fas fa-plus"></i> 新規投稿
-          </button>
-        </div>
+    <!-- カウントダウン -->
+    <div class="sec">
+      <div class="sec-label">🗓️ イベントカウントダウン</div>
+      <div class="event-bar">
+        <select id="event-select" class="event-select" onchange="renderCountdown()"></select>
+        <button class="btn btn-gold btn-sm" onclick="openEventModal()">
+          <i class="fas fa-plus"></i> 追加
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="deleteSelectedEvent()" id="deleteEventBtn" style="display:none;">
+          <i class="fas fa-trash"></i> 削除
+        </button>
       </div>
-
-      <div class="reveal">
-        <div class="news-list" id="news-list">
-          <div class="loader"><i class="fas fa-spinner"></i>読み込み中...</div>
+      <div class="countdown-wrap">
+        <p class="countdown-label" id="countdown-label">読み込み中...</p>
+        <div class="countdown-days" id="countdown-days">—<span>days</span></div>
+        <p class="countdown-date" id="countdown-date"></p>
+        <div class="countdown-theme">
+          <strong>📌 今週の推奨投稿テーマ：</strong><span id="theme-text">計算中...</span>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ④ アセット＆アーカイブバンク -->
-  <section class="sec sec-alt">
-    <div class="inner">
-      <div class="sec-head reveal">
-        <p class="sec-eyebrow">Assets &amp; Archive</p>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-          <h2 class="sec-title">🗂️ アセット＆アーカイブバンク</h2>
-          <button class="btn btn-sm btn-gold" onclick="openArchiveModal()">
-            <i class="fas fa-plus"></i> 追加
-          </button>
-        </div>
-      </div>
-      <p class="reveal" style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">
-        チラシ・写真・動画・Aiデータを演奏会ごとにまとめて管理。「あの素材どこ？」を解決。
-      </p>
-      <div class="archive-list reveal" id="archive-list"></div>
-    </div>
-  </section>
+  </div>
+</div>
 
-  <footer>
-    <div class="inner">
-      <p class="footer-copy">© 2025 東大阪吹奏楽団 広報委員会パネル — 関係者限定</p>
-    </div>
-  </footer>
-</div><!-- /panel-main -->
-
-<!-- ===== NEWS投稿モーダル ===== -->
-<div class="modal-overlay" id="news-modal">
+<!-- イベント追加モーダル -->
+<div id="event-modal" class="modal-overlay">
   <div class="modal">
     <div class="modal-head">
-      <h3 class="modal-title" id="news-modal-title">📰 NEWS投稿</h3>
-      <button class="modal-close" onclick="closeModal('news-modal')">✕</button>
+      <div class="modal-head-title">🗓️ イベント追加</div>
+      <button class="modal-close" onclick="closeModal('event-modal')"><i class="fas fa-times"></i></button>
     </div>
-    <input type="hidden" id="news-edit-id">
-    <div class="form-grid">
+    <div class="modal-body">
       <div class="form-group">
-        <label class="form-label">タイトル <span>*必須</span></label>
-        <input type="text" id="news-title" class="form-input" placeholder="例：第1回定期演奏会のご案内">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">カテゴリ</label>
-          <select id="news-category" class="form-select">
-            <option value="concert">🎵 演奏会</option>
-            <option value="practice">📅 練習</option>
-            <option value="recruit">👥 募集</option>
-            <option value="other">📌 その他</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">対象</label>
-          <select id="news-audience" class="form-select">
-            <option value="public">🌐 全体公開</option>
-            <option value="members">🔒 団員のみ</option>
-          </select>
-        </div>
+        <label class="form-label">イベント名<span class="form-required">*</span></label>
+        <input id="event-name" class="form-input" type="text" placeholder="例：第2回定期演奏会">
       </div>
       <div class="form-group">
-        <label class="form-label">本文</label>
-        <textarea id="news-body" class="form-textarea" placeholder="お知らせの内容を入力..."></textarea>
+        <label class="form-label">開催日<span class="form-required">*</span></label>
+        <input id="event-date" class="form-input" type="date">
       </div>
       <div class="form-group">
-        <label class="form-label">バナー画像URL <span>任意</span></label>
-        <input type="url" id="news-banner" class="form-input" placeholder="https://...">
+        <label class="form-label">会場（任意）</label>
+        <input id="event-venue" class="form-input" type="text" placeholder="例：東大阪文化創造館 小ホール">
       </div>
       <div class="form-group">
-        <label class="form-label">公開日時 <span>任意・空白=即時</span></label>
-        <input type="datetime-local" id="news-published" class="form-input">
-      </div>
-      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
-        <div class="toggle-wrap">
-          <label class="toggle">
-            <input type="checkbox" id="news-published-flag">
-            <span class="toggle-slider"></span>
-          </label>
-          <span class="toggle-label">公開する</span>
-        </div>
-        <div class="toggle-wrap">
-          <label class="toggle">
-            <input type="checkbox" id="news-pinned">
-            <span class="toggle-slider"></span>
-          </label>
-          <span class="toggle-label">トップ固定</span>
-        </div>
+        <label class="form-label">カウント開始日（任意）</label>
+        <input id="event-start" class="form-input" type="date">
+        <p style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">空白の場合は今日からカウント。投稿テーマの算出に使用します。</p>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('news-modal')">キャンセル</button>
-      <button class="btn btn-primary" onclick="saveNews()">
-        <i class="fas fa-save"></i> 保存
-      </button>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('event-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveEvent()"><i class="fas fa-save"></i> 追加する</button>
     </div>
   </div>
 </div>
 
-<!-- ===== アーカイブ追加・編集モーダル ===== -->
-<div class="modal-overlay" id="archive-modal">
-  <div class="modal">
+<!-- LINE送信確認モーダル -->
+<div id="line-confirm-modal" class="modal-overlay">
+  <div class="modal" style="max-width:420px;">
     <div class="modal-head">
-      <h3 class="modal-title" id="arch-modal-title">📦 アセット追加</h3>
-      <button class="modal-close" onclick="closeModal('archive-modal')">✕</button>
+      <div class="modal-head-title">📤 送信確認</div>
+      <button class="modal-close" onclick="closeModal('line-confirm-modal')"><i class="fas fa-times"></i></button>
     </div>
-    <input type="hidden" id="arch-edit-id">
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">タイトル <span>*必須</span></label>
-        <input type="text" id="arch-title" class="form-input" placeholder="例：第1回定期演奏会チラシ">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">種別</label>
-          <select id="arch-type" class="form-select">
-            <option value="concert">🎵 演奏会</option>
-            <option value="flyer">📄 チラシ</option>
-            <option value="photo">📷 写真</option>
-            <option value="video">🎬 動画</option>
-            <option value="other">📁 その他</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">年</label>
-          <input type="number" id="arch-year" class="form-input" value="2026">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">メインURL <span>Drive / YouTube など</span></label>
-        <input type="url" id="arch-flyer" class="form-input" placeholder="https://drive.google.com/...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Illustratorデータ URL <span>任意</span></label>
-        <input type="url" id="arch-ai" class="form-input" placeholder="https://drive.google.com/...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">関連ドキュメント URL <span>任意・構成案など</span></label>
-        <input type="url" id="arch-program" class="form-input" placeholder="https://docs.google.com/...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">メモ <span>任意</span></label>
-        <input type="text" id="arch-memo" class="form-input" placeholder="例：A4・両面・400部印刷">
-      </div>
+    <div class="modal-body">
+      <p style="font-size:.85rem;line-height:1.8;margin-bottom:1rem;">以下の内容をLINE友達登録者全員に送信します。</p>
+      <div style="background:var(--bg);border-radius:10px;padding:1rem;font-size:.85rem;line-height:1.8;white-space:pre-wrap;word-break:break-all;" id="linePreview"></div>
+      <p style="font-size:.75rem;color:var(--red);margin-top:.8rem;">⚠️ 送信後は取り消せません。内容を確認してください。</p>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('archive-modal')">キャンセル</button>
-      <button class="btn btn-gold" id="arch-save-btn" onclick="saveArchive()">保存</button>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('line-confirm-modal')">キャンセル</button>
+      <button class="btn btn-line" onclick="confirmSendLine()"><i class="fab fa-line"></i> 送信する</button>
     </div>
   </div>
 </div>
 
-<!-- ===== イベント追加モーダル ===== -->
-<div class="modal-overlay" id="event-modal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 class="modal-title">🗓️ イベント追加</h3>
-      <button class="modal-close" onclick="closeModal('event-modal')">✕</button>
-    </div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">イベント名 <span>*必須</span></label>
-        <input type="text" id="event-name" class="form-input" placeholder="例：第2回定期演奏会">
-      </div>
-      <div class="form-group">
-        <label class="form-label">開催日 <span>*必須</span></label>
-        <input type="date" id="event-date" class="form-input">
-      </div>
-      <div class="form-group">
-        <label class="form-label">会場 <span>任意</span></label>
-        <input type="text" id="event-venue" class="form-input" placeholder="例：東大阪文化創造館 小ホール">
-      </div>
-      <div class="form-group">
-        <label class="form-label">告知開始日 <span>カウントダウン起点・空白=開催1年前</span></label>
-        <input type="date" id="event-start" class="form-input">
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('event-modal')">キャンセル</button>
-      <button class="btn btn-primary" onclick="saveEvent()">追加</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== TOAST ===== -->
 <div id="toast"></div>
 
 <script>
 // =============================================
-// 設定
+//  設定
 // =============================================
-const PASSCODE = 'PR';
-const SESSION_KEY = 'higasui_pr_auth';
-const CONCERT_DATE = new Date('2026-12-13T14:00:00');
-
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIxOTIxNDYsImV4cCI6MjA1Nzc2ODE0Nn0.QU7SRwmAQmnAMwnSmv9SZEQwJXTtSOBLhOC_cIITYnM';
-
-// ローカルストレージキー（Supabase外のローカルデータ）
-const LS_CHECKLIST = 'higasui_pr_checklist';
-const LS_ARCHIVES  = 'higasui_pr_archives';
-
-// =============================================
-// Supabase ヘルパー
-// =============================================
-async function sbFetch(path, options = {}) {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
-    ...options,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': options.prefer || 'return=representation',
-      ...(options.headers || {})
-    }
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err);
-  }
-  const text = await res.text();
-  return text ? JSON.parse(text) : null;
-}
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+const PANEL_CODE  = 'PR';
+const GAS_URL     = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSgXXJGuzEgaXWcZaRfsVtnIHoaAmRG-WkuR12XypADT-jG6w/exec';
 
 // =============================================
-// 認証
-// =============================================
-function unlock() {
-  const input = document.getElementById('pw-input');
-  const err   = document.getElementById('lock-err');
-  const val   = input.value.trim().toUpperCase();
-  if (!val) { err.textContent = 'パスコードを入力してください'; return; }
-  if (val === PASSCODE) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    showPanel();
-  } else {
-    input.classList.add('error');
-    err.textContent = 'パスコードが違います';
-    setTimeout(() => input.classList.remove('error'), 400);
-    input.value = ''; input.focus();
-  }
-}
-function showPanel() {
-  document.getElementById('lock-screen').style.display = 'none';
-  document.getElementById('site-nav').style.display = 'block';
-  document.getElementById('panel-main').style.display = 'block';
-  initReveal();
-  initCountdown();
-  initChecklist();
-  loadNews();
-  renderArchives();
-}
-function logout() { sessionStorage.removeItem(SESSION_KEY); location.reload(); }
-function togglePw() {
-  const input = document.getElementById('pw-input');
-  const icon  = document.getElementById('eye-icon');
-  if (input.type === 'password') { input.type = 'text'; icon.className = 'fas fa-eye-slash'; }
-  else { input.type = 'password'; icon.className = 'fas fa-eye'; }
-}
-if (sessionStorage.getItem(SESSION_KEY)) showPanel();
-
-// =============================================
-// イベント管理 & カウントダウン
+//  イベントデータ（localStorage）
 // =============================================
 const LS_EVENTS = 'higasui_pr_events';
-
 const DEFAULT_EVENTS = [
-  { id: 'default', name: '第1回定期演奏会', date: '2026-12-13', venue: '東大阪文化創造館 小ホール' }
+  { id: 'default', name: '第1回定期演奏会', date: '2026-12-13', venue: '東大阪文化創造館 小ホール', start: '2026-01-01' }
 ];
-
 function getEvents() {
   const saved = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
   return [...DEFAULT_EVENTS, ...saved];
 }
 
+// =============================================
+//  初期化
+// =============================================
+let memberToken = null;
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  memberToken = params.get('token');
+  if (memberToken) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`, SB
+      );
+      const members = await res.json();
+      if (members && members.length > 0) {
+        const role = members[0].role || '';
+        const committee = members[0].committee || '';
+        const FULL_ACCESS = ['president', 'vice_president', 'director'];
+        if (FULL_ACCESS.includes(role) || role === 'pr' || committee === 'pr') {
+          showMain(); return;
+        }
+      }
+    } catch(e) { console.error(e); }
+  }
+});
+
+function tryUnlock() {
+  const input = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (input === PANEL_CODE) {
+    showMain();
+  } else {
+    document.getElementById('lockError').classList.add('show');
+    document.getElementById('codeInput').select();
+  }
+}
+
+function showMain() {
+  document.getElementById('lockScreen').style.display  = 'none';
+  document.getElementById('panel-nav').style.display   = 'flex';
+  document.getElementById('mainContent').style.display = 'block';
+  initCountdown();
+}
+
+// =============================================
+//  LINE一斉通知
+// =============================================
+function updateCharCount() {
+  const len = document.getElementById('lineMessage').value.length;
+  const el  = document.getElementById('charCount');
+  el.textContent = `${len} / 500文字`;
+  el.className   = 'char-count' + (len > 450 ? ' warn' : '');
+}
+
+function sendLineNotify() {
+  const msg = document.getElementById('lineMessage').value.trim();
+  if (!msg) { showToast('⚠️ メッセージを入力してください'); return; }
+  document.getElementById('linePreview').textContent = msg;
+  openModal('line-confirm-modal');
+}
+
+async function confirmSendLine() {
+  const msg = document.getElementById('lineMessage').value.trim();
+  const btn = document.querySelector('#line-confirm-modal .btn-line');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中…';
+
+  try {
+    const fd = new FormData();
+    fd.append('action', 'lineNotify');
+    fd.append('message', msg);
+    await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: fd });
+    showToast('✅ LINE通知を送信しました');
+    document.getElementById('lineMessage').value = '';
+    updateCharCount();
+    closeModal('line-confirm-modal');
+  } catch(e) {
+    showToast('⚠️ 送信に失敗しました');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fab fa-line"></i> 送信する';
+  }
+}
+
+// =============================================
+//  カウントダウン
+// =============================================
 function initCountdown() {
   const events = getEvents();
   const sel = document.getElementById('event-select');
   sel.innerHTML = events.map(e =>
-    `<option value="${e.id}">${esc(e.name)}</option>`
+    `<option value="${esc(e.id)}">${esc(e.name)}</option>`
   ).join('');
+  updateDeleteBtn();
   renderCountdown();
 }
-
-function switchEvent() { renderCountdown(); }
 
 function renderCountdown() {
   const events = getEvents();
@@ -825,24 +459,22 @@ function renderCountdown() {
   const ev     = events.find(e => e.id === selId) || events[0];
   if (!ev) return;
 
+  updateDeleteBtn();
+
   const now    = new Date(); now.setHours(0,0,0,0);
   const evDate = new Date(ev.date);
-  const stDate = ev.start ? new Date(ev.start) : new Date(evDate.getFullYear(), 0, 1);
-  const total  = Math.ceil((evDate - stDate) / 86400000);
-  const remain = Math.ceil((evDate - now)    / 86400000);
+  const stDate = ev.start ? new Date(ev.start) : new Date(now);
+  const total  = Math.max(1, Math.ceil((evDate - stDate) / 86400000));
+  const remain = Math.ceil((evDate - now) / 86400000);
   const elapsed = total - remain;
   const pct    = Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
 
   document.getElementById('countdown-label').textContent = ev.name + ' まで';
-  document.getElementById('countdown-days').innerHTML = `${Math.max(0,remain)}<span>days</span>`;
+  document.getElementById('countdown-days').innerHTML =
+    `${Math.max(0, remain)}<span>days</span>`;
   document.getElementById('countdown-date').textContent =
-    ev.date.replace(/-/g,'/') + (ev.venue ? '　' + ev.venue : '');
+    ev.date.replace(/-/g, '/') + (ev.venue ? '　' + ev.venue : '');
 
-  // プログレスバー更新（あれば）
-  const bar = document.getElementById('cd-progress-bar');
-  if (bar) bar.style.width = pct + '%';
-
-  // 経過割合（%）でテーマ自動切替
   let theme = '';
   if (remain <= 0)   theme = 'お疲れさまでした！感謝・レポート投稿フェーズ🎉';
   else if (pct < 20) theme = '団体紹介・メンバー紹介（認知拡大フェーズ）';
@@ -851,389 +483,68 @@ function renderCountdown() {
   else if (pct < 80) theme = '奏者・パート紹介・リハーサル風景（ラストスパート）';
   else if (pct < 95) theme = 'カウントダウン投稿・当日の楽しみ方（直前盛り上げ）';
   else               theme = '前日・当日投稿！会場アクセス・当日券情報など🎺';
-
   document.getElementById('theme-text').textContent = theme;
 }
 
+function updateDeleteBtn() {
+  const selId = document.getElementById('event-select').value;
+  document.getElementById('deleteEventBtn').style.display =
+    selId === 'default' ? 'none' : 'inline-flex';
+}
+
 function openEventModal() {
-  document.getElementById('event-name').value = '';
-  document.getElementById('event-date').value = '';
+  document.getElementById('event-name').value  = '';
+  document.getElementById('event-date').value  = '';
   document.getElementById('event-venue').value = '';
   document.getElementById('event-start').value = '';
   openModal('event-modal');
 }
 
 function saveEvent() {
-  const name  = document.getElementById('event-name').value.trim();
-  const date  = document.getElementById('event-date').value;
+  const name = document.getElementById('event-name').value.trim();
+  const date = document.getElementById('event-date').value;
   if (!name || !date) { showToast('⚠️ イベント名と日付を入力してください'); return; }
   const events = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
-  const newEv = { id: Date.now().toString(), name, date,
+  const newEv  = {
+    id: Date.now().toString(), name, date,
     venue: document.getElementById('event-venue').value.trim(),
-    start: document.getElementById('event-start').value };
+    start: document.getElementById('event-start').value,
+  };
   events.push(newEv);
   localStorage.setItem(LS_EVENTS, JSON.stringify(events));
   closeModal('event-modal');
   initCountdown();
-  // 新しいイベントを選択状態に
   document.getElementById('event-select').value = newEv.id;
   renderCountdown();
   showToast('✅ イベントを追加しました');
 }
 
-// =============================================
-// チェックリスト（localStorage）
-// =============================================
-const CHECKLIST_ITEMS = [
-  { id: 'ig_post',   platform: 'ig',   label: 'Instagram 投稿',   date: '練習後' },
-  { id: 'ig_story',  platform: 'ig',   label: 'Instagram ストーリーズ', date: '練習当日' },
-  { id: 'x_post',    platform: 'x',    label: 'X (Twitter) 投稿', date: '練習後' },
-  { id: 'hp_news',   platform: 'hp',   label: '公式HP NEWS更新',  date: 'イベント前日まで' },
-  { id: 'line_msg',  platform: 'line', label: 'LINE公式アカウント 投稿', date: '必要に応じて' },
-];
-
-function initChecklist() {
-  const saved = JSON.parse(localStorage.getItem(LS_CHECKLIST) || '{}');
-  const wrap = document.getElementById('checklist');
-  wrap.innerHTML = CHECKLIST_ITEMS.map(item => {
-    const checked = saved[item.id] || false;
-    return `
-      <div class="check-item ${checked ? 'checked' : ''}" id="chk-${item.id}" onclick="toggleCheck('${item.id}')">
-        <div class="check-circle"><i class="fas fa-check"></i></div>
-        <span class="check-platform plat-${item.platform}">${item.platform.toUpperCase()}</span>
-        <span class="check-label">${item.label}</span>
-        <span class="check-date">${item.date}</span>
-      </div>`;
-  }).join('');
-}
-
-function toggleCheck(id) {
-  const saved = JSON.parse(localStorage.getItem(LS_CHECKLIST) || '{}');
-  saved[id] = !saved[id];
-  localStorage.setItem(LS_CHECKLIST, JSON.stringify(saved));
-  initChecklist();
-}
-
-function resetChecklist() {
-  if (!confirm('チェックリストをリセットしますか？')) return;
-  localStorage.removeItem(LS_CHECKLIST);
-  initChecklist();
-  showToast('✅ チェックリストをリセットしました');
-}
-
-// =============================================
-// NEWS（Supabase）
-// =============================================
-async function loadNews() {
-  const wrap = document.getElementById('news-list');
-  try {
-    const data = await sbFetch('news?select=*&order=is_pinned.desc,created_at.desc&limit=20');
-    if (!data || !data.length) {
-      wrap.innerHTML = `<div class="empty"><i class="fas fa-newspaper"></i><p>投稿がまだありません。</p></div>`;
-      return;
-    }
-    wrap.innerHTML = data.map(n => {
-      const catMap = { concert:'tag-concert', practice:'tag-practice', recruit:'tag-recruit', other:'tag-other' };
-      const catLabel = { concert:'演奏会', practice:'練習', recruit:'募集', other:'その他' };
-      const catCls = catMap[n.category] || 'tag-other';
-      const catLbl = catLabel[n.category] || n.category || 'その他';
-      const date = n.published_at ? new Date(n.published_at).toLocaleDateString('ja-JP') : '—';
-      return `
-        <div class="news-card ${n.is_pinned ? 'pinned' : ''} ${!n.is_public ? 'draft' : ''}">
-          <div class="news-card-left">
-            <div class="news-card-title">${esc(n.title)}</div>
-            <div class="news-card-meta">
-              <span class="news-tag ${catCls}">${catLbl}</span>
-              ${n.is_pinned ? '<span class="news-tag tag-pinned">📌 固定</span>' : ''}
-              ${!n.is_public ? '<span class="news-tag tag-draft">下書き</span>' : ''}
-              ${n.target_audience === 'members' ? '<span class="news-tag tag-members">🔒 団員のみ</span>' : ''}
-              <span style="font-size:0.72rem;color:var(--muted);">${date}</span>
-            </div>
-            ${n.body ? `<div class="news-card-body">${esc(n.body)}</div>` : ''}
-          </div>
-          <div class="news-card-actions">
-            <button class="btn btn-sm btn-ghost" onclick="editNews('${n.id}')">✏️</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteNews('${n.id}')">🗑️</button>
-          </div>
-        </div>`;
-    }).join('');
-  } catch(e) {
-    wrap.innerHTML = `<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>読み込みエラー：${e.message}</p></div>`;
-  }
-}
-
-function openNewsModal(id) {
-  document.getElementById('news-edit-id').value = '';
-  document.getElementById('news-title').value = '';
-  document.getElementById('news-body').value = '';
-  document.getElementById('news-banner').value = '';
-  document.getElementById('news-published').value = '';
-  document.getElementById('news-published-flag').checked = false;
-  document.getElementById('news-pinned').checked = false;
-  document.getElementById('news-category').value = 'concert';
-  document.getElementById('news-audience').value = 'public';
-  document.getElementById('news-modal-title').textContent = '📰 NEWS投稿';
-  openModal('news-modal');
-}
-
-async function editNews(id) {
-  try {
-    const data = await sbFetch(`news?id=eq.${id}&select=*`);
-    if (!data || !data.length) return;
-    const n = data[0];
-    document.getElementById('news-edit-id').value = n.id;
-    document.getElementById('news-title').value = n.title || '';
-    document.getElementById('news-body').value = n.body || '';
-    document.getElementById('news-banner').value = n.banner_url || '';
-    document.getElementById('news-category').value = n.category || 'other';
-    document.getElementById('news-audience').value = n.target_audience || 'public';
-    document.getElementById('news-published-flag').checked = !!n.is_public;
-    document.getElementById('news-pinned').checked = !!n.is_pinned;
-    if (n.published_at) {
-      document.getElementById('news-published').value = new Date(n.published_at).toISOString().slice(0,16);
-    }
-    document.getElementById('news-modal-title').textContent = '✏️ NEWS編集';
-    openModal('news-modal');
-  } catch(e) { showToast('⚠️ 読み込みエラー：' + e.message); }
-}
-
-async function saveNews() {
-  const editId = document.getElementById('news-edit-id').value;
-  const title  = document.getElementById('news-title').value.trim();
-  if (!title) { showToast('⚠️ タイトルを入力してください'); return; }
-
-  const published_raw = document.getElementById('news-published').value;
-  const payload = {
-    title,
-    body:            document.getElementById('news-body').value.trim() || null,
-    banner_url:      document.getElementById('news-banner').value.trim() || null,
-    category:        document.getElementById('news-category').value,
-    target_audience: document.getElementById('news-audience').value,
-    is_public:       document.getElementById('news-published-flag').checked,
-    is_pinned:       document.getElementById('news-pinned').checked,
-    published_at:    published_raw ? new Date(published_raw).toISOString() : new Date().toISOString(),
-  };
-
-  try {
-    if (editId) {
-      await sbFetch(`news?id=eq.${editId}`, { method: 'PATCH', body: JSON.stringify(payload), prefer: 'return=minimal' });
-      showToast('✅ 更新しました');
-    } else {
-      await sbFetch('news', { method: 'POST', body: JSON.stringify(payload) });
-      showToast('✅ 投稿しました');
-    }
-    closeModal('news-modal');
-    loadNews();
-  } catch(e) { showToast('⚠️ 保存エラー：' + e.message); }
-}
-
-async function deleteNews(id) {
-  if (!confirm('この投稿を削除しますか？')) return;
-  try {
-    await sbFetch(`news?id=eq.${id}`, { method: 'DELETE', prefer: 'return=minimal' });
-    showToast('🗑️ 削除しました');
-    loadNews();
-  } catch(e) { showToast('⚠️ 削除エラー：' + e.message); }
-}
-
-// =============================================
-// アセットバンク（localStorage）
-// =============================================
-const ASSET_ICONS = { flyer:'📄', photo:'📷', video:'🎬', other:'📁' };
-const ASSET_TYPES = { flyer:'type-flyer', photo:'type-photo', video:'type-video', other:'type-other' };
-const ASSET_LABELS = { flyer:'チラシ', photo:'写真', video:'動画', other:'その他' };
-
-function loadAssets() {
-  const items = JSON.parse(localStorage.getItem(LS_ASSETS) || '[]');
-  const grid  = document.getElementById('asset-grid');
-  if (!items.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1;"><i class="fas fa-image"></i><p>素材がまだありません。「素材を追加」から登録してください。</p></div>`;
-    return;
-  }
-  grid.innerHTML = items.map(a => `
-    <div class="asset-card">
-      <div class="asset-thumb">${ASSET_ICONS[a.type] || '📁'}</div>
-      <div class="asset-info">
-        <div class="asset-name" title="${esc(a.name)}">${esc(a.name)}</div>
-        <span class="asset-type-badge ${ASSET_TYPES[a.type]}">${ASSET_LABELS[a.type]}</span>
-        ${a.memo ? `<div class="asset-meta">${esc(a.memo)}</div>` : ''}
-        ${a.url ? `<a href="${esc(a.url)}" target="_blank" style="font-size:0.72rem;color:var(--blue);text-decoration:none;display:block;margin-top:4px;">🔗 開く</a>` : ''}
-        <button onclick="deleteAsset('${a.id}')" style="font-size:0.68rem;color:var(--red);background:none;border:none;cursor:pointer;padding:0;margin-top:4px;">🗑️ 削除</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function openAssetModal() {
-  document.getElementById('asset-name').value = '';
-  document.getElementById('asset-url').value = '';
-  document.getElementById('asset-memo').value = '';
-  openModal('asset-modal');
-}
-
-function saveAsset() {
-  const name = document.getElementById('asset-name').value.trim();
-  if (!name) { showToast('⚠️ 素材名を入力してください'); return; }
-  const items = JSON.parse(localStorage.getItem(LS_ASSETS) || '[]');
-  items.unshift({
-    id: Date.now().toString(),
-    name,
-    type: document.getElementById('asset-type').value,
-    url:  document.getElementById('asset-url').value.trim(),
-    memo: document.getElementById('asset-memo').value.trim(),
-  });
-  localStorage.setItem(LS_ASSETS, JSON.stringify(items));
-  closeModal('asset-modal');
-  loadAssets();
-  showToast('✅ 素材を追加しました');
-}
-
-function deleteAsset(id) {
-  if (!confirm('削除しますか？')) return;
-  const items = JSON.parse(localStorage.getItem(LS_ASSETS) || '[]');
-  localStorage.setItem(LS_ASSETS, JSON.stringify(items.filter(i => i.id !== id)));
-  loadAssets();
+function deleteSelectedEvent() {
+  const selId = document.getElementById('event-select').value;
+  if (selId === 'default') return;
+  if (!confirm('このイベントを削除しますか？')) return;
+  const events = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
+  localStorage.setItem(LS_EVENTS, JSON.stringify(events.filter(e => e.id !== selId)));
+  initCountdown();
   showToast('🗑️ 削除しました');
 }
 
 // =============================================
-// アーカイブ（localStorage）
-// =============================================
-const TYPE_ICONS  = { concert:'🎵', flyer:'📄', photo:'📷', video:'🎬', other:'📁' };
-const TYPE_LABELS = { concert:'演奏会', flyer:'チラシ', photo:'写真', video:'動画', other:'その他' };
-const TYPE_BADGE  = { concert:'type-flyer', flyer:'type-flyer', photo:'type-photo', video:'type-video', other:'type-other' };
-
-function renderArchives() {
-  const items = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
-  const wrap  = document.getElementById('archive-list');
-
-  const displayItems = items.length ? items : [{
-    id:'preset', title:'第1回定期演奏会', type:'concert', year:2026,
-    flyer:'', ai:'', program:'', memo:'', preset:true
-  }];
-
-  wrap.innerHTML = displayItems.map(a => {
-    const links = [
-      a.flyer   && `<a href="${esc(a.flyer)}"   target="_blank" class="archive-file"><i class="fas fa-link"></i> メイン</a>`,
-      a.ai      && `<a href="${esc(a.ai)}"      target="_blank" class="archive-file"><i class="fas fa-bezier-curve"></i> Aiデータ</a>`,
-      a.program && `<a href="${esc(a.program)}" target="_blank" class="archive-file"><i class="fas fa-file-alt"></i> 関連資料</a>`,
-    ].filter(Boolean);
-    return `
-      <div class="archive-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span class="archive-year">${a.year}</span>
-            <span class="asset-type-badge ${TYPE_BADGE[a.type] || 'type-other'}">${TYPE_ICONS[a.type]||'📁'} ${TYPE_LABELS[a.type]||'その他'}</span>
-          </div>
-          <div style="display:flex;gap:5px;">
-            ${!a.preset ? `<button onclick="editArchive('${a.id}')" style="font-size:0.72rem;color:var(--blue);background:none;border:none;cursor:pointer;padding:3px 6px;" title="編集">✏️</button>` : ''}
-            ${!a.preset ? `<button onclick="deleteArchive('${a.id}')" style="font-size:0.72rem;color:var(--red);background:none;border:none;cursor:pointer;padding:3px 6px;" title="削除">🗑️</button>` : ''}
-          </div>
-        </div>
-        <div class="archive-title">${esc(a.title)}</div>
-        ${a.memo ? `<div style="font-size:0.75rem;color:var(--muted);margin:4px 0;">${esc(a.memo)}</div>` : ''}
-        <div class="archive-files" style="margin-top:8px;">
-          ${links.length ? links.join('') : '<span style="font-size:0.75rem;color:var(--muted);">ファイル未登録</span>'}
-        </div>
-      </div>`;
-  }).join('');
-}
-
-function openArchiveModal() {
-  document.getElementById('arch-edit-id').value = '';
-  document.getElementById('arch-title').value = '';
-  document.getElementById('arch-year').value = '2026';
-  document.getElementById('arch-type').value = 'concert';
-  document.getElementById('arch-flyer').value = '';
-  document.getElementById('arch-ai').value = '';
-  document.getElementById('arch-program').value = '';
-  document.getElementById('arch-memo').value = '';
-  document.getElementById('arch-modal-title').textContent = '📦 アセット追加';
-  document.getElementById('arch-save-btn').textContent = '追加';
-  openModal('archive-modal');
-}
-
-function editArchive(id) {
-  const items = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
-  const a = items.find(i => i.id === id);
-  if (!a) return;
-  document.getElementById('arch-edit-id').value = a.id;
-  document.getElementById('arch-title').value   = a.title || '';
-  document.getElementById('arch-year').value    = a.year  || 2026;
-  document.getElementById('arch-type').value    = a.type  || 'other';
-  document.getElementById('arch-flyer').value   = a.flyer || '';
-  document.getElementById('arch-ai').value      = a.ai    || '';
-  document.getElementById('arch-program').value = a.program || '';
-  document.getElementById('arch-memo').value    = a.memo  || '';
-  document.getElementById('arch-modal-title').textContent = '✏️ アセット編集';
-  document.getElementById('arch-save-btn').textContent = '保存';
-  openModal('archive-modal');
-}
-
-function saveArchive() {
-  const title = document.getElementById('arch-title').value.trim();
-  if (!title) { showToast('⚠️ タイトルを入力してください'); return; }
-  const editId = document.getElementById('arch-edit-id').value;
-  const items  = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
-  const data   = {
-    title, year: parseInt(document.getElementById('arch-year').value) || 2026,
-    type:    document.getElementById('arch-type').value,
-    flyer:   document.getElementById('arch-flyer').value.trim(),
-    ai:      document.getElementById('arch-ai').value.trim(),
-    program: document.getElementById('arch-program').value.trim(),
-    memo:    document.getElementById('arch-memo').value.trim(),
-  };
-  if (editId) {
-    const idx = items.findIndex(i => i.id === editId);
-    if (idx >= 0) items[idx] = { ...items[idx], ...data };
-    showToast('✅ 更新しました');
-  } else {
-    items.unshift({ id: Date.now().toString(), ...data });
-    showToast('✅ 追加しました');
-  }
-  localStorage.setItem(LS_ARCHIVES, JSON.stringify(items));
-  closeModal('archive-modal');
-  renderArchives();
-}
-
-function deleteArchive(id) {
-  if (!confirm('削除しますか？')) return;
-  const items = JSON.parse(localStorage.getItem(LS_ARCHIVES) || '[]');
-  localStorage.setItem(LS_ARCHIVES, JSON.stringify(items.filter(i => i.id !== id)));
-  renderArchives();
-  showToast('🗑️ 削除しました');
-}
-
-// =============================================
-// ユーティリティ
+//  ユーティリティ
 // =============================================
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
-
 function esc(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-function initReveal() {
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 70);
-    });
-  }, { threshold: 0.05 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-}
-
-// モーダルオーバーレイクリックで閉じる
+function goBack() { history.back(); }
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
 });
