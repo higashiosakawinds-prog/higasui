@@ -242,7 +242,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         <div class="line-form-body">
           <div class="form-group">
             <label class="form-label">メッセージ</label>
-            <textarea id="lineMessage" class="form-textarea" placeholder="例：今週土曜の練習場所が変更になりました。東大阪文化創造館 第2練習室です。"
+            <textarea id="lineMessage" class="form-textarea" placeholder="例：来週は演奏会！ぜひお越しください！"
               oninput="updateCharCount()" maxlength="500"></textarea>
             <div class="char-count" id="charCount">0 / 500文字</div>
             <p class="form-hint">※ LINE友達登録者全員に送信されます。送信前に内容をよく確認してください。</p>
@@ -350,7 +350,7 @@ const GAS_URL     = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxd
 // =============================================
 const LS_EVENTS = 'higasui_pr_events';
 const DEFAULT_EVENTS = [
-  { id: 'default', name: '第1回定期演奏会', date: '2026-12-13', venue: '東大阪文化創造館 小ホール', start: '2026-01-01' }
+  { id: 'default', name: '今はイベント実施予定はありません！', date: '2000-1-1', venue: '場所', start: '2000-01-01' }
 ];
 function getEvents() {
   const saved = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
