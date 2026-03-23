@@ -346,10 +346,7 @@ table.history-table tr:hover td{background:rgba(33,74,154,.02);}
 // =============================================
 const SUPABASE_URL  = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const RESEND_API_KEY = 'YOUR_RESEND_API_KEY'; // ← Resend APIキーをここに入れる
-const FROM_EMAIL    = 'onboarding@resend.dev';
-const FROM_NAME     = '東大阪吹奏楽団';
-const REPLY_TO      = 'higashiosaka.winds@gmail.com';
+const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-contact`;
 const PANEL_CODE    = 'CONTACT';
 
 const SB = {
@@ -600,48 +597,24 @@ async function sendMail() {
     const saved = await saveRes.json();
     const messageId = saved[0]?.id;
 
-    // 2. 送信先メールアドレスを取得
-    const emails = await fetchTargetEmails(targetType, targetPart);
+    // 2. Edge Functionで送信（APIキーはサーバー側で管理）
+    const efRes = await fetch(EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({ message_id: messageId }),
+    });
+    const efData = await efRes.json();
 
-    if (emails.length === 0) {
-      showToast('⚠️ 送信先が見つかりません');
+    if (!efRes.ok) {
+      showToast(`⚠️ 送信に失敗しました：${efData.error || 'unknown error'}`);
       btn.disabled = false;
       btn.innerHTML = '<i class="fas fa-paper-plane"></i> 送信する';
       return;
     }
 
-    // 3. Resendで一斉送信
-    let successCount = 0;
-    for (const email of emails) {
-      try {
-        const res = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${RESEND_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: `${FROM_NAME} <${FROM_EMAIL}>`,
-            to: [email],
-            reply_to: REPLY_TO,
-            subject: subject,
-            text: body,
-          }),
-        });
-        if (res.ok) successCount++;
-      } catch(e) { console.error('送信失敗:', email, e); }
-    }
+    const successCount = efData.sent_count ?? 0;
 
-    // 4. sent_countを更新
-    if (messageId) {
-      await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${messageId}`, {
-        method: 'PATCH',
-        headers: SB.headers,
-        body: JSON.stringify({ sent_count: successCount, sent_at: new Date().toISOString() }),
-      });
-    }
-
-    // 5. 下書きIDをリセット・フォームクリア
+    // 3. 下書きIDをリセット・フォームクリア
     currentDraftId = null;
     clearForm();
     closeModal('previewModal');
