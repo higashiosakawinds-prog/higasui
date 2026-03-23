@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>連絡網パネル | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC;
+  --green:#1D9E75; --red:#C0392B;
+  --radius:16px; --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* ===== NAV ===== */
+#panel-nav{position:sticky;top:0;z-index:100;height:52px;background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);display:flex;align-items:center;padding:0 1.25rem;gap:12px;}
+#back-btn{width:34px;height:34px;border-radius:8px;border:none;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0;}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{margin-left:auto;padding:3px 12px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;}
+
+/* ===== ロック ===== */
+#lockScreen{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+.lock-card{background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;backdrop-filter:blur(12px);}
+.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-size:1rem;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:.8rem;transition:border-color .2s;}
+.lock-input:focus{border-color:var(--gold);}
+.lock-btn{width:100%;padding:13px;border:none;border-radius:12px;background:var(--gold);color:var(--navy);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;}
+.lock-btn:hover{opacity:.9;}
+.lock-error{display:none;margin-top:.8rem;padding:.6rem 1rem;background:rgba(192,57,43,.2);border-radius:8px;font-size:.75rem;color:#fca5a5;}
+.lock-error.show{display:block;}
+
+/* ===== ローディング ===== */
+#stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
+.spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#mainContent{display:none;padding:28px 0 80px;}
+
+/* ===== ページヘッダー ===== */
+.page-header{background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);position:relative;overflow:hidden;margin-bottom:32px;}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,.1) 0%,transparent 55%);}
+.page-header-inner{position:relative;z-index:1;padding:2rem 1.5rem 2.5rem;max-width:900px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.7rem;}
+.page-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;color:#fff;line-height:1.3;margin-bottom:.4rem;}
+.page-header p{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.8;}
+
+/* ===== セクション ===== */
+.sec{margin-bottom:32px;}
+.sec-label{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.sec-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+
+/* ===== ボタン共通 ===== */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;transition:opacity .2s,transform .15s;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-danger{background:rgba(192,57,43,.1);color:var(--red);border:1.5px solid rgba(192,57,43,.2);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-sm{padding:6px 12px;font-size:.75rem;}
+
+/* ===== フォームパーツ ===== */
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.form-required{color:var(--red);margin-left:3px;}
+.form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--blue);}
+.form-select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;cursor:pointer;}
+.form-select:focus{border-color:var(--blue);}
+.form-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;resize:vertical;min-height:160px;line-height:1.7;}
+.form-textarea:focus{border-color:var(--blue);}
+.form-hint{font-size:.72rem;color:var(--muted);margin-top:.3rem;line-height:1.6;}
+.char-count{font-size:.72rem;color:var(--muted);text-align:right;margin-top:.2rem;}
+.char-count.warn{color:var(--red);}
+
+/* ===== 送信フォームカード ===== */
+.compose-card{background:var(--white);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);}
+.compose-head{background:linear-gradient(135deg,var(--navy),var(--blue));padding:1.1rem 1.4rem;display:flex;align-items:center;gap:10px;}
+.compose-head-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:#fff;}
+.compose-body{padding:1.4rem;}
+.compose-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;}
+
+/* ===== 送信先プレビューバッジ ===== */
+.preview-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:700;border:1.5px solid var(--border);color:var(--muted);transition:all .2s;background:var(--bg);}
+.preview-badge.has-targets{background:rgba(33,74,154,.06);border-color:var(--blue);color:var(--blue);}
+.preview-badge i{font-size:.8rem;}
+
+/* ===== 個人指定チェックリスト ===== */
+#individualWrap{display:none;margin-top:.8rem;}
+.member-check-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);}
+.member-check-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .15s;}
+.member-check-item:hover{background:rgba(33,74,154,.05);}
+.member-check-item input{accent-color:var(--blue);width:14px;height:14px;}
+.member-check-item label{font-size:.82rem;cursor:pointer;flex:1;}
+
+/* ===== 履歴テーブル ===== */
+.history-table-wrap{background:var(--white);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);}
+.history-table-head{padding:1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.history-table-head-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
+table.history-table{width:100%;border-collapse:collapse;}
+table.history-table th{padding:.7rem 1rem;font-size:.72rem;font-weight:700;font-family:'Outfit',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
+table.history-table td{padding:.85rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:top;}
+table.history-table tr:last-child td{border-bottom:none;}
+table.history-table tr:hover td{background:rgba(33,74,154,.02);}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;font-family:'Outfit',sans-serif;letter-spacing:.05em;white-space:nowrap;}
+.badge-sent{background:rgba(29,158,117,.1);color:var(--green);}
+.badge-draft{background:rgba(200,164,77,.15);color:#9A7020;}
+.target-label{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:700;background:rgba(33,74,154,.08);color:var(--blue);}
+.history-empty{padding:2.5rem;text-align:center;color:var(--muted);font-size:.85rem;}
+
+/* ===== モーダル ===== */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:520px;margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-head{background:linear-gradient(135deg,var(--navy),var(--blue));padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;}
+.modal-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:1.1rem;transition:color .2s;padding:4px;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:1.4rem;}
+.modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
+
+/* ===== プレビューモーダル本文 ===== */
+.preview-subject{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:.8rem;}
+.preview-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.preview-body{background:var(--bg);border-radius:10px;padding:1rem;font-size:.85rem;line-height:1.9;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow-y:auto;}
+.preview-warn{font-size:.75rem;color:var(--red);margin-top:.8rem;}
+
+/* ===== Toast ===== */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:.8rem 1.4rem;border-radius:12px;font-size:.82rem;font-weight:700;z-index:9999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===== レスポンシブ ===== */
+@media(max-width:600px){
+  table.history-table th:nth-child(4),
+  table.history-table td:nth-child(4){display:none;}
+  .compose-footer{flex-direction:column;}
+  .compose-footer .btn{width:100%;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- ロック画面 -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-eyebrow">Committee Panel</div>
+    <div class="lock-title">📨 連絡網</div>
+    <p class="lock-sub">パネルにアクセスするには<br>パネルコードを入力してください</p>
+    <input id="codeInput" class="lock-input" type="password" placeholder="パネルコード"
+      onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="lock-btn" onclick="tryUnlock()">ロック解除</button>
+    <div id="lockError" class="lock-error">パネルコードが違います</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="panel-nav" style="display:none;">
+  <button id="back-btn" onclick="goBack()" title="戻る"><i class="fas fa-chevron-left"></i></button>
+  <div id="panel-title">連絡網</div>
+  <div id="panel-badge">CONTACT</div>
+</nav>
+
+<!-- ローディング -->
+<div id="stateLoading" style="display:none;">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">読み込んでいます…</p>
+</div>
+
+<!-- メインコンテンツ -->
+<div id="mainContent">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Contact Panel</div>
+      <h1>📨 連絡網パネル</h1>
+      <p>団員・保護者・関係者へのメール一斉送信・下書き保存・送信履歴の確認ができます。</p>
+    </div>
+  </div>
+
+  <div class="inner">
+
+    <!-- 新規作成フォーム -->
+    <div class="sec">
+      <div class="sec-label">新規メール作成</div>
+      <div class="compose-card">
+        <div class="compose-head">
+          <i class="fas fa-envelope" style="color:#fff;font-size:1rem;"></i>
+          <div class="compose-head-title">メール作成</div>
+        </div>
+        <div class="compose-body">
+
+          <!-- 送信先 -->
+          <div class="form-group">
+            <label class="form-label">送信先<span class="form-required">*</span></label>
+            <select id="targetType" class="form-select" onchange="onTargetTypeChange()">
+              <option value="">送信先を選択してください</option>
+              <option value="all">全員（団員＋保護者＋関係者）</option>
+              <option value="members">団員のみ</option>
+              <option value="part">パートメンバー</option>
+              <option value="guardians">保護者のみ</option>
+              <option value="school">学校関係者のみ</option>
+              <option value="individual">個人指定</option>
+            </select>
+          </div>
+
+          <!-- パート選択（パートのときだけ表示） -->
+          <div id="partWrap" style="display:none;" class="form-group">
+            <label class="form-label">パートを選択<span class="form-required">*</span></label>
+            <select id="targetPart" class="form-select">
+              <option value="">パートを選択</option>
+              <option value="flute">フルート</option>
+              <option value="oboe">オーボエ</option>
+              <option value="clarinet">クラリネット</option>
+              <option value="bassoon">ファゴット</option>
+              <option value="saxophone">サックス</option>
+              <option value="horn">ホルン</option>
+              <option value="trumpet">トランペット</option>
+              <option value="trombone">トロンボーン</option>
+              <option value="euphonium">ユーフォニアム</option>
+              <option value="tuba">チューバ</option>
+              <option value="percussion">パーカッション</option>
+              <option value="contrabass">コントラバス</option>
+            </select>
+          </div>
+
+          <!-- 個人指定（個人指定のときだけ表示） -->
+          <div id="individualWrap">
+            <label class="form-label">団員を選択<span class="form-required">*</span></label>
+            <div id="memberCheckList" class="member-check-list">
+              <p style="font-size:.8rem;color:var(--muted);padding:.3rem;">読み込み中…</p>
+            </div>
+          </div>
+
+          <!-- 送信先プレビュー -->
+          <div id="previewBadgeWrap" style="margin-bottom:1rem;display:none;">
+            <span class="preview-badge has-targets" id="previewBadge">
+              <i class="fas fa-users"></i>
+              <span id="previewBadgeText">—</span>
+            </span>
+          </div>
+
+          <!-- 件名 -->
+          <div class="form-group">
+            <label class="form-label">件名<span class="form-required">*</span></label>
+            <input id="subject" class="form-input" type="text" placeholder="例：2026年4月 練習スケジュールのご連絡">
+          </div>
+
+          <!-- 本文 -->
+          <div class="form-group">
+            <label class="form-label">本文<span class="form-required">*</span></label>
+            <textarea id="body" class="form-textarea"
+              placeholder="本文を入力してください…"
+              oninput="updateBodyCount()"></textarea>
+            <div class="char-count" id="bodyCount">0文字</div>
+          </div>
+
+        </div>
+        <div class="compose-footer">
+          <button class="btn btn-outline" onclick="saveDraft()">
+            <i class="fas fa-save"></i> 下書き保存
+          </button>
+          <button class="btn btn-gold" onclick="openPreviewModal()">
+            <i class="fas fa-paper-plane"></i> 確認して送信
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 送信済み・下書き履歴 -->
+    <div class="sec">
+      <div class="sec-label">送信履歴・下書き</div>
+      <div class="history-table-wrap">
+        <div class="history-table-head">
+          <div class="history-table-head-title">メール一覧</div>
+          <button class="btn btn-outline btn-sm" onclick="loadHistory()">
+            <i class="fas fa-sync-alt"></i> 更新
+          </button>
+        </div>
+        <div id="historyBody">
+          <div class="history-empty"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 送信確認モーダル -->
+<div id="previewModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title">📤 送信確認</div>
+      <button class="modal-close" onclick="closeModal('previewModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;">以下の内容でメールを送信します。内容をよく確認してください。</p>
+      <div class="preview-subject" id="previewSubject"></div>
+      <div class="preview-meta" id="previewMeta"></div>
+      <div class="preview-body" id="previewBodyText"></div>
+      <p class="preview-warn">⚠️ 送信後は取り消せません。</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('previewModal')">キャンセル</button>
+      <button class="btn btn-blue" id="sendBtn" onclick="sendMail()">
+        <i class="fas fa-paper-plane"></i> 送信する
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 下書き読み込みモーダル -->
+<div id="draftModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title">📝 下書きを編集</div>
+      <button class="modal-close" onclick="closeModal('draftModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="draftModalBody">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('draftModal')">閉じる</button>
+      <button class="btn btn-gold" onclick="loadDraftToForm()">
+        <i class="fas fa-edit"></i> フォームに読み込む
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const SUPABASE_URL  = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const RESEND_API_KEY = 'YOUR_RESEND_API_KEY'; // ← Resend APIキーをここに入れる
+const FROM_EMAIL    = 'onboarding@resend.dev';
+const FROM_NAME     = '東大阪吹奏楽団';
+const REPLY_TO      = 'higashiosaka.winds@gmail.com';
+const PANEL_CODE    = 'CONTACT';
+
+const SB = {
+  headers: {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+  }
+};
+
+// =============================================
+//  状態管理
+// =============================================
+let allMembers = [];       // 全団員リスト
+let currentDraftId = null; // 下書き読み込み用
+
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  const memberToken = params.get('token');
+  if (memberToken) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`, SB
+      );
+      const members = await res.json();
+      if (members && members.length > 0) {
+        const role = members[0].role || '';
+        const FULL_ACCESS = ['president', 'vice_president', 'director'];
+        if (FULL_ACCESS.includes(role) || role === 'committee') {
+          showMain(); return;
+        }
+      }
+    } catch(e) { console.error(e); }
+  }
+});
+
+function tryUnlock() {
+  const input = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (input === PANEL_CODE) {
+    showMain();
+  } else {
+    document.getElementById('lockError').classList.add('show');
+    document.getElementById('codeInput').select();
+  }
+}
+
+async function showMain() {
+  document.getElementById('lockScreen').style.display  = 'none';
+  document.getElementById('panel-nav').style.display   = 'flex';
+  document.getElementById('mainContent').style.display = 'block';
+  await loadMembers();
+  await loadHistory();
+}
+
+// =============================================
+//  団員データ読み込み
+// =============================================
+async function loadMembers() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,email,part,role&order=name.asc`, SB
+    );
+    allMembers = await res.json();
+    renderMemberCheckList();
+  } catch(e) {
+    console.error('団員読み込み失敗:', e);
+  }
+}
+
+function renderMemberCheckList() {
+  const wrap = document.getElementById('memberCheckList');
+  if (!allMembers.length) {
+    wrap.innerHTML = '<p style="font-size:.8rem;color:var(--muted);padding:.3rem;">団員データがありません</p>';
+    return;
+  }
+  wrap.innerHTML = allMembers.map(m =>
+    `<div class="member-check-item">
+      <input type="checkbox" id="mc_${esc(m.id)}" value="${esc(m.id)}" onchange="updatePreviewBadge()">
+      <label for="mc_${esc(m.id)}">${esc(m.name)} <span style="color:var(--muted);font-size:.72rem;">${esc(m.part || '')}</span></label>
+    </div>`
+  ).join('');
+}
+
+// =============================================
+//  送信先変更ハンドラ
+// =============================================
+function onTargetTypeChange() {
+  const val = document.getElementById('targetType').value;
+  document.getElementById('partWrap').style.display       = val === 'part'       ? 'block' : 'none';
+  document.getElementById('individualWrap').style.display = val === 'individual' ? 'block' : 'none';
+  updatePreviewBadge();
+}
+
+async function updatePreviewBadge() {
+  const targetType = document.getElementById('targetType').value;
+  const wrap = document.getElementById('previewBadgeWrap');
+  if (!targetType) { wrap.style.display = 'none'; return; }
+
+  wrap.style.display = 'block';
+  const count = await countTargets(targetType);
+  const labels = {
+    all: '全員', members: '団員のみ', part: 'パートメンバー',
+    guardians: '保護者のみ', school: '学校関係者', individual: '個人指定'
+  };
+  document.getElementById('previewBadgeText').textContent =
+    `${labels[targetType] || targetType}：${count}名に送信`;
+}
+
+async function countTargets(targetType) {
+  try {
+    let url = `${SUPABASE_URL}/rest/v1/members?select=id`;
+    if (targetType === 'members') {
+      url += `&role=in.(president,vice_president,conductor,director,committee,member)`;
+    } else if (targetType === 'part') {
+      const part = document.getElementById('targetPart').value;
+      if (!part) return 0;
+      url += `&part=eq.${encodeURIComponent(part)}`;
+    } else if (targetType === 'guardians') {
+      url += `&role=eq.guardian`;
+    } else if (targetType === 'school') {
+      url += `&role=eq.instructor`;
+    } else if (targetType === 'individual') {
+      const checked = getCheckedMemberIds();
+      return checked.length;
+    }
+    const res = await fetch(url, { ...SB, headers: { ...SB.headers, 'Prefer': 'count=exact', 'Range': '0-0' } });
+    const countHeader = res.headers.get('Content-Range');
+    if (countHeader) return parseInt(countHeader.split('/')[1]) || 0;
+    const data = await res.json();
+    return Array.isArray(data) ? data.length : 0;
+  } catch(e) { return 0; }
+}
+
+function getCheckedMemberIds() {
+  return Array.from(document.querySelectorAll('#memberCheckList input:checked')).map(el => el.value);
+}
+
+// =============================================
+//  文字数カウント
+// =============================================
+function updateBodyCount() {
+  const len = document.getElementById('body').value.length;
+  const el  = document.getElementById('bodyCount');
+  el.textContent = `${len}文字`;
+  el.className   = 'char-count' + (len > 2000 ? ' warn' : '');
+}
+
+// =============================================
+//  フォームバリデーション
+// =============================================
+function validateForm() {
+  const targetType = document.getElementById('targetType').value;
+  const subject    = document.getElementById('subject').value.trim();
+  const body       = document.getElementById('body').value.trim();
+
+  if (!targetType)  { showToast('⚠️ 送信先を選択してください'); return false; }
+  if (targetType === 'part' && !document.getElementById('targetPart').value) {
+    showToast('⚠️ パートを選択してください'); return false;
+  }
+  if (targetType === 'individual' && getCheckedMemberIds().length === 0) {
+    showToast('⚠️ 送信する団員を選択してください'); return false;
+  }
+  if (!subject) { showToast('⚠️ 件名を入力してください'); return false; }
+  if (!body)    { showToast('⚠️ 本文を入力してください'); return false; }
+  return true;
+}
+
+// =============================================
+//  下書き保存
+// =============================================
+async function saveDraft() {
+  if (!validateForm()) return;
+  const payload = buildPayload('draft');
+  try {
+    let res;
+    if (currentDraftId) {
+      // 既存下書きを更新
+      res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${currentDraftId}`, {
+        method: 'PATCH',
+        headers: { ...SB.headers, 'Prefer': 'return=representation' },
+        body: JSON.stringify(payload),
+      });
+    } else {
+      res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+        method: 'POST',
+        headers: { ...SB.headers, 'Prefer': 'return=representation' },
+        body: JSON.stringify(payload),
+      });
+    }
+    const data = await res.json();
+    if (data && data[0]) currentDraftId = data[0].id;
+    showToast('💾 下書きを保存しました');
+    await loadHistory();
+  } catch(e) {
+    showToast('⚠️ 保存に失敗しました');
+    console.error(e);
+  }
+}
+
+// =============================================
+//  送信確認モーダル表示
+// =============================================
+async function openPreviewModal() {
+  if (!validateForm()) return;
+
+  const subject    = document.getElementById('subject').value.trim();
+  const body       = document.getElementById('body').value.trim();
+  const targetType = document.getElementById('targetType').value;
+  const count      = await countTargets(targetType);
+
+  const targetLabels = {
+    all: '全員', members: '団員のみ', part: 'パートメンバー',
+    guardians: '保護者のみ', school: '学校関係者', individual: '個人指定'
+  };
+
+  document.getElementById('previewSubject').textContent = subject;
+  document.getElementById('previewMeta').innerHTML =
+    `<span class="badge badge-sent"><i class="fas fa-users"></i> ${esc(targetLabels[targetType] || targetType)}：${count}名</span>`;
+  document.getElementById('previewBodyText').textContent = body;
+
+  openModal('previewModal');
+}
+
+// =============================================
+//  メール送信
+// =============================================
+async function sendMail() {
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中…';
+
+  const targetType = document.getElementById('targetType').value;
+  const targetPart = document.getElementById('targetPart').value;
+  const subject    = document.getElementById('subject').value.trim();
+  const body       = document.getElementById('body').value.trim();
+
+  try {
+    // 1. messagesテーブルに保存（送信中ステータス）
+    const payload = buildPayload('sent');
+    const saveRes = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+      method: 'POST',
+      headers: { ...SB.headers, 'Prefer': 'return=representation' },
+      body: JSON.stringify(payload),
+    });
+    const saved = await saveRes.json();
+    const messageId = saved[0]?.id;
+
+    // 2. 送信先メールアドレスを取得
+    const emails = await fetchTargetEmails(targetType, targetPart);
+
+    if (emails.length === 0) {
+      showToast('⚠️ 送信先が見つかりません');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> 送信する';
+      return;
+    }
+
+    // 3. Resendで一斉送信
+    let successCount = 0;
+    for (const email of emails) {
+      try {
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: `${FROM_NAME} <${FROM_EMAIL}>`,
+            to: [email],
+            reply_to: REPLY_TO,
+            subject: subject,
+            text: body,
+          }),
+        });
+        if (res.ok) successCount++;
+      } catch(e) { console.error('送信失敗:', email, e); }
+    }
+
+    // 4. sent_countを更新
+    if (messageId) {
+      await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${messageId}`, {
+        method: 'PATCH',
+        headers: SB.headers,
+        body: JSON.stringify({ sent_count: successCount, sent_at: new Date().toISOString() }),
+      });
+    }
+
+    // 5. 下書きIDをリセット・フォームクリア
+    currentDraftId = null;
+    clearForm();
+    closeModal('previewModal');
+    showToast(`✅ ${successCount}名にメールを送信しました`);
+    await loadHistory();
+
+  } catch(e) {
+    showToast('⚠️ 送信処理中にエラーが発生しました');
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> 送信する';
+  }
+}
+
+// =============================================
+//  送信先メールアドレス取得
+// =============================================
+async function fetchTargetEmails(targetType, targetPart) {
+  let url = `${SUPABASE_URL}/rest/v1/members?select=email`;
+  if (targetType === 'members') {
+    url += `&role=in.(president,vice_president,conductor,director,committee,member)`;
+  } else if (targetType === 'part') {
+    url += `&part=eq.${encodeURIComponent(targetPart)}`;
+  } else if (targetType === 'guardians') {
+    url += `&role=eq.guardian`;
+  } else if (targetType === 'school') {
+    url += `&role=eq.instructor`;
+  } else if (targetType === 'individual') {
+    const ids = getCheckedMemberIds();
+    if (!ids.length) return [];
+    url += `&id=in.(${ids.join(',')})`;
+  }
+  const res  = await fetch(url, SB);
+  const data = await res.json();
+  return data.map(m => m.email).filter(Boolean);
+}
+
+// =============================================
+//  ペイロード構築
+// =============================================
+function buildPayload(status) {
+  const targetType = document.getElementById('targetType').value;
+  const targetPart = targetType === 'part' ? document.getElementById('targetPart').value : null;
+  const targetIds  = targetType === 'individual' ? getCheckedMemberIds() : null;
+  return {
+    subject:     document.getElementById('subject').value.trim(),
+    body:        document.getElementById('body').value.trim(),
+    target_type: targetType,
+    target_part: targetPart,
+    target_ids:  targetIds,
+    status:      status,
+    ...(status === 'sent' ? { sent_at: new Date().toISOString() } : {}),
+  };
+}
+
+// =============================================
+//  履歴読み込み
+// =============================================
+async function loadHistory() {
+  const wrap = document.getElementById('historyBody');
+  wrap.innerHTML = '<div class="history-empty"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>';
+  try {
+    const res  = await fetch(
+      `${SUPABASE_URL}/rest/v1/messages?select=*&order=created_at.desc&limit=50`, SB
+    );
+    const data = await res.json();
+    if (!data.length) {
+      wrap.innerHTML = '<div class="history-empty">📭 まだメールはありません</div>';
+      return;
+    }
+    const targetLabels = {
+      all: '全員', members: '団員', part: 'パート', guardians: '保護者', school: '学校関係者', individual: '個人指定'
+    };
+    wrap.innerHTML = `
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>件名</th>
+            <th>送信先</th>
+            <th>送信数</th>
+            <th>日時</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(m => `
+            <tr>
+              <td>${m.status === 'sent'
+                ? '<span class="badge badge-sent">✅ 送信済み</span>'
+                : '<span class="badge badge-draft">📝 下書き</span>'
+              }</td>
+              <td style="font-weight:700;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(m.subject)}</td>
+              <td><span class="target-label">${esc(targetLabels[m.target_type] || m.target_type)}</span></td>
+              <td style="font-family:'Outfit',sans-serif;font-weight:700;">${m.sent_count ?? '—'}</td>
+              <td style="color:var(--muted);white-space:nowrap;">${m.sent_at ? fmtDate(m.sent_at) : (m.created_at ? fmtDate(m.created_at) : '—')}</td>
+              <td>
+                ${m.status === 'draft'
+                  ? `<button class="btn btn-outline btn-sm" onclick="openDraftModal('${esc(m.id)}')"><i class="fas fa-edit"></i> 編集</button>`
+                  : ''
+                }
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  } catch(e) {
+    wrap.innerHTML = '<div class="history-empty">⚠️ 読み込みに失敗しました</div>';
+    console.error(e);
+  }
+}
+
+// =============================================
+//  下書き編集
+// =============================================
+async function openDraftModal(id) {
+  try {
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${id}&limit=1`, SB);
+    const data = await res.json();
+    if (!data[0]) return;
+    const m = data[0];
+    currentDraftId = m.id;
+
+    const targetLabels = {
+      all: '全員', members: '団員のみ', part: 'パートメンバー',
+      guardians: '保護者のみ', school: '学校関係者', individual: '個人指定'
+    };
+    document.getElementById('draftModalBody').innerHTML = `
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:.2rem;">送信先</div>
+        <span class="target-label">${esc(targetLabels[m.target_type] || m.target_type)}</span>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:.2rem;">件名</div>
+        <div style="font-weight:700;">${esc(m.subject)}</div>
+      </div>
+      <div>
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:.4rem;">本文</div>
+        <div style="background:var(--bg);border-radius:10px;padding:1rem;font-size:.82rem;line-height:1.8;white-space:pre-wrap;max-height:200px;overflow-y:auto;">${esc(m.body)}</div>
+      </div>
+    `;
+    openModal('draftModal');
+  } catch(e) {
+    showToast('⚠️ 下書きの読み込みに失敗しました');
+  }
+}
+
+async function loadDraftToForm() {
+  if (!currentDraftId) return;
+  try {
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${currentDraftId}&limit=1`, SB);
+    const data = await res.json();
+    if (!data[0]) return;
+    const m = data[0];
+
+    document.getElementById('targetType').value = m.target_type || '';
+    onTargetTypeChange();
+    if (m.target_part) document.getElementById('targetPart').value = m.target_part;
+    document.getElementById('subject').value = m.subject || '';
+    document.getElementById('body').value    = m.body    || '';
+    updateBodyCount();
+
+    closeModal('draftModal');
+    showToast('📝 下書きをフォームに読み込みました');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(e) {
+    showToast('⚠️ 読み込みに失敗しました');
+  }
+}
+
+// =============================================
+//  フォームクリア
+// =============================================
+function clearForm() {
+  document.getElementById('targetType').value = '';
+  document.getElementById('targetPart').value = '';
+  document.getElementById('subject').value    = '';
+  document.getElementById('body').value       = '';
+  document.getElementById('partWrap').style.display       = 'none';
+  document.getElementById('individualWrap').style.display = 'none';
+  document.getElementById('previewBadgeWrap').style.display = 'none';
+  document.querySelectorAll('#memberCheckList input').forEach(el => el.checked = false);
+  updateBodyCount();
+  currentDraftId = null;
+}
+
+// =============================================
+//  ユーティリティ
+// =============================================
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+function goBack() { history.back(); }
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
