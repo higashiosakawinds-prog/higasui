@@ -23,7 +23,6 @@ Deno.serve(async (req) => {
 
   const { message_id } = await req.json();
 
-  // メッセージ取得
   const { data: msg, error: msgErr } = await supabase
     .from("messages")
     .select("*")
@@ -36,7 +35,6 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 送信先メールアドレス取得
   let query = supabase.from("members").select("email");
   if (msg.target_type === "members") {
     query = query.in("role", ["president","vice_president","conductor","director","committee","member"]);
@@ -64,7 +62,6 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Resendで送信
   let successCount = 0;
   for (const email of emails) {
     const res = await fetch("https://api.resend.com/emails", {
@@ -84,7 +81,6 @@ Deno.serve(async (req) => {
     if (res.ok) successCount++;
   }
 
-  // 送信済みに更新
   await supabase
     .from("messages")
     .update({

@@ -351,7 +351,7 @@ const PANEL_CODE    = 'CONTACT';
 
 const SB = {
   headers: {
-    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
     'Authorization': `Bearer ${SUPABASE_KEY}`,
     'Content-Type': 'application/json',
   }
@@ -600,7 +600,7 @@ async function sendMail() {
     // 2. Edge Functionで送信（APIキーはサーバー側で管理）
     const efRes = await fetch(EDGE_FUNCTION_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
       body: JSON.stringify({ message_id: messageId }),
     });
     const efData = await efRes.json();
