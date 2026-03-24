@@ -330,6 +330,14 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
   background:var(--bg);border:1px solid var(--border);
   padding:2px 8px;border-radius:10px;
 }
+.btn-more{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;padding:10px;border:none;background:none;
+  border-top:1px solid var(--border);
+  color:var(--blue);font-size:.78rem;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:background .15s;
+}
+.btn-more:hover{background:#f0f4ff;}
 
 /* ===== 情報編集モーダル ===== */
 .modal-overlay{
@@ -871,17 +879,19 @@ function renderInbox(messages, senderMap, readIds, readKey, memberId) {
     badge.style.display = 'none';
   }
 
-  document.getElementById('inboxList').innerHTML = messages.map((m, idx) => {
-    const isUnread = !readIds.includes(m.id);
-    const sender   = m.sender_id ? (senderMap[m.sender_id] || '幹部') : '幹部';
-    const dateStr  = m.sent_at ? formatMsgDate(m.sent_at) : '';
+  const SHOW = 5;
+  const visible = messages.slice(0, SHOW);
+  const hidden  = messages.slice(SHOW);
+
+  const makeMsg = m => {
+    const isUnread    = !readIds.includes(m.id);
+    const sender      = m.sender_id ? (senderMap[m.sender_id] || '幹部') : '幹部';
+    const dateStr     = m.sent_at ? formatMsgDate(m.sent_at) : '';
     const targetLabel = TARGET_LABEL[m.target_type] || m.target_type;
     const targetExtra = m.target_type === 'part' && m.target_part ? `（${m.target_part}）` : '';
-
     return `
     <div class="msg-item ${isUnread ? 'unread' : ''}" id="msg-${m.id}">
       <div class="msg-header" onclick="toggleMsg('${m.id}', '${readKey}')">
-        ${isUnread ? '' /* .msg-item.unread::before で青丸表示 */ : ''}
         <span class="msg-sender">${sender}</span>
         <span class="msg-subject">${m.subject || '（件名なし）'}</span>
         <span class="msg-date">${dateStr}</span>
@@ -892,7 +902,23 @@ function renderInbox(messages, senderMap, readIds, readKey, memberId) {
         <div class="msg-target-tag"><i class="fa-solid fa-users" style="margin-right:4px;"></i>送信先：${targetLabel}${targetExtra}</div>
       </div>
     </div>`;
-  }).join('');
+  };
+
+  let html = visible.map(makeMsg).join('');
+
+  if (hidden.length) {
+    html += `<div id="inboxHidden" style="display:none;">${hidden.map(makeMsg).join('')}</div>`;
+    html += `<button class="btn-more" id="inboxMoreBtn" onclick="showMoreInbox()">
+      <i class="fa-solid fa-chevron-down"></i> 過去のお知らせをもっと見る（${hidden.length}件）
+    </button>`;
+  }
+
+  document.getElementById('inboxList').innerHTML = html;
+}
+
+function showMoreInbox() {
+  document.getElementById('inboxHidden').style.display = 'block';
+  document.getElementById('inboxMoreBtn').style.display = 'none';
 }
 
 function toggleMsg(id, readKey) {
@@ -1140,19 +1166,37 @@ function renderAttendCard(history, nextPid) {
     document.getElementById('attendList').innerHTML =
       '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">回答履歴がありません</div>';
   } else {
-    document.getElementById('attendList').innerHTML = history.map(r =>
-      `<div class="attend-row">
+    const SHOW = 5;
+    const visible = history.slice(0, SHOW);
+    const hidden  = history.slice(SHOW);
+
+    const makeRow = r => `
+      <div class="attend-row">
         <span class="attend-date">${r.date}</span>
         <span class="attend-badge ${CLS[r.answer] || 'ab-none'}">${LABEL[r.answer] || '未回答'}</span>
         ${r.note ? `<span class="attend-note">${r.note}</span>` : ''}
-      </div>`
-    ).join('');
+      </div>`;
+
+    let html = visible.map(makeRow).join('');
+
+    if (hidden.length) {
+      html += `<div id="attendHidden" style="display:none;">${hidden.map(makeRow).join('')}</div>`;
+      html += `<button class="btn-more" id="attendMoreBtn" onclick="showMoreAttend()">
+        <i class="fa-solid fa-chevron-down"></i> 過去の履歴をもっと見る（${hidden.length}件）
+      </button>`;
+    }
+
+    document.getElementById('attendList').innerHTML = html;
   }
 
-  // ②tokenは常にセット、pidがあれば追加
   const attendBase = `./attendance.html?token=${encodeURIComponent(memberToken)}`;
   document.getElementById('attendLink').href =
     nextPid ? `${attendBase}&pid=${nextPid}` : attendBase;
+}
+
+function showMoreAttend() {
+  document.getElementById('attendHidden').style.display = 'block';
+  document.getElementById('attendMoreBtn').style.display = 'none';
 }
 
 // role+committeeからパネルアクセス権限を判定
