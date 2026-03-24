@@ -274,6 +274,63 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 footer{background:var(--navy);padding:28px 0;text-align:center;}
 footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.06em;}
 
+/* ===== 受信ボックスカード ===== */
+.inbox-empty{text-align:center;padding:20px 0;color:var(--muted);font-size:.8rem;}
+.inbox-unread-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:18px;height:18px;padding:0 5px;
+  background:var(--red);color:#fff;
+  border-radius:20px;font-family:'Outfit',sans-serif;
+  font-size:.6rem;font-weight:800;margin-left:6px;
+}
+.msg-item{
+  border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .15s;
+}
+.msg-item:last-child{border-bottom:none;}
+.msg-item:hover{background:#f8fafc;}
+.msg-item.unread .msg-subject{font-weight:700;color:var(--navy);}
+.msg-item.unread .msg-header::before{
+  content:'';display:inline-block;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--blue);margin-right:8px;flex-shrink:0;
+}
+.msg-header{
+  display:flex;align-items:center;
+  padding:11px 14px;gap:6px;
+}
+.msg-sender{
+  font-size:.7rem;font-weight:700;color:var(--blue);
+  flex-shrink:0;
+  background:rgba(33,74,154,.08);
+  padding:2px 8px;border-radius:20px;
+}
+.msg-subject{
+  font-size:.82rem;color:var(--navy);flex:1;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.msg-date{font-size:.65rem;color:var(--muted);flex-shrink:0;margin-left:auto;}
+.msg-chevron{
+  color:var(--muted);font-size:.65rem;flex-shrink:0;
+  transition:transform .2s;margin-left:4px;
+}
+.msg-chevron.open{transform:rotate(180deg);}
+.msg-body{
+  display:none;padding:10px 14px 14px;
+  background:#fafbfc;border-top:1px solid var(--border);
+}
+.msg-body.open{display:block;}
+.msg-body-text{
+  font-size:.8rem;line-height:1.8;color:var(--text);
+  white-space:pre-wrap;word-break:break-word;
+}
+.msg-target-tag{
+  display:inline-block;margin-top:10px;
+  font-size:.62rem;color:var(--muted);
+  background:var(--bg);border:1px solid var(--border);
+  padding:2px 8px;border-radius:10px;
+}
+
 /* ===== 情報編集モーダル ===== */
 .modal-overlay{
   display:none;position:fixed;inset:0;
@@ -401,6 +458,23 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
           <a href="./attendance.html" id="attendLink" class="btn-attend">
             <i class="fa-solid fa-check-circle"></i> 今週の出欠を回答する
           </a>
+        </div>
+      </div>
+
+      <!-- 受信ボックスカード -->
+      <div class="card" id="inboxCard">
+        <div class="card-head">
+          <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-envelope"></i></div>
+          <div style="flex:1;">
+            <div class="card-title">
+              受信ボックス
+              <span class="inbox-unread-badge" id="inboxBadge" style="display:none;">0</span>
+            </div>
+            <div class="card-sub">幹部からのお知らせ</div>
+          </div>
+        </div>
+        <div id="inboxList">
+          <div class="inbox-empty">読み込み中…</div>
         </div>
       </div>
 
@@ -593,8 +667,9 @@ const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPAB
 const PANELS = [
   { id:'finance',   name:'会計委員会',       icon:'fa-solid fa-yen-sign',        colorClass:'pi-finance',   file:'panel_finance.html',   ready:true  },
   { id:'venue',     name:'予約管理委員会',    icon:'fa-solid fa-calendar-days',   colorClass:'pi-venue',     file:'panel_venue.html',     ready:true  },
+  { id:'pr',        name:'広報委員会',        icon:'fa-solid fa-bullhorn',        colorClass:'pi-pr',        file:'panel_pr.html',        ready:true  },
+  { id:'contact',   name:'連絡網',            icon:'fa-solid fa-paper-plane',     colorClass:'pi-venue',     file:'panel_contact.html',   ready:true  },
   { id:'planning',  name:'企画運営委員会',    icon:'fa-solid fa-lightbulb',       colorClass:'pi-planning',  file:'panel_planning.html',  ready:false },
-  { id:'pr',        name:'広報委員会',        icon:'fa-solid fa-bullhorn',        colorClass:'pi-pr',        file:'panel_pr.html',        ready:false },
   { id:'library',   name:'蔵書委員会',        icon:'fa-solid fa-book-open',       colorClass:'pi-library',   file:'panel_library.html',   ready:false },
   { id:'equipment', name:'楽器管理委員会',    icon:'fa-solid fa-drum',            colorClass:'pi-equipment', file:'panel_equipment.html', ready:false },
   { id:'safety',    name:'安全サポート委員会', icon:'fa-solid fa-shield-heart',  colorClass:'pi-safety',    file:'panel_safety.html',    ready:false },
@@ -694,6 +769,9 @@ async function loadMemberData() {
     // 5. 練習スケジュール（今後5回）+ 全員の出欠
     await loadScheduleData(memberData);
 
+    // 6. 受信ボックス
+    await loadInbox(memberData);
+
     showState('main');
 
   } catch (e) {
@@ -713,6 +791,153 @@ async function loadMemberData() {
     ], null);
     showState('main');
   }
+}
+
+// =============================================
+//  受信ボックス
+// =============================================
+async function loadInbox(d) {
+  try {
+    const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+
+    // 自分宛て・全員・団員・自分のパートのメッセージを取得（sent済みのみ）
+    // OR条件はSupabase REST APIで複数filterをorで繋ぐ
+    const part = d.part ? encodeURIComponent(d.part) : '';
+    const memberId = d.id;
+
+    // target_type: all, members, part(自分のパート), individual(target_idsに自分が含まれる)
+    // SupabaseのREST APIではOR条件は ?or=(cond1,cond2) で書く
+    let orConds = `target_type.eq.all,target_type.eq.members`;
+    if (part) orConds += `,and(target_type.eq.part,target_part.eq.${d.part})`;
+    orConds += `,and(target_type.eq.individual,target_ids.cs.{"${memberId}"})`;
+
+    const mRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/messages?status=eq.sent&or=(${encodeURIComponent(orConds)})&order=sent_at.desc&limit=20`,
+      SB_H
+    );
+    const messages = await mRes.json() || [];
+
+    if (!messages.length) {
+      document.getElementById('inboxList').innerHTML =
+        '<div class="inbox-empty">お知らせはありません</div>';
+      return;
+    }
+
+    // 送信者情報を一括取得
+    const senderIds = [...new Set(messages.map(m => m.sender_id).filter(Boolean))];
+    let senderMap = {};
+    if (senderIds.length) {
+      const sRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/members?id=in.(${senderIds.join(',')})&select=id,name,role`,
+        SB_H
+      );
+      const senders = await sRes.json() || [];
+      const ROLE_SHORT = {
+        president:'団長', vice_president:'副団長', conductor:'指揮者',
+        director:'GM', committee:'委員', member:'団員',
+      };
+      senders.forEach(s => {
+        const roleLabel = ROLE_SHORT[s.role] || '';
+        senderMap[s.id] = roleLabel ? `${roleLabel} ${s.name}` : s.name;
+      });
+    }
+
+    // localStorageで既読管理
+    const readKey = `inbox_read_${memberId}`;
+    const readIds = JSON.parse(localStorage.getItem(readKey) || '[]');
+
+    renderInbox(messages, senderMap, readIds, readKey, memberId);
+
+  } catch(e) {
+    console.error('受信ボックス取得エラー:', e);
+    document.getElementById('inboxList').innerHTML =
+      '<div class="inbox-empty">取得できませんでした</div>';
+  }
+}
+
+function renderInbox(messages, senderMap, readIds, readKey, memberId) {
+  const TARGET_LABEL = {
+    all:'全員', members:'団員', part:'パート', individual:'個人宛て',
+  };
+
+  const unreadCount = messages.filter(m => !readIds.includes(m.id)).length;
+
+  // バッジ表示
+  const badge = document.getElementById('inboxBadge');
+  if (unreadCount > 0) {
+    badge.textContent = unreadCount;
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
+  }
+
+  document.getElementById('inboxList').innerHTML = messages.map((m, idx) => {
+    const isUnread = !readIds.includes(m.id);
+    const sender   = m.sender_id ? (senderMap[m.sender_id] || '幹部') : '幹部';
+    const dateStr  = m.sent_at ? formatMsgDate(m.sent_at) : '';
+    const targetLabel = TARGET_LABEL[m.target_type] || m.target_type;
+    const targetExtra = m.target_type === 'part' && m.target_part ? `（${m.target_part}）` : '';
+
+    return `
+    <div class="msg-item ${isUnread ? 'unread' : ''}" id="msg-${m.id}">
+      <div class="msg-header" onclick="toggleMsg('${m.id}', '${readKey}')">
+        ${isUnread ? '' /* .msg-item.unread::before で青丸表示 */ : ''}
+        <span class="msg-sender">${sender}</span>
+        <span class="msg-subject">${m.subject || '（件名なし）'}</span>
+        <span class="msg-date">${dateStr}</span>
+        <i class="fa-solid fa-chevron-down msg-chevron" id="chevron-${m.id}"></i>
+      </div>
+      <div class="msg-body" id="body-msg-${m.id}">
+        <div class="msg-body-text">${escapeHtml(m.body || '')}</div>
+        <div class="msg-target-tag"><i class="fa-solid fa-users" style="margin-right:4px;"></i>送信先：${targetLabel}${targetExtra}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMsg(id, readKey) {
+  const body    = document.getElementById(`body-msg-${id}`);
+  const chevron = document.getElementById(`chevron-${id}`);
+  const item    = document.getElementById(`msg-${id}`);
+
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+
+  // 開いたら既読にする
+  if (body.classList.contains('open') && item.classList.contains('unread')) {
+    item.classList.remove('unread');
+    const readIds = JSON.parse(localStorage.getItem(readKey) || '[]');
+    if (!readIds.includes(id)) {
+      readIds.push(id);
+      localStorage.setItem(readKey, JSON.stringify(readIds));
+    }
+    // バッジ更新
+    const badge = document.getElementById('inboxBadge');
+    const currentCount = parseInt(badge.textContent || '0') - 1;
+    if (currentCount <= 0) {
+      badge.style.display = 'none';
+    } else {
+      badge.textContent = currentCount;
+    }
+  }
+}
+
+function formatMsgDate(isoStr) {
+  const d = new Date(isoStr);
+  const now = new Date();
+  const diffMs  = now - d;
+  const diffDay = Math.floor(diffMs / 86400000);
+  if (diffDay === 0) {
+    return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  } else if (diffDay < 7) {
+    return `${diffDay}日前`;
+  } else {
+    return `${d.getMonth()+1}/${d.getDate()}`;
+  }
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // =============================================
