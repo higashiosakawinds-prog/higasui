@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蔵書委員会パネル | 東大阪吹奏楽団</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
+  --lib:#1D9E75;--lib-dark:#136b4e;--lib-light:rgba(29,158,117,0.1);
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
+  --green:#1D9E75;--red:#C0392B;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
+
+/* ===== ロック画面 ===== */
+#lock-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,var(--navy) 0%,#0a1f18 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+}
+#lock-screen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 30%,rgba(29,158,117,0.15) 0%,transparent 60%),
+             radial-gradient(ellipse at 20% 80%,rgba(200,164,77,0.1) 0%,transparent 50%);
+}
+.lock-card{
+  position:relative;z-index:1;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(29,158,117,0.35);
+  border-radius:24px;padding:2.5rem 2rem;
+  width:100%;max-width:400px;text-align:center;
+  backdrop-filter:blur(16px);
+}
+.lock-icon{font-size:2.5rem;margin-bottom:1rem;}
+.lock-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--lib);margin-bottom:0.6rem;
+}
+.lock-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.3rem;font-weight:700;color:white;margin-bottom:0.4rem;
+}
+.lock-sub{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input-wrap{position:relative;margin-bottom:1rem;}
+.lock-input{
+  width:100%;padding:14px 48px 14px 16px;
+  background:rgba(255,255,255,0.08);
+  border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:12px;color:white;font-size:1rem;font-family:inherit;
+  outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;
+}
+.lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
+.lock-input:focus{border-color:var(--lib);}
+.lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.eye-btn{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;
+}
+.lock-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--lib),var(--lib-dark));
+  color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;
+  font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 20px rgba(29,158,117,0.35);transition:opacity 0.2s,transform 0.15s;
+}
+.lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
+.lock-note{font-size:0.68rem;color:rgba(255,255,255,0.22);margin-top:1.5rem;line-height:1.7;}
+
+/* ===== NAV ===== */
+#site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;
+  background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(29,158,117,0.25);display:none;
+}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem;}
+#nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
+#nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.35);letter-spacing:.14em;font-weight:400;}
+.nav-badge{
+  font-family:'Outfit',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
+  background:rgba(29,158,117,0.15);color:var(--lib);
+  padding:4px 10px;border-radius:20px;border:1px solid rgba(29,158,117,0.3);
+}
+.nav-logout{
+  background:none;border:none;cursor:pointer;
+  font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:inherit;
+  padding:6px 10px;border-radius:8px;transition:color 0.2s;
+}
+.nav-logout:hover{color:rgba(255,255,255,0.8);}
+
+/* ===== MAIN ===== */
+#panel-main{display:none;padding-top:56px;}
+
+/* PAGE HEADER */
+.page-header{
+  background:linear-gradient(160deg,var(--navy) 0%,#0a1f18 100%);
+  position:relative;overflow:hidden;
+}
+.page-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 20%,rgba(29,158,117,0.15) 0%,transparent 55%),
+             radial-gradient(ellipse at 10% 90%,rgba(200,164,77,0.08) 0%,transparent 50%);
+}
+.page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1100px;margin:0 auto;}
+.page-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--lib);
+  display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;
+}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--lib);}
+.page-header h1{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;
+}
+.page-header p{font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.8;}
+
+/* ===== LAYOUT ===== */
+.inner{max-width:1100px;margin:0 auto;padding:0 1.5rem;width:100%;}
+.sec{padding:40px 0;}
+
+.sec-head{margin-bottom:1.5rem;}
+.sec-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--lib);
+  display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;
+}
+.sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.sec-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:700;color:var(--navy);
+}
+
+/* ===== サマリーバー ===== */
+.summary-bar{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-bottom:32px;
+}
+@media(max-width:540px){.summary-bar{grid-template-columns:1fr 1fr;}}
+.summary-card{
+  background:var(--white);border:1px solid var(--border);border-radius:16px;
+  padding:1.2rem 1rem;text-align:center;
+}
+.summary-num{
+  font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;
+  color:var(--lib);line-height:1;
+}
+.summary-label{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+
+/* ===== メニューグリッド ===== */
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+.menu-card{
+  background:var(--white);border:1.5px solid var(--border);border-radius:20px;
+  padding:1.5rem;text-decoration:none;color:var(--text);
+  display:flex;flex-direction:column;gap:12px;
+  transition:all 0.2s;box-shadow:0 2px 12px rgba(33,74,154,0.05);
+  position:relative;overflow:hidden;
+}
+.menu-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--lib),var(--gold));
+  opacity:0;transition:opacity 0.2s;
+}
+.menu-card:hover{
+  border-color:var(--lib);
+  box-shadow:0 8px 28px rgba(29,158,117,0.12);
+  transform:translateY(-2px);
+}
+.menu-card:hover::before{opacity:1;}
+.menu-card-top{display:flex;align-items:flex-start;justify-content:space-between;}
+.menu-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:var(--lib-light);color:var(--lib);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;
+}
+.menu-badge{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.06em;padding:3px 10px;border-radius:20px;
+}
+.badge-new{background:rgba(29,158,117,0.12);color:var(--lib);}
+.badge-pending{background:rgba(200,164,77,0.15);color:#92680a;}
+.menu-title{
+  font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;
+  color:var(--navy);
+}
+.menu-desc{font-size:0.78rem;color:var(--muted);line-height:1.7;}
+.menu-arrow{
+  display:flex;align-items:center;justify-content:flex-end;gap:4px;
+  font-size:0.72rem;color:var(--lib);font-weight:700;
+}
+
+/* ===== お知らせバナー ===== */
+.notice-banner{
+  background:linear-gradient(135deg,var(--lib-light),rgba(200,164,77,0.08));
+  border:1px solid rgba(29,158,117,0.25);border-radius:16px;
+  padding:1.2rem 1.4rem;margin-bottom:32px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.notice-icon{color:var(--lib);font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+.notice-text{font-size:0.82rem;line-height:1.8;color:var(--navy);}
+.notice-text strong{color:var(--lib);}
+
+/* ===== ステータス確認テーブル ===== */
+.status-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.status-table th{
+  padding:8px 12px;text-align:left;
+  font-size:0.68rem;font-weight:700;color:var(--muted);
+  border-bottom:2px solid var(--border);letter-spacing:0.05em;
+}
+.status-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);}
+.status-table tr:last-child td{border-bottom:none;}
+.status-table tr:hover td{background:#f8faf9;}
+.st-dot{
+  display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;
+}
+.dot-active{background:var(--lib);}
+.dot-expired{background:var(--muted);}
+.dot-pending{background:var(--gold);}
+
+footer{background:var(--navy);padding:24px 0;text-align:center;margin-top:40px;}
+footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<!-- ===== LOCK ===== -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">📚</div>
+    <div class="lock-eyebrow">LIBRARY COMMITTEE</div>
+    <div class="lock-title">蔵書委員会パネル</div>
+    <div class="lock-sub">アクセスコードを入力してください</div>
+    <div class="lock-input-wrap">
+      <input class="lock-input" type="password" id="codeInput" placeholder="ACCESS CODE"
+             onkeydown="if(event.key==='Enter')unlock()">
+      <button class="eye-btn" onclick="toggleEye()" id="eyeBtn"><i class="fa-solid fa-eye-slash"></i></button>
+    </div>
+    <button class="lock-btn" onclick="unlock()"><i class="fa-solid fa-book-open" style="margin-right:8px;"></i>ログイン</button>
+    <div class="lock-err" id="lockErr"></div>
+    <div class="lock-note">このページは委員会メンバー専用です<br>URLの共有・スクリーンショットはご遠慮ください</div>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="site-nav">
+  <div class="nav-inner">
+    <a id="nav-logo" href="./member.html">
+      東大阪吹奏楽団
+      <small>HIGASUI WINDS</small>
+    </a>
+    <span class="nav-badge">LIBRARY</span>
+    <button class="nav-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> ログアウト</button>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div id="panel-main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow"><span>LIBRARY COMMITTEE</span></div>
+      <h1>蔵書委員会<br>パネル</h1>
+      <p>楽譜の管理・配布・貸出申請の承認を行います</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="inner">
+
+      <!-- サマリーバー -->
+      <div class="summary-bar">
+        <div class="summary-card">
+          <div class="summary-num" id="sumScores">—</div>
+          <div class="summary-label">登録楽譜数</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="sumDistributing">—</div>
+          <div class="summary-label">配布中</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="sumPending">—</div>
+          <div class="summary-label">貸出申請待ち</div>
+        </div>
+      </div>
+
+      <!-- お知らせバナー -->
+      <div class="notice-banner">
+        <i class="fa-solid fa-circle-info notice-icon"></i>
+        <div class="notice-text">
+          <strong>蔵書委員会の主な役割：</strong>楽譜の登録・PDF管理・パート別配布設定・貸出申請の承認。
+          配布設定した楽譜は、団員のマイページに自動表示されます（ウォーターマーク付き）。
+        </div>
+      </div>
+
+      <!-- メニューグリッド -->
+      <div class="sec-head">
+        <div class="sec-eyebrow"><span>MENU</span></div>
+        <div class="sec-title">機能メニュー</div>
+      </div>
+
+      <div class="menu-grid">
+
+        <!-- 楽譜管理 -->
+        <a class="menu-card" href="./panel_library_scores.html">
+          <div class="menu-card-top">
+            <div class="menu-icon"><i class="fa-solid fa-file-pdf"></i></div>
+            <span class="menu-badge badge-new">SCORES</span>
+          </div>
+          <div>
+            <div class="menu-title">楽譜管理</div>
+            <div class="menu-desc">曲目の登録・PDFアップロード・パートタグの管理。ファイル名からパートを自動判定します。</div>
+          </div>
+          <div class="menu-arrow">管理する <i class="fa-solid fa-chevron-right"></i></div>
+        </a>
+
+        <!-- 配布管理 -->
+        <a class="menu-card" href="./panel_library_loans.html">
+          <div class="menu-card-top">
+            <div class="menu-icon"><i class="fa-solid fa-share-nodes"></i></div>
+            <span class="menu-badge badge-pending" id="pendingBadge" style="display:none;">申請あり</span>
+          </div>
+          <div>
+            <div class="menu-title">配布・貸出管理</div>
+            <div class="menu-desc">パート別の配布設定・表示期間の管理・レンタル申請の承認。貸出ログも確認できます。</div>
+          </div>
+          <div class="menu-arrow">管理する <i class="fa-solid fa-chevron-right"></i></div>
+        </a>
+
+        <!-- 曲目リスト -->
+        <a class="menu-card" href="./panel_library_repertoire.html">
+          <div class="menu-card-top">
+            <div class="menu-icon"><i class="fa-solid fa-list-music"></i></div>
+            <span class="menu-badge badge-new">REPERTOIRE</span>
+          </div>
+          <div>
+            <div class="menu-title">曲目リスト</div>
+            <div class="menu-desc">演奏会候補曲・レパートリーの管理。難易度・編成・演奏時間などを記録できます。</div>
+          </div>
+          <div class="menu-arrow">管理する <i class="fa-solid fa-chevron-right"></i></div>
+        </a>
+
+      </div>
+
+      <!-- 配布中楽譜ステータス -->
+      <div class="sec-head" style="margin-top:40px;">
+        <div class="sec-eyebrow"><span>STATUS</span></div>
+        <div class="sec-title">配布中の楽譜</div>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+        <div style="padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:0.82rem;color:var(--muted);">現在配布設定が有効な楽譜</span>
+          <a href="./panel_library_loans.html" style="font-size:0.78rem;color:var(--lib);font-weight:700;text-decoration:none;">すべて見る →</a>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th>曲名</th>
+                <th>配布先</th>
+                <th>期限</th>
+                <th>状態</th>
+              </tr>
+            </thead>
+            <tbody id="statusTableBody">
+              <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);font-size:0.8rem;">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /panel-main -->
+
+<footer>
+  <p>© 東大阪吹奏楽団 蔵書委員会 | LIBRARY COMMITTEE PANEL</p>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+const CORRECT_CODE = 'LIBRARY';
+const SESSION_KEY  = 'panel_library_auth';
+
+// =============================================
+//  ロック
+// =============================================
+function unlock() {
+  const val = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (val === CORRECT_CODE) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showPanel();
+  } else {
+    const inp = document.getElementById('codeInput');
+    inp.classList.add('error');
+    document.getElementById('lockErr').textContent = 'コードが正しくありません';
+    setTimeout(() => inp.classList.remove('error'), 400);
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+function toggleEye() {
+  const inp = document.getElementById('codeInput');
+  const btn = document.getElementById('eyeBtn');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+  } else {
+    inp.type = 'password';
+    btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+  }
+}
+
+function showPanel() {
+  document.getElementById('lock-screen').style.display  = 'none';
+  document.getElementById('site-nav').style.display     = 'block';
+  document.getElementById('panel-main').style.display   = 'block';
+  loadSummary();
+}
+
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    showPanel();
+  }
+});
+
+// =============================================
+//  サマリー読み込み
+// =============================================
+async function loadSummary() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+
+    // 楽譜総数
+    const [scoresRes, distRes, reqRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/scores?select=id`, { ...SB_H, headers: { ...SB_H.headers, 'Prefer': 'count=exact', 'Range': '0-0' } }),
+      fetch(`${SUPABASE_URL}/rest/v1/score_distributions?select=id,score_id,scores(title),target_type,target_part,valid_until&or=(valid_until.is.null,valid_until.gte.${today})&order=created_at.desc`, SB_H),
+      fetch(`${SUPABASE_URL}/rest/v1/requests?type=eq.score_loan&status=eq.pending&select=id`, { ...SB_H, headers: { ...SB_H.headers, 'Prefer': 'count=exact', 'Range': '0-0' } }),
+    ]);
+
+    // 楽譜総数（Content-Rangeヘッダーから取得）
+    const scoreRange = scoresRes.headers.get('Content-Range');
+    const scoreCount = scoreRange ? scoreRange.split('/')[1] : '—';
+    document.getElementById('sumScores').textContent = scoreCount;
+
+    // 配布中データ
+    const distributions = await distRes.json() || [];
+    document.getElementById('sumDistributing').textContent = distributions.length;
+
+    // 申請待ち
+    const reqRange = reqRes.headers.get('Content-Range');
+    const pendingCount = reqRange ? parseInt(reqRange.split('/')[1]) : 0;
+    document.getElementById('sumPending').textContent = pendingCount;
+    if (pendingCount > 0) {
+      document.getElementById('pendingBadge').style.display = 'inline-block';
+    }
+
+    // ステータステーブル描画
+    renderStatusTable(distributions, today);
+
+  } catch(e) {
+    console.error('サマリー取得エラー:', e);
+    document.getElementById('statusTableBody').innerHTML =
+      '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);font-size:0.8rem;">取得できませんでした</td></tr>';
+    // サマリーにもフォールバック
+    ['sumScores','sumDistributing','sumPending'].forEach(id => {
+      if (document.getElementById(id).textContent === '—') {
+        document.getElementById(id).textContent = '—';
+      }
+    });
+  }
+}
+
+function renderStatusTable(distributions, today) {
+  if (!distributions.length) {
+    document.getElementById('statusTableBody').innerHTML =
+      '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);font-size:0.8rem;">配布中の楽譜はありません</td></tr>';
+    return;
+  }
+
+  const TARGET_LABEL = {
+    all:'全員', members:'団員', part:'パート別', individual:'個人貸出',
+  };
+
+  // 最新5件だけ表示
+  const rows = distributions.slice(0, 5).map(d => {
+    const title      = d.scores?.title || '（タイトル不明）';
+    const target     = TARGET_LABEL[d.target_type] || d.target_type;
+    const targetStr  = d.target_type === 'part' && d.target_part ? `${target}（${d.target_part}）` : target;
+    const isExpired  = d.valid_until && d.valid_until < today;
+    const deadline   = d.valid_until ? d.valid_until.slice(0,10) : '無期限';
+    const dotClass   = isExpired ? 'dot-expired' : 'dot-active';
+    const statusText = isExpired ? '期限切れ' : '配布中';
+
+    return `<tr>
+      <td style="font-weight:600;">${title}</td>
+      <td>${targetStr}</td>
+      <td style="font-family:'Outfit',sans-serif;font-size:0.78rem;">${deadline}</td>
+      <td><span class="st-dot ${dotClass}"></span>${statusText}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('statusTableBody').innerHTML = rows;
+}
+</script>
+</body>
+</html>
