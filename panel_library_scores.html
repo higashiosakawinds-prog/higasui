@@ -390,12 +390,24 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
                 パート譜PDFをアップロード
                 <span>ファイル名からパートを自動判定します</span>
               </label>
+              <!-- 選択方法ボタン -->
+              <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                <label class="btn btn-primary btn-sm" style="cursor:pointer;margin:0;">
+                  <i class="fa-solid fa-file-pdf"></i> PDFを選ぶ
+                  <input type="file" id="fileInput" accept=".pdf" multiple
+                         style="display:none;" onchange="handleFiles(this.files)">
+                </label>
+                <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0;">
+                  <i class="fa-solid fa-folder-open"></i> フォルダごと選ぶ
+                  <input type="file" id="folderInput" webkitdirectory
+                         style="display:none;" onchange="handleFolderFiles(this.files)">
+                </label>
+              </div>
+              <!-- ドラッグ＆ドロップゾーン -->
               <div class="drop-zone" id="dropZone">
-                <input type="file" id="fileInput" accept=".pdf" multiple onchange="handleFiles(this.files)">
                 <div class="drop-zone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                 <div class="drop-zone-text">
-                  <strong>クリックまたはドラッグ＆ドロップ</strong><br>
-                  PDFファイルを選択（複数可）
+                  ここにPDFをドラッグ＆ドロップでも追加できます
                 </div>
                 <div class="drop-zone-hint">
                   例：花は咲く_Clarinet.pdf → 「Clarinet」タグが自動付与
@@ -599,6 +611,20 @@ function initDropZone() {
     zone.classList.remove('dragover');
     handleFiles(e.dataTransfer.files);
   });
+}
+
+// =============================================
+//  フォルダ選択処理（PDFだけ抽出）
+// =============================================
+function handleFolderFiles(fileObjs) {
+  const pdfs = Array.from(fileObjs).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+  if (!pdfs.length) {
+    showToast('⚠️ フォルダ内にPDFが見つかりませんでした');
+    return;
+  }
+  // .DS_Store などの不要ファイルは自動スキップ済み
+  handleFiles(pdfs);
+  showToast(`📂 ${pdfs.length}件のPDFを読み込みました`);
 }
 
 // =============================================
