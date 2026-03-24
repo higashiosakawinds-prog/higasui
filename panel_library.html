@@ -11,7 +11,7 @@
 <style>
 :root{
   --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
-  --lib:#1D9E75;--lib-dark:#136b4e;--lib-light:rgba(29,158,117,0.1);
+  
   --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
   --green:#1D9E75;--red:#C0392B;
 }
@@ -22,18 +22,18 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 /* ===== ロック画面 ===== */
 #lock-screen{
   position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(160deg,var(--navy) 0%,#0a1f18 100%);
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
   display:flex;align-items:center;justify-content:center;padding:1.5rem;
 }
 #lock-screen::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 70% 30%,rgba(29,158,117,0.15) 0%,transparent 60%),
+  background:radial-gradient(ellipse at 70% 30%,rgba(200,164,77,0.15) 0%,transparent 60%),
              radial-gradient(ellipse at 20% 80%,rgba(200,164,77,0.1) 0%,transparent 50%);
 }
 .lock-card{
   position:relative;z-index:1;
   background:rgba(255,255,255,0.05);
-  border:1px solid rgba(29,158,117,0.35);
+  border:1px solid rgba(200,164,77,0.35);
   border-radius:24px;padding:2.5rem 2rem;
   width:100%;max-width:400px;text-align:center;
   backdrop-filter:blur(16px);
@@ -41,7 +41,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .lock-icon{font-size:2.5rem;margin-bottom:1rem;}
 .lock-eyebrow{
   font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
-  letter-spacing:0.28em;text-transform:uppercase;color:var(--lib);margin-bottom:0.6rem;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;
 }
 .lock-title{
   font-family:'Shippori Mincho',serif;
@@ -57,7 +57,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;
 }
 .lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
-.lock-input:focus{border-color:var(--lib);}
+.lock-input:focus{border-color:var(--gold);}
 .lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .eye-btn{
@@ -66,10 +66,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 .lock-btn{
   width:100%;padding:15px;
-  background:linear-gradient(135deg,var(--lib),var(--lib-dark));
+  background:linear-gradient(135deg,var(--gold),#b8933d);
   color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;
   font-family:inherit;cursor:pointer;
-  box-shadow:0 4px 20px rgba(29,158,117,0.35);transition:opacity 0.2s,transform 0.15s;
+  box-shadow:0 4px 20px rgba(200,164,77,0.35);transition:opacity 0.2s,transform 0.15s;
 }
 .lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
 .lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
@@ -79,15 +79,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 #site-nav{
   position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;
   background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(29,158,117,0.25);display:none;
+  border-bottom:1px solid rgba(200,164,77,0.25);display:none;
 }
 .nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem;}
 #nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
 #nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.35);letter-spacing:.14em;font-weight:400;}
 .nav-badge{
   font-family:'Outfit',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
-  background:rgba(29,158,117,0.15);color:var(--lib);
-  padding:4px 10px;border-radius:20px;border:1px solid rgba(29,158,117,0.3);
+  background:rgba(200,164,77,0.15);color:var(--blue);
+  padding:4px 10px;border-radius:20px;border:1px solid rgba(200,164,77,0.3);
 }
 .nav-logout{
   background:none;border:none;cursor:pointer;
@@ -101,21 +101,21 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 /* PAGE HEADER */
 .page-header{
-  background:linear-gradient(160deg,var(--navy) 0%,#0a1f18 100%);
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
   position:relative;overflow:hidden;
 }
 .page-header::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 80% 20%,rgba(29,158,117,0.15) 0%,transparent 55%),
+  background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,0.15) 0%,transparent 55%),
              radial-gradient(ellipse at 10% 90%,rgba(200,164,77,0.08) 0%,transparent 50%);
 }
 .page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1100px;margin:0 auto;}
 .page-eyebrow{
   font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;
-  letter-spacing:0.28em;text-transform:uppercase;color:var(--lib);
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--blue);
   display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;
 }
-.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--lib);}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--blue);}
 .page-header h1{
   font-family:'Shippori Mincho',serif;
   font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;
@@ -129,7 +129,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .sec-head{margin-bottom:1.5rem;}
 .sec-eyebrow{
   font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
-  letter-spacing:0.25em;text-transform:uppercase;color:var(--lib);
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);
   display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;
 }
 .sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
@@ -150,7 +150,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 .summary-num{
   font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;
-  color:var(--lib);line-height:1;
+  color:var(--navy);line-height:1;
 }
 .summary-label{font-size:0.72rem;color:var(--muted);margin-top:4px;}
 
@@ -169,26 +169,26 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 .menu-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--lib),var(--gold));
+  background:linear-gradient(90deg,var(--navy),var(--gold));
   opacity:0;transition:opacity 0.2s;
 }
 .menu-card:hover{
-  border-color:var(--lib);
-  box-shadow:0 8px 28px rgba(29,158,117,0.12);
+  border-color:var(--blue);
+  box-shadow:0 8px 28px rgba(33,74,154,0.12);
   transform:translateY(-2px);
 }
 .menu-card:hover::before{opacity:1;}
 .menu-card-top{display:flex;align-items:flex-start;justify-content:space-between;}
 .menu-icon{
   width:48px;height:48px;border-radius:14px;
-  background:var(--lib-light);color:var(--lib);
+  background:rgba(33,74,154,0.1);color:var(--blue);
   display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;
 }
 .menu-badge{
   font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
   letter-spacing:0.06em;padding:3px 10px;border-radius:20px;
 }
-.badge-new{background:rgba(29,158,117,0.12);color:var(--lib);}
+.badge-new{background:rgba(33,74,154,0.1);color:var(--blue);}
 .badge-pending{background:rgba(200,164,77,0.15);color:#92680a;}
 .menu-title{
   font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;
@@ -197,19 +197,19 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .menu-desc{font-size:0.78rem;color:var(--muted);line-height:1.7;}
 .menu-arrow{
   display:flex;align-items:center;justify-content:flex-end;gap:4px;
-  font-size:0.72rem;color:var(--lib);font-weight:700;
+  font-size:0.72rem;color:var(--blue);font-weight:700;
 }
 
 /* ===== お知らせバナー ===== */
 .notice-banner{
-  background:linear-gradient(135deg,var(--lib-light),rgba(200,164,77,0.08));
-  border:1px solid rgba(29,158,117,0.25);border-radius:16px;
+  background:rgba(33,74,154,0.04);
+  border:1px solid rgba(33,74,154,0.12);border-radius:16px;
   padding:1.2rem 1.4rem;margin-bottom:32px;
   display:flex;align-items:flex-start;gap:12px;
 }
-.notice-icon{color:var(--lib);font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+.notice-icon{color:var(--blue);font-size:1.1rem;flex-shrink:0;margin-top:2px;}
 .notice-text{font-size:0.82rem;line-height:1.8;color:var(--navy);}
-.notice-text strong{color:var(--lib);}
+.notice-text strong{color:var(--blue);}
 
 /* ===== ステータス確認テーブル ===== */
 .status-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
@@ -224,7 +224,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .st-dot{
   display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;
 }
-.dot-active{background:var(--lib);}
+.dot-active{background:var(--blue);}
 .dot-expired{background:var(--muted);}
 .dot-pending{background:var(--gold);}
 
@@ -362,7 +362,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
       <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
         <div style="padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
           <span style="font-size:0.82rem;color:var(--muted);">現在配布設定が有効な楽譜</span>
-          <a href="./panel_library_loans.html" style="font-size:0.78rem;color:var(--lib);font-weight:700;text-decoration:none;">すべて見る →</a>
+          <a href="./panel_library_loans.html" style="font-size:0.78rem;color:var(--blue);font-weight:700;text-decoration:none;">すべて見る →</a>
         </div>
         <div style="overflow-x:auto;">
           <table class="status-table">
