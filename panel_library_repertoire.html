@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>曲目リスト | 蔵書委員会 | 東大阪吹奏楽団</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
+  --green:#1D9E75;--red:#C0392B;
+  --radius:16px;--shadow:0 2px 12px rgba(33,74,154,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ===== ロック ===== */
+#lock-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+#lock-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(200,164,77,0.12) 0%,transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(33,74,154,0.15) 0%,transparent 50%);}
+.lock-card{position:relative;z-index:1;background:rgba(255,255,255,0.05);border:1px solid rgba(200,164,77,0.3);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:400px;text-align:center;backdrop-filter:blur(16px);}
+.lock-icon{font-size:2.5rem;margin-bottom:1rem;}
+.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:white;margin-bottom:0.4rem;}
+.lock-sub{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input-wrap{position:relative;margin-bottom:1rem;}
+.lock-input{width:100%;padding:14px 48px 14px 16px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:white;font-size:1rem;font-family:inherit;outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;}
+.lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
+.lock-input:focus{border-color:var(--gold);}
+.lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;}
+.lock-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8933d);color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 20px rgba(200,164,77,0.35);transition:opacity 0.2s,transform 0.15s;}
+.lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
+.lock-note{font-size:0.68rem;color:rgba(255,255,255,0.22);margin-top:1.5rem;line-height:1.7;}
+
+/* ===== NAV ===== */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);display:none;}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem;}
+.nav-left{display:flex;align-items:center;gap:12px;}
+.nav-back{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.78rem;transition:color 0.2s;}
+.nav-back:hover{color:rgba(255,255,255,0.9);}
+.nav-title{font-family:'Shippori Mincho',serif;color:#fff;font-size:0.95rem;font-weight:700;}
+.nav-badge{font-family:'Outfit',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;background:rgba(200,164,77,0.15);color:var(--gold);padding:4px 10px;border-radius:20px;border:1px solid rgba(200,164,77,0.3);}
+.nav-logout{background:none;border:none;cursor:pointer;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:inherit;padding:6px 10px;border-radius:8px;transition:color 0.2s;}
+.nav-logout:hover{color:rgba(255,255,255,0.8);}
+
+/* ===== MAIN ===== */
+#panel-main{display:none;padding-top:56px;}
+.page-header{background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,0.1) 0%,transparent 55%);}
+.page-header-inner{position:relative;z-index:1;padding:2rem 1.5rem 2.5rem;max-width:1100px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.4rem;}
+.page-header p{font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.8;}
+
+/* ===== LAYOUT ===== */
+.inner{max-width:1100px;margin:0 auto;padding:0 1.5rem;width:100%;}
+.sec{padding:32px 0;}
+.sec-head{margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.sec-eyebrow{font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:0.4rem;}
+.sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:var(--navy);}
+
+/* ===== ボタン ===== */
+.btn{padding:10px 18px;border-radius:10px;font-size:0.85rem;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:opacity 0.2s,transform 0.15s;display:inline-flex;align-items:center;gap:6px;}
+.btn:hover{opacity:0.88;transform:translateY(-1px);}
+.btn-primary{background:var(--blue);color:white;}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#b8933d);color:white;}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+.btn-danger{background:var(--red);color:white;}
+.btn-sm{padding:7px 13px;font-size:0.78rem;}
+
+/* ===== サマリーバー ===== */
+.summary-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.summary-chip{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;
+  border:1.5px solid var(--border);background:var(--white);cursor:pointer;
+  transition:all 0.15s;
+}
+.summary-chip:hover,.summary-chip.active{border-color:var(--blue);background:rgba(33,74,154,0.06);}
+.summary-chip.filter-decided.active{border-color:var(--green);background:rgba(29,158,117,0.08);}
+.summary-chip.filter-candidate.active{border-color:var(--gold);background:rgba(200,164,77,0.08);}
+.summary-chip.filter-rejected.active{border-color:var(--muted);background:rgba(96,96,112,0.06);}
+.chip-count{font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:800;color:var(--navy);}
+.chip-label{color:var(--muted);font-weight:500;}
+
+/* ===== 検索バー ===== */
+.search-wrap{position:relative;margin-bottom:16px;}
+.search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem;}
+.search-input{width:100%;padding:10px 12px 10px 36px;border:1.5px solid var(--border);border-radius:10px;font-size:0.85rem;font-family:inherit;background:var(--white);outline:none;transition:border-color 0.2s;}
+.search-input:focus{border-color:var(--blue);}
+
+/* ===== 曲カード ===== */
+.rep-list{display:flex;flex-direction:column;gap:10px;}
+.rep-card{
+  background:var(--white);border:1.5px solid var(--border);border-radius:14px;
+  overflow:hidden;transition:box-shadow 0.2s;
+}
+.rep-card:hover{box-shadow:0 4px 20px rgba(33,74,154,0.08);}
+.rep-card.status-decided{border-left:4px solid var(--green);}
+.rep-card.status-candidate{border-left:4px solid var(--gold);}
+.rep-card.status-rejected{border-left:4px solid var(--muted);opacity:0.65;}
+.rep-card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;gap:12px;cursor:pointer;
+}
+.rep-title-wrap{flex:1;min-width:0;}
+.rep-title{font-family:'Shippori Mincho',serif;font-size:0.95rem;font-weight:700;color:var(--navy);}
+.rep-meta{font-size:0.72rem;color:var(--muted);margin-top:2px;}
+.rep-badges{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
+.rep-badge{font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;}
+.badge-decided{background:rgba(29,158,117,0.12);color:var(--green);}
+.badge-candidate{background:rgba(200,164,77,0.15);color:#92680a;}
+.badge-rejected{background:rgba(96,96,112,0.1);color:var(--muted);}
+.badge-diff-easy{background:rgba(29,158,117,0.1);color:#136b4e;}
+.badge-diff-medium{background:rgba(200,164,77,0.12);color:#92680a;}
+.badge-diff-hard{background:rgba(192,57,43,0.1);color:var(--red);}
+.badge-has-score{background:rgba(33,74,154,0.1);color:var(--blue);}
+.rep-toggle{color:var(--muted);font-size:0.72rem;transition:transform 0.2s;flex-shrink:0;}
+.rep-toggle.open{transform:rotate(180deg);}
+.rep-body{display:none;border-top:1px solid var(--border);padding:14px 16px;background:#fafbfc;}
+.rep-body.open{display:block;}
+.rep-detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:12px;}
+.rep-detail-item{font-size:0.78rem;}
+.rep-detail-label{color:var(--muted);font-size:0.68rem;margin-bottom:2px;}
+.rep-detail-value{color:var(--navy);font-weight:600;}
+.rep-memo{
+  background:rgba(33,74,154,0.04);border-left:3px solid var(--blue);
+  border-radius:0 8px 8px 0;padding:10px 12px;
+  font-size:0.78rem;color:var(--navy);line-height:1.8;margin-bottom:12px;
+  white-space:pre-wrap;
+}
+.rep-memo-empty{font-size:0.75rem;color:var(--muted);margin-bottom:12px;}
+.rep-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+
+/* ===== モーダル ===== */
+.modal-overlay{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;padding:1.8rem;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);}
+.modal-close{background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
+.modal-close:hover{background:var(--bg);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;}
+.form-grid{display:grid;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:0.78rem;font-weight:700;color:var(--navy);}
+.form-label span{font-size:0.68rem;font-weight:400;color:var(--muted);margin-left:4px;}
+.form-input,.form-select,.form-textarea{padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem;font-family:inherit;color:var(--text);background:var(--white);outline:none;transition:border-color 0.2s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.7;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:540px){.form-row{grid-template-columns:1fr;}}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:560px){.form-row-3{grid-template-columns:1fr 1fr;}}
+
+/* ===== ステータス変更ボタン群 ===== */
+.status-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.status-btn{
+  flex:1;min-width:80px;padding:8px;border-radius:9px;border:1.5px solid var(--border);
+  background:none;font-size:0.75rem;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:all 0.15s;color:var(--muted);
+}
+.status-btn:hover{border-color:var(--blue);color:var(--blue);}
+.status-btn.active-decided{border-color:var(--green);background:rgba(29,158,117,0.1);color:var(--green);}
+.status-btn.active-candidate{border-color:var(--gold);background:rgba(200,164,77,0.1);color:#92680a;}
+.status-btn.active-rejected{border-color:var(--muted);background:rgba(96,96,112,0.08);color:var(--muted);}
+
+/* ===== TOAST / LOADER / EMPTY ===== */
+#toast{position:fixed;bottom:24px;right:24px;z-index:9000;background:var(--navy);color:white;padding:12px 20px;border-radius:12px;font-size:0.85rem;font-weight:500;transform:translateY(80px);opacity:0;transition:transform 0.3s,opacity 0.3s;pointer-events:none;max-width:300px;line-height:1.5;}
+#toast.show{transform:translateY(0);opacity:1;}
+.loader{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;}
+.loader i{animation:spin 1s linear infinite;display:block;font-size:1.5rem;margin-bottom:0.5rem;color:var(--blue);}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);}
+.empty i{font-size:2rem;display:block;margin-bottom:0.8rem;opacity:0.3;}
+.empty p{font-size:0.85rem;}
+
+footer{background:var(--navy);padding:24px 0;text-align:center;margin-top:40px;}
+footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<!-- ===== LOCK ===== -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">📚</div>
+    <div class="lock-eyebrow">LIBRARY COMMITTEE</div>
+    <div class="lock-title">蔵書委員会パネル</div>
+    <div class="lock-sub">アクセスコードを入力してください</div>
+    <div class="lock-input-wrap">
+      <input class="lock-input" type="password" id="codeInput" placeholder="ACCESS CODE" onkeydown="if(event.key==='Enter')unlock()">
+      <button class="eye-btn" onclick="toggleEye()" id="eyeBtn"><i class="fa-solid fa-eye-slash"></i></button>
+    </div>
+    <button class="lock-btn" onclick="unlock()"><i class="fa-solid fa-book-open" style="margin-right:8px;"></i>ログイン</button>
+    <div class="lock-err" id="lockErr"></div>
+    <div class="lock-note">このページは委員会メンバー専用です</div>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a class="nav-back" href="./panel_library.html"><i class="fa-solid fa-chevron-left"></i> ハブへ戻る</a>
+      <span style="color:rgba(255,255,255,0.2);">|</span>
+      <span class="nav-title">曲目リスト</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="nav-badge">REPERTOIRE</span>
+      <button class="nav-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> ログアウト</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div id="panel-main">
+
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow"><span>LIBRARY / REPERTOIRE</span></div>
+      <h1>曲目リスト</h1>
+      <p>演奏会候補曲・レパートリーの管理</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="inner">
+
+      <div class="sec-head">
+        <div>
+          <div class="sec-eyebrow"><span>REPERTOIRE</span></div>
+          <div class="sec-title">曲目一覧</div>
+        </div>
+        <button class="btn btn-gold" onclick="openAddModal()">
+          <i class="fa-solid fa-plus"></i> 曲を追加
+        </button>
+      </div>
+
+      <!-- サマリーフィルター -->
+      <div class="summary-bar" id="summaryBar">
+        <div class="summary-chip active" onclick="filterByStatus('')" id="chip-all">
+          <span class="chip-count" id="cnt-all">—</span>
+          <span class="chip-label">すべて</span>
+        </div>
+        <div class="summary-chip filter-decided" onclick="filterByStatus('decided')" id="chip-decided">
+          <i class="fa-solid fa-circle-check" style="color:var(--green);font-size:0.8rem;"></i>
+          <span class="chip-count" id="cnt-decided">—</span>
+          <span class="chip-label">決定</span>
+        </div>
+        <div class="summary-chip filter-candidate" onclick="filterByStatus('candidate')" id="chip-candidate">
+          <i class="fa-solid fa-star" style="color:var(--gold);font-size:0.8rem;"></i>
+          <span class="chip-count" id="cnt-candidate">—</span>
+          <span class="chip-label">候補</span>
+        </div>
+        <div class="summary-chip filter-rejected" onclick="filterByStatus('rejected')" id="chip-rejected">
+          <i class="fa-solid fa-circle-xmark" style="color:var(--muted);font-size:0.8rem;"></i>
+          <span class="chip-count" id="cnt-rejected">—</span>
+          <span class="chip-label">不採用</span>
+        </div>
+      </div>
+
+      <!-- 検索 -->
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" class="search-input" id="searchInput" placeholder="曲名・作曲者で検索…" oninput="applyFilter()">
+      </div>
+
+      <!-- 一覧 -->
+      <div id="repList">
+        <div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 東大阪吹奏楽団 蔵書委員会 | REPERTOIRE MANAGEMENT</p>
+</footer>
+
+<!-- ===== 追加・編集モーダル ===== -->
+<div class="modal-overlay" id="repModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="repModalTitle">曲を追加</div>
+      <button class="modal-close" onclick="closeModal('repModal')">✕</button>
+    </div>
+    <input type="hidden" id="repEditId">
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label class="form-label">曲名 <span>*必須</span></label>
+        <input type="text" id="repTitle" class="form-input" placeholder="例：アルセナール">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">作曲者</label>
+          <input type="text" id="repComposer" class="form-input" placeholder="例：Jan Van der Roost">
+        </div>
+        <div class="form-group">
+          <label class="form-label">編曲者</label>
+          <input type="text" id="repArranger" class="form-input" placeholder="例：（原典版）">
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">難易度</label>
+          <select id="repDifficulty" class="form-select">
+            <option value="easy">易しい</option>
+            <option value="medium" selected>普通</option>
+            <option value="hard">難しい</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">演奏時間（分）</label>
+          <input type="number" id="repDuration" class="form-input" placeholder="例：8" min="1" max="60">
+        </div>
+        <div class="form-group">
+          <label class="form-label">状態</label>
+          <select id="repStatus" class="form-select">
+            <option value="candidate">候補</option>
+            <option value="decided">決定</option>
+            <option value="rejected">不採用</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">メモ <span>編成・吹き替え指示など</span></label>
+        <textarea id="repNote" class="form-textarea" placeholder="例：Eb Clarinetはオプション。Percussionは最低3名必要。"></textarea>
+      </div>
+
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('repModal')">キャンセル</button>
+      <button class="btn btn-gold btn-sm" onclick="saveRep()">
+        <i class="fa-solid fa-floppy-disk"></i> 保存
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SB_H = { headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}` } };
+const CORRECT_CODE = 'LIBRARY';
+const SESSION_KEY  = 'panel_library_auth';
+
+const STATUS_LABEL = { decided:'決定', candidate:'候補', rejected:'不採用' };
+const STATUS_CLASS = { decided:'badge-decided', candidate:'badge-candidate', rejected:'badge-rejected' };
+const DIFF_LABEL   = { easy:'易しい', medium:'普通', hard:'難しい' };
+const DIFF_CLASS   = { easy:'badge-diff-easy', medium:'badge-diff-medium', hard:'badge-diff-hard' };
+
+let allRep     = [];  // 全データキャッシュ
+let allScores  = [];  // scoresテーブルキャッシュ（リンク判定用）
+let activeFilter = '';
+
+// =============================================
+//  ロック
+// =============================================
+function unlock(){
+  const val = document.getElementById('codeInput').value.trim().toUpperCase();
+  if(val === CORRECT_CODE){
+    sessionStorage.setItem(SESSION_KEY,'1');
+    showPanel();
+  } else {
+    const inp = document.getElementById('codeInput');
+    inp.classList.add('error');
+    document.getElementById('lockErr').textContent = 'コードが正しくありません';
+    setTimeout(()=>inp.classList.remove('error'),400);
+  }
+}
+function logout(){ sessionStorage.removeItem(SESSION_KEY); location.reload(); }
+function toggleEye(){
+  const inp = document.getElementById('codeInput');
+  const btn = document.getElementById('eyeBtn');
+  inp.type = inp.type==='password'?'text':'password';
+  btn.innerHTML = inp.type==='password'
+    ? '<i class="fa-solid fa-eye-slash"></i>'
+    : '<i class="fa-solid fa-eye"></i>';
+}
+function showPanel(){
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('site-nav').style.display    = 'block';
+  document.getElementById('panel-main').style.display  = 'block';
+  loadAll();
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  if(sessionStorage.getItem(SESSION_KEY)==='1') showPanel();
+});
+
+// =============================================
+//  データ読み込み
+// =============================================
+async function loadAll(){
+  try {
+    // レパートリーとscores（リンク判定用）を並列取得
+    const [repRes, scoresRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/repertoire?select=*&order=created_at.desc`, SB_H),
+      fetch(`${SUPABASE_URL}/rest/v1/scores?select=id,title&order=title.asc`, SB_H),
+    ]);
+    allRep    = await repRes.json()    || [];
+    allScores = await scoresRes.json() || [];
+    updateSummary();
+    applyFilter();
+  } catch(e){
+    console.error(e);
+    document.getElementById('repList').innerHTML =
+      '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><p>取得できませんでした</p></div>';
+  }
+}
+
+// =============================================
+//  サマリーカウント更新
+// =============================================
+function updateSummary(){
+  document.getElementById('cnt-all').textContent      = allRep.length;
+  document.getElementById('cnt-decided').textContent  = allRep.filter(r=>r.status==='decided').length;
+  document.getElementById('cnt-candidate').textContent= allRep.filter(r=>r.status==='candidate').length;
+  document.getElementById('cnt-rejected').textContent = allRep.filter(r=>r.status==='rejected').length;
+}
+
+// =============================================
+//  フィルタ
+// =============================================
+function filterByStatus(status){
+  activeFilter = status;
+  // チップのアクティブ切り替え
+  ['all','decided','candidate','rejected'].forEach(s=>{
+    document.getElementById(`chip-${s}`).classList.toggle('active', (status==='' ? s==='all' : s===status));
+  });
+  applyFilter();
+}
+
+function applyFilter(){
+  const q    = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = allRep.filter(r=>{
+    const matchS = !activeFilter || r.status === activeFilter;
+    const matchQ = !q ||
+      (r.title||'').toLowerCase().includes(q) ||
+      (r.composer||'').toLowerCase().includes(q) ||
+      (r.arranger||'').toLowerCase().includes(q);
+    return matchS && matchQ;
+  });
+  renderList(filtered);
+}
+
+// =============================================
+//  一覧レンダリング
+// =============================================
+function renderList(items){
+  if(!items.length){
+    document.getElementById('repList').innerHTML =
+      '<div class="empty"><i class="fa-solid fa-music"></i><p>該当する曲目がありません</p></div>';
+    return;
+  }
+
+  document.getElementById('repList').innerHTML = `<div class="rep-list">${
+    items.map((r,idx)=>{
+      const statusLabel = STATUS_LABEL[r.status] || r.status;
+      const statusClass = STATUS_CLASS[r.status] || '';
+      const diffLabel   = DIFF_LABEL[r.difficulty] || '—';
+      const diffClass   = DIFF_CLASS[r.difficulty] || '';
+      const meta = [r.composer, r.arranger].filter(Boolean).join(' / ');
+      const duration = r.duration_min ? `${r.duration_min}分` : null;
+
+      // scoresテーブルにタイトル一致するものがあればリンク表示
+      const linkedScore = allScores.find(s=>
+        s.title.trim().toLowerCase() === (r.title||'').trim().toLowerCase()
+      );
+
+      return `
+      <div class="rep-card status-${r.status||'candidate'}">
+        <div class="rep-card-head" onclick="toggleRep(${idx})">
+          <div class="rep-title-wrap">
+            <div class="rep-title">${r.title||'（タイトル未設定）'}</div>
+            ${meta?`<div class="rep-meta">${meta}</div>`:''}
+          </div>
+          <div class="rep-badges">
+            <span class="rep-badge ${statusClass}">${statusLabel}</span>
+            ${r.difficulty?`<span class="rep-badge ${diffClass}">${diffLabel}</span>`:''}
+            ${duration?`<span class="rep-badge" style="background:rgba(33,74,154,0.08);color:var(--blue);">${duration}</span>`:''}
+            ${linkedScore?`<span class="rep-badge badge-has-score"><i class="fa-solid fa-file-pdf" style="margin-right:3px;"></i>楽譜あり</span>`:''}
+          </div>
+          <i class="fa-solid fa-chevron-down rep-toggle" id="rtog-${idx}"></i>
+        </div>
+        <div class="rep-body" id="rbod-${idx}">
+          <!-- 詳細グリッド -->
+          <div class="rep-detail-grid">
+            ${r.composer?`<div class="rep-detail-item"><div class="rep-detail-label">作曲者</div><div class="rep-detail-value">${r.composer}</div></div>`:''}
+            ${r.arranger?`<div class="rep-detail-item"><div class="rep-detail-label">編曲者</div><div class="rep-detail-value">${r.arranger}</div></div>`:''}
+            ${r.difficulty?`<div class="rep-detail-item"><div class="rep-detail-label">難易度</div><div class="rep-detail-value">${diffLabel}</div></div>`:''}
+            ${r.duration_min?`<div class="rep-detail-item"><div class="rep-detail-label">演奏時間</div><div class="rep-detail-value">${r.duration_min}分</div></div>`:''}
+          </div>
+          <!-- メモ -->
+          ${r.note
+            ? `<div class="rep-memo"><i class="fa-solid fa-note-sticky" style="margin-right:6px;color:var(--blue);"></i>${escapeHtml(r.note)}</div>`
+            : '<div class="rep-memo-empty">メモなし</div>'
+          }
+          <!-- アクション -->
+          <div class="rep-actions">
+            ${linkedScore
+              ? `<a class="btn btn-primary btn-sm" href="./panel_library_scores.html" target="_blank"><i class="fa-solid fa-file-pdf"></i> 楽譜管理で確認</a>`
+              : `<span style="font-size:0.72rem;color:var(--muted);align-self:center;"><i class="fa-solid fa-circle-info" style="margin-right:4px;"></i>楽譜未登録</span>`
+            }
+            <!-- ステータス変更 -->
+            <div class="status-btns">
+              <button class="status-btn ${r.status==='decided'?'active-decided':''}" onclick="changeStatus('${r.id}','decided')">✅ 決定</button>
+              <button class="status-btn ${r.status==='candidate'?'active-candidate':''}" onclick="changeStatus('${r.id}','candidate')">⭐ 候補</button>
+              <button class="status-btn ${r.status==='rejected'?'active-rejected':''}" onclick="changeStatus('${r.id}','rejected')">✗ 不採用</button>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="openEditModal('${r.id}')"><i class="fa-solid fa-pen"></i> 編集</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRep('${r.id}','${(r.title||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function toggleRep(idx){
+  const body = document.getElementById(`rbod-${idx}`);
+  const tog  = document.getElementById(`rtog-${idx}`);
+  body.classList.toggle('open');
+  tog.classList.toggle('open');
+}
+
+// =============================================
+//  ステータス変更（インライン）
+// =============================================
+async function changeStatus(id, status){
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire?id=eq.${id}`,{
+      method:'PATCH',
+      headers:{ ...SB_H.headers, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+      body: JSON.stringify({ status }),
+    });
+    const labels = { decided:'決定', candidate:'候補', rejected:'不採用' };
+    showToast(`✅ 「${labels[status]}」に変更しました`);
+    await loadAll();
+  } catch{ showToast('❌ 更新に失敗しました'); }
+}
+
+// =============================================
+//  追加・編集モーダル
+// =============================================
+function openAddModal(){
+  document.getElementById('repModalTitle').textContent = '曲を追加';
+  document.getElementById('repEditId').value = '';
+  ['repTitle','repComposer','repArranger','repDuration','repNote'].forEach(id=>{
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('repDifficulty').value = 'medium';
+  document.getElementById('repStatus').value     = 'candidate';
+  openModal('repModal');
+}
+
+function openEditModal(id){
+  const r = allRep.find(x=>x.id===id);
+  if(!r) return;
+  document.getElementById('repModalTitle').textContent = '曲を編集';
+  document.getElementById('repEditId').value    = r.id;
+  document.getElementById('repTitle').value     = r.title    || '';
+  document.getElementById('repComposer').value  = r.composer || '';
+  document.getElementById('repArranger').value  = r.arranger || '';
+  document.getElementById('repDifficulty').value= r.difficulty || 'medium';
+  document.getElementById('repDuration').value  = r.duration_min || '';
+  document.getElementById('repStatus').value    = r.status   || 'candidate';
+  document.getElementById('repNote').value      = r.note     || '';
+  openModal('repModal');
+}
+
+async function saveRep(){
+  const title = document.getElementById('repTitle').value.trim();
+  if(!title){ showToast('⚠️ 曲名は必須です'); return; }
+
+  const payload = {
+    title,
+    composer:     document.getElementById('repComposer').value.trim()  || null,
+    arranger:     document.getElementById('repArranger').value.trim()  || null,
+    difficulty:   document.getElementById('repDifficulty').value,
+    duration_min: parseInt(document.getElementById('repDuration').value) || null,
+    status:       document.getElementById('repStatus').value,
+    note:         document.getElementById('repNote').value.trim()      || null,
+  };
+
+  const editId = document.getElementById('repEditId').value;
+  try {
+    if(editId){
+      await fetch(`${SUPABASE_URL}/rest/v1/repertoire?id=eq.${editId}`,{
+        method:'PATCH',
+        headers:{ ...SB_H.headers, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+      showToast('✅ 更新しました');
+    } else {
+      await fetch(`${SUPABASE_URL}/rest/v1/repertoire`,{
+        method:'POST',
+        headers:{ ...SB_H.headers, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+      showToast(`✅ 「${title}」を追加しました`);
+    }
+    closeModal('repModal');
+    await loadAll();
+  } catch{ showToast('❌ 保存に失敗しました'); }
+}
+
+async function deleteRep(id, title){
+  if(!confirm(`「${title}」を削除しますか？`)) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire?id=eq.${id}`,{
+      method:'DELETE',
+      headers:{ ...SB_H.headers, 'Prefer':'return=minimal' },
+    });
+    showToast(`🗑️ 「${title}」を削除しました`);
+    await loadAll();
+  } catch{ showToast('❌ 削除に失敗しました'); }
+}
+
+// =============================================
+//  ユーティリティ
+// =============================================
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
