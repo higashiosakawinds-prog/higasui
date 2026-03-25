@@ -16,1311 +16,1529 @@
   --muted:#606070; --border:#DDE1EC;
   --green:#1D9E75; --red:#C0392B;
   --radius:20px; --radius-sm:12px;
-  --shadow:0 4px 20px rgba(33,74,154,.07);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
-.inner{max-width:680px;margin:0 auto;padding:0 1.25rem;width:100%;}
-
-/* ===== NAV ===== */
-#site-nav{
-  position:fixed;top:0;left:0;right:0;z-index:1000;height:52px;
-  background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(200,164,77,0.2);
-}
-.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;}
-#nav-logo{display:flex;align-items:center;text-decoration:none;}
-#nav-logo img{height:28px;width:auto;filter:brightness(0) invert(1);opacity:.92;}
-#ham-btn{width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
-#ham-btn span{display:block;width:20px;height:2px;background:white;border-radius:2px;transition:all .3s;}
-#site-drawer{display:none;position:fixed;top:52px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
-#site-drawer.open{display:block;}
-#site-drawer ul{list-style:none;}
-#site-drawer ul li a{display:flex;align-items:center;gap:.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.85);text-decoration:none;font-size:.95rem;font-weight:500;}
-#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:14px;border-radius:14px;font-weight:700;text-decoration:none;}
-
-/* ===== STATES ===== */
-#stateLoading,#stateError{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:80vh;gap:14px;text-align:center;padding:40px 24px;
-}
-.spinner{width:40px;height:40px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* ===== PAGE HEADER ===== */
-.page-header{
-  padding-top:52px;
-  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
-  position:relative;overflow:hidden;
-}
-.page-header::before{
-  content:'';position:absolute;top:-80px;right:-80px;
-  width:320px;height:320px;border-radius:50%;
-  background:rgba(200,164,77,.07);
-}
-.page-header::after{
-  content:'';position:absolute;bottom:-40px;left:-40px;
-  width:180px;height:180px;border-radius:50%;
-  background:rgba(255,255,255,.03);
-}
-.header-inner{position:relative;z-index:1;padding:2rem 1.25rem 2.5rem;max-width:680px;margin:0 auto;}
-.page-eyebrow{
-  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
-  letter-spacing:.28em;text-transform:uppercase;color:var(--gold);
-  display:flex;align-items:center;gap:8px;margin-bottom:.75rem;
-}
-.page-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
-.member-hero{display:flex;align-items:center;gap:16px;}
-.member-avatar{
-  width:60px;height:60px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,rgba(200,164,77,.3),rgba(200,164,77,.1));
-  border:2px solid rgba(200,164,77,.5);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:700;color:var(--gold);
-}
-.member-name{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:#fff;line-height:1.2;}
-.member-badges{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
-.badge{padding:3px 10px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.64rem;font-weight:700;letter-spacing:.05em;}
-.badge-role{background:rgba(200,164,77,.2);color:var(--gold);}
-.badge-part{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);}
-.fee-warning{
-  margin-top:1.2rem;
-  background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);
-  border-radius:10px;padding:.75rem 1rem;
-  display:flex;align-items:center;gap:10px;
-  font-size:.78rem;color:#fca5a5;line-height:1.5;
-}
-
-/* ===== MAIN ===== */
-.main-wrap{padding:24px 0 72px;}
-
-/* ===== CARD ===== */
-.card{
-  background:var(--white);border-radius:var(--radius);
-  border:1px solid var(--border);box-shadow:var(--shadow);
-  overflow:hidden;margin-bottom:16px;
-}
-.card-head{
-  padding:1rem 1.25rem;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;
-}
-.card-icon{
-  width:30px;height:30px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;
-}
-.card-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
-.card-sub{font-size:.7rem;color:var(--muted);margin-top:1px;}
-.card-body{padding:1.25rem;}
-
-/* ===== 出欠カード ===== */
-.attend-list{display:flex;flex-direction:column;gap:0;}
-.attend-row{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 0;border-bottom:1px solid var(--border);font-size:.8rem;
-}
-.attend-row:last-child{border-bottom:none;}
-.attend-date{color:var(--muted);flex-shrink:0;min-width:110px;font-size:.78rem;}
-.attend-badge{padding:2px 9px;border-radius:20px;font-size:.65rem;font-weight:700;flex-shrink:0;}
-.ab-attend{background:#dcfce7;color:#15803d;}
-.ab-late{background:#fef9c3;color:#854d0e;}
-.ab-absent{background:#fee2e2;color:#991b1b;}
-.ab-none{background:var(--bg);color:var(--muted);}
-.attend-note{font-size:.73rem;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-attend{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-top:1rem;padding:11px;border-radius:var(--radius-sm);
-  background:var(--blue);color:#fff;font-size:.82rem;font-weight:700;
-  text-decoration:none;transition:background .2s;
-}
-.btn-attend:hover{background:#1a3d85;}
-
-/* ===== 会費カード ===== */
-.fee-status-row{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
-.fee-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
-.dot-ok{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.12);}
-.dot-warn{background:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.12);}
-.dot-ng{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.12);}
-.fee-label{font-size:.95rem;font-weight:700;color:var(--navy);}
-.fee-sub{font-size:.72rem;color:var(--muted);margin-top:1px;}
-.plan-select{
-  width:100%;padding:11px 13px;border:1.5px solid var(--border);
-  border-radius:10px;font-size:.85rem;font-family:inherit;
-  background:var(--bg);outline:none;color:var(--navy);
-  margin-bottom:10px;cursor:pointer;
-}
-.plan-select:focus{border-color:var(--blue);background:#fff;}
-.btn-stripe{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:12px;border-radius:var(--radius-sm);
-  background:#635bff;color:#fff;font-size:.85rem;font-weight:700;
-  text-decoration:none;border:none;cursor:pointer;
-  font-family:inherit;transition:opacity .2s;
-}
-.btn-stripe:hover{opacity:.88;}
-.btn-stripe-paid{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:11px;border-radius:var(--radius-sm);
-  background:none;border:1.5px solid var(--border);
-  color:var(--muted);font-size:.8rem;font-weight:700;
-  text-decoration:none;cursor:pointer;font-family:inherit;
-}
-.stripe-note{
-  background:#f8fafc;border-radius:var(--radius-sm);
-  padding:.75rem 1rem;font-size:.75rem;color:var(--muted);
-  display:flex;align-items:center;gap:8px;line-height:1.6;
-}
-
-/* ===== 自分の情報カード ===== */
-.info-list{display:flex;flex-direction:column;gap:0;}
-.info-row{
-  display:flex;align-items:baseline;gap:12px;
-  padding:9px 0;border-bottom:1px solid var(--border);font-size:.82rem;
-}
-.info-row:last-child{border-bottom:none;}
-.info-label{color:var(--muted);font-size:.72rem;min-width:80px;flex-shrink:0;}
-.info-value{color:var(--text);font-weight:500;word-break:break-all;}
-.info-empty{color:var(--muted);font-size:.75rem;}
-.btn-edit{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  margin-top:1rem;padding:10px;border-radius:var(--radius-sm);
-  background:none;border:1.5px solid var(--border);
-  color:var(--navy);font-size:.8rem;font-weight:700;
-  cursor:pointer;font-family:inherit;transition:all .2s;width:100%;
-}
-.btn-edit:hover{border-color:var(--blue);color:var(--blue);}
-
-/* ===== 練習スケジュールカード ===== */
-.schedule-list{display:flex;flex-direction:column;gap:10px;}
-.schedule-item{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
-.schedule-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 14px;background:var(--bg);cursor:pointer;
-  transition:background .2s;gap:10px;
-}
-.schedule-head:hover{background:#eef1fb;}
-.schedule-date{font-weight:700;font-size:.85rem;color:var(--navy);flex-shrink:0;}
-.schedule-venue{font-size:.75rem;color:var(--muted);margin-top:1px;}
-.schedule-counts{display:flex;gap:8px;flex-shrink:0;align-items:center;}
-.count-badge{font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;}
-.cb-attend{background:#dcfce7;color:#15803d;}
-.cb-absent{background:#fee2e2;color:#991b1b;}
-.cb-late{background:#fef9c3;color:#854d0e;}
-.cb-none{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
-.schedule-toggle{color:var(--muted);font-size:.7rem;flex-shrink:0;transition:transform .2s;}
-.schedule-toggle.open{transform:rotate(180deg);}
-.schedule-body{display:none;padding:10px 14px;border-top:1px solid var(--border);}
-.schedule-body.open{display:block;}
-.part-row{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:.78rem;}
-.part-row:last-child{border-bottom:none;}
-.part-name{color:var(--muted);min-width:100px;flex-shrink:0;font-size:.72rem;}
-.part-members{color:var(--text);line-height:1.6;flex:1;}
-.part-count{font-family:'Outfit',sans-serif;font-weight:700;color:var(--blue);font-size:.72rem;flex-shrink:0;}
-
-/* ===== セクション見出し ===== */
-.section-label{
-  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
-  letter-spacing:.24em;text-transform:uppercase;color:var(--blue);
-  display:flex;align-items:center;gap:8px;
-  margin:28px 0 12px;
-}
-.section-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
-
-/* ===== 委員会パネルリンク ===== */
-.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:400px){.panel-grid{grid-template-columns:1fr;}}
-.panel-link{
-  display:flex;align-items:center;gap:10px;
-  padding:12px 14px;border-radius:var(--radius-sm);
-  background:var(--white);border:1.5px solid var(--border);
-  text-decoration:none;color:var(--navy);
-  transition:all .2s;box-shadow:var(--shadow);
-}
-.panel-link:hover:not(.wip){border-color:var(--blue);box-shadow:0 6px 24px rgba(33,74,154,.12);transform:translateY(-1px);}
-.panel-link.wip{opacity:.5;cursor:default;pointer-events:none;}
-.panel-icon{
-  width:36px;height:36px;border-radius:9px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;flex-shrink:0;
-}
-.panel-name{font-family:'Shippori Mincho',serif;font-size:.82rem;font-weight:700;line-height:1.3;}
-.panel-tag{font-size:.6rem;color:var(--muted);margin-top:2px;}
-.panel-arrow{margin-left:auto;color:var(--muted);font-size:.7rem;flex-shrink:0;}
-.pi-planning {background:rgba(33,74,154,.1); color:var(--blue);}
-.pi-finance  {background:rgba(200,164,77,.12);color:#92680a;}
-.pi-pr       {background:rgba(139,82,160,.1); color:#6b3fa8;}
-.pi-library  {background:rgba(29,158,117,.1); color:#136b4e;}
-.pi-venue    {background:rgba(14,165,233,.1); color:#0369a1;}
-.pi-equipment{background:rgba(239,68,68,.1);  color:#b91c1c;}
-.pi-safety   {background:rgba(245,158,11,.1); color:#92400e;}
-.pi-admin    {background:rgba(239,68,68,.1);  color:#991b1b;}
-
-/* ===== 各種申請リンク ===== */
-.link-list{display:flex;flex-direction:column;gap:8px;}
-.app-link{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 14px;border-radius:var(--radius-sm);
-  background:var(--white);border:1px solid var(--border);
-  text-decoration:none;color:var(--navy);
-  font-size:.83rem;font-weight:500;
-  transition:all .2s;box-shadow:var(--shadow);
-}
-.app-link:hover{border-color:var(--blue);color:var(--blue);}
-.app-link i.lead{width:18px;text-align:center;color:var(--blue);flex-shrink:0;}
-.app-link-desc{font-size:.68rem;color:var(--muted);margin-top:1px;}
-.app-link-arrow{margin-left:auto;color:var(--muted);font-size:.72rem;flex-shrink:0;}
-
-/* ===== フッター ===== */
-footer{background:var(--navy);padding:28px 0;text-align:center;}
-footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.06em;}
-
-/* ===== 受信ボックスカード ===== */
-.inbox-empty{text-align:center;padding:20px 0;color:var(--muted);font-size:.8rem;}
-.inbox-unread-badge{
-  display:inline-flex;align-items:center;justify-content:center;
-  min-width:18px;height:18px;padding:0 5px;
-  background:var(--red);color:#fff;
-  border-radius:20px;font-family:'Outfit',sans-serif;
-  font-size:.6rem;font-weight:800;margin-left:6px;
-}
-.msg-item{
-  border-bottom:1px solid var(--border);
-  cursor:pointer;transition:background .15s;
-}
-.msg-item:last-child{border-bottom:none;}
-.msg-item:hover{background:#f8fafc;}
-.msg-item.unread .msg-subject{font-weight:700;color:var(--navy);}
-.msg-item.unread .msg-header::before{
-  content:'';display:inline-block;
-  width:6px;height:6px;border-radius:50%;
-  background:var(--blue);margin-right:8px;flex-shrink:0;
-}
-.msg-header{
-  display:flex;align-items:center;
-  padding:11px 14px;gap:6px;
-}
-.msg-sender{
-  font-size:.7rem;font-weight:700;color:var(--blue);
-  flex-shrink:0;
-  background:rgba(33,74,154,.08);
-  padding:2px 8px;border-radius:20px;
-}
-.msg-subject{
-  font-size:.82rem;color:var(--navy);flex:1;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.msg-date{font-size:.65rem;color:var(--muted);flex-shrink:0;margin-left:auto;}
-.msg-chevron{
-  color:var(--muted);font-size:.65rem;flex-shrink:0;
-  transition:transform .2s;margin-left:4px;
-}
-.msg-chevron.open{transform:rotate(180deg);}
-.msg-body{
-  display:none;padding:10px 14px 14px;
-  background:#fafbfc;border-top:1px solid var(--border);
-}
-.msg-body.open{display:block;}
-.msg-body-text{
-  font-size:.8rem;line-height:1.8;color:var(--text);
-  white-space:pre-wrap;word-break:break-word;
-}
-.msg-target-tag{
-  display:inline-block;margin-top:10px;
-  font-size:.62rem;color:var(--muted);
-  background:var(--bg);border:1px solid var(--border);
-  padding:2px 8px;border-radius:10px;
-}
-.btn-more{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  width:100%;padding:10px;border:none;background:none;
-  border-top:1px solid var(--border);
-  color:var(--blue);font-size:.78rem;font-weight:700;
-  cursor:pointer;font-family:inherit;transition:background .15s;
-}
-.btn-more:hover{background:#f0f4ff;}
-
-/* ===== 情報編集モーダル ===== */
-.modal-overlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(28,43,74,.65);z-index:2000;
-  align-items:flex-end;justify-content:center;
-}
-.modal-overlay.open{display:flex;}
-.modal{
-  background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:680px;
-  padding:1.5rem 1.5rem 2.5rem;max-height:90vh;overflow-y:auto;
-}
-.modal-drag{width:36px;height:4px;background:#e5e7eb;border-radius:2px;margin:0 auto 1.2rem;}
-.modal-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;}
-.modal-fg{margin-bottom:1rem;}
-.modal-fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
-.modal-fg input,.modal-fg select{
-  width:100%;padding:11px 13px;border:1.5px solid var(--border);
-  border-radius:10px;font-size:.88rem;font-family:inherit;
-  background:var(--bg);outline:none;transition:border-color .2s;
-}
-.modal-fg input:focus,.modal-fg select:focus{border-color:var(--blue);background:#fff;}
-.modal-note{
-  background:rgba(33,74,154,.05);border-left:3px solid var(--blue);
-  border-radius:0 8px 8px 0;padding:.7rem 1rem;
-  font-size:.75rem;color:var(--navy);line-height:1.7;margin-bottom:1.2rem;
-}
-.modal-actions{display:flex;gap:10px;margin-top:1.2rem;}
-.btn-cancel{
-  flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;
-  background:none;font-family:inherit;font-size:.85rem;font-weight:700;
-  color:var(--muted);cursor:pointer;transition:all .2s;
-}
-.btn-cancel:hover{border-color:var(--navy);color:var(--navy);}
-.btn-save{
-  flex:2;padding:12px;border:none;border-radius:10px;
-  background:var(--blue);color:#fff;font-family:inherit;
-  font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;
-}
-.btn-save:hover{background:#1a3d85;}
-.modal-msg{
-  display:none;border-radius:8px;padding:.7rem 1rem;
-  font-size:.78rem;margin-top:.8rem;
-}
-.modal-msg.success{display:block;background:#dcfce7;color:#15803d;}
-.modal-msg.error{display:block;background:#fee2e2;color:#991b1b;}
-</style>
-</head>
-<body>
-
-<!-- ===== NAV ===== -->
-<nav id="site-nav">
-  <div class="nav-inner">
-    <a id="nav-logo" href="./index.html">
-      <img src="./higasui.svg" alt="東大阪吹奏楽団">
-    </a>
-    <button id="ham-btn" onclick="toggleDrawer()" aria-label="メニュー">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-<div id="site-drawer">
-  <ul>
-    <li><a href="./index.html"><i class="fa-solid fa-house" style="width:18px"></i> トップ</a></li>
-    <li><a href="./join.html"><i class="fa-solid fa-music" style="width:18px"></i> 練習案内・入団</a></li>
-    <li><a href="./member_form.html"><i class="fa-solid fa-file-pen" style="width:18px"></i> 各種申請</a></li>
-  </ul>
-  <a class="btn" id="drawer-cta" href="./attendance.html">出欠回答はこちら</a>
-</div>
-
-<!-- ===== LOADING ===== -->
-<div id="stateLoading">
-  <div class="spinner"></div>
-  <p style="font-size:.82rem;color:var(--muted);">読み込み中…</p>
-</div>
-
-<!-- ===== ERROR ===== -->
-<div id="stateError" style="display:none;">
-  <div style="font-size:2.5rem;">🔗</div>
-  <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--red);">URLが無効です</div>
-  <p style="font-size:.82rem;color:var(--muted);line-height:1.7;max-width:280px;">このURLは使用できません。<br>LINEで受け取ったマイページURLをご確認ください。</p>
-  <a href="./index.html" style="margin-top:12px;color:var(--blue);font-size:.82rem;">トップページへ戻る</a>
-</div>
-
-<!-- ===== MAIN ===== -->
-<div id="mainContent" style="display:none;">
-
-  <!-- PAGE HEADER -->
-  <div class="page-header">
-    <div class="header-inner">
-      <div class="page-eyebrow"><span>MEMBER PAGE</span></div>
-      <div class="member-hero">
-        <div class="member-avatar" id="avatarInitial">？</div>
-        <div>
-          <div class="member-name" id="headerName">―</div>
-          <div class="member-badges">
-            <span class="badge badge-role" id="headerRole">―</span>
-            <span class="badge badge-part" id="headerPart" style="display:none;"></span>
-          </div>
-        </div>
-      </div>
-      <!-- 未納警告 -->
-      <div class="fee-warning" id="feeWarning" style="display:none;">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        <span>会費に未納があります。幹部までご連絡ください。</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="main-wrap">
-    <div class="inner">
-
-      <!-- 出欠カード -->
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-calendar-check"></i></div>
-          <div>
-            <div class="card-title">出欠履歴</div>
-            <div class="card-sub">直近5回</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="attend-list" id="attendList">
-            <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">読み込み中…</div>
-          </div>
-          <a href="./attendance.html" id="attendLink" class="btn-attend">
-            <i class="fa-solid fa-check-circle"></i> 今週の出欠を回答する
-          </a>
-        </div>
-      </div>
-
-      <!-- 受信ボックスカード -->
-      <div class="card" id="inboxCard">
-        <div class="card-head">
-          <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-envelope"></i></div>
-          <div style="flex:1;">
-            <div class="card-title">
-              受信ボックス
-              <span class="inbox-unread-badge" id="inboxBadge" style="display:none;">0</span>
-            </div>
-            <div class="card-sub">幹部からのお知らせ</div>
-          </div>
-        </div>
-        <div id="inboxList">
-          <div class="inbox-empty">読み込み中…</div>
-        </div>
-      </div>
-
-      <!-- 会費カード -->
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon" style="background:rgba(200,164,77,.12);color:var(--gold);"><i class="fa-solid fa-yen-sign"></i></div>
-          <div>
-            <div class="card-title">会費状況</div>
-            <div class="card-sub">現在のステータス</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="fee-status-row">
-            <div class="fee-dot" id="feeDot"></div>
-            <div>
-              <div class="fee-label" id="feeLabel">―</div>
-              <div class="fee-sub" id="feeSub">―</div>
-            </div>
-          </div>
-          <!-- 未納・未契約時：プラン選択＋支払いボタン -->
-          <div id="feePayArea" style="display:none;">
-            <select class="plan-select" id="planSelect">
-              <option value="">プランを選択してください</option>
-              <option value="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800">一般団員・月額 ¥3,000</option>
-              <option value="https://buy.stripe.com/test_14A14oe5m8ZSc343OK04801">学生団員・月額 ¥1,500</option>
-            </select>
-            <button class="btn-stripe" onclick="goToStripe()">
-              <i class="fa-brands fa-stripe"></i> 会費を支払う
-            </button>
-          </div>
-          <!-- 支払い済み -->
-          <div id="feePortalArea" style="display:none;">
-            <a class="btn-stripe-paid" href="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800" target="_blank">
-              <i class="fa-solid fa-arrow-up-right-from-square"></i> Stripeで支払い情報を確認
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 自分の情報カード -->
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon" style="background:rgba(29,158,117,.1);color:#136b4e;"><i class="fa-solid fa-user"></i></div>
-          <div>
-            <div class="card-title">自分の情報</div>
-            <div class="card-sub">登録情報の確認・変更申請</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="info-list" id="infoList">
-            <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">読み込み中…</div>
-          </div>
-          <button class="btn-edit" onclick="openEditModal()">
-            <i class="fa-solid fa-pen"></i> 情報の変更を申請する
-          </button>
-        </div>
-      </div>
-
-      <!-- 練習スケジュール（今後5回・出欠集計） -->
-      <div class="section-label"><span>SCHEDULE</span></div>
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon" style="background:rgba(14,165,233,.1);color:#0369a1;"><i class="fa-solid fa-calendar-days"></i></div>
-          <div>
-            <div class="card-title">練習スケジュール</div>
-            <div class="card-sub">今後5回・出欠集計</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="schedule-list" id="scheduleList">
-            <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">読み込み中…</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 委員会パネル -->
-      <div class="section-label"><span>COMMITTEE PANELS</span></div>
-      <div class="panel-grid" id="panelGrid"><!-- JSで生成 --></div>
-
-      <!-- 各種申請 -->
-      <div class="section-label"><span>APPLICATIONS</span></div>
-      <div class="link-list">
-        <a class="app-link" href="./member_form.html">
-          <i class="fa-solid fa-person-walking-arrow-right lead"></i>
-          <div>
-            <div>休団申請</div>
-            <div class="app-link-desc">一時的に活動をお休みする場合</div>
-          </div>
-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
-        </a>
-        <a class="app-link" href="./member_form.html">
-          <i class="fa-solid fa-person-walking-arrow-loop-left lead"></i>
-          <div>
-            <div>復団申請</div>
-            <div class="app-link-desc">休団から活動を再開する場合</div>
-          </div>
-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
-        </a>
-        <a class="app-link" href="./member_form.html">
-          <i class="fa-solid fa-right-from-bracket lead"></i>
-          <div>
-            <div>退団申請</div>
-            <div class="app-link-desc">団を離れる場合</div>
-          </div>
-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
-        </a>
-        <a class="app-link" href="./request_form.html">
-          <i class="fa-solid fa-inbox lead"></i>
-          <div>
-            <div>各種申請フォーム</div>
-            <div class="app-link-desc">楽譜貸出・WS参加・備品購入リクエストなど</div>
-          </div>
-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
-        </a>
-        <a class="app-link" href="./yakkan.html">
-          <i class="fa-solid fa-book lead"></i>
-          <div>
-            <div>定款・ルール確認</div>
-            <div class="app-link-desc">団の規則・約款を確認する</div>
-          </div>
-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
-        </a>
-      </div>
-
-    </div>
-  </div>
-
-</div><!-- /mainContent -->
-
-<footer>
-  <p>© 東大阪吹奏楽団 | 後援：東大阪市・東大阪市教育委員会</p>
-</footer>
-
-<!-- ===== 情報編集モーダル（ボトムシート） ===== -->
-<div class="modal-overlay" id="editModal">
-  <div class="modal">
-    <div class="modal-drag"></div>
-    <div class="modal-title">情報の変更を申請する</div>
-    <div class="modal-note">
-      <i class="fa-solid fa-info-circle" style="margin-right:6px;"></i>
-      変更リクエストは幹部に通知されます。承認後に反映されます。
-    </div>
-    <div class="modal-fg">
-      <label>お名前</label>
-      <input type="text" id="editName" placeholder="例：山田 太郎">
-    </div>
-    <div class="modal-fg">
-      <label>パート</label>
-      <select id="editPart">
-        <option value="">選択してください</option>
-        <optgroup label="木管">
-          <option>Flute</option><option>Oboe</option><option>Clarinet</option>
-          <option>Bass Clarinet</option><option>Fagotto</option>
-          <option>Alto Saxophone</option><option>Tenor Saxophone</option><option>Baritone Saxophone</option>
-        </optgroup>
-        <optgroup label="金管">
-          <option>Trumpet</option><option>Horn</option>
-          <option>Trombone</option><option>Euphonium</option><option>Tuba</option>
-        </optgroup>
-        <optgroup label="打楽器"><option>Percussion</option></optgroup>
-        <optgroup label="その他"><option>String Bass</option><option>Piano</option><option>その他</option></optgroup>
-      </select>
-    </div>
-    <div class="modal-fg">
-      <label>メールアドレス</label>
-      <input type="email" id="editEmail" placeholder="例：your@email.com">
-    </div>
-    <div class="modal-fg">
-      <label>備考（任意）</label>
-      <input type="text" id="editNote" placeholder="変更理由など">
-    </div>
-    <div class="modal-msg" id="editMsg"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeEditModal()">キャンセル</button>
-      <button class="btn-save" onclick="submitEdit()"><i class="fa-solid fa-paper-plane"></i> 変更を申請する</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// =============================================
-//  設定
-// =============================================
-const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
-
-// 委員会パネル定義
-const PANELS = [
-  { id:'finance',   name:'会計委員会',       icon:'fa-solid fa-yen-sign',        colorClass:'pi-finance',   file:'panel_finance.html',   ready:true  },
-  { id:'venue',     name:'予約管理委員会',    icon:'fa-solid fa-calendar-days',   colorClass:'pi-venue',     file:'panel_venue.html',     ready:true  },
-  { id:'pr',        name:'広報委員会',        icon:'fa-solid fa-bullhorn',        colorClass:'pi-pr',        file:'panel_pr.html',        ready:true  },
-  { id:'contact',   name:'連絡網',            icon:'fa-solid fa-paper-plane',     colorClass:'pi-venue',     file:'panel_contact.html',   ready:true  },
-  { id:'planning',  name:'企画運営委員会',    icon:'fa-solid fa-lightbulb',       colorClass:'pi-planning',  file:'panel_planning.html',  ready:false },
-  { id:'library',   name:'蔵書委員会',        icon:'fa-solid fa-book-open',       colorClass:'pi-library',   file:'panel_library.html',   ready:true },
-  { id:'equipment', name:'楽器管理委員会',    icon:'fa-solid fa-drum',            colorClass:'pi-equipment', file:'panel_equipment.html', ready:true },
-  { id:'safety',    name:'安全サポート委員会', icon:'fa-solid fa-shield-heart',  colorClass:'pi-safety',    file:'panel_safety.html',    ready:false },
-  { id:'admin',     name:'GMパネル',          icon:'fa-solid fa-shield-halved',   colorClass:'pi-admin',     file:'panel_admin.html',     ready:false },
-];
-
-// =============================================
-//  状態
-// =============================================
-let memberToken = null;
-let memberData  = null;
-
-// =============================================
-//  初期化
-// =============================================
-window.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(location.search);
-  memberToken  = params.get('token');
-  if (!memberToken) { showState('error'); return; }
-
-  renderPanelGrid(null); // tokenなし・権限なしで初期描画
-  await loadMemberData();
-});
-
-// =============================================
-//  Supabase からデータ取得
-// =============================================
-async function loadMemberData() {
-  try {
-    // 1. tokenで団員情報取得
-    const mRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-    );
-    const members = await mRes.json();
-    if (!members || members.length === 0) { showState('error'); return; }
-    memberData = members[0];
-
-    // 2. 基本情報を画面へ
-    renderHeader(memberData);
-    renderInfoCard(memberData);
-    renderFeeCard(memberData);
-    renderPanelGrid(memberData); // role+committeeで権限判定
-
-    // 3. 出欠履歴（直近5回の練習 + 自分の回答）
-    // 過去3回 + 今後2回を取得（回答済みのものを表示）
-    const today = new Date().toISOString().split('T')[0];
-    const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
-
-    // 過去の練習（最大5回）
-    const pPastRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=lte.${today}&order=date.desc&limit=5`,
-      SB_H
-    );
-    const pastPractices = await pPastRes.json() || [];
-
-    // 今後の練習（最大3回）
-    const pFutureRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=gt.${today}&order=date.asc&limit=3`,
-      SB_H
-    );
-    const futurePractices = await pFutureRes.json() || [];
-
-    // 合わせて日付順に並べる
-    const allPractices = [...futurePractices, ...pastPractices]
-      .sort((a, b) => b.date.localeCompare(a.date))
-      .slice(0, 5);
-
-    let attendHistory  = [];
-    let nextPracticeId = null;
-
-    if (allPractices.length > 0) {
-      const ids = allPractices.map(p => p.id).join(',');
-      const aRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/attendances?member_id=eq.${memberData.id}&practice_id=in.(${ids})`,
-        SB_H
-      );
-      const attendances = await aRes.json() || [];
-
-      const WEEK = ['日','月','火','水','木','金','土'];
-      attendHistory = allPractices.map(p => {
-        const d = new Date(p.date);
-        const label = (d.getMonth()+1) + '月' + d.getDate() + '日（' + WEEK[d.getDay()] + '）';
-        const att = attendances.find(a => a.practice_id === p.id);
-        // statusカラム名で取得（answerではなくstatus）
-        return { date: label, answer: att?.status || null, note: att?.note || '' };
-      });
-
-      // 4. 次回練習（出欠リンクに pid をセット）
-      if (futurePractices.length > 0) {
-        nextPracticeId = futurePractices[0].id;
-      }
-    }
-
-    renderAttendCard(attendHistory, nextPracticeId);
-
-    // 5. 練習スケジュール（今後5回）+ 全員の出欠
-    await loadScheduleData(memberData);
-
-    // 6. 受信ボックス
-    await loadInbox(memberData);
-
-    showState('main');
-
-  } catch (e) {
-    console.error('Supabase error:', e);
-    // フォールバック：モックで表示
-    const mock = { name:'山田 太郎', part:'Clarinet', role:'member', member_type:'正会員', fee_status:'paid', email:'', committee:null };
-    renderHeader(mock);
-    renderFeeCard(mock);
-    renderInfoCard(mock);
-    renderPanelGrid(mock);
-    renderAttendCard([
-      { date:'3月15日（土）', answer:'attend', note:'' },
-      { date:'3月 8日（土）', answer:'late',   note:'15分遅刻' },
-      { date:'3月 1日（土）', answer:'attend', note:'' },
-      { date:'2月22日（土）', answer:'absent', note:'仕事のため' },
-      { date:'2月15日（土）', answer:'attend', note:'' },
-    ], null);
-    showState('main');
-  }
-}
-
-// =============================================
-//  受信ボックス
-// =============================================
-async function loadInbox(d) {
-  try {
-    const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
-
-    // 自分宛て・全員・団員・自分のパートのメッセージを取得（sent済みのみ）
-    // OR条件はSupabase REST APIで複数filterをorで繋ぐ
-    const part = d.part ? encodeURIComponent(d.part) : '';
-    const memberId = d.id;
-
-    // target_type: all, members, part(自分のパート), individual(target_idsに自分が含まれる)
-    // SupabaseのREST APIではOR条件は ?or=(cond1,cond2) で書く
-    let orConds = `target_type.eq.all,target_type.eq.members`;
-    if (part) orConds += `,and(target_type.eq.part,target_part.eq.${d.part})`;
-    orConds += `,and(target_type.eq.individual,target_ids.cs.{"${memberId}"})`;
-
-    const mRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/messages?status=eq.sent&or=(${encodeURIComponent(orConds)})&order=sent_at.desc&limit=20`,
-      SB_H
-    );
-    const messages = await mRes.json() || [];
-
-    if (!messages.length) {
-      document.getElementById('inboxList').innerHTML =
-        '<div class="inbox-empty">お知らせはありません</div>';
-      return;
-    }
-
-    // 送信者情報を一括取得
-    const senderIds = [...new Set(messages.map(m => m.sender_id).filter(Boolean))];
-    let senderMap = {};
-    if (senderIds.length) {
-      const sRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/members?id=in.(${senderIds.join(',')})&select=id,name,role`,
-        SB_H
-      );
-      const senders = await sRes.json() || [];
-      const ROLE_SHORT = {
-        president:'団長', vice_president:'副団長', conductor:'指揮者',
-        director:'GM', committee:'委員', member:'団員',
-      };
-      senders.forEach(s => {
-        const roleLabel = ROLE_SHORT[s.role] || '';
-        senderMap[s.id] = roleLabel ? `${roleLabel} ${s.name}` : s.name;
-      });
-    }
-
-    // localStorageで既読管理
-    const readKey = `inbox_read_${memberId}`;
-    const readIds = JSON.parse(localStorage.getItem(readKey) || '[]');
-
-    renderInbox(messages, senderMap, readIds, readKey, memberId);
-
-  } catch(e) {
-    console.error('受信ボックス取得エラー:', e);
-    document.getElementById('inboxList').innerHTML =
-      '<div class="inbox-empty">取得できませんでした</div>';
-  }
-}
-
-function renderInbox(messages, senderMap, readIds, readKey, memberId) {
-  const TARGET_LABEL = {
-    all:'全員', members:'団員', part:'パート', individual:'個人宛て',
-  };
-
-  const unreadCount = messages.filter(m => !readIds.includes(m.id)).length;
-
-  // バッジ表示
-  const badge = document.getElementById('inboxBadge');
-  if (unreadCount > 0) {
-    badge.textContent = unreadCount;
-    badge.style.display = 'inline-flex';
-  } else {
-    badge.style.display = 'none';
-  }
-
-  const SHOW = 5;
-  const visible = messages.slice(0, SHOW);
-  const hidden  = messages.slice(SHOW);
-
-  const makeMsg = m => {
-    const isUnread    = !readIds.includes(m.id);
-    const sender      = m.sender_id ? (senderMap[m.sender_id] || '幹部') : '幹部';
-    const dateStr     = m.sent_at ? formatMsgDate(m.sent_at) : '';
-    const targetLabel = TARGET_LABEL[m.target_type] || m.target_type;
-    const targetExtra = m.target_type === 'part' && m.target_part ? `（${m.target_part}）` : '';
-    return `
-    <div class="msg-item ${isUnread ? 'unread' : ''}" id="msg-${m.id}">
-      <div class="msg-header" onclick="toggleMsg('${m.id}', '${readKey}')">
-        <span class="msg-sender">${sender}</span>
-        <span class="msg-subject">${m.subject || '（件名なし）'}</span>
-        <span class="msg-date">${dateStr}</span>
-        <i class="fa-solid fa-chevron-down msg-chevron" id="chevron-${m.id}"></i>
-      </div>
-      <div class="msg-body" id="body-msg-${m.id}">
-        <div class="msg-body-text">${escapeHtml(m.body || '')}</div>
-        <div class="msg-target-tag"><i class="fa-solid fa-users" style="margin-right:4px;"></i>送信先：${targetLabel}${targetExtra}</div>
-      </div>
-    </div>`;
-  };
-
-  let html = visible.map(makeMsg).join('');
-
-  if (hidden.length) {
-    html += `<div id="inboxHidden" style="display:none;">${hidden.map(makeMsg).join('')}</div>`;
-    html += `<button class="btn-more" id="inboxMoreBtn" onclick="showMoreInbox()">
-      <i class="fa-solid fa-chevron-down"></i> 過去のお知らせをもっと見る（${hidden.length}件）
-    </button>`;
-  }
-
-  document.getElementById('inboxList').innerHTML = html;
-}
-
-function showMoreInbox() {
-  document.getElementById('inboxHidden').style.display = 'block';
-  document.getElementById('inboxMoreBtn').style.display = 'none';
-}
-
-function toggleMsg(id, readKey) {
-  const body    = document.getElementById(`body-msg-${id}`);
-  const chevron = document.getElementById(`chevron-${id}`);
-  const item    = document.getElementById(`msg-${id}`);
-
-  body.classList.toggle('open');
-  chevron.classList.toggle('open');
-
-  // 開いたら既読にする
-  if (body.classList.contains('open') && item.classList.contains('unread')) {
-    item.classList.remove('unread');
-    const readIds = JSON.parse(localStorage.getItem(readKey) || '[]');
-    if (!readIds.includes(id)) {
-      readIds.push(id);
-      localStorage.setItem(readKey, JSON.stringify(readIds));
-    }
-    // バッジ更新
-    const badge = document.getElementById('inboxBadge');
-    const currentCount = parseInt(badge.textContent || '0') - 1;
-    if (currentCount <= 0) {
-      badge.style.display = 'none';
-    } else {
-      badge.textContent = currentCount;
-    }
-  }
-}
-
-function formatMsgDate(isoStr) {
-  const d = new Date(isoStr);
-  const now = new Date();
-  const diffMs  = now - d;
-  const diffDay = Math.floor(diffMs / 86400000);
-  if (diffDay === 0) {
-    return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
-  } else if (diffDay < 7) {
-    return `${diffDay}日前`;
-  } else {
-    return `${d.getMonth()+1}/${d.getDate()}`;
-  }
-}
-
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// =============================================
-//  練習スケジュール（全員出欠集計）
-// =============================================
-async function loadScheduleData(d) {
-  try {
-    const today = new Date().toISOString().split('T')[0];
-
-    // 今後5回の練習
-    const pRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${d.org_id}&date=gte.${today}&order=date.asc&limit=5`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-    );
-    const practices = await pRes.json() || [];
-
-    if (!practices.length) {
-      document.getElementById('scheduleList').innerHTML =
-        '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">予定されている練習はありません</div>';
-      return;
-    }
-
-    // 全団員取得
-    const mRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/members?org_id=eq.${d.org_id}&select=id,name,part&order=part.asc,name.asc`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-    );
-    const allMembers = await mRes.json() || [];
-
-    // 出欠データ取得
-    const ids = practices.map(p => p.id).join(',');
-    const aRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/attendances?practice_id=in.(${ids})`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-    );
-    const allAttendances = await aRes.json() || [];
-
-    renderScheduleCard(practices, allMembers, allAttendances);
-
-  } catch(e) {
-    console.error('スケジュール取得エラー:', e);
-    document.getElementById('scheduleList').innerHTML =
-      '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">取得できませんでした</div>';
-  }
-}
-
-function renderScheduleCard(practices, allMembers, allAttendances) {
-  const WEEK = ['日','月','火','水','木','金','土'];
-
-  document.getElementById('scheduleList').innerHTML = practices.map((p, idx) => {
-    const d       = new Date(p.date);
-    const dateStr = `${d.getMonth()+1}月${d.getDate()}日（${WEEK[d.getDay()]}）`;
-    const timeStr = p.start_time ? `${p.start_time.slice(0,5)}〜${p.end_time ? p.end_time.slice(0,5) : ''}` : '';
-    const att     = allAttendances.filter(a => a.practice_id === p.id);
-
-    const attendCount = att.filter(a => a.status === 'attend').length;
-    const absentCount = att.filter(a => a.status === 'absent').length;
-    const lateCount   = att.filter(a => a.status === 'late').length;
-    const noAnsCount  = Math.max(0, allMembers.length - att.length);
-
-    // パート別集計（参加＋遅刻）
-    const partMap = {};
-    allMembers.forEach(m => {
-      const partKey = m.part || 'その他';
-      if (!partMap[partKey]) partMap[partKey] = { attend:[], absent:[], none:[] };
-      const a = att.find(a => a.member_id === m.id);
-      if (!a)                                        partMap[partKey].none.push(m.name);
-      else if (a.status === 'attend' || a.status === 'late') partMap[partKey].attend.push(m.name + (a.status === 'late' ? '（遅）' : ''));
-      else                                           partMap[partKey].absent.push(m.name);
-    });
-
-    const partRows = Object.entries(partMap).map(([part, data]) =>
-      `<div class="part-row">
-        <span class="part-name">${part}</span>
-        <span class="part-members">${data.attend.length ? data.attend.join('・') : '<span style="color:var(--muted);">出席予定なし</span>'}</span>
-        <span class="part-count">${data.attend.length}名</span>
-      </div>`
-    ).join('');
-
-    return `
-    <div class="schedule-item">
-      <div class="schedule-head" onclick="toggleSchedule(${idx})">
-        <div>
-          <div class="schedule-date">${dateStr}</div>
-          <div class="schedule-venue">${p.venue || '会場未定'}${timeStr ? '　' + timeStr : ''}</div>
-        </div>
-        <div class="schedule-counts">
-          <span class="count-badge cb-attend">参加 ${attendCount}</span>
-          <span class="count-badge cb-absent">欠席 ${absentCount}</span>
-          ${lateCount ? `<span class="count-badge cb-late">遅刻 ${lateCount}</span>` : ''}
-          ${noAnsCount ? `<span class="count-badge cb-none">未回答 ${noAnsCount}</span>` : ''}
-        </div>
-        <i class="fa-solid fa-chevron-down schedule-toggle" id="toggle-${idx}"></i>
-      </div>
-      <div class="schedule-body" id="body-${idx}">
-        <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">▼ パート別出席予定</div>
-        ${partRows}
-        ${p.note ? `<div style="margin-top:10px;padding:.6rem .8rem;background:#f8fafc;border-radius:8px;font-size:.75rem;color:var(--muted);"><i class="fa-solid fa-note-sticky" style="margin-right:6px;"></i>${p.note}</div>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function toggleSchedule(idx) {
-  const body   = document.getElementById(`body-${idx}`);
-  const toggle = document.getElementById(`toggle-${idx}`);
-  body.classList.toggle('open');
-  toggle.classList.toggle('open');
-}
-
-// =============================================
-//  画面描画
-// =============================================
-function renderHeader(d) {
-  const name = d.name || '団員';
-  document.getElementById('avatarInitial').textContent = name.charAt(0);
-  document.getElementById('headerName').textContent    = name;
-
-  const ROLE_LABEL = {
-    president:'団長', vice_president:'副団長', conductor:'指揮者',
-    director:'理事/GM', committee:'委員', member:'正会員',
-    guardian:'保護者', instructor:'外部指導者',
-  };
-
-  // roleカラム（単一）→ バッジ表示
-  const roleEl = document.getElementById('headerRole');
-  roleEl.textContent = ROLE_LABEL[d.role] || d.member_type || '正会員';
-
-  const partEl = document.getElementById('headerPart');
-  if (d.part) { partEl.textContent = d.part; partEl.style.display = ''; }
-  else { partEl.style.display = 'none'; }
-
-  if (d.fee_status === 'unpaid') {
-    document.getElementById('feeWarning').style.display = 'flex';
-  }
-}
-
-function renderFeeCard(d) {
-  const MAP = {
-    paid:    { cls:'dot-ok',   text:'支払い済み',     sub:'毎月自動で請求されます' },
-    unpaid:  { cls:'dot-ng',   text:'未納があります',  sub:'以下からお支払いをお願いします' },
-    pending: { cls:'dot-warn', text:'確認中',         sub:'しばらくお待ちください' },
-  };
-  const s = MAP[d.fee_status] || { cls:'dot-warn', text:'未設定', sub:'プランを選択してお支払いください' };
-  document.getElementById('feeDot').className   = 'fee-dot ' + s.cls;
-  document.getElementById('feeLabel').textContent = s.text;
-  document.getElementById('feeSub').textContent   = s.sub;
-
-  // ボタン表示切り替え
-  const payArea    = document.getElementById('feePayArea');
-  const portalArea = document.getElementById('feePortalArea');
-  if (d.fee_status === 'paid') {
-    payArea.style.display    = 'none';
-    portalArea.style.display = 'block';
-  } else {
-    payArea.style.display    = 'block';
-    portalArea.style.display = 'none';
-  }
-}
-
-function goToStripe() {
-  const url = document.getElementById('planSelect').value;
-  if (!url) { alert('プランを選択してください。'); return; }
-  window.open(url, '_blank');
-}
-
-function renderInfoCard(d) {
-  const ROLE_LABEL = {
-    president:'団長', vice_president:'副団長', conductor:'指揮者',
-    director:'理事/GM', committee:'委員', member:'正会員',
-    guardian:'保護者', instructor:'外部指導者',
-  };
-
-  const rows = [
-    { label:'氏名',     value: d.name },
-    { label:'役職',     value: ROLE_LABEL[d.role] || d.member_type || null },
-    { label:'パート',   value: d.part },
-    { label:'区分',     value: d.member_type },
-    { label:'メール',   value: d.email },
-    { label:'在籍開始', value: d.joined_at ? d.joined_at.slice(0,10) : null },
-  ];
-  document.getElementById('infoList').innerHTML = rows.map(r =>
-    `<div class="info-row">
-      <span class="info-label">${r.label}</span>
-      <span class="${r.value ? 'info-value' : 'info-empty'}">${r.value || '未登録'}</span>
-    </div>`
-  ).join('');
-
-  // 編集モーダル初期値
-  document.getElementById('editName').value  = d.name  || '';
-  document.getElementById('editPart').value  = d.part  || '';
-  document.getElementById('editEmail').value = d.email || '';
-}
-
-function renderAttendCard(history, nextPid) {
-  const LABEL = { attend:'参加', late:'遅刻・早退', absent:'欠席' };
-  const CLS   = { attend:'ab-attend', late:'ab-late', absent:'ab-absent' };
-
-  if (!history || !history.length) {
-    document.getElementById('attendList').innerHTML =
-      '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">回答履歴がありません</div>';
-  } else {
-    const SHOW = 5;
-    const visible = history.slice(0, SHOW);
-    const hidden  = history.slice(SHOW);
-
-    const makeRow = r => `
-      <div class="attend-row">
-        <span class="attend-date">${r.date}</span>
-        <span class="attend-badge ${CLS[r.answer] || 'ab-none'}">${LABEL[r.answer] || '未回答'}</span>
-        ${r.note ? `<span class="attend-note">${r.note}</span>` : ''}
-      </div>`;
-
-    let html = visible.map(makeRow).join('');
-
-    if (hidden.length) {
-      html += `<div id="attendHidden" style="display:none;">${hidden.map(makeRow).join('')}</div>`;
-      html += `<button class="btn-more" id="attendMoreBtn" onclick="showMoreAttend()">
-        <i class="fa-solid fa-chevron-down"></i> 過去の履歴をもっと見る（${hidden.length}件）
-      </button>`;
-    }
-
-    document.getElementById('attendList').innerHTML = html;
-  }
-
-  const attendBase = `./attendance.html?token=${encodeURIComponent(memberToken)}`;
-  document.getElementById('attendLink').href =
-    nextPid ? `${attendBase}&pid=${nextPid}` : attendBase;
-}
-
-function showMoreAttend() {
-  document.getElementById('attendHidden').style.display = 'block';
-  document.getElementById('attendMoreBtn').style.display = 'none';
-}
-
-// role+committeeからパネルアクセス権限を判定
-function canAccessPanel(panelId, d) {
-  if (!d) return false;
-  const role      = d.role      || '';
-  const committee = d.committee || '';
-  // 全パネル開放ロール
-  if (['president', 'vice_president', 'director'].includes(role)) return true;
-  // 担当委員会と一致
-  if (role === panelId || committee === panelId) return true;
-  return false;
-}
-
-function renderPanelGrid(d) {
-  document.getElementById('panelGrid').innerHTML = PANELS.map(p => {
-    const hasAccess = p.ready && canAccessPanel(p.id, d);
-    const isReady   = p.ready;
-    const href = hasAccess && memberToken
-      ? `./${p.file}?token=${encodeURIComponent(memberToken)}`
-      : '#';
-
-    let tagText, arrowIcon, linkClass;
-    if (!isReady) {
-      // 未実装
-      tagText   = '準備中';
-      arrowIcon = 'fa-solid fa-clock';
-      linkClass = 'panel-link wip';
-    } else if (hasAccess) {
-      // アクセス可
-      tagText   = 'アクセス可';
-      arrowIcon = 'fa-solid fa-chevron-right';
-      linkClass = 'panel-link';
-    } else {
-      // 権限なし
-      tagText   = 'アクセス権限なし';
-      arrowIcon = 'fa-solid fa-lock';
-      linkClass = 'panel-link wip';
-    }
-
-    return `
-    <a class="${linkClass}" href="${href}">
-      <div class="panel-icon ${p.colorClass}"><i class="${p.icon}"></i></div>
-      <div style="min-width:0;">
-        <div class="panel-name">${p.name}</div>
-        <div class="panel-tag">${tagText}</div>
-      </div>
-      <i class="${arrowIcon} panel-arrow" style="${isReady && hasAccess ? '' : 'font-size:.6rem;'}"></i>
-    </a>`;
-  }).join('');
-}
-
-// =============================================
-//  情報変更申請モーダル
-// =============================================
-function openEditModal() {
-  document.getElementById('editMsg').className = 'modal-msg';
-  document.getElementById('editMsg').textContent = '';
-  document.getElementById('editModal').classList.add('open');
-}
-function closeEditModal() {
-  document.getElementById('editModal').classList.remove('open');
-}
-
-async function submitEdit() {
-  const name  = document.getElementById('editName').value.trim();
-  const part  = document.getElementById('editPart').value;
-  const email = document.getElementById('editEmail').value.trim();
-  const note  = document.getElementById('editNote').value.trim();
-  const msgEl = document.getElementById('editMsg');
-
-  msgEl.className = 'modal-msg';
-  msgEl.textContent = '';
-
-  if (!name) {
-    msgEl.className = 'modal-msg error';
-    msgEl.textContent = '氏名は必須です。';
-    return;
-  }
-
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/requests`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({
-        member_id: memberData?.id || null,
-        org_id:    memberData?.org_id || null,
-        type:      'info_change',
-        payload:   JSON.stringify({ name, part, email, note }),
-        status:    'pending',
-      }),
-    });
-
-    if (res.ok || res.status === 201) {
-      msgEl.className = 'modal-msg success';
-      msgEl.textContent = '✓ 変更リクエストを送信しました。承認後に反映されます。';
-      setTimeout(closeEditModal, 3000);
-    } else {
-      throw new Error('failed');
-    }
-  } catch(e) {
-    msgEl.className = 'modal-msg error';
-    msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
-  }
-}
-
-// =============================================
-//  状態切替・NAV
-// =============================================
-function showState(state) {
-  document.getElementById('stateLoading').style.display = 'none';
-  document.getElementById('stateError').style.display   = 'none';
-  document.getElementById('mainContent').style.display  = 'none';
-  if (state === 'error') document.getElementById('stateError').style.display = 'flex';
-  else if (state === 'main') document.getElementById('mainContent').style.display = 'block';
-}
-function toggleDrawer() {
-  document.getElementById('site-drawer').classList.toggle('open');
-}
-</script>
-</body>
-</html>
+   --shadow:0 4px 20px rgba(33,74,154,.07);
+ }
+ *{margin:0;padding:0;box-sizing:border-box;}
+ html{scroll-behavior:smooth;}
+ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
+ .inner{max-width:680px;margin:0 auto;padding:0 1.25rem;width:100%;}
+ 
+ /* ===== NAV ===== */
+ #site-nav{
+   position:fixed;top:0;left:0;right:0;z-index:1000;height:52px;
+   background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
+   border-bottom:1px solid rgba(200,164,77,0.2);
+ }
+ .nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;}
+ #nav-logo{display:flex;align-items:center;text-decoration:none;}
+ #nav-logo img{height:28px;width:auto;filter:brightness(0) invert(1);opacity:.92;}
+ #ham-btn{width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+ #ham-btn span{display:block;width:20px;height:2px;background:white;border-radius:2px;transition:all .3s;}
+ #site-drawer{display:none;position:fixed;top:52px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+ #site-drawer.open{display:block;}
+ #site-drawer ul{list-style:none;}
+ #site-drawer ul li a{display:flex;align-items:center;gap:.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.85);text-decoration:none;font-size:.95rem;font-weight:500;}
+ #drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:14px;border-radius:14px;font-weight:700;text-decoration:none;}
+ 
+ /* ===== STATES ===== */
+-#stateLoading,#stateError{
++#stateLoading,#stateError,#stateLogin{
+   display:flex;flex-direction:column;align-items:center;justify-content:center;
+   min-height:80vh;gap:14px;text-align:center;padding:40px 24px;
+ }
++
++/* ===== ログイン画面 ===== */
++.login-card{
++  background:var(--white);border-radius:var(--radius);
++  border:1px solid var(--border);box-shadow:var(--shadow);
++  padding:2rem 1.75rem 2.25rem;width:100%;max-width:360px;text-align:left;
++}
++.login-eyebrow{
++  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
++  letter-spacing:.28em;text-transform:uppercase;color:var(--gold);
++  display:flex;align-items:center;gap:8px;margin-bottom:.75rem;
++}
++.login-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
++.login-title{font-family:'Shippori Mincho',serif;font-size:1.25rem;font-weight:700;color:var(--navy);margin-bottom:1.5rem;}
++.login-fg{margin-bottom:1rem;}
++.login-fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
++.login-fg input{
++  width:100%;padding:11px 13px;border:1.5px solid var(--border);
++  border-radius:10px;font-size:.88rem;font-family:inherit;
++  background:var(--bg);outline:none;transition:border-color .2s;
++}
++.login-fg input:focus{border-color:var(--blue);background:#fff;}
++.btn-login{
++  display:flex;align-items:center;justify-content:center;gap:8px;
++  width:100%;padding:13px;border-radius:var(--radius-sm);
++  background:var(--blue);color:#fff;font-size:.9rem;font-weight:700;
++  border:none;cursor:pointer;font-family:inherit;transition:background .2s;margin-top:.5rem;
++}
++.btn-login:hover{background:#1a3d85;}
++.btn-login:disabled{opacity:.6;cursor:not-allowed;}
++.login-msg{
++  display:none;border-radius:8px;padding:.65rem .9rem;
++  font-size:.78rem;margin-top:.8rem;
++}
++.login-msg.error{display:block;background:#fee2e2;color:#991b1b;}
++.login-msg.success{display:block;background:#dcfce7;color:#15803d;}
++.login-reset{
++  text-align:center;margin-top:1rem;font-size:.75rem;color:var(--muted);
++}
++.login-reset a{color:var(--blue);cursor:pointer;text-decoration:none;}
++.login-reset a:hover{text-decoration:underline;}
++
++/* ===== ログアウトボタン ===== */
++.btn-logout{
++  display:flex;align-items:center;justify-content:center;gap:6px;
++  width:100%;padding:10px;border-radius:var(--radius-sm);
++  background:none;border:1.5px solid var(--border);
++  color:var(--muted);font-size:.8rem;font-weight:700;
++  cursor:pointer;font-family:inherit;transition:all .2s;margin-top:8px;
++}
++.btn-logout:hover{border-color:#ef4444;color:#ef4444;}
+ .spinner{width:40px;height:40px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+ @keyframes spin{to{transform:rotate(360deg);}}
+ 
+ /* ===== PAGE HEADER ===== */
+ .page-header{
+   padding-top:52px;
+   background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+   position:relative;overflow:hidden;
+ }
+ .page-header::before{
+   content:'';position:absolute;top:-80px;right:-80px;
+   width:320px;height:320px;border-radius:50%;
+   background:rgba(200,164,77,.07);
+ }
+ .page-header::after{
+   content:'';position:absolute;bottom:-40px;left:-40px;
+   width:180px;height:180px;border-radius:50%;
+   background:rgba(255,255,255,.03);
+ }
+ .header-inner{position:relative;z-index:1;padding:2rem 1.25rem 2.5rem;max-width:680px;margin:0 auto;}
+ .page-eyebrow{
+   font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
+   letter-spacing:.28em;text-transform:uppercase;color:var(--gold);
+   display:flex;align-items:center;gap:8px;margin-bottom:.75rem;
+ }
+@@ -143,75 +194,82 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
+ .dot-ng{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.12);}
+ .fee-label{font-size:.95rem;font-weight:700;color:var(--navy);}
+ .fee-sub{font-size:.72rem;color:var(--muted);margin-top:1px;}
+ .plan-select{
+   width:100%;padding:11px 13px;border:1.5px solid var(--border);
+   border-radius:10px;font-size:.85rem;font-family:inherit;
+   background:var(--bg);outline:none;color:var(--navy);
+   margin-bottom:10px;cursor:pointer;
+ }
+ .plan-select:focus{border-color:var(--blue);background:#fff;}
+ .btn-stripe{
+   display:flex;align-items:center;justify-content:center;gap:8px;
+   width:100%;padding:12px;border-radius:var(--radius-sm);
+   background:#635bff;color:#fff;font-size:.85rem;font-weight:700;
+   text-decoration:none;border:none;cursor:pointer;
+   font-family:inherit;transition:opacity .2s;
+ }
+ .btn-stripe:hover{opacity:.88;}
+ .btn-stripe-paid{
+   display:flex;align-items:center;justify-content:center;gap:8px;
+   width:100%;padding:11px;border-radius:var(--radius-sm);
+   background:none;border:1.5px solid var(--border);
+   color:var(--muted);font-size:.8rem;font-weight:700;
+   text-decoration:none;cursor:pointer;font-family:inherit;
+ }
+-.stripe-note{
+-  background:#f8fafc;border-radius:var(--radius-sm);
+-  padding:.75rem 1rem;font-size:.75rem;color:var(--muted);
+-  display:flex;align-items:center;gap:8px;line-height:1.6;
+-}
+ 
+ /* ===== 自分の情報カード ===== */
+ .info-list{display:flex;flex-direction:column;gap:0;}
+ .info-row{
+   display:flex;align-items:baseline;gap:12px;
+   padding:9px 0;border-bottom:1px solid var(--border);font-size:.82rem;
+ }
+ .info-row:last-child{border-bottom:none;}
+ .info-label{color:var(--muted);font-size:.72rem;min-width:80px;flex-shrink:0;}
+ .info-value{color:var(--text);font-weight:500;word-break:break-all;}
+ .info-empty{color:var(--muted);font-size:.75rem;}
+ .btn-edit{
+   display:flex;align-items:center;justify-content:center;gap:6px;
+   margin-top:1rem;padding:10px;border-radius:var(--radius-sm);
+   background:none;border:1.5px solid var(--border);
+   color:var(--navy);font-size:.8rem;font-weight:700;
+   cursor:pointer;font-family:inherit;transition:all .2s;width:100%;
+ }
+ .btn-edit:hover{border-color:var(--blue);color:var(--blue);}
+ 
++/* ===== 受信ボックス ===== */
++.inbox-list{display:flex;flex-direction:column;gap:0;}
++.inbox-row{
++  padding:10px 0;border-bottom:1px solid var(--border);
++}
++.inbox-row:last-child{border-bottom:none;}
++.inbox-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;}
++.inbox-sender{font-size:.72rem;color:var(--blue);font-weight:700;}
++.inbox-date{font-size:.68rem;color:var(--muted);}
++.inbox-body{font-size:.8rem;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-word;}
++.inbox-row.unread .inbox-body{font-weight:700;color:var(--navy);}
++
+ /* ===== 練習スケジュールカード ===== */
+ .schedule-list{display:flex;flex-direction:column;gap:10px;}
+ .schedule-item{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+ .schedule-head{
+   display:flex;align-items:center;justify-content:space-between;
+   padding:10px 14px;background:var(--bg);cursor:pointer;
+   transition:background .2s;gap:10px;
+ }
+ .schedule-head:hover{background:#eef1fb;}
+ .schedule-date{font-weight:700;font-size:.85rem;color:var(--navy);flex-shrink:0;}
+ .schedule-venue{font-size:.75rem;color:var(--muted);margin-top:1px;}
+ .schedule-counts{display:flex;gap:8px;flex-shrink:0;align-items:center;}
+ .count-badge{font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;}
+ .cb-attend{background:#dcfce7;color:#15803d;}
+ .cb-absent{background:#fee2e2;color:#991b1b;}
+ .cb-late{background:#fef9c3;color:#854d0e;}
+ .cb-none{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+ .schedule-toggle{color:var(--muted);font-size:.7rem;flex-shrink:0;transition:transform .2s;}
+ .schedule-toggle.open{transform:rotate(180deg);}
+ .schedule-body{display:none;padding:10px 14px;border-top:1px solid var(--border);}
+ .schedule-body.open{display:block;}
+ .part-row{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:.78rem;}
+ .part-row:last-child{border-bottom:none;}
+ .part-name{color:var(--muted);min-width:100px;flex-shrink:0;font-size:.72rem;}
+ .part-members{color:var(--text);line-height:1.6;flex:1;}
+@@ -252,115 +310,50 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
+ .pi-library  {background:rgba(29,158,117,.1); color:#136b4e;}
+ .pi-venue    {background:rgba(14,165,233,.1); color:#0369a1;}
+ .pi-equipment{background:rgba(239,68,68,.1);  color:#b91c1c;}
+ .pi-safety   {background:rgba(245,158,11,.1); color:#92400e;}
+ .pi-admin    {background:rgba(239,68,68,.1);  color:#991b1b;}
+ 
+ /* ===== 各種申請リンク ===== */
+ .link-list{display:flex;flex-direction:column;gap:8px;}
+ .app-link{
+   display:flex;align-items:center;gap:12px;
+   padding:13px 14px;border-radius:var(--radius-sm);
+   background:var(--white);border:1px solid var(--border);
+   text-decoration:none;color:var(--navy);
+   font-size:.83rem;font-weight:500;
+   transition:all .2s;box-shadow:var(--shadow);
+ }
+ .app-link:hover{border-color:var(--blue);color:var(--blue);}
+ .app-link i.lead{width:18px;text-align:center;color:var(--blue);flex-shrink:0;}
+ .app-link-desc{font-size:.68rem;color:var(--muted);margin-top:1px;}
+ .app-link-arrow{margin-left:auto;color:var(--muted);font-size:.72rem;flex-shrink:0;}
+ 
+ /* ===== フッター ===== */
+ footer{background:var(--navy);padding:28px 0;text-align:center;}
+ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.06em;}
+ 
+-/* ===== 受信ボックスカード ===== */
+-.inbox-empty{text-align:center;padding:20px 0;color:var(--muted);font-size:.8rem;}
+-.inbox-unread-badge{
+-  display:inline-flex;align-items:center;justify-content:center;
+-  min-width:18px;height:18px;padding:0 5px;
+-  background:var(--red);color:#fff;
+-  border-radius:20px;font-family:'Outfit',sans-serif;
+-  font-size:.6rem;font-weight:800;margin-left:6px;
+-}
+-.msg-item{
+-  border-bottom:1px solid var(--border);
+-  cursor:pointer;transition:background .15s;
+-}
+-.msg-item:last-child{border-bottom:none;}
+-.msg-item:hover{background:#f8fafc;}
+-.msg-item.unread .msg-subject{font-weight:700;color:var(--navy);}
+-.msg-item.unread .msg-header::before{
+-  content:'';display:inline-block;
+-  width:6px;height:6px;border-radius:50%;
+-  background:var(--blue);margin-right:8px;flex-shrink:0;
+-}
+-.msg-header{
+-  display:flex;align-items:center;
+-  padding:11px 14px;gap:6px;
+-}
+-.msg-sender{
+-  font-size:.7rem;font-weight:700;color:var(--blue);
+-  flex-shrink:0;
+-  background:rgba(33,74,154,.08);
+-  padding:2px 8px;border-radius:20px;
+-}
+-.msg-subject{
+-  font-size:.82rem;color:var(--navy);flex:1;
+-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+-}
+-.msg-date{font-size:.65rem;color:var(--muted);flex-shrink:0;margin-left:auto;}
+-.msg-chevron{
+-  color:var(--muted);font-size:.65rem;flex-shrink:0;
+-  transition:transform .2s;margin-left:4px;
+-}
+-.msg-chevron.open{transform:rotate(180deg);}
+-.msg-body{
+-  display:none;padding:10px 14px 14px;
+-  background:#fafbfc;border-top:1px solid var(--border);
+-}
+-.msg-body.open{display:block;}
+-.msg-body-text{
+-  font-size:.8rem;line-height:1.8;color:var(--text);
+-  white-space:pre-wrap;word-break:break-word;
+-}
+-.msg-target-tag{
+-  display:inline-block;margin-top:10px;
+-  font-size:.62rem;color:var(--muted);
+-  background:var(--bg);border:1px solid var(--border);
+-  padding:2px 8px;border-radius:10px;
+-}
+-.btn-more{
+-  display:flex;align-items:center;justify-content:center;gap:6px;
+-  width:100%;padding:10px;border:none;background:none;
+-  border-top:1px solid var(--border);
+-  color:var(--blue);font-size:.78rem;font-weight:700;
+-  cursor:pointer;font-family:inherit;transition:background .15s;
+-}
+-.btn-more:hover{background:#f0f4ff;}
+-
+ /* ===== 情報編集モーダル ===== */
+ .modal-overlay{
+   display:none;position:fixed;inset:0;
+   background:rgba(28,43,74,.65);z-index:2000;
+   align-items:flex-end;justify-content:center;
+ }
+ .modal-overlay.open{display:flex;}
+ .modal{
+   background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:680px;
+   padding:1.5rem 1.5rem 2.5rem;max-height:90vh;overflow-y:auto;
+ }
+ .modal-drag{width:36px;height:4px;background:#e5e7eb;border-radius:2px;margin:0 auto 1.2rem;}
+ .modal-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;}
+ .modal-fg{margin-bottom:1rem;}
+ .modal-fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+ .modal-fg input,.modal-fg select{
+   width:100%;padding:11px 13px;border:1.5px solid var(--border);
+   border-radius:10px;font-size:.88rem;font-family:inherit;
+   background:var(--bg);outline:none;transition:border-color .2s;
+ }
+ .modal-fg input:focus,.modal-fg select:focus{border-color:var(--blue);background:#fff;}
+ .modal-note{
+   background:rgba(33,74,154,.05);border-left:3px solid var(--blue);
+   border-radius:0 8px 8px 0;padding:.7rem 1rem;
+   font-size:.75rem;color:var(--navy);line-height:1.7;margin-bottom:1.2rem;
+@@ -392,935 +385,768 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
+ <nav id="site-nav">
+   <div class="nav-inner">
+     <a id="nav-logo" href="./index.html">
+       <img src="./higasui.svg" alt="東大阪吹奏楽団">
+     </a>
+     <button id="ham-btn" onclick="toggleDrawer()" aria-label="メニュー">
+       <span></span><span></span><span></span>
+     </button>
+   </div>
+ </nav>
+ <div id="site-drawer">
+   <ul>
+     <li><a href="./index.html"><i class="fa-solid fa-house" style="width:18px"></i> トップ</a></li>
+     <li><a href="./join.html"><i class="fa-solid fa-music" style="width:18px"></i> 練習案内・入団</a></li>
+     <li><a href="./member_form.html"><i class="fa-solid fa-file-pen" style="width:18px"></i> 各種申請</a></li>
+   </ul>
+   <a class="btn" id="drawer-cta" href="./attendance.html">出欠回答はこちら</a>
+ </div>
+ 
+ <!-- ===== LOADING ===== -->
+ <div id="stateLoading">
+   <div class="spinner"></div>
+   <p style="font-size:.82rem;color:var(--muted);">読み込み中…</p>
+ </div>
+ 
++<!-- ===== LOGIN ===== -->
++<div id="stateLogin" style="display:none;">
++  <div class="login-card">
++    <div class="login-eyebrow"><span>MEMBER PAGE</span></div>
++    <div class="login-title">マイページにログイン</div>
++    <div class="login-fg">
++      <label>メールアドレス</label>
++      <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
++    </div>
++    <div class="login-fg">
++      <label>パスワード</label>
++      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
++    </div>
++    <div class="login-msg" id="loginMsg"></div>
++    <button class="btn-login" id="loginBtn" onclick="doLogin()">
++      <i class="fa-solid fa-right-to-bracket"></i> ログイン
++    </button>
++    <div class="login-reset">
++      <a onclick="doResetPassword()">パスワードを忘れた方はこちら</a>
++    </div>
++  </div>
++</div>
++
+ <!-- ===== ERROR ===== -->
+ <div id="stateError" style="display:none;">
+-  <div style="font-size:2.5rem;">🔗</div>
+-  <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--red);">URLが無効です</div>
+-  <p style="font-size:.82rem;color:var(--muted);line-height:1.7;max-width:280px;">このURLは使用できません。<br>LINEで受け取ったマイページURLをご確認ください。</p>
+-  <a href="./index.html" style="margin-top:12px;color:var(--blue);font-size:.82rem;">トップページへ戻る</a>
++  <div style="font-size:2.5rem;">⚠️</div>
++  <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--red);">エラーが発生しました</div>
++  <p style="font-size:.82rem;color:var(--muted);line-height:1.7;max-width:280px;">しばらく時間をおいて再度お試しください。<br>問題が続く場合は幹部までご連絡ください。</p>
++  <a onclick="showState('login')" style="margin-top:12px;color:var(--blue);font-size:.82rem;cursor:pointer;">ログイン画面に戻る</a>
+ </div>
+ 
+ <!-- ===== MAIN ===== -->
+ <div id="mainContent" style="display:none;">
+-
+-  <!-- PAGE HEADER -->
+   <div class="page-header">
+     <div class="header-inner">
+       <div class="page-eyebrow"><span>MEMBER PAGE</span></div>
+       <div class="member-hero">
+         <div class="member-avatar" id="avatarInitial">？</div>
+         <div>
+           <div class="member-name" id="headerName">―</div>
+           <div class="member-badges">
+             <span class="badge badge-role" id="headerRole">―</span>
+             <span class="badge badge-part" id="headerPart" style="display:none;"></span>
+           </div>
+         </div>
+       </div>
+-      <!-- 未納警告 -->
+       <div class="fee-warning" id="feeWarning" style="display:none;">
+         <i class="fa-solid fa-triangle-exclamation"></i>
+         <span>会費に未納があります。幹部までご連絡ください。</span>
+       </div>
+     </div>
+   </div>
+ 
+   <div class="main-wrap">
+     <div class="inner">
+-
+-      <!-- 出欠カード -->
+       <div class="card">
+         <div class="card-head">
+           <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-calendar-check"></i></div>
+           <div>
+             <div class="card-title">出欠履歴</div>
+             <div class="card-sub">直近5回</div>
+           </div>
+         </div>
+         <div class="card-body">
+           <div class="attend-list" id="attendList">
+             <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">読み込み中…</div>
+           </div>
+           <a href="./attendance.html" id="attendLink" class="btn-attend">
+             <i class="fa-solid fa-check-circle"></i> 今週の出欠を回答する
+           </a>
+         </div>
+       </div>
+ 
+-      <!-- 受信ボックスカード -->
+-      <div class="card" id="inboxCard">
+-        <div class="card-head">
+-          <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-envelope"></i></div>
+-          <div style="flex:1;">
+-            <div class="card-title">
+-              受信ボックス
+-              <span class="inbox-unread-badge" id="inboxBadge" style="display:none;">0</span>
+-            </div>
+-            <div class="card-sub">幹部からのお知らせ</div>
+-          </div>
+-        </div>
+-        <div id="inboxList">
+-          <div class="inbox-empty">読み込み中…</div>
+-        </div>
+-      </div>
+-
+-      <!-- 会費カード -->
+       <div class="card">
+         <div class="card-head">
+           <div class="card-icon" style="background:rgba(200,164,77,.12);color:var(--gold);"><i class="fa-solid fa-yen-sign"></i></div>
+           <div>
+             <div class="card-title">会費状況</div>
+             <div class="card-sub">現在のステータス</div>
+           </div>
+         </div>
+         <div class="card-body">
+           <div class="fee-status-row">
+             <div class="fee-dot" id="feeDot"></div>
+             <div>
+               <div class="fee-label" id="feeLabel">―</div>
+               <div class="fee-sub" id="feeSub">―</div>
+             </div>
+           </div>
+-          <!-- 未納・未契約時：プラン選択＋支払いボタン -->
+           <div id="feePayArea" style="display:none;">
+             <select class="plan-select" id="planSelect">
+               <option value="">プランを選択してください</option>
+               <option value="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800">一般団員・月額 ¥3,000</option>
+               <option value="https://buy.stripe.com/test_14A14oe5m8ZSc343OK04801">学生団員・月額 ¥1,500</option>
+             </select>
+             <button class="btn-stripe" onclick="goToStripe()">
+               <i class="fa-brands fa-stripe"></i> 会費を支払う
+             </button>
+           </div>
+-          <!-- 支払い済み -->
+           <div id="feePortalArea" style="display:none;">
+             <a class="btn-stripe-paid" href="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800" target="_blank">
+               <i class="fa-solid fa-arrow-up-right-from-square"></i> Stripeで支払い情報を確認
+             </a>
+           </div>
+         </div>
+       </div>
+ 
+-      <!-- 自分の情報カード -->
+       <div class="card">
+         <div class="card-head">
+           <div class="card-icon" style="background:rgba(29,158,117,.1);color:#136b4e;"><i class="fa-solid fa-user"></i></div>
+           <div>
+             <div class="card-title">自分の情報</div>
+             <div class="card-sub">登録情報の確認・変更申請</div>
+           </div>
+         </div>
+         <div class="card-body">
+           <div class="info-list" id="infoList">
+             <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">読み込み中…</div>
+           </div>
+           <button class="btn-edit" onclick="openEditModal()">
+             <i class="fa-solid fa-pen"></i> 情報の変更を申請する
+           </button>
++          <button class="btn-logout" onclick="doLogout()">
++            <i class="fa-solid fa-right-from-bracket"></i> ログアウト
++          </button>
++        </div>
++      </div>
++
++      <div class="card">
++        <div class="card-head">
++          <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-envelope"></i></div>
++          <div>
++            <div class="card-title">受信ボックス</div>
++            <div class="card-sub">最新5件</div>
++          </div>
++        </div>
++        <div class="card-body">
++          <div class="inbox-list" id="inboxList">
++            <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">読み込み中…</div>
++          </div>
+         </div>
+       </div>
+ 
+-      <!-- 練習スケジュール（今後5回・出欠集計） -->
+       <div class="section-label"><span>SCHEDULE</span></div>
+       <div class="card">
+         <div class="card-head">
+           <div class="card-icon" style="background:rgba(14,165,233,.1);color:#0369a1;"><i class="fa-solid fa-calendar-days"></i></div>
+           <div>
+             <div class="card-title">練習スケジュール</div>
+             <div class="card-sub">今後5回・出欠集計</div>
+           </div>
+         </div>
+         <div class="card-body">
+           <div class="schedule-list" id="scheduleList">
+             <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">読み込み中…</div>
+           </div>
+         </div>
+       </div>
+ 
+-      <!-- 委員会パネル -->
+       <div class="section-label"><span>COMMITTEE PANELS</span></div>
+-      <div class="panel-grid" id="panelGrid"><!-- JSで生成 --></div>
++      <div class="panel-grid" id="panelGrid"></div>
+ 
+-      <!-- 各種申請 -->
+       <div class="section-label"><span>APPLICATIONS</span></div>
+       <div class="link-list">
+-        <a class="app-link" href="./member_form.html">
+-          <i class="fa-solid fa-person-walking-arrow-right lead"></i>
+-          <div>
+-            <div>休団申請</div>
+-            <div class="app-link-desc">一時的に活動をお休みする場合</div>
+-          </div>
+-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
+-        </a>
+-        <a class="app-link" href="./member_form.html">
+-          <i class="fa-solid fa-person-walking-arrow-loop-left lead"></i>
+-          <div>
+-            <div>復団申請</div>
+-            <div class="app-link-desc">休団から活動を再開する場合</div>
+-          </div>
+-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
+-        </a>
+-        <a class="app-link" href="./member_form.html">
+-          <i class="fa-solid fa-right-from-bracket lead"></i>
+-          <div>
+-            <div>退団申請</div>
+-            <div class="app-link-desc">団を離れる場合</div>
+-          </div>
+-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
+-        </a>
+-        <a class="app-link" href="./request_form.html">
+-          <i class="fa-solid fa-inbox lead"></i>
+-          <div>
+-            <div>各種申請フォーム</div>
+-            <div class="app-link-desc">楽譜貸出・WS参加・備品購入リクエストなど</div>
+-          </div>
+-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
+-        </a>
+-        <a class="app-link" href="./yakkan.html">
+-          <i class="fa-solid fa-book lead"></i>
+-          <div>
+-            <div>定款・ルール確認</div>
+-            <div class="app-link-desc">団の規則・約款を確認する</div>
+-          </div>
+-          <i class="fa-solid fa-chevron-right app-link-arrow"></i>
+-        </a>
++        <a class="app-link" href="./member_form.html"><i class="fa-solid fa-person-walking-arrow-right lead"></i><div><div>休団申請</div><div class="app-link-desc">一時的に活動をお休みする場合</div></div><i class="fa-solid fa-chevron-right app-link-arrow"></i></a>
++        <a class="app-link" href="./member_form.html"><i class="fa-solid fa-person-walking-arrow-loop-left lead"></i><div><div>復団申請</div><div class="app-link-desc">休団から活動を再開する場合</div></div><i class="fa-solid fa-chevron-right app-link-arrow"></i></a>
++        <a class="app-link" href="./member_form.html"><i class="fa-solid fa-right-from-bracket lead"></i><div><div>退団申請</div><div class="app-link-desc">団を離れる場合</div></div><i class="fa-solid fa-chevron-right app-link-arrow"></i></a>
++        <a class="app-link" href="./request_form.html"><i class="fa-solid fa-inbox lead"></i><div><div>各種申請フォーム</div><div class="app-link-desc">楽譜貸出・WS参加・備品購入リクエストなど</div></div><i class="fa-solid fa-chevron-right app-link-arrow"></i></a>
++        <a class="app-link" href="./yakkan.html"><i class="fa-solid fa-book lead"></i><div><div>定款・ルール確認</div><div class="app-link-desc">団の規則・約款を確認する</div></div><i class="fa-solid fa-chevron-right app-link-arrow"></i></a>
+       </div>
+-
+     </div>
+   </div>
+-
+-</div><!-- /mainContent -->
++</div>
+ 
+ <footer>
+   <p>© 東大阪吹奏楽団 | 後援：東大阪市・東大阪市教育委員会</p>
+ </footer>
+ 
+-<!-- ===== 情報編集モーダル（ボトムシート） ===== -->
+ <div class="modal-overlay" id="editModal">
+   <div class="modal">
+     <div class="modal-drag"></div>
+     <div class="modal-title">情報の変更を申請する</div>
+-    <div class="modal-note">
+-      <i class="fa-solid fa-info-circle" style="margin-right:6px;"></i>
+-      変更リクエストは幹部に通知されます。承認後に反映されます。
+-    </div>
+-    <div class="modal-fg">
+-      <label>お名前</label>
+-      <input type="text" id="editName" placeholder="例：山田 太郎">
+-    </div>
+-    <div class="modal-fg">
+-      <label>パート</label>
++    <div class="modal-note"><i class="fa-solid fa-info-circle" style="margin-right:6px;"></i>変更リクエストは幹部に通知されます。承認後に反映されます。</div>
++    <div class="modal-fg"><label>お名前</label><input type="text" id="editName" placeholder="例：山田 太郎"></div>
++    <div class="modal-fg"><label>パート</label>
+       <select id="editPart">
+         <option value="">選択してください</option>
+-        <optgroup label="木管">
+-          <option>Flute</option><option>Oboe</option><option>Clarinet</option>
+-          <option>Bass Clarinet</option><option>Fagotto</option>
+-          <option>Alto Saxophone</option><option>Tenor Saxophone</option><option>Baritone Saxophone</option>
+-        </optgroup>
+-        <optgroup label="金管">
+-          <option>Trumpet</option><option>Horn</option>
+-          <option>Trombone</option><option>Euphonium</option><option>Tuba</option>
+-        </optgroup>
++        <optgroup label="木管"><option>Flute</option><option>Oboe</option><option>Clarinet</option><option>Bass Clarinet</option><option>Fagotto</option><option>Alto Saxophone</option><option>Tenor Saxophone</option><option>Baritone Saxophone</option></optgroup>
++        <optgroup label="金管"><option>Trumpet</option><option>Horn</option><option>Trombone</option><option>Euphonium</option><option>Tuba</option></optgroup>
+         <optgroup label="打楽器"><option>Percussion</option></optgroup>
+         <optgroup label="その他"><option>String Bass</option><option>Piano</option><option>その他</option></optgroup>
+       </select>
+     </div>
+-    <div class="modal-fg">
+-      <label>メールアドレス</label>
+-      <input type="email" id="editEmail" placeholder="例：your@email.com">
+-    </div>
+-    <div class="modal-fg">
+-      <label>備考（任意）</label>
+-      <input type="text" id="editNote" placeholder="変更理由など">
+-    </div>
++    <div class="modal-fg"><label>メールアドレス</label><input type="email" id="editEmail" placeholder="例：your@email.com"></div>
++    <div class="modal-fg"><label>備考（任意）</label><input type="text" id="editNote" placeholder="変更理由など"></div>
+     <div class="modal-msg" id="editMsg"></div>
+     <div class="modal-actions">
+       <button class="btn-cancel" onclick="closeEditModal()">キャンセル</button>
+       <button class="btn-save" onclick="submitEdit()"><i class="fa-solid fa-paper-plane"></i> 変更を申請する</button>
+     </div>
+   </div>
+ </div>
+ 
++<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script>
+ // =============================================
+ //  設定
+ // =============================================
+ const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+-const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
++
++// Supabase Auth SDK クライアント
++const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+ 
+ // 委員会パネル定義
+ const PANELS = [
+-  { id:'finance',   name:'会計委員会',       icon:'fa-solid fa-yen-sign',        colorClass:'pi-finance',   file:'panel_finance.html',   ready:true  },
+-  { id:'venue',     name:'予約管理委員会',    icon:'fa-solid fa-calendar-days',   colorClass:'pi-venue',     file:'panel_venue.html',     ready:true  },
+-  { id:'pr',        name:'広報委員会',        icon:'fa-solid fa-bullhorn',        colorClass:'pi-pr',        file:'panel_pr.html',        ready:true  },
+-  { id:'contact',   name:'連絡網',            icon:'fa-solid fa-paper-plane',     colorClass:'pi-venue',     file:'panel_contact.html',   ready:true  },
+-  { id:'planning',  name:'企画運営委員会',    icon:'fa-solid fa-lightbulb',       colorClass:'pi-planning',  file:'panel_planning.html',  ready:false },
+-  { id:'library',   name:'蔵書委員会',        icon:'fa-solid fa-book-open',       colorClass:'pi-library',   file:'panel_library.html',   ready:true },
+-  { id:'equipment', name:'楽器管理委員会',    icon:'fa-solid fa-drum',            colorClass:'pi-equipment', file:'panel_equipment.html', ready:true },
+-  { id:'safety',    name:'安全サポート委員会', icon:'fa-solid fa-shield-heart',  colorClass:'pi-safety',    file:'panel_safety.html',    ready:false },
+-  { id:'admin',     name:'GMパネル',          icon:'fa-solid fa-shield-halved',   colorClass:'pi-admin',     file:'panel_admin.html',     ready:false },
++  { id:'finance',   name:'会計委員会',        icon:'fa-solid fa-yen-sign',        colorClass:'pi-finance',   file:'panel_finance.html',   ready:true  },
++  { id:'venue',     name:'予約管理委員会',     icon:'fa-solid fa-calendar-days',   colorClass:'pi-venue',     file:'panel_venue.html',     ready:true  },
++  { id:'planning',  name:'企画運営委員会',     icon:'fa-solid fa-lightbulb',       colorClass:'pi-planning',  file:'panel_planning.html',  ready:false },
++  { id:'pr',        name:'広報委員会',         icon:'fa-solid fa-bullhorn',        colorClass:'pi-pr',        file:'panel_pr.html',        ready:true  },
++  { id:'library',   name:'蔵書委員会',         icon:'fa-solid fa-book-open',       colorClass:'pi-library',   file:'panel_library.html',   ready:true  },
++  { id:'equipment', name:'楽器管理委員会',     icon:'fa-solid fa-drum',            colorClass:'pi-equipment', file:'panel_equipment.html', ready:true  },
++  { id:'safety',    name:'安全サポート委員会', icon:'fa-solid fa-shield-heart',    colorClass:'pi-safety',    file:'panel_safety.html',    ready:false },
++  { id:'admin',     name:'GMパネル',           icon:'fa-solid fa-shield-halved',   colorClass:'pi-admin',     file:'panel_admin.html',     ready:false },
+ ];
+ 
+ // =============================================
+ //  状態
+ // =============================================
+-let memberToken = null;
+-let memberData  = null;
++let memberData = null;
++let authSession = null;
+ 
+ // =============================================
+-//  初期化
++//  初期化：セッション確認
+ // =============================================
+ window.addEventListener('DOMContentLoaded', async () => {
+-  const params = new URLSearchParams(location.search);
+-  memberToken  = params.get('token');
+-  if (!memberToken) { showState('error'); return; }
++  const { data: { session } } = await supabase.auth.getSession();
++  if (session) {
++    authSession = session;
++    renderPanelGrid(null);
++    await loadMemberData(session.user.email);
++  } else {
++    showState('login');
++  }
+ 
+-  renderPanelGrid(null); // tokenなし・権限なしで初期描画
+-  await loadMemberData();
++  supabase.auth.onAuthStateChange((event) => {
++    if (event === 'SIGNED_OUT') {
++      memberData = null;
++      authSession = null;
++      showState('login');
++    }
++  });
+ });
+ 
+ // =============================================
+-//  Supabase からデータ取得
++//  ログイン
+ // =============================================
+-async function loadMemberData() {
++async function doLogin() {
++  const email = document.getElementById('loginEmail').value.trim();
++  const password = document.getElementById('loginPassword').value;
++  const msgEl = document.getElementById('loginMsg');
++  const btn = document.getElementById('loginBtn');
++
++  msgEl.className = 'login-msg';
++  msgEl.textContent = '';
++
++  if (!email || !password) {
++    msgEl.className = 'login-msg error';
++    msgEl.textContent = 'メールアドレスとパスワードを入力してください。';
++    return;
++  }
++
++  btn.disabled = true;
++  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ログイン中…';
++
++  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
++
++  if (error) {
++    btn.disabled = false;
++    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> ログイン';
++    msgEl.className = 'login-msg error';
++    msgEl.textContent = 'メールアドレスまたはパスワードが正しくありません。';
++    return;
++  }
++
++  authSession = data.session;
++  showState('loading');
++  renderPanelGrid(null);
++  await loadMemberData(data.user.email);
++}
++
++document.addEventListener('keydown', (e) => {
++  if (e.key === 'Enter' && document.getElementById('stateLogin').style.display !== 'none') {
++    doLogin();
++  }
++});
++
++// =============================================
++//  パスワードリセット
++// =============================================
++async function doResetPassword() {
++  const email = document.getElementById('loginEmail').value.trim();
++  const msgEl = document.getElementById('loginMsg');
++
++  if (!email) {
++    msgEl.className = 'login-msg error';
++    msgEl.textContent = 'メールアドレスを入力してからクリックしてください。';
++    return;
++  }
++
++  const { error } = await supabase.auth.resetPasswordForEmail(email, {
++    redirectTo: 'https://higashiosakawinds-prog.github.io/higasui/member.html',
++  });
++
++  if (error) {
++    msgEl.className = 'login-msg error';
++    msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
++  } else {
++    msgEl.className = 'login-msg success';
++    msgEl.textContent = 'パスワードリセットのメールを送信しました。受信ボックスをご確認ください。';
++  }
++}
++
++// =============================================
++//  ログアウト
++// =============================================
++async function doLogout() {
++  if (!confirm('ログアウトしますか？')) return;
++  await supabase.auth.signOut();
++}
++
++// =============================================
++//  Supabase からデータ取得（emailで団員を特定）
++// =============================================
++async function loadMemberData(email) {
+   try {
+-    // 1. tokenで団員情報取得
++    showState('loading');
++    const { data: { session } } = await supabase.auth.getSession();
++    const token = session?.access_token || SUPABASE_KEY;
++    const SB_H = { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` } };
++
+     const mRes = await fetch(
+-      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
++      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(email)}&limit=1`,
++      SB_H
+     );
+     const members = await mRes.json();
+     if (!members || members.length === 0) { showState('error'); return; }
+     memberData = members[0];
+ 
+-    // 2. 基本情報を画面へ
+     renderHeader(memberData);
+     renderInfoCard(memberData);
+     renderFeeCard(memberData);
+-    renderPanelGrid(memberData); // role+committeeで権限判定
++    renderPanelGrid(memberData);
+ 
+-    // 3. 出欠履歴（直近5回の練習 + 自分の回答）
+-    // 過去3回 + 今後2回を取得（回答済みのものを表示）
+     const today = new Date().toISOString().split('T')[0];
+-    const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+ 
+-    // 過去の練習（最大5回）
+     const pPastRes = await fetch(
+       `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=lte.${today}&order=date.desc&limit=5`,
+       SB_H
+     );
+     const pastPractices = await pPastRes.json() || [];
+ 
+-    // 今後の練習（最大3回）
+     const pFutureRes = await fetch(
+       `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData.org_id}&date=gt.${today}&order=date.asc&limit=3`,
+       SB_H
+     );
+     const futurePractices = await pFutureRes.json() || [];
+ 
+-    // 合わせて日付順に並べる
+-    const allPractices = [...futurePractices, ...pastPractices]
+-      .sort((a, b) => b.date.localeCompare(a.date))
+-      .slice(0, 5);
++    const allPractices = [...futurePractices, ...pastPractices].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+ 
+-    let attendHistory  = [];
++    let attendHistory = [];
+     let nextPracticeId = null;
+ 
+     if (allPractices.length > 0) {
+       const ids = allPractices.map(p => p.id).join(',');
+       const aRes = await fetch(
+         `${SUPABASE_URL}/rest/v1/attendances?member_id=eq.${memberData.id}&practice_id=in.(${ids})`,
+         SB_H
+       );
+       const attendances = await aRes.json() || [];
+-
+       const WEEK = ['日','月','火','水','木','金','土'];
++
+       attendHistory = allPractices.map(p => {
+         const d = new Date(p.date);
+         const label = (d.getMonth()+1) + '月' + d.getDate() + '日（' + WEEK[d.getDay()] + '）';
+         const att = attendances.find(a => a.practice_id === p.id);
+-        // statusカラム名で取得（answerではなくstatus）
+         return { date: label, answer: att?.status || null, note: att?.note || '' };
+       });
+ 
+-      // 4. 次回練習（出欠リンクに pid をセット）
+       if (futurePractices.length > 0) {
+         nextPracticeId = futurePractices[0].id;
+       }
+     }
+ 
+     renderAttendCard(attendHistory, nextPracticeId);
+-
+-    // 5. 練習スケジュール（今後5回）+ 全員の出欠
+-    await loadScheduleData(memberData);
+-
+-    // 6. 受信ボックス
+-    await loadInbox(memberData);
++    await loadMessages(memberData, SB_H);
++    await loadScheduleData(memberData, SB_H);
+ 
+     showState('main');
+-
+   } catch (e) {
+     console.error('Supabase error:', e);
+-    // フォールバック：モックで表示
+-    const mock = { name:'山田 太郎', part:'Clarinet', role:'member', member_type:'正会員', fee_status:'paid', email:'', committee:null };
+-    renderHeader(mock);
+-    renderFeeCard(mock);
+-    renderInfoCard(mock);
+-    renderPanelGrid(mock);
+-    renderAttendCard([
+-      { date:'3月15日（土）', answer:'attend', note:'' },
+-      { date:'3月 8日（土）', answer:'late',   note:'15分遅刻' },
+-      { date:'3月 1日（土）', answer:'attend', note:'' },
+-      { date:'2月22日（土）', answer:'absent', note:'仕事のため' },
+-      { date:'2月15日（土）', answer:'attend', note:'' },
+-    ], null);
+-    showState('main');
++    showState('error');
+   }
+ }
+ 
+ // =============================================
+-//  受信ボックス
++//  受信ボックス（最新5件）
+ // =============================================
+-async function loadInbox(d) {
++async function loadMessages(d, SB_H) {
++  const inbox = document.getElementById('inboxList');
++  if (!inbox) return;
+   try {
+-    const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+-
+-    // 自分宛て・全員・団員・自分のパートのメッセージを取得（sent済みのみ）
+-    // OR条件はSupabase REST APIで複数filterをorで繋ぐ
+-    const part = d.part ? encodeURIComponent(d.part) : '';
+-    const memberId = d.id;
+-
+-    // target_type: all, members, part(自分のパート), individual(target_idsに自分が含まれる)
+-    // SupabaseのREST APIではOR条件は ?or=(cond1,cond2) で書く
+-    let orConds = `target_type.eq.all,target_type.eq.members`;
+-    if (part) orConds += `,and(target_type.eq.part,target_part.eq.${d.part})`;
+-    orConds += `,and(target_type.eq.individual,target_ids.cs.{"${memberId}"})`;
+-
+-    const mRes = await fetch(
+-      `${SUPABASE_URL}/rest/v1/messages?status=eq.sent&or=(${encodeURIComponent(orConds)})&order=sent_at.desc&limit=20`,
++    const res = await fetch(
++      `${SUPABASE_URL}/rest/v1/messages?recipient_id=eq.${d.id}&order=created_at.desc&limit=5`,
+       SB_H
+     );
+-    const messages = await mRes.json() || [];
+-
+-    if (!messages.length) {
+-      document.getElementById('inboxList').innerHTML =
+-        '<div class="inbox-empty">お知らせはありません</div>';
++    const msgs = await res.json() || [];
++    if (!msgs.length) {
++      inbox.innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">新着メッセージはありません</div>';
+       return;
+     }
+-
+-    // 送信者情報を一括取得
+-    const senderIds = [...new Set(messages.map(m => m.sender_id).filter(Boolean))];
+-    let senderMap = {};
+-    if (senderIds.length) {
+-      const sRes = await fetch(
+-        `${SUPABASE_URL}/rest/v1/members?id=in.(${senderIds.join(',')})&select=id,name,role`,
+-        SB_H
+-      );
+-      const senders = await sRes.json() || [];
+-      const ROLE_SHORT = {
+-        president:'団長', vice_president:'副団長', conductor:'指揮者',
+-        director:'GM', committee:'委員', member:'団員',
+-      };
+-      senders.forEach(s => {
+-        const roleLabel = ROLE_SHORT[s.role] || '';
+-        senderMap[s.id] = roleLabel ? `${roleLabel} ${s.name}` : s.name;
+-      });
+-    }
+-
+-    // localStorageで既読管理
+-    const readKey = `inbox_read_${memberId}`;
+-    const readIds = JSON.parse(localStorage.getItem(readKey) || '[]');
+-
+-    renderInbox(messages, senderMap, readIds, readKey, memberId);
+-
+-  } catch(e) {
+-    console.error('受信ボックス取得エラー:', e);
+-    document.getElementById('inboxList').innerHTML =
+-      '<div class="inbox-empty">取得できませんでした</div>';
+-  }
+-}
+-
+-function renderInbox(messages, senderMap, readIds, readKey, memberId) {
+-  const TARGET_LABEL = {
+-    all:'全員', members:'団員', part:'パート', individual:'個人宛て',
+-  };
+-
+-  const unreadCount = messages.filter(m => !readIds.includes(m.id)).length;
+-
+-  // バッジ表示
+-  const badge = document.getElementById('inboxBadge');
+-  if (unreadCount > 0) {
+-    badge.textContent = unreadCount;
+-    badge.style.display = 'inline-flex';
+-  } else {
+-    badge.style.display = 'none';
+-  }
+-
+-  const SHOW = 5;
+-  const visible = messages.slice(0, SHOW);
+-  const hidden  = messages.slice(SHOW);
+-
+-  const makeMsg = m => {
+-    const isUnread    = !readIds.includes(m.id);
+-    const sender      = m.sender_id ? (senderMap[m.sender_id] || '幹部') : '幹部';
+-    const dateStr     = m.sent_at ? formatMsgDate(m.sent_at) : '';
+-    const targetLabel = TARGET_LABEL[m.target_type] || m.target_type;
+-    const targetExtra = m.target_type === 'part' && m.target_part ? `（${m.target_part}）` : '';
+-    return `
+-    <div class="msg-item ${isUnread ? 'unread' : ''}" id="msg-${m.id}">
+-      <div class="msg-header" onclick="toggleMsg('${m.id}', '${readKey}')">
+-        <span class="msg-sender">${sender}</span>
+-        <span class="msg-subject">${m.subject || '（件名なし）'}</span>
+-        <span class="msg-date">${dateStr}</span>
+-        <i class="fa-solid fa-chevron-down msg-chevron" id="chevron-${m.id}"></i>
+-      </div>
+-      <div class="msg-body" id="body-msg-${m.id}">
+-        <div class="msg-body-text">${escapeHtml(m.body || '')}</div>
+-        <div class="msg-target-tag"><i class="fa-solid fa-users" style="margin-right:4px;"></i>送信先：${targetLabel}${targetExtra}</div>
+-      </div>
+-    </div>`;
+-  };
+-
+-  let html = visible.map(makeMsg).join('');
+-
+-  if (hidden.length) {
+-    html += `<div id="inboxHidden" style="display:none;">${hidden.map(makeMsg).join('')}</div>`;
+-    html += `<button class="btn-more" id="inboxMoreBtn" onclick="showMoreInbox()">
+-      <i class="fa-solid fa-chevron-down"></i> 過去のお知らせをもっと見る（${hidden.length}件）
+-    </button>`;
+-  }
+-
+-  document.getElementById('inboxList').innerHTML = html;
+-}
+-
+-function showMoreInbox() {
+-  document.getElementById('inboxHidden').style.display = 'block';
+-  document.getElementById('inboxMoreBtn').style.display = 'none';
+-}
+-
+-function toggleMsg(id, readKey) {
+-  const body    = document.getElementById(`body-msg-${id}`);
+-  const chevron = document.getElementById(`chevron-${id}`);
+-  const item    = document.getElementById(`msg-${id}`);
+-
+-  body.classList.toggle('open');
+-  chevron.classList.toggle('open');
+-
+-  // 開いたら既読にする
+-  if (body.classList.contains('open') && item.classList.contains('unread')) {
+-    item.classList.remove('unread');
+-    const readIds = JSON.parse(localStorage.getItem(readKey) || '[]');
+-    if (!readIds.includes(id)) {
+-      readIds.push(id);
+-      localStorage.setItem(readKey, JSON.stringify(readIds));
+-    }
+-    // バッジ更新
+-    const badge = document.getElementById('inboxBadge');
+-    const currentCount = parseInt(badge.textContent || '0') - 1;
+-    if (currentCount <= 0) {
+-      badge.style.display = 'none';
+-    } else {
+-      badge.textContent = currentCount;
+-    }
+-  }
+-}
+-
+-function formatMsgDate(isoStr) {
+-  const d = new Date(isoStr);
+-  const now = new Date();
+-  const diffMs  = now - d;
+-  const diffDay = Math.floor(diffMs / 86400000);
+-  if (diffDay === 0) {
+-    return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+-  } else if (diffDay < 7) {
+-    return `${diffDay}日前`;
+-  } else {
+-    return `${d.getMonth()+1}/${d.getDate()}`;
++    inbox.innerHTML = msgs.map(m => {
++      const date = new Date(m.created_at);
++      const dateStr = `${date.getMonth()+1}/${date.getDate()}`;
++      const isUnread = !m.read_at;
++      return `<div class="inbox-row${isUnread ? ' unread' : ''}">
++        <div class="inbox-meta">
++          <span class="inbox-sender">${m.sender_name || '運営'}</span>
++          <span class="inbox-date">${dateStr}</span>
++        </div>
++        <div class="inbox-body">${m.body || ''}</div>
++      </div>`;
++    }).join('');
++  } catch (e) {
++    inbox.innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">取得できませんでした</div>';
+   }
+ }
+ 
+-function escapeHtml(str) {
+-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+-}
+-
+ // =============================================
+ //  練習スケジュール（全員出欠集計）
+ // =============================================
+-async function loadScheduleData(d) {
++async function loadScheduleData(d, SB_H) {
++  if (!SB_H) {
++    const { data: { session } } = await supabase.auth.getSession();
++    const token = session?.access_token || SUPABASE_KEY;
++    SB_H = { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` } };
++  }
+   try {
+     const today = new Date().toISOString().split('T')[0];
+ 
+-    // 今後5回の練習
+     const pRes = await fetch(
+       `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${d.org_id}&date=gte.${today}&order=date.asc&limit=5`,
+-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
++      SB_H
+     );
+     const practices = await pRes.json() || [];
+ 
+     if (!practices.length) {
+-      document.getElementById('scheduleList').innerHTML =
+-        '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">予定されている練習はありません</div>';
++      document.getElementById('scheduleList').innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">予定されている練習はありません</div>';
+       return;
+     }
+ 
+-    // 全団員取得
+     const mRes = await fetch(
+       `${SUPABASE_URL}/rest/v1/members?org_id=eq.${d.org_id}&select=id,name,part&order=part.asc,name.asc`,
+-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
++      SB_H
+     );
+     const allMembers = await mRes.json() || [];
+ 
+-    // 出欠データ取得
+     const ids = practices.map(p => p.id).join(',');
+-    const aRes = await fetch(
+-      `${SUPABASE_URL}/rest/v1/attendances?practice_id=in.(${ids})`,
+-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+-    );
++    const aRes = await fetch(`${SUPABASE_URL}/rest/v1/attendances?practice_id=in.(${ids})`, SB_H);
+     const allAttendances = await aRes.json() || [];
+ 
+     renderScheduleCard(practices, allMembers, allAttendances);
+-
+-  } catch(e) {
++  } catch (e) {
+     console.error('スケジュール取得エラー:', e);
+-    document.getElementById('scheduleList').innerHTML =
+-      '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">取得できませんでした</div>';
++    document.getElementById('scheduleList').innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">取得できませんでした</div>';
+   }
+ }
+ 
+ function renderScheduleCard(practices, allMembers, allAttendances) {
+   const WEEK = ['日','月','火','水','木','金','土'];
+ 
+   document.getElementById('scheduleList').innerHTML = practices.map((p, idx) => {
+-    const d       = new Date(p.date);
++    const d = new Date(p.date);
+     const dateStr = `${d.getMonth()+1}月${d.getDate()}日（${WEEK[d.getDay()]}）`;
+     const timeStr = p.start_time ? `${p.start_time.slice(0,5)}〜${p.end_time ? p.end_time.slice(0,5) : ''}` : '';
+-    const att     = allAttendances.filter(a => a.practice_id === p.id);
++    const att = allAttendances.filter(a => a.practice_id === p.id);
+ 
+     const attendCount = att.filter(a => a.status === 'attend').length;
+     const absentCount = att.filter(a => a.status === 'absent').length;
+-    const lateCount   = att.filter(a => a.status === 'late').length;
+-    const noAnsCount  = Math.max(0, allMembers.length - att.length);
++    const lateCount = att.filter(a => a.status === 'late').length;
++    const noAnsCount = Math.max(0, allMembers.length - att.length);
+ 
+-    // パート別集計（参加＋遅刻）
+     const partMap = {};
+     allMembers.forEach(m => {
+       const partKey = m.part || 'その他';
+       if (!partMap[partKey]) partMap[partKey] = { attend:[], absent:[], none:[] };
+-      const a = att.find(a => a.member_id === m.id);
+-      if (!a)                                        partMap[partKey].none.push(m.name);
++      const a = att.find(x => x.member_id === m.id);
++      if (!a) partMap[partKey].none.push(m.name);
+       else if (a.status === 'attend' || a.status === 'late') partMap[partKey].attend.push(m.name + (a.status === 'late' ? '（遅）' : ''));
+-      else                                           partMap[partKey].absent.push(m.name);
++      else partMap[partKey].absent.push(m.name);
+     });
+ 
+     const partRows = Object.entries(partMap).map(([part, data]) =>
+       `<div class="part-row">
+         <span class="part-name">${part}</span>
+         <span class="part-members">${data.attend.length ? data.attend.join('・') : '<span style="color:var(--muted);">出席予定なし</span>'}</span>
+         <span class="part-count">${data.attend.length}名</span>
+       </div>`
+     ).join('');
+ 
+-    return `
+-    <div class="schedule-item">
++    return `<div class="schedule-item">
+       <div class="schedule-head" onclick="toggleSchedule(${idx})">
+         <div>
+           <div class="schedule-date">${dateStr}</div>
+           <div class="schedule-venue">${p.venue || '会場未定'}${timeStr ? '　' + timeStr : ''}</div>
+         </div>
+         <div class="schedule-counts">
+           <span class="count-badge cb-attend">参加 ${attendCount}</span>
+           <span class="count-badge cb-absent">欠席 ${absentCount}</span>
+           ${lateCount ? `<span class="count-badge cb-late">遅刻 ${lateCount}</span>` : ''}
+           ${noAnsCount ? `<span class="count-badge cb-none">未回答 ${noAnsCount}</span>` : ''}
+         </div>
+         <i class="fa-solid fa-chevron-down schedule-toggle" id="toggle-${idx}"></i>
+       </div>
+       <div class="schedule-body" id="body-${idx}">
+         <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">▼ パート別出席予定</div>
+         ${partRows}
+         ${p.note ? `<div style="margin-top:10px;padding:.6rem .8rem;background:#f8fafc;border-radius:8px;font-size:.75rem;color:var(--muted);"><i class="fa-solid fa-note-sticky" style="margin-right:6px;"></i>${p.note}</div>` : ''}
+       </div>
+     </div>`;
+   }).join('');
+ }
+ 
+ function toggleSchedule(idx) {
+-  const body   = document.getElementById(`body-${idx}`);
++  const body = document.getElementById(`body-${idx}`);
+   const toggle = document.getElementById(`toggle-${idx}`);
+   body.classList.toggle('open');
+   toggle.classList.toggle('open');
+ }
+ 
+-// =============================================
+-//  画面描画
+-// =============================================
+ function renderHeader(d) {
+   const name = d.name || '団員';
+   document.getElementById('avatarInitial').textContent = name.charAt(0);
+-  document.getElementById('headerName').textContent    = name;
++  document.getElementById('headerName').textContent = name;
+ 
+   const ROLE_LABEL = {
+     president:'団長', vice_president:'副団長', conductor:'指揮者',
+     director:'理事/GM', committee:'委員', member:'正会員',
+     guardian:'保護者', instructor:'外部指導者',
+   };
+ 
+-  // roleカラム（単一）→ バッジ表示
+   const roleEl = document.getElementById('headerRole');
+   roleEl.textContent = ROLE_LABEL[d.role] || d.member_type || '正会員';
+ 
+   const partEl = document.getElementById('headerPart');
+   if (d.part) { partEl.textContent = d.part; partEl.style.display = ''; }
+   else { partEl.style.display = 'none'; }
+ 
+-  if (d.fee_status === 'unpaid') {
+-    document.getElementById('feeWarning').style.display = 'flex';
+-  }
++  document.getElementById('feeWarning').style.display = d.fee_status === 'unpaid' ? 'flex' : 'none';
+ }
+ 
+ function renderFeeCard(d) {
+   const MAP = {
+-    paid:    { cls:'dot-ok',   text:'支払い済み',     sub:'毎月自動で請求されます' },
+-    unpaid:  { cls:'dot-ng',   text:'未納があります',  sub:'以下からお支払いをお願いします' },
+-    pending: { cls:'dot-warn', text:'確認中',         sub:'しばらくお待ちください' },
++    paid: { cls:'dot-ok', text:'支払い済み', sub:'毎月自動で請求されます' },
++    unpaid: { cls:'dot-ng', text:'未納があります', sub:'以下からお支払いをお願いします' },
++    pending: { cls:'dot-warn', text:'確認中', sub:'しばらくお待ちください' },
+   };
+   const s = MAP[d.fee_status] || { cls:'dot-warn', text:'未設定', sub:'プランを選択してお支払いください' };
+-  document.getElementById('feeDot').className   = 'fee-dot ' + s.cls;
++  document.getElementById('feeDot').className = 'fee-dot ' + s.cls;
+   document.getElementById('feeLabel').textContent = s.text;
+-  document.getElementById('feeSub').textContent   = s.sub;
++  document.getElementById('feeSub').textContent = s.sub;
+ 
+-  // ボタン表示切り替え
+-  const payArea    = document.getElementById('feePayArea');
++  const payArea = document.getElementById('feePayArea');
+   const portalArea = document.getElementById('feePortalArea');
+   if (d.fee_status === 'paid') {
+-    payArea.style.display    = 'none';
++    payArea.style.display = 'none';
+     portalArea.style.display = 'block';
+   } else {
+-    payArea.style.display    = 'block';
++    payArea.style.display = 'block';
+     portalArea.style.display = 'none';
+   }
+ }
+ 
+ function goToStripe() {
+   const url = document.getElementById('planSelect').value;
+   if (!url) { alert('プランを選択してください。'); return; }
+   window.open(url, '_blank');
+ }
+ 
+ function renderInfoCard(d) {
+   const ROLE_LABEL = {
+     president:'団長', vice_president:'副団長', conductor:'指揮者',
+     director:'理事/GM', committee:'委員', member:'正会員',
+     guardian:'保護者', instructor:'外部指導者',
+   };
+ 
+   const rows = [
+-    { label:'氏名',     value: d.name },
+-    { label:'役職',     value: ROLE_LABEL[d.role] || d.member_type || null },
+-    { label:'パート',   value: d.part },
+-    { label:'区分',     value: d.member_type },
+-    { label:'メール',   value: d.email },
++    { label:'氏名', value: d.name },
++    { label:'役職', value: ROLE_LABEL[d.role] || d.member_type || null },
++    { label:'パート', value: d.part },
++    { label:'区分', value: d.member_type },
++    { label:'メール', value: d.email },
+     { label:'在籍開始', value: d.joined_at ? d.joined_at.slice(0,10) : null },
+   ];
+   document.getElementById('infoList').innerHTML = rows.map(r =>
+-    `<div class="info-row">
+-      <span class="info-label">${r.label}</span>
+-      <span class="${r.value ? 'info-value' : 'info-empty'}">${r.value || '未登録'}</span>
+-    </div>`
++    `<div class="info-row"><span class="info-label">${r.label}</span><span class="${r.value ? 'info-value' : 'info-empty'}">${r.value || '未登録'}</span></div>`
+   ).join('');
+ 
+-  // 編集モーダル初期値
+-  document.getElementById('editName').value  = d.name  || '';
+-  document.getElementById('editPart').value  = d.part  || '';
++  document.getElementById('editName').value = d.name || '';
++  document.getElementById('editPart').value = d.part || '';
+   document.getElementById('editEmail').value = d.email || '';
+ }
+ 
+ function renderAttendCard(history, nextPid) {
+   const LABEL = { attend:'参加', late:'遅刻・早退', absent:'欠席' };
+-  const CLS   = { attend:'ab-attend', late:'ab-late', absent:'ab-absent' };
++  const CLS = { attend:'ab-attend', late:'ab-late', absent:'ab-absent' };
+ 
+   if (!history || !history.length) {
+-    document.getElementById('attendList').innerHTML =
+-      '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">回答履歴がありません</div>';
++    document.getElementById('attendList').innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">回答履歴がありません</div>';
+   } else {
+-    const SHOW = 5;
+-    const visible = history.slice(0, SHOW);
+-    const hidden  = history.slice(SHOW);
+-
+-    const makeRow = r => `
+-      <div class="attend-row">
+-        <span class="attend-date">${r.date}</span>
+-        <span class="attend-badge ${CLS[r.answer] || 'ab-none'}">${LABEL[r.answer] || '未回答'}</span>
+-        ${r.note ? `<span class="attend-note">${r.note}</span>` : ''}
+-      </div>`;
+-
+-    let html = visible.map(makeRow).join('');
+-
+-    if (hidden.length) {
+-      html += `<div id="attendHidden" style="display:none;">${hidden.map(makeRow).join('')}</div>`;
+-      html += `<button class="btn-more" id="attendMoreBtn" onclick="showMoreAttend()">
+-        <i class="fa-solid fa-chevron-down"></i> 過去の履歴をもっと見る（${hidden.length}件）
+-      </button>`;
+-    }
+-
+-    document.getElementById('attendList').innerHTML = html;
++    document.getElementById('attendList').innerHTML = history.map(r =>
++      `<div class="attend-row"><span class="attend-date">${r.date}</span><span class="attend-badge ${CLS[r.answer] || 'ab-none'}">${LABEL[r.answer] || '未回答'}</span>${r.note ? `<span class="attend-note">${r.note}</span>` : ''}</div>`
++    ).join('');
+   }
+ 
+-  const attendBase = `./attendance.html?token=${encodeURIComponent(memberToken)}`;
+-  document.getElementById('attendLink').href =
+-    nextPid ? `${attendBase}&pid=${nextPid}` : attendBase;
+-}
+-
+-function showMoreAttend() {
+-  document.getElementById('attendHidden').style.display = 'block';
+-  document.getElementById('attendMoreBtn').style.display = 'none';
++  const attendBase = './attendance.html';
++  document.getElementById('attendLink').href = nextPid ? `${attendBase}?pid=${nextPid}` : attendBase;
+ }
+ 
+-// role+committeeからパネルアクセス権限を判定
+ function canAccessPanel(panelId, d) {
+   if (!d) return false;
+-  const role      = d.role      || '';
++  const role = d.role || '';
+   const committee = d.committee || '';
+-  // 全パネル開放ロール
+   if (['president', 'vice_president', 'director'].includes(role)) return true;
+-  // 担当委員会と一致
+   if (role === panelId || committee === panelId) return true;
+   return false;
+ }
+ 
+ function renderPanelGrid(d) {
+   document.getElementById('panelGrid').innerHTML = PANELS.map(p => {
+     const hasAccess = p.ready && canAccessPanel(p.id, d);
+-    const isReady   = p.ready;
+-    const href = hasAccess && memberToken
+-      ? `./${p.file}?token=${encodeURIComponent(memberToken)}`
+-      : '#';
++    const isReady = p.ready;
++    const href = hasAccess ? `./${p.file}` : '#';
+ 
+     let tagText, arrowIcon, linkClass;
+     if (!isReady) {
+-      // 未実装
+-      tagText   = '準備中';
++      tagText = '準備中';
+       arrowIcon = 'fa-solid fa-clock';
+       linkClass = 'panel-link wip';
+     } else if (hasAccess) {
+-      // アクセス可
+-      tagText   = 'アクセス可';
++      tagText = 'アクセス可';
+       arrowIcon = 'fa-solid fa-chevron-right';
+       linkClass = 'panel-link';
+     } else {
+-      // 権限なし
+-      tagText   = 'アクセス権限なし';
++      tagText = 'アクセス権限なし';
+       arrowIcon = 'fa-solid fa-lock';
+       linkClass = 'panel-link wip';
+     }
+ 
+-    return `
+-    <a class="${linkClass}" href="${href}">
++    return `<a class="${linkClass}" href="${href}">
+       <div class="panel-icon ${p.colorClass}"><i class="${p.icon}"></i></div>
+-      <div style="min-width:0;">
+-        <div class="panel-name">${p.name}</div>
+-        <div class="panel-tag">${tagText}</div>
+-      </div>
++      <div style="min-width:0;"><div class="panel-name">${p.name}</div><div class="panel-tag">${tagText}</div></div>
+       <i class="${arrowIcon} panel-arrow" style="${isReady && hasAccess ? '' : 'font-size:.6rem;'}"></i>
+     </a>`;
+   }).join('');
+ }
+ 
+-// =============================================
+-//  情報変更申請モーダル
+-// =============================================
+ function openEditModal() {
+   document.getElementById('editMsg').className = 'modal-msg';
+   document.getElementById('editMsg').textContent = '';
+   document.getElementById('editModal').classList.add('open');
+ }
++
+ function closeEditModal() {
+   document.getElementById('editModal').classList.remove('open');
+ }
+ 
+ async function submitEdit() {
+-  const name  = document.getElementById('editName').value.trim();
+-  const part  = document.getElementById('editPart').value;
++  const name = document.getElementById('editName').value.trim();
++  const part = document.getElementById('editPart').value;
+   const email = document.getElementById('editEmail').value.trim();
+-  const note  = document.getElementById('editNote').value.trim();
++  const note = document.getElementById('editNote').value.trim();
+   const msgEl = document.getElementById('editMsg');
+ 
+   msgEl.className = 'modal-msg';
+   msgEl.textContent = '';
+ 
+   if (!name) {
+     msgEl.className = 'modal-msg error';
+     msgEl.textContent = '氏名は必須です。';
+     return;
+   }
+ 
+   try {
++    const { data: { session } } = await supabase.auth.getSession();
++    const token = session?.access_token || SUPABASE_KEY;
+     const res = await fetch(`${SUPABASE_URL}/rest/v1/requests`, {
+       method: 'POST',
+       headers: {
+-        'apikey': SUPABASE_KEY,
+-        'Authorization': `Bearer ${SUPABASE_KEY}`,
++        apikey: SUPABASE_KEY,
++        Authorization: `Bearer ${token}`,
+         'Content-Type': 'application/json',
+-        'Prefer': 'return=minimal',
++        Prefer: 'return=minimal',
+       },
+       body: JSON.stringify({
+         member_id: memberData?.id || null,
+-        org_id:    memberData?.org_id || null,
+-        type:      'info_change',
+-        payload:   JSON.stringify({ name, part, email, note }),
+-        status:    'pending',
++        org_id: memberData?.org_id || null,
++        type: 'info_change',
++        payload: JSON.stringify({ name, part, email, note }),
++        status: 'pending',
+       }),
+     });
+ 
+     if (res.ok || res.status === 201) {
+       msgEl.className = 'modal-msg success';
+       msgEl.textContent = '✓ 変更リクエストを送信しました。承認後に反映されます。';
+       setTimeout(closeEditModal, 3000);
+     } else {
+       throw new Error('failed');
+     }
+-  } catch(e) {
++  } catch (e) {
+     msgEl.className = 'modal-msg error';
+     msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
+   }
+ }
+ 
+-// =============================================
+-//  状態切替・NAV
+-// =============================================
+ function showState(state) {
+   document.getElementById('stateLoading').style.display = 'none';
+-  document.getElementById('stateError').style.display   = 'none';
+-  document.getElementById('mainContent').style.display  = 'none';
+-  if (state === 'error') document.getElementById('stateError').style.display = 'flex';
++  document.getElementById('stateLogin').style.display = 'none';
++  document.getElementById('stateError').style.display = 'none';
++  document.getElementById('mainContent').style.display = 'none';
++  if (state === 'loading') document.getElementById('stateLoading').style.display = 'flex';
++  else if (state === 'login') document.getElementById('stateLogin').style.display = 'flex';
++  else if (state === 'error') document.getElementById('stateError').style.display = 'flex';
+   else if (state === 'main') document.getElementById('mainContent').style.display = 'block';
+ }
++
+ function toggleDrawer() {
+   document.getElementById('site-drawer').classList.toggle('open');
+ }
+ </script>
+ </body>
+ </html>
