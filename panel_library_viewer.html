@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <style>
 :root{
   --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
@@ -195,6 +196,7 @@ let currentPage = 1;
 let memberData  = null;
 let fileData    = null;
 let pdfBytes    = null; // DL用にキャッシュ
+let memberPartTags = [];
 
 // スワイプ用
 let touchStartX = 0;
@@ -222,6 +224,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const members = await mRes.json();
     if (!members?.length) { showError('団員情報が確認できません。'); return; }
     memberData = members[0];
+    memberPartTags = extractMemberPartTags(memberData);
 
     // 2. score_filesからファイル情報取得
     const fRes = await fetch(
@@ -242,9 +245,17 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     const hasAccess = dists.some(d => {
       if (d.target_type === 'all') return true;
-      if (d.target_type === 'members') return true;
-      if (d.target_type === 'part' && d.target_part === fileData.part_tag) return true;
-      if (d.target_type === 'individual' && d.target_member_id === memberData.id) return true;
+      if (d.target_type === 'members') {
+        const memberIds = normalizeTargetMembers(d.target_member_ids);
+        if (!memberIds.length) return true;
+        return memberIds.includes(String(memberData.id));
+      }
+      if (d.target_type === 'part') {
+        const distPart = String(d.target_part || '').trim().toLowerCase();
+        const filePart = String(fileData.part_tag || '').trim().toLowerCase();
+        return memberPartTags.includes(distPart) && distPart === filePart;
+      }
+      if (d.target_type === 'individual' && String(d.target_member_id) === String(memberData.id)) return true;
       return false;
     });
 
@@ -368,11 +379,14 @@ function drawHanko(ctx, canvasW, canvasH, memberName) {
   ctx.stroke();
 
   // 団員名（下段）
-  const displayName = memberName.length > 5
-    ? memberName.slice(0,5) + '…'
-    : memberName;
-  ctx.font = `bold ${r*0.27}px 'Noto Sans JP',sans-serif`;
-  ctx.fillText(displayName, cx, cy + r * 0.28);
+  const displayName = fitTextInCircle(
+    ctx,
+    memberName || '',
+    r * 0.27,
+    r * 1.2
+  );
+  ctx.font = `bold ${displayName.fontSize}px 'Noto Sans JP',sans-serif`;
+  ctx.fillText(displayName.text, cx, cy + r * 0.28);
 
   ctx.restore();
 }
@@ -418,11 +432,7 @@ async function downloadWithWatermark() {
   btn.disabled = true;
 
   try {
-    // 全ページをCanvasに描画してハンコ焼き付け → PNG→PDF風のZip is complex
-    // シンプル実装：全ページをCanvasで描画→1枚ずつblobURLでHTML印刷用ページ生成
-    // ※本格的なPDF書き込みはpdf-libが必要だが外部ライブラリ追加になるため、
-    //   ここでは「ハンコ付きPNG画像のまとめ印刷用HTML」として出力する
-    await downloadAsPrintHTML();
+    await downloadAsWatermarkedPdf();
 
     // DLログ記録
     await logAccess(fileData.id, memberData.id, true);
@@ -436,8 +446,9 @@ async function downloadWithWatermark() {
   }
 }
 
-async function downloadAsPrintHTML() {
-  const pages = [];
+async function downloadAsWatermarkedPdf() {
+  const pdfOut = await PDFLib.PDFDocument.create();
+
   for (let i = 1; i <= pdfDoc.numPages; i++) {
     const page     = await pdfDoc.getPage(i);
     const viewport = page.getViewport({ scale: 2.0 }); // 高解像度
@@ -447,44 +458,26 @@ async function downloadAsPrintHTML() {
     const octx = offscreen.getContext('2d');
     await page.render({ canvasContext:octx, viewport }).promise;
     drawHanko(octx, offscreen.width, offscreen.height, memberData?.name || '');
-    pages.push(offscreen.toDataURL('image/jpeg', 0.92));
+    const jpegDataUrl = offscreen.toDataURL('image/jpeg', 0.92);
+    const jpgImage = await pdfOut.embedJpg(jpegDataUrl);
+    const outPage = pdfOut.addPage([offscreen.width, offscreen.height]);
+    outPage.drawImage(jpgImage, {
+      x: 0,
+      y: 0,
+      width: offscreen.width,
+      height: offscreen.height,
+    });
   }
 
-  // 印刷用HTMLを生成してDL
   const scoreTitle = fileData?.scores?.title || '楽譜';
   const partTag    = fileData?.part_tag || '';
   const memberName = memberData?.name || '';
-  const today      = new Date().toLocaleDateString('ja-JP');
-
-  const htmlContent = `<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>${scoreTitle} ${partTag} - 東大阪吹奏楽団</title>
-<style>
-  body{margin:0;padding:0;background:#fff;}
-  .page{
-    width:100%;page-break-after:always;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .page:last-child{page-break-after:auto;}
-  img{max-width:100%;height:auto;display:block;}
-  @media print{
-    body{margin:0;}
-    .page{page-break-after:always;}
-  }
-</style>
-</head>
-<body>
-${pages.map(src=>`<div class="page"><img src="${src}"></div>`).join('\n')}
-</body>
-</html>`;
-
-  const blob = new Blob([htmlContent], { type:'text/html' });
+  const pdfBin = await pdfOut.save();
+  const blob = new Blob([pdfBin], { type:'application/pdf' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = `${scoreTitle}_${partTag}_${memberName}.html`;
+  a.download = `${sanitizeFilename(scoreTitle)}_${sanitizeFilename(partTag)}_${sanitizeFilename(memberName)}.pdf`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -541,6 +534,58 @@ window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(()=>{ if(pdfDoc) renderPage(currentPage); }, 200);
 });
+
+function fitTextInCircle(ctx, text, baseSize, maxWidth) {
+  const safeText = String(text || '団員');
+  let fontSize = baseSize;
+  const minSize = baseSize * 0.62;
+  do {
+    ctx.font = `bold ${fontSize}px 'Noto Sans JP',sans-serif`;
+    if (ctx.measureText(safeText).width <= maxWidth || fontSize <= minSize) {
+      return { text: safeText, fontSize };
+    }
+    fontSize -= 1;
+  } while (fontSize > minSize);
+  return { text: safeText, fontSize: minSize };
+}
+
+function normalizeTargetMembers(memberIds) {
+  if (!memberIds) return [];
+  if (Array.isArray(memberIds)) return memberIds.map(v => String(v));
+  if (typeof memberIds === 'string') {
+    return memberIds.split(',').map(v => v.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function extractMemberPartTags(member) {
+  const candidates = [
+    member?.part_tag,
+    member?.part_tags,
+    member?.parts,
+    member?.instrument,
+    member?.instruments,
+  ];
+  const tags = [];
+  candidates.forEach(value => {
+    if (!value) return;
+    if (Array.isArray(value)) {
+      value.forEach(v => tags.push(String(v).trim().toLowerCase()));
+      return;
+    }
+    String(value)
+      .split(',')
+      .forEach(v => tags.push(v.trim().toLowerCase()));
+  });
+  return [...new Set(tags.filter(Boolean))];
+}
+
+function sanitizeFilename(name) {
+  return String(name || '')
+    .replace(/[\\/:*?"<>|]/g, '_')
+    .replace(/\s+/g, ' ')
+    .trim() || '楽譜';
+}
 </script>
 </body>
 </html>
