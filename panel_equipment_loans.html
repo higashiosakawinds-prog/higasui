@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>貸出管理 | 楽器管理委員会</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
+  --green:#1D9E75;--red:#C0392B;--orange:#E67E22;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
+
+/* ===== ロック ===== */
+#lock-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+#lock-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(200,164,77,0.15) 0%,transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(200,164,77,0.1) 0%,transparent 50%);}
+.lock-card{position:relative;z-index:1;background:rgba(255,255,255,0.05);border:1px solid rgba(200,164,77,0.35);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:400px;text-align:center;backdrop-filter:blur(16px);}
+.lock-icon{font-size:2.5rem;margin-bottom:1rem;}
+.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:white;margin-bottom:0.4rem;}
+.lock-sub{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input-wrap{position:relative;margin-bottom:1rem;}
+.lock-input{width:100%;padding:14px 48px 14px 16px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:white;font-size:1rem;font-family:inherit;outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;}
+.lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
+.lock-input:focus{border-color:var(--gold);}
+.lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;}
+.lock-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8933d);color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 20px rgba(200,164,77,0.35);transition:opacity 0.2s,transform 0.15s;}
+.lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
+.lock-note{font-size:0.68rem;color:rgba(255,255,255,0.22);margin-top:1.5rem;line-height:1.7;}
+
+/* ===== NAV ===== */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);display:none;}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem;}
+#nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
+#nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.35);letter-spacing:.14em;font-weight:400;}
+.nav-badge{font-family:'Outfit',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;background:rgba(200,164,77,0.15);color:var(--gold);padding:4px 10px;border-radius:20px;border:1px solid rgba(200,164,77,0.3);}
+.nav-back{background:none;border:none;cursor:pointer;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:inherit;padding:6px 10px;border-radius:8px;transition:color 0.2s;text-decoration:none;}
+.nav-back:hover{color:rgba(255,255,255,0.8);}
+
+/* ===== MAIN ===== */
+#panel-main{display:none;padding-top:56px;}
+.page-header{background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,0.15) 0%,transparent 55%),radial-gradient(ellipse at 10% 90%,rgba(200,164,77,0.08) 0%,transparent 50%);}
+.page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1100px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;}
+.page-header p{font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.8;}
+
+.inner{max-width:1100px;margin:0 auto;padding:0 1.5rem;width:100%;}
+.sec{padding:32px 0 48px;}
+.sec-head{margin-bottom:1.2rem;}
+.sec-eyebrow{font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:0.4rem;}
+.sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(1.1rem,2.5vw,1.4rem);font-weight:700;color:var(--navy);}
+
+/* ===== タブ ===== */
+.tab-bar{display:flex;gap:4px;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:4px;margin-bottom:20px;width:fit-content;}
+.tab-btn{padding:8px 20px;border-radius:10px;border:none;font-size:0.82rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.2s;color:var(--muted);background:none;}
+.tab-btn.active{background:var(--navy);color:white;}
+
+/* ===== 新規貸出フォーム ===== */
+.loan-form-card{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:24px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-grid.col3{grid-template-columns:1fr 1fr 1fr;}
+.form-grid.col1{grid-template-columns:1fr;}
+@media(max-width:600px){.form-grid,.form-grid.col3{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.span2{grid-column:span 2;}
+@media(max-width:600px){.form-group.span2{grid-column:span 1;}}
+label{font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+label .req{color:var(--red);margin-left:3px;}
+.form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem;font-family:inherit;color:var(--text);background:var(--bg);outline:none;transition:border-color 0.2s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);background:var(--white);}
+.form-input.error,.form-select.error{border-color:var(--red);}
+.form-textarea{resize:vertical;min-height:70px;line-height:1.6;}
+.form-hint{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+
+/* 借り手トグル */
+.borrower-toggle{display:flex;gap:8px;}
+.borrower-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);font-size:0.85rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.2s;text-align:center;}
+.borrower-btn.active{border-color:var(--blue);background:rgba(33,74,154,0.08);color:var(--blue);}
+
+/* 楽器選択ボックス */
+.inst-select-wrap{position:relative;}
+.inst-selected{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;
+  background:var(--bg);cursor:pointer;transition:border-color 0.2s;font-size:0.88rem;
+}
+.inst-selected:hover,.inst-selected.open{border-color:var(--blue);}
+.inst-selected .placeholder{color:var(--muted);}
+.inst-dropdown{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;
+  background:var(--white);border:1.5px solid var(--border);border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.1);max-height:240px;overflow-y:auto;
+  display:none;
+}
+.inst-dropdown.open{display:block;}
+.inst-search{padding:10px 12px;border-bottom:1px solid var(--border);}
+.inst-search input{width:100%;border:none;outline:none;font-size:0.85rem;font-family:inherit;background:none;}
+.inst-option{padding:10px 14px;cursor:pointer;font-size:0.85rem;border-bottom:1px solid var(--border);transition:background 0.1s;}
+.inst-option:last-child{border-bottom:none;}
+.inst-option:hover{background:var(--bg);}
+.inst-option .opt-no{font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:800;color:var(--blue);margin-right:8px;}
+.inst-option .opt-owner{font-size:0.7rem;color:var(--muted);margin-left:4px;}
+
+/* ===== 貸出中テーブル ===== */
+.loan-table-wrap{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.loan-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.loan-table th{padding:10px 14px;text-align:left;font-size:0.68rem;font-weight:700;color:var(--muted);border-bottom:2px solid var(--border);letter-spacing:0.05em;white-space:nowrap;}
+.loan-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.loan-table tr:last-child td{border-bottom:none;}
+.loan-table tr:hover td{background:#f5f7fb;}
+.inst-no-cell{font-family:'Outfit',sans-serif;font-weight:800;font-size:0.82rem;color:var(--navy);}
+.due-over{color:var(--red);font-weight:700;}
+.due-soon{color:var(--orange);font-weight:700;}
+
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;}
+.badge-member{background:rgba(33,74,154,0.1);color:var(--blue);}
+.badge-external{background:rgba(200,164,77,0.15);color:#92680a;}
+
+.action-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:0.75rem;font-weight:700;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;}
+.action-return{background:rgba(29,158,117,0.1);color:var(--green);}
+.action-return:hover{background:rgba(29,158,117,0.2);}
+
+.empty-row td{text-align:center;padding:3rem;color:var(--muted);}
+.empty-icon{font-size:1.8rem;display:block;margin-bottom:8px;opacity:0.3;}
+
+/* ===== 返却処理モーダル ===== */
+#return-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+#return-overlay.open{display:flex;}
+.return-card{background:var(--white);border-radius:20px;padding:2rem;width:100%;max-width:480px;}
+.return-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;}
+.return-inst-info{background:var(--bg);border-radius:12px;padding:1rem;margin-bottom:1.4rem;font-size:0.85rem;}
+.return-inst-no{font-family:'Outfit',sans-serif;font-weight:800;color:var(--navy);font-size:0.9rem;}
+.return-inst-name{color:var(--text);margin-top:2px;}
+.return-btns{display:flex;gap:10px;margin-top:1.4rem;}
+.btn{padding:11px 22px;border-radius:10px;border:none;cursor:pointer;font-size:0.85rem;font-weight:700;font-family:inherit;display:inline-flex;align-items:center;gap:7px;transition:all 0.2s;}
+.btn-primary{background:linear-gradient(135deg,var(--green),#178a63);color:white;box-shadow:0 4px 16px rgba(29,158,117,0.25);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.btn-secondary{background:var(--white);color:var(--navy);border:1.5px solid var(--border);}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+.btn-submit-loan{background:linear-gradient(135deg,var(--blue),#1a3d8a);color:white;box-shadow:0 4px 16px rgba(33,74,154,0.25);}
+.btn-submit-loan:hover{transform:translateY(-1px);}
+.btn-submit-loan:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+/* ===== トースト ===== */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:white;padding:12px 24px;border-radius:12px;font-size:0.85rem;font-weight:700;z-index:9000;transition:transform 0.3s ease;pointer-events:none;white-space:nowrap;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.success{background:var(--green);}
+#toast.error{background:var(--red);}
+
+footer{background:var(--navy);padding:24px 0;text-align:center;margin-top:40px;}
+footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<!-- ===== LOCK ===== -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">🎺</div>
+    <div class="lock-eyebrow">EQUIPMENT COMMITTEE</div>
+    <div class="lock-title">楽器管理委員会</div>
+    <div class="lock-sub">アクセスコードを入力してください</div>
+    <div class="lock-input-wrap">
+      <input class="lock-input" type="password" id="codeInput" placeholder="ACCESS CODE" onkeydown="if(event.key==='Enter')unlock()">
+      <button class="eye-btn" onclick="toggleEye()" id="eyeBtn"><i class="fa-solid fa-eye-slash"></i></button>
+    </div>
+    <button class="lock-btn" onclick="unlock()"><i class="fa-solid fa-drum" style="margin-right:8px;"></i>ログイン</button>
+    <div class="lock-err" id="lockErr"></div>
+    <div class="lock-note">このページは委員会メンバー専用です</div>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="site-nav">
+  <div class="nav-inner">
+    <a id="nav-logo" href="./member.html">東大阪吹奏楽団<small>HIGASUI WINDS</small></a>
+    <span class="nav-badge">EQUIPMENT</span>
+    <a class="nav-back" href="./panel_equipment.html"><i class="fa-solid fa-chevron-left"></i> 戻る</a>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div id="panel-main">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow"><span>EQUIPMENT / LOANS</span></div>
+      <h1>貸出管理</h1>
+      <p>楽器の貸出登録・返却処理・履歴確認</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="inner">
+
+      <!-- タブ -->
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-active" onclick="switchTab('active')">貸出中</button>
+        <button class="tab-btn" id="tab-new" onclick="switchTab('new')">新規貸出</button>
+        <button class="tab-btn" id="tab-history" onclick="switchTab('history')">履歴</button>
+      </div>
+
+      <!-- ===== 貸出中タブ ===== -->
+      <div id="pane-active">
+        <div class="sec-head">
+          <div class="sec-eyebrow"><span>ACTIVE LOANS</span></div>
+          <div class="sec-title">現在の貸出状況</div>
+        </div>
+        <div class="loan-table-wrap">
+          <div style="overflow-x:auto;">
+            <table class="loan-table">
+              <thead>
+                <tr>
+                  <th>管理番号</th>
+                  <th>楽器名</th>
+                  <th>借り手</th>
+                  <th>貸出日</th>
+                  <th>返却期限</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="activeTableBody">
+                <tr class="empty-row"><td colspan="6"><span class="empty-icon">⏳</span>読み込み中…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 新規貸出タブ ===== -->
+      <div id="pane-new" style="display:none;">
+        <div class="sec-head">
+          <div class="sec-eyebrow"><span>NEW LOAN</span></div>
+          <div class="sec-title">新規貸出登録</div>
+        </div>
+        <div class="loan-form-card">
+
+          <!-- 楽器選択 -->
+          <div class="form-group" style="margin-bottom:16px;">
+            <label>楽器<span class="req">*</span></label>
+            <div class="inst-select-wrap">
+              <div class="inst-selected" id="instSelected" onclick="toggleInstDropdown()">
+                <span class="placeholder" id="instSelectedText">楽器を選択してください</span>
+                <i class="fa-solid fa-chevron-down" style="font-size:0.75rem;color:var(--muted);"></i>
+              </div>
+              <div class="inst-dropdown" id="instDropdown">
+                <div class="inst-search">
+                  <input type="text" placeholder="管理番号・楽器名で検索…" id="instSearchInput" oninput="filterInstOptions()">
+                </div>
+                <div id="instOptionList"></div>
+              </div>
+            </div>
+            <div class="form-hint">貸出中・修理中の楽器は選択できません</div>
+          </div>
+
+          <!-- 借り手 -->
+          <div class="form-group" style="margin-bottom:16px;">
+            <label>借り手<span class="req">*</span></label>
+            <div class="borrower-toggle">
+              <button class="borrower-btn active" id="btnMember" onclick="setBorrowerType('member')">団員</button>
+              <button class="borrower-btn" id="btnExternal" onclick="setBorrowerType('external')">外部団体・個人</button>
+            </div>
+          </div>
+
+          <!-- 団員選択（団員の場合） -->
+          <div id="member-select-wrap" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label>団員<span class="req">*</span></label>
+              <select class="form-select" id="fMember">
+                <option value="">選択してください</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 外部名（外部の場合） -->
+          <div id="external-name-wrap" style="display:none;margin-bottom:16px;">
+            <div class="form-group">
+              <label>団体名・氏名<span class="req">*</span></label>
+              <input class="form-input" type="text" id="fExternalName" placeholder="例: ○○学校吹奏楽部">
+            </div>
+          </div>
+
+          <!-- 期間 -->
+          <div class="form-grid" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label>貸出日<span class="req">*</span></label>
+              <input class="form-input" type="date" id="fLoanFrom">
+            </div>
+            <div class="form-group">
+              <label>返却期限</label>
+              <input class="form-input" type="date" id="fLoanUntil">
+              <div class="form-hint">空欄の場合は期限なし</div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:20px;">
+            <label>メモ</label>
+            <textarea class="form-textarea" id="fLoanNote" placeholder="例: 定期演奏会まで貸出・合同演奏会用"></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button class="btn btn-secondary" onclick="resetLoanForm()"><i class="fa-solid fa-rotate-left"></i> リセット</button>
+            <button class="btn btn-submit-loan" id="btnLoanSubmit" onclick="submitLoan()">
+              <i class="fa-solid fa-right-from-bracket"></i> 貸出登録する
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 履歴タブ ===== -->
+      <div id="pane-history" style="display:none;">
+        <div class="sec-head">
+          <div class="sec-eyebrow"><span>HISTORY</span></div>
+          <div class="sec-title">貸出履歴</div>
+        </div>
+        <div class="loan-table-wrap">
+          <div style="overflow-x:auto;">
+            <table class="loan-table">
+              <thead>
+                <tr>
+                  <th>管理番号</th>
+                  <th>楽器名</th>
+                  <th>借り手</th>
+                  <th>貸出日</th>
+                  <th>返却日</th>
+                  <th>破損・紛失メモ</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <tr class="empty-row"><td colspan="6"><span class="empty-icon">📋</span>読み込み中…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== 返却処理モーダル ===== -->
+<div id="return-overlay" onclick="closeReturnOutside(event)">
+  <div class="return-card">
+    <div class="return-title">🎺 返却処理</div>
+    <div class="return-inst-info">
+      <div class="return-inst-no" id="return-inst-no"></div>
+      <div class="return-inst-name" id="return-inst-name"></div>
+    </div>
+    <div class="form-grid col1">
+      <div class="form-group">
+        <label>返却日<span class="req">*</span></label>
+        <input class="form-input" type="date" id="fReturnDate">
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label>破損・紛失メモ（あれば）</label>
+        <textarea class="form-textarea" id="fDamageNote" placeholder="例: ベルに小さな凹みあり、弁償対応済み"></textarea>
+      </div>
+    </div>
+    <div class="return-btns">
+      <button class="btn btn-secondary" style="flex:1;" onclick="closeReturnModal()">キャンセル</button>
+      <button class="btn btn-primary" style="flex:1;" id="btnReturnExec" onclick="execReturn()">
+        <i class="fa-solid fa-check"></i> 返却確定
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<footer><p>© 東大阪吹奏楽団 楽器管理委員会 | EQUIPMENT COMMITTEE PANEL</p></footer>
+
+<script>
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SB_H = { headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}`, 'Content-Type':'application/json' } };
+
+const CORRECT_CODE = 'EQUIPMENT';
+const SESSION_KEY  = 'panel_equipment_auth';
+
+let allInstruments = [];
+let allMembers     = [];
+let activeLoans    = [];
+let borrowerType   = 'member';
+let selectedInstId = null;
+let returnTargetId = null; // 返却処理中のloan ID
+
+// ============================================================
+// ロック
+// ============================================================
+function unlock() {
+  const val = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (val === CORRECT_CODE) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showPanel();
+  } else {
+    const inp = document.getElementById('codeInput');
+    inp.classList.add('error');
+    document.getElementById('lockErr').textContent = 'コードが正しくありません';
+    setTimeout(() => inp.classList.remove('error'), 400);
+  }
+}
+function toggleEye() {
+  const inp = document.getElementById('codeInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  document.getElementById('eyeBtn').innerHTML = inp.type === 'password'
+    ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+}
+function showPanel() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('site-nav').style.display    = 'block';
+  document.getElementById('panel-main').style.display  = 'block';
+  // 今日の日付をデフォルトセット
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fLoanFrom').value   = today;
+  document.getElementById('fReturnDate').value = today;
+  loadAll();
+}
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem(SESSION_KEY) === '1') showPanel();
+});
+
+// ============================================================
+// データ一括読み込み
+// ============================================================
+async function loadAll() {
+  try {
+    const [instRes, memberRes, loanRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/instruments?is_active=eq.true&select=*&order=instrument_no.asc`, SB_H),
+      fetch(`${SUPABASE_URL}/rest/v1/members?status=eq.active&select=id,name,part&order=part.asc,name.asc`, SB_H),
+      fetch(`${SUPABASE_URL}/rest/v1/instrument_loans?returned_at=is.null&select=*,instruments(instrument_no,name)&order=loaned_from.asc`, SB_H),
+    ]);
+    allInstruments = await instRes.json()   || [];
+    allMembers     = await memberRes.json() || [];
+    activeLoans    = await loanRes.json()   || [];
+
+    buildMemberSelect();
+    buildInstOptions();
+    renderActiveLoans();
+  } catch(e) {
+    console.error(e);
+    showToast('データ取得に失敗しました', 'error');
+  }
+}
+
+// ============================================================
+// タブ切り替え
+// ============================================================
+function switchTab(tab) {
+  ['active','new','history'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('pane-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  if (tab === 'history') loadHistory();
+}
+
+// ============================================================
+// 貸出中テーブル
+// ============================================================
+function renderActiveLoans() {
+  if (!activeLoans.length) {
+    document.getElementById('activeTableBody').innerHTML =
+      '<tr class="empty-row"><td colspan="6"><span class="empty-icon">✅</span>現在貸出中の楽器はありません</td></tr>';
+    return;
+  }
+  const today = new Date().toISOString().split('T')[0];
+  const soon  = new Date(); soon.setDate(soon.getDate() + 7);
+  const soonStr = soon.toISOString().split('T')[0];
+
+  const rows = activeLoans.map(loan => {
+    const no    = loan.instruments?.instrument_no || '—';
+    const name  = loan.instruments?.name || '—';
+    const borrower = loan.borrower_type === 'member'
+      ? `<span class="badge badge-member">団員</span> ${getMemberName(loan.borrower_member_id)}`
+      : `<span class="badge badge-external">外部</span> ${loan.borrower_name || '—'}`;
+    const from  = loan.loaned_from  ? loan.loaned_from.slice(0,10) : '—';
+    const until = loan.loaned_until ? loan.loaned_until.slice(0,10) : '期限なし';
+    const isOver = loan.loaned_until && loan.loaned_until < today;
+    const isSoon = loan.loaned_until && !isOver && loan.loaned_until <= soonStr;
+    const untilClass = isOver ? 'due-over' : isSoon ? 'due-soon' : '';
+
+    return `<tr>
+      <td class="inst-no-cell">${no}</td>
+      <td style="font-weight:600;">${name}</td>
+      <td>${borrower}</td>
+      <td style="font-size:0.78rem;font-family:'Outfit',sans-serif;">${from}</td>
+      <td style="font-size:0.78rem;font-family:'Outfit',sans-serif;" class="${untilClass}">${isOver ? '⚠️ ' : isSoon ? '⏰ ' : ''}${until}</td>
+      <td><button class="action-btn action-return" onclick="openReturnModal('${loan.id}','${no}','${name}')"><i class="fa-solid fa-rotate-left"></i> 返却</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('activeTableBody').innerHTML = rows;
+}
+
+function getMemberName(id) {
+  const m = allMembers.find(m => m.id === id);
+  return m ? `${m.name}（${m.part || '—'}）` : '—';
+}
+
+// ============================================================
+// 新規貸出フォーム
+// ============================================================
+function buildMemberSelect() {
+  const sel = document.getElementById('fMember');
+  sel.innerHTML = '<option value="">選択してください</option>';
+  allMembers.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = `${m.name}（${m.part || '—'}）`;
+    sel.appendChild(opt);
+  });
+}
+
+// 貸出中・修理中のIDセット
+function getUnavailableIds() {
+  const loanedIds = new Set(activeLoans.map(l => l.instrument_id));
+  const repairIds = new Set(
+    allInstruments
+      .filter(i => i.condition === 'in_repair')
+      .map(i => i.id)
+  );
+  return new Set([...loanedIds, ...repairIds]);
+}
+
+function buildInstOptions() {
+  const unavailable = getUnavailableIds();
+  const available = allInstruments.filter(i => !unavailable.has(i.id));
+  renderInstOptions(available);
+}
+
+function renderInstOptions(list) {
+  const container = document.getElementById('instOptionList');
+  if (!list.length) {
+    container.innerHTML = '<div style="padding:12px 14px;color:var(--muted);font-size:0.82rem;">貸出可能な楽器がありません</div>';
+    return;
+  }
+  container.innerHTML = list.map(inst => {
+    const ownerLabel = inst.owner_type === 'own' ? '団所有' : `借用：${inst.owner_name || ''}`;
+    return `<div class="inst-option" onclick="selectInst('${inst.id}','${inst.instrument_no}','${inst.name}')">
+      <span class="opt-no">${inst.instrument_no}</span>${inst.name}
+      <span class="opt-owner">${ownerLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+function filterInstOptions() {
+  const q = document.getElementById('instSearchInput').value.toLowerCase();
+  const unavailable = getUnavailableIds();
+  const filtered = allInstruments
+    .filter(i => !unavailable.has(i.id))
+    .filter(i => `${i.instrument_no} ${i.name}`.toLowerCase().includes(q));
+  renderInstOptions(filtered);
+}
+
+function toggleInstDropdown() {
+  const sel = document.getElementById('instSelected');
+  const dd  = document.getElementById('instDropdown');
+  const isOpen = dd.classList.contains('open');
+  dd.classList.toggle('open', !isOpen);
+  sel.classList.toggle('open', !isOpen);
+  if (!isOpen) document.getElementById('instSearchInput').focus();
+}
+
+// 外クリックでドロップダウン閉じる
+document.addEventListener('click', e => {
+  const wrap = document.querySelector('.inst-select-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('instDropdown').classList.remove('open');
+    document.getElementById('instSelected').classList.remove('open');
+  }
+});
+
+function selectInst(id, no, name) {
+  selectedInstId = id;
+  document.getElementById('instSelectedText').textContent = `${no}　${name}`;
+  document.getElementById('instSelectedText').classList.remove('placeholder');
+  document.getElementById('instDropdown').classList.remove('open');
+  document.getElementById('instSelected').classList.remove('open');
+}
+
+function setBorrowerType(type) {
+  borrowerType = type;
+  document.getElementById('btnMember').classList.toggle('active', type === 'member');
+  document.getElementById('btnExternal').classList.toggle('active', type === 'external');
+  document.getElementById('member-select-wrap').style.display   = type === 'member'   ? 'block' : 'none';
+  document.getElementById('external-name-wrap').style.display   = type === 'external' ? 'block' : 'none';
+}
+
+function resetLoanForm() {
+  selectedInstId = null;
+  document.getElementById('instSelectedText').textContent = '楽器を選択してください';
+  document.getElementById('instSelectedText').classList.add('placeholder');
+  document.getElementById('fMember').value       = '';
+  document.getElementById('fExternalName').value = '';
+  document.getElementById('fLoanUntil').value    = '';
+  document.getElementById('fLoanNote').value     = '';
+  setBorrowerType('member');
+  buildInstOptions();
+}
+
+async function submitLoan() {
+  // バリデーション
+  if (!selectedInstId) { showToast('楽器を選択してください', 'error'); return; }
+  const from = document.getElementById('fLoanFrom').value;
+  if (!from) { showToast('貸出日を入力してください', 'error'); return; }
+  if (borrowerType === 'member' && !document.getElementById('fMember').value) {
+    showToast('団員を選択してください', 'error'); return;
+  }
+  if (borrowerType === 'external' && !document.getElementById('fExternalName').value.trim()) {
+    showToast('団体名・氏名を入力してください', 'error'); return;
+  }
+
+  const payload = {
+    instrument_id:      selectedInstId,
+    borrower_type:      borrowerType,
+    borrower_member_id: borrowerType === 'member' ? document.getElementById('fMember').value : null,
+    borrower_name:      borrowerType === 'external' ? document.getElementById('fExternalName').value.trim() : null,
+    loaned_from:        from,
+    loaned_until:       document.getElementById('fLoanUntil').value || null,
+    damage_note:        document.getElementById('fLoanNote').value.trim() || null,
+  };
+
+  const btn = document.getElementById('btnLoanSubmit');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 処理中…';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/instrument_loans`, {
+      method: 'POST',
+      headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      showToast('貸出登録しました ✓', 'success');
+      await loadAll();
+      resetLoanForm();
+      switchTab('active');
+    } else {
+      showToast('登録に失敗しました', 'error');
+    }
+  } catch(e) {
+    showToast('通信エラーが発生しました', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> 貸出登録する';
+  }
+}
+
+// ============================================================
+// 返却処理
+// ============================================================
+function openReturnModal(loanId, instNo, instName) {
+  returnTargetId = loanId;
+  document.getElementById('return-inst-no').textContent   = instNo;
+  document.getElementById('return-inst-name').textContent = instName;
+  document.getElementById('fDamageNote').value = '';
+  document.getElementById('fReturnDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('return-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeReturnModal() {
+  document.getElementById('return-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  returnTargetId = null;
+}
+function closeReturnOutside(e) {
+  if (e.target === document.getElementById('return-overlay')) closeReturnModal();
+}
+
+async function execReturn() {
+  const returnDate = document.getElementById('fReturnDate').value;
+  if (!returnDate) { showToast('返却日を入力してください', 'error'); return; }
+
+  const btn = document.getElementById('btnReturnExec');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/instrument_loans?id=eq.${returnTargetId}`, {
+      method: 'PATCH',
+      headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        returned_at:  returnDate,
+        damage_note:  document.getElementById('fDamageNote').value.trim() || null,
+      }),
+    });
+    if (res.ok) {
+      showToast('返却処理しました ✓', 'success');
+      closeReturnModal();
+      await loadAll();
+      renderActiveLoans();
+    } else {
+      showToast('返却処理に失敗しました', 'error');
+    }
+  } catch(e) {
+    showToast('通信エラーが発生しました', 'error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ============================================================
+// 貸出履歴
+// ============================================================
+async function loadHistory() {
+  document.getElementById('historyTableBody').innerHTML =
+    '<tr class="empty-row"><td colspan="6"><span class="empty-icon">📋</span>読み込み中…</td></tr>';
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/instrument_loans?returned_at=not.is.null&select=*,instruments(instrument_no,name)&order=returned_at.desc&limit=100`,
+      SB_H
+    );
+    const history = await res.json() || [];
+    if (!history.length) {
+      document.getElementById('historyTableBody').innerHTML =
+        '<tr class="empty-row"><td colspan="6"><span class="empty-icon">📋</span>返却済みの履歴はありません</td></tr>';
+      return;
+    }
+    const rows = history.map(loan => {
+      const no   = loan.instruments?.instrument_no || '—';
+      const name = loan.instruments?.name || '—';
+      const borrower = loan.borrower_type === 'member'
+        ? `<span class="badge badge-member">団員</span> ${getMemberName(loan.borrower_member_id)}`
+        : `<span class="badge badge-external">外部</span> ${loan.borrower_name || '—'}`;
+      const from     = loan.loaned_from   ? loan.loaned_from.slice(0,10)   : '—';
+      const returned = loan.returned_at   ? loan.returned_at.slice(0,10)   : '—';
+      const damage   = loan.damage_note || '—';
+      return `<tr>
+        <td class="inst-no-cell">${no}</td>
+        <td style="font-weight:600;">${name}</td>
+        <td>${borrower}</td>
+        <td style="font-size:0.78rem;font-family:'Outfit',sans-serif;">${from}</td>
+        <td style="font-size:0.78rem;font-family:'Outfit',sans-serif;">${returned}</td>
+        <td style="font-size:0.78rem;color:var(--muted);">${damage}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('historyTableBody').innerHTML = rows;
+  } catch(e) {
+    showToast('履歴の取得に失敗しました', 'error');
+  }
+}
+
+// ============================================================
+// トースト
+// ============================================================
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = type ? `show ${type}` : 'show';
+  setTimeout(() => { t.className = type; }, 3000);
+}
+</script>
+</body>
+</html>
