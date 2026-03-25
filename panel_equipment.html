@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>楽器管理委員会パネル | 東大阪吹奏楽団</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
+  --green:#1D9E75;--red:#C0392B;--orange:#E67E22;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
+
+/* ===== ロック画面 ===== */
+#lock-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+}
+#lock-screen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 30%,rgba(200,164,77,0.15) 0%,transparent 60%),
+             radial-gradient(ellipse at 20% 80%,rgba(200,164,77,0.1) 0%,transparent 50%);
+}
+.lock-card{
+  position:relative;z-index:1;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(200,164,77,0.35);
+  border-radius:24px;padding:2.5rem 2rem;
+  width:100%;max-width:400px;text-align:center;
+  backdrop-filter:blur(16px);
+}
+.lock-icon{font-size:2.5rem;margin-bottom:1rem;}
+.lock-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;
+}
+.lock-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.3rem;font-weight:700;color:white;margin-bottom:0.4rem;
+}
+.lock-sub{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input-wrap{position:relative;margin-bottom:1rem;}
+.lock-input{
+  width:100%;padding:14px 48px 14px 16px;
+  background:rgba(255,255,255,0.08);
+  border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:12px;color:white;font-size:1rem;font-family:inherit;
+  outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;
+}
+.lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
+.lock-input:focus{border-color:var(--gold);}
+.lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.eye-btn{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;
+}
+.lock-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--gold),#b8933d);
+  color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;
+  font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 20px rgba(200,164,77,0.35);transition:opacity 0.2s,transform 0.15s;
+}
+.lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
+.lock-note{font-size:0.68rem;color:rgba(255,255,255,0.22);margin-top:1.5rem;line-height:1.7;}
+
+/* ===== NAV ===== */
+#site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;
+  background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(200,164,77,0.25);display:none;
+}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 1.5rem;}
+#nav-logo{font-family:'Shippori Mincho',serif;color:#fff;font-size:1rem;font-weight:700;text-decoration:none;}
+#nav-logo small{display:block;font-family:'Outfit',sans-serif;font-size:0.55rem;color:rgba(255,255,255,0.35);letter-spacing:.14em;font-weight:400;}
+.nav-badge{
+  font-family:'Outfit',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
+  background:rgba(200,164,77,0.15);color:var(--gold);
+  padding:4px 10px;border-radius:20px;border:1px solid rgba(200,164,77,0.3);
+}
+.nav-logout{
+  background:none;border:none;cursor:pointer;
+  font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:inherit;
+  padding:6px 10px;border-radius:8px;transition:color 0.2s;
+}
+.nav-logout:hover{color:rgba(255,255,255,0.8);}
+
+/* ===== MAIN ===== */
+#panel-main{display:none;padding-top:56px;}
+
+/* PAGE HEADER */
+.page-header{
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
+  position:relative;overflow:hidden;
+}
+.page-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,0.15) 0%,transparent 55%),
+             radial-gradient(ellipse at 10% 90%,rgba(200,164,77,0.08) 0%,transparent 50%);
+}
+.page-header-inner{position:relative;z-index:1;padding:2.5rem 1.5rem 3rem;max-width:1100px;margin:0 auto;}
+.page-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;
+}
+.page-eyebrow::before{content:'';width:16px;height:1.5px;background:var(--gold);}
+.page-header h1{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:white;line-height:1.3;margin-bottom:0.5rem;
+}
+.page-header p{font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.8;}
+
+/* ===== LAYOUT ===== */
+.inner{max-width:1100px;margin:0 auto;padding:0 1.5rem;width:100%;}
+.sec{padding:40px 0;}
+.sec-head{margin-bottom:1.5rem;}
+.sec-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:0.62rem;font-weight:800;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);
+  display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;
+}
+.sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.sec-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:700;color:var(--navy);
+}
+
+/* ===== サマリーバー ===== */
+.summary-bar{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-bottom:32px;
+}
+@media(max-width:540px){.summary-bar{grid-template-columns:1fr 1fr;}}
+.summary-card{
+  background:var(--white);border:1px solid var(--border);border-radius:16px;
+  padding:1.2rem 1rem;text-align:center;
+  transition:box-shadow 0.2s;
+}
+.summary-card.alert{border-color:rgba(192,57,43,0.3);background:rgba(192,57,43,0.03);}
+.summary-num{
+  font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;
+  color:var(--navy);line-height:1;
+}
+.summary-num.alert{color:var(--red);}
+.summary-num.warn{color:var(--orange);}
+.summary-label{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+
+/* ===== メニューグリッド ===== */
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+.menu-card{
+  background:var(--white);border:1.5px solid var(--border);border-radius:20px;
+  padding:1.5rem;text-decoration:none;color:var(--text);
+  display:flex;flex-direction:column;gap:12px;
+  transition:all 0.2s;box-shadow:0 2px 12px rgba(33,74,154,0.05);
+  position:relative;overflow:hidden;
+}
+.menu-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--navy),var(--gold));
+  opacity:0;transition:opacity 0.2s;
+}
+.menu-card:hover{
+  border-color:var(--blue);
+  box-shadow:0 8px 28px rgba(33,74,154,0.12);
+  transform:translateY(-2px);
+}
+.menu-card:hover::before{opacity:1;}
+.menu-card-top{display:flex;align-items:flex-start;justify-content:space-between;}
+.menu-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:rgba(33,74,154,0.1);color:var(--blue);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;
+}
+.menu-badge{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;
+  letter-spacing:0.06em;padding:3px 10px;border-radius:20px;
+}
+.badge-new{background:rgba(33,74,154,0.1);color:var(--blue);}
+.badge-alert{background:rgba(192,57,43,0.1);color:var(--red);}
+.badge-warn{background:rgba(230,126,34,0.1);color:var(--orange);}
+.menu-title{
+  font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;
+  color:var(--navy);
+}
+.menu-desc{font-size:0.78rem;color:var(--muted);line-height:1.7;}
+.menu-arrow{
+  display:flex;align-items:center;justify-content:flex-end;gap:4px;
+  font-size:0.72rem;color:var(--blue);font-weight:700;
+}
+
+/* ===== お知らせバナー ===== */
+.notice-banner{
+  background:rgba(33,74,154,0.04);
+  border:1px solid rgba(33,74,154,0.12);border-radius:16px;
+  padding:1.2rem 1.4rem;margin-bottom:32px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.notice-icon{color:var(--blue);font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+.notice-text{font-size:0.82rem;line-height:1.8;color:var(--navy);}
+.notice-text strong{color:var(--blue);}
+
+/* ===== 要対応テーブル ===== */
+.status-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.status-table th{
+  padding:8px 12px;text-align:left;
+  font-size:0.68rem;font-weight:700;color:var(--muted);
+  border-bottom:2px solid var(--border);letter-spacing:0.05em;
+}
+.status-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);}
+.status-table tr:last-child td{border-bottom:none;}
+.status-table tr:hover td{background:#f8faf9;}
+.st-badge{
+  display:inline-block;padding:2px 10px;border-radius:20px;
+  font-size:0.68rem;font-weight:700;
+}
+.st-loaned{background:rgba(33,74,154,0.1);color:var(--blue);}
+.st-repair{background:rgba(192,57,43,0.1);color:var(--red);}
+.st-needs{background:rgba(230,126,34,0.1);color:var(--orange);}
+.st-good{background:rgba(29,158,117,0.1);color:var(--green);}
+
+footer{background:var(--navy);padding:24px 0;text-align:center;margin-top:40px;}
+footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<!-- ===== LOCK ===== -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">🎺</div>
+    <div class="lock-eyebrow">EQUIPMENT COMMITTEE</div>
+    <div class="lock-title">楽器管理委員会パネル</div>
+    <div class="lock-sub">アクセスコードを入力してください</div>
+    <div class="lock-input-wrap">
+      <input class="lock-input" type="password" id="codeInput" placeholder="ACCESS CODE"
+        onkeydown="if(event.key==='Enter')unlock()">
+      <button class="eye-btn" onclick="toggleEye()" id="eyeBtn"><i class="fa-solid fa-eye-slash"></i></button>
+    </div>
+    <button class="lock-btn" onclick="unlock()">
+      <i class="fa-solid fa-drum" style="margin-right:8px;"></i>ログイン
+    </button>
+    <div class="lock-err" id="lockErr"></div>
+    <div class="lock-note">このページは委員会メンバー専用です<br>URLの共有・スクリーンショットはご遠慮ください</div>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="site-nav">
+  <div class="nav-inner">
+    <a id="nav-logo" href="./member.html">
+      東大阪吹奏楽団
+      <small>HIGASUI WINDS</small>
+    </a>
+    <span class="nav-badge">EQUIPMENT</span>
+    <button class="nav-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> ログアウト</button>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div id="panel-main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow"><span>EQUIPMENT COMMITTEE</span></div>
+      <h1>楽器管理委員会<br>パネル</h1>
+      <p>楽器の登録・貸出管理・状態確認・QRコード発行を行います</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="inner">
+
+      <!-- サマリーバー -->
+      <div class="summary-bar">
+        <div class="summary-card">
+          <div class="summary-num" id="sumTotal">—</div>
+          <div class="summary-label">登録楽器数</div>
+        </div>
+        <div class="summary-card" id="cardLoaned">
+          <div class="summary-num" id="sumLoaned">—</div>
+          <div class="summary-label">貸出中</div>
+        </div>
+        <div class="summary-card" id="cardRepair">
+          <div class="summary-num" id="sumRepair">—</div>
+          <div class="summary-label">修理中・要修繕</div>
+        </div>
+      </div>
+
+      <!-- お知らせバナー -->
+      <div class="notice-banner">
+        <i class="fa-solid fa-circle-info notice-icon"></i>
+        <div class="notice-text">
+          <strong>楽器管理委員会の主な役割：</strong>楽器の状態・保管場所・貸出状況の管理。
+          QRシールを楽器に貼ることで、スマホのカメラから即座に楽器情報を確認できます。
+        </div>
+      </div>
+
+      <!-- メニューグリッド -->
+      <div class="sec-head">
+        <div class="sec-eyebrow"><span>MENU</span></div>
+        <div class="sec-title">機能メニュー</div>
+      </div>
+      <div class="menu-grid">
+
+        <!-- 楽器一覧 -->
+        <a class="menu-card" href="./panel_equipment_list.html">
+          <div class="menu-card-top">
+            <div class="menu-icon"><i class="fa-solid fa-list"></i></div>
+            <span class="menu-badge badge-new">LIST</span>
+          </div>
+          <div>
+            <div class="menu-title">楽器一覧</div>
+            <div class="menu-desc">全楽器の一覧・検索・ソート。QRスキャンで直接楽器の詳細を開くこともできます。</div>
+          </div>
+          <div class="menu-arrow">見る <i class="fa-solid fa-chevron-right"></i></div>
+        </a>
+
+        <!-- 楽器登録・編集 -->
+        <a class="menu-card" href="./panel_equipment_register.html">
+          <div class="menu-card-top">
+            <div class="menu-icon"><i class="fa-solid fa-plus"></i></div>
+            <span class="menu-badge badge-new">REGISTER</span>
+          </div>
+          <div>
+            <div class="menu-title">楽器登録・編集</div>
+            <div class="menu-desc">新しい楽器の登録・情報更新。所有者・保管場所・状態・備考を管理します。</div>
+          </div>
+          <div class="menu-arrow">登録する <i class="fa-solid fa-chevron-right"></i></div>
+        </a>
+
+        <!-- 貸出管理 -->
+        <a class="menu-card" href="./panel_equipment_loans.html">
+          <div class="menu-card-top">
+            <div class="menu-icon"><i class="fa-solid fa-right-left"></i></div>
+            <span class="menu-badge badge-alert" id="loanBadge" style="display:none;">貸出中あり</span>
+            <span class="menu-badge badge-new" id="loanBadgeDefault">LOANS</span>
+          </div>
+          <div>
+            <div class="menu-title">貸出管理</div>
+            <div class="menu-desc">団員・外部団体への貸出記録。返却日の管理・破損報告の記録もここから。</div>
+          </div>
+          <div class="menu-arrow">管理する <i class="fa-solid fa-chevron-right"></i></div>
+        </a>
+
+        <!-- QR印刷 -->
+        <a class="menu-card" href="./panel_equipment_qr.html">
+          <div class="menu-card-top">
+            <div class="menu-icon"><i class="fa-solid fa-qrcode"></i></div>
+            <span class="menu-badge badge-new">QR</span>
+          </div>
+          <div>
+            <div class="menu-title">QRコード印刷</div>
+            <div class="menu-desc">管理番号QRをA4に一括印刷。楽器へのシール貼り・タグ作成に使用します。</div>
+          </div>
+          <div class="menu-arrow">印刷する <i class="fa-solid fa-chevron-right"></i></div>
+        </a>
+
+      </div>
+
+      <!-- 要対応楽器テーブル -->
+      <div class="sec-head" style="margin-top:40px;">
+        <div class="sec-eyebrow"><span>ATTENTION</span></div>
+        <div class="sec-title">要対応の楽器</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+        <div style="padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:0.82rem;color:var(--muted);">修理中・要修繕・返却期限近い楽器</span>
+          <a href="./panel_equipment_list.html" style="font-size:0.78rem;color:var(--blue);font-weight:700;text-decoration:none;">すべて見る →</a>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th>管理番号</th>
+                <th>楽器名</th>
+                <th>状態</th>
+                <th>メモ</th>
+              </tr>
+            </thead>
+            <tbody id="attentionTableBody">
+              <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);font-size:0.8rem;">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /panel-main -->
+
+<footer>
+  <p>© 東大阪吹奏楽団 楽器管理委員会 | EQUIPMENT COMMITTEE PANEL</p>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SB_H = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+
+const CORRECT_CODE = 'EQUIPMENT';
+const SESSION_KEY  = 'panel_equipment_auth';
+
+// ============================================================
+// ロック
+// ============================================================
+function unlock() {
+  const val = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (val === CORRECT_CODE) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showPanel();
+  } else {
+    const inp = document.getElementById('codeInput');
+    inp.classList.add('error');
+    document.getElementById('lockErr').textContent = 'コードが正しくありません';
+    setTimeout(() => inp.classList.remove('error'), 400);
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+function toggleEye() {
+  const inp = document.getElementById('codeInput');
+  const btn = document.getElementById('eyeBtn');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+  } else {
+    inp.type = 'password';
+    btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+  }
+}
+
+function showPanel() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('site-nav').style.display   = 'block';
+  document.getElementById('panel-main').style.display = 'block';
+  loadSummary();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem(SESSION_KEY) === '1') showPanel();
+});
+
+// ============================================================
+// サマリー読み込み
+// ============================================================
+async function loadSummary() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+
+    const [totalRes, instrumentsRes, loansRes] = await Promise.all([
+      // 楽器総数
+      fetch(`${SUPABASE_URL}/rest/v1/instruments?is_active=eq.true&select=id`, {
+        ...SB_H,
+        headers: { ...SB_H.headers, 'Prefer': 'count=exact', 'Range': '0-0' }
+      }),
+      // 修理中・要修繕の楽器（状態が needs_repair or in_repair）
+      fetch(`${SUPABASE_URL}/rest/v1/instruments?is_active=eq.true&condition=in.(needs_repair,in_repair)&select=id,instrument_no,name,condition,condition_note`, SB_H),
+      // 現在貸出中（returned_atがnull）
+      fetch(`${SUPABASE_URL}/rest/v1/instrument_loans?returned_at=is.null&select=id,instrument_id,instruments(instrument_no,name),borrower_type,borrower_name,borrower_member_id,loaned_until`, SB_H),
+    ]);
+
+    // 総数
+    const totalRange = totalRes.headers.get('Content-Range');
+    const totalCount = totalRange ? totalRange.split('/')[1] : '—';
+    document.getElementById('sumTotal').textContent = totalCount;
+
+    // 修理中・要修繕
+    const repairList = await instrumentsRes.json() || [];
+    document.getElementById('sumRepair').textContent = repairList.length;
+    if (repairList.length > 0) {
+      document.getElementById('sumRepair').classList.add('warn');
+      document.getElementById('cardRepair').classList.add('alert');
+    }
+
+    // 貸出中
+    const loanList = await loansRes.json() || [];
+    document.getElementById('sumLoaned').textContent = loanList.length;
+    if (loanList.length > 0) {
+      document.getElementById('loanBadge').style.display = 'inline-block';
+      document.getElementById('loanBadgeDefault').style.display = 'none';
+    }
+
+    // 要対応テーブル描画
+    renderAttentionTable(repairList, loanList, today);
+
+  } catch(e) {
+    console.error('サマリー取得エラー:', e);
+    document.getElementById('attentionTableBody').innerHTML =
+      '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);font-size:0.8rem;">取得できませんでした</td></tr>';
+    ['sumTotal','sumLoaned','sumRepair'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
+  }
+}
+
+// ============================================================
+// 要対応テーブル描画
+// ============================================================
+function renderAttentionTable(repairList, loanList, today) {
+  const rows = [];
+
+  // 修理中・要修繕
+  repairList.slice(0, 5).forEach(item => {
+    const condLabel = item.condition === 'in_repair' ? '修理中' : '要修繕';
+    const badgeClass = item.condition === 'in_repair' ? 'st-repair' : 'st-needs';
+    rows.push(`
+      <tr>
+        <td><span style="font-family:'Outfit',sans-serif;font-weight:800;">${item.instrument_no}</span></td>
+        <td style="font-weight:600;">${item.name}</td>
+        <td><span class="st-badge ${badgeClass}">${condLabel}</span></td>
+        <td style="color:var(--muted);font-size:0.78rem;">${item.condition_note || '—'}</td>
+      </tr>
+    `);
+  });
+
+  // 返却期限が近い貸出（7日以内）
+  const soon = new Date(today);
+  soon.setDate(soon.getDate() + 7);
+  const soonStr = soon.toISOString().split('T')[0];
+
+  loanList.filter(l => l.loaned_until && l.loaned_until <= soonStr).slice(0, 5).forEach(loan => {
+    const instNo   = loan.instruments?.instrument_no || '—';
+    const instName = loan.instruments?.name || '—';
+    const until    = loan.loaned_until ? loan.loaned_until.slice(0,10) : '—';
+    const isPast   = loan.loaned_until < today;
+    rows.push(`
+      <tr>
+        <td><span style="font-family:'Outfit',sans-serif;font-weight:800;">${instNo}</span></td>
+        <td style="font-weight:600;">${instName}</td>
+        <td><span class="st-badge st-loaned">${isPast ? '返却期限超過' : '返却期限近'}</span></td>
+        <td style="color:var(--muted);font-size:0.78rem;">返却期限：${until}</td>
+      </tr>
+    `);
+  });
+
+  if (rows.length === 0) {
+    document.getElementById('attentionTableBody').innerHTML =
+      '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);font-size:0.8rem;">現在、要対応の楽器はありません ✓</td></tr>';
+    return;
+  }
+
+  document.getElementById('attentionTableBody').innerHTML = rows.join('');
+}
+</script>
+</body>
+</html>
