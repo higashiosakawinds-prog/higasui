@@ -288,6 +288,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   .print-org{
     font-family:'Noto Sans JP',sans-serif;font-size:5.5pt;color:#888;
   }
+  .print-logo{
+    width:24mm;height:auto;opacity:0.7;margin-top:1mm;
+  }
 }
 
 footer{background:var(--navy);padding:24px 0;text-align:center;margin-top:40px;}
@@ -441,6 +444,9 @@ const SESSION_KEY  = 'panel_equipment_auth';
 
 // QRコードを読んだとき飛ぶベースURL
 const QR_BASE_URL = 'https://higashiosakawinds-prog.github.io/higasui/panel_equipment_list.html?no=';
+
+// 団ロゴ（base64埋め込み）
+const LOGO_SRC = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iX+ODrOOCpOODpOODvF8xIiBkYXRhLW5hbWU9IuODrOOCpOODpOODvF8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDg1MCAzMDAiPgogIDwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyOS44LjMsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiAyLjEuMSBCdWlsZCAzKSAgLS0+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5zdDAgewogICAgICAgIGZpbGw6ICM0ODc0YjU7CiAgICAgIH0KCiAgICAgIC5zdDEgewogICAgICAgIGZpbGw6ICMwYjEzMmU7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNDQuNTgsMTUxLjk1aDBjMC00LjA2LTMuMjktNy4zNS03LjM1LTcuMzVoLTQzLjY4di0zMi41OWM2LjkzLDEuNDYsMTMuMzgsNC42NCwxOC43Nyw5LjI3LDMuMjEsMi43Niw3Ljk5LDIuNjQsMTEuMjUtLjA2aDBjNC4xOC0zLjQ3LDQuMTUtOS44My4wMi0xMy4zNi04LjUzLTcuMjgtMTguOTItMTEuOTktMzAuMDMtMTMuNjN2LTEyLjk1aDkuNzNjMTQuOTEsMCwyNy45MS0xMS4yMiwyOC45Ny0yNi4xLDEuMjItMTcuMTMtMTIuOTktMzEuMzMtMzAuMTItMzAuMTItMTQuODgsMS4wNi0yNi4xLDE0LjA1LTI2LjEsMjguOTd2OS43M3MtMjQuODQsMC0yNC44NCwwYy00Ljc5LDAtOC42OCwzLjg4LTguNjgsOC42OHYuMTdjMCw0Ljc5LDMuODgsOC42OCw4LjY4LDguNjhoMjQuODR2MTIuOTJjLTEzLjA0LDEuODktMjQuOTksOC4wMS0zNC4zMiwxNy42OS0xMS4zNywxMS44MS0xNy4yOSwyNy4zNi0xNi42Nyw0My43OS44MywyMS44OCwxMy42Myw0MC44NSwzMS45Nyw1MC41Ny04LjU3LDcuNjUtMTMuOTgsMTguNzctMTMuOTgsMzEuMTRoMTcuNTJjMC0xMC4yNyw2LjQzLTE5LjA1LDE1LjQ3LTIyLjU3djM0LjY4YzAsMy43MS0yLjUsNy4xMi02LjE1LDcuODMtNC45Ljk1LTkuMjEtMi43OS05LjIxLTcuNTN2LTguNjdoLTE3LjUydjcuNzhjMCwxMy40MSwxMC4wOSwyNS4xMywyMy40NywyNi4wMywxNC42Ny45OCwyNi45Mi0xMC42NywyNi45Mi0yNS4xNHYtMzQuOTljNy4wOSwyLjc2LDEyLjU3LDguNzUsMTQuNjEsMTYuMTUsMS4wNCwzLjc5LDQuNDksNi40MSw4LjQyLDYuNDFoMGM1LjgyLDAsMTAtNS41Nyw4LjQ0LTExLjE3LTIuMTctNy43OC02LjU0LTE0LjY2LTEyLjM5LTE5LjkxLDYuNS0zLjQzLDEyLjQyLTguMDksMTcuNDYtMTMuOTEsOS42Ni0xMS4xNSwxNC40OS0yNS42OSwxNC40OS00MC40NFpNMTA0LjE4LDQyLjUyYzUuODYsMCwxMC42Myw0Ljc3LDEwLjYzLDEwLjYzcy00Ljc3LDEwLjYzLTEwLjYzLDEwLjYzaC0xMC42M3YtMTAuNjNjMC01Ljg2LDQuNzctMTAuNjMsMTAuNjMtMTAuNjNaTTQyLjU1LDE1NS4wMmMtLjQ0LTExLjYyLDMuNzQtMjIuNjIsMTEuNzgtMzAuOTcsNS45OC02LjIxLDEzLjQ4LTEwLjM0LDIxLjctMTIuMDV2MzIuNjFoLThjLTQuODQsMC04Ljc2LDMuOTItOC43Niw4Ljc2aDBjMCw0Ljg0LDMuOTIsOC43Niw4Ljc2LDguNzZoOHYzMi41OWMtMTguNTUtMy45NC0zMi43NC0yMC4xOS0zMy40OC0zOS42OVpNMTE0LjExLDE4My44MmMtNS44LDUuNTgtMTIuODgsOS4zLTIwLjU1LDEwLjkxdi0zMi42MWgzMi42MWMtMS43Miw4LjIyLTUuODUsMTUuNzItMTIuMDYsMjEuN1oiLz4KPC9zdmc+';
 
 // カテゴリ定義
 const CATEGORIES = [
@@ -647,6 +653,12 @@ function generateQR() {
       pOrg.className = 'print-org';
       pOrg.textContent = catInfo.label;
       printCard.appendChild(pOrg);
+
+      // 団ロゴ
+      const pLogo = document.createElement('img');
+      pLogo.className = 'print-logo';
+      pLogo.src = LOGO_SRC;
+      printCard.appendChild(pLogo);
 
       printGrid.appendChild(printCard);
       document.body.removeChild(printQrDiv);
