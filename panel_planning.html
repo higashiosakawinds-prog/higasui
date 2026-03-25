@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>企画運営委員会パネル | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC;
+  --green:#1D9E75; --red:#C0392B; --orange:#d97706;
+  --radius:16px; --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* ===== PANEL NAV ===== */
+#panel-nav{
+  position:sticky;top:0;z-index:100;height:52px;
+  background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);
+  display:flex;align-items:center;padding:0 1.25rem;gap:12px;
+}
+#back-btn{
+  width:34px;height:34px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;flex-shrink:0;
+}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{
+  margin-left:auto;padding:3px 12px;border-radius:20px;
+  font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;
+  background:rgba(200,164,77,.2);color:#fde68a;letter-spacing:.08em;
+}
+
+/* ===== LOCK SCREEN ===== */
+#lockScreen{
+  position:fixed;inset:0;z-index:200;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+}
+.lock-card{
+  background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);
+  border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;
+  backdrop-filter:blur(12px);
+}
+.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input{
+  width:100%;padding:13px 16px;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+  color:#fff;font-size:1rem;font-family:inherit;outline:none;
+  text-align:center;letter-spacing:.2em;margin-bottom:.8rem;transition:border-color .2s;
+}
+.lock-input:focus{border-color:var(--gold);}
+.lock-btn{width:100%;padding:13px;border:none;border-radius:12px;background:var(--gold);color:var(--navy);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;}
+.lock-error{display:none;margin-top:.8rem;padding:.6rem 1rem;background:rgba(192,57,43,.2);border-radius:8px;font-size:.75rem;color:#fca5a5;}
+.lock-error.show{display:block;}
+
+/* ===== LOADING ===== */
+#stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
+.spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== MAIN ===== */
+#mainContent{display:none;padding:28px 0 80px;}
+
+/* ===== TABS ===== */
+.tab-bar{
+  display:flex;gap:4px;background:var(--white);border:1px solid var(--border);
+  border-radius:14px;padding:4px;margin-bottom:24px;overflow-x:auto;
+}
+.tab-btn{
+  flex:1;min-width:80px;padding:8px 10px;border:none;border-radius:10px;
+  font-family:inherit;font-size:.73rem;font-weight:700;color:var(--muted);
+  background:none;cursor:pointer;transition:all .2s;white-space:nowrap;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.tab-btn.active{background:var(--navy);color:#fff;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* ===== COUNTDOWN BANNER ===== */
+.concert-banner{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  border-radius:var(--radius);padding:1.4rem 1.5rem;
+  margin-bottom:20px;display:flex;align-items:center;gap:16px;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.concert-banner::before{
+  content:'🎺';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);
+  font-size:3rem;opacity:.15;
+}
+.concert-banner-main{flex:1;}
+.concert-banner-label{font-size:.65rem;font-family:'Outfit',sans-serif;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+.concert-banner-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.concert-banner-date{font-size:.75rem;color:rgba(255,255,255,.6);}
+.concert-banner-days{
+  font-family:'Outfit',sans-serif;font-size:2.4rem;font-weight:800;
+  color:var(--gold);line-height:1;text-align:right;flex-shrink:0;
+}
+.concert-banner-days-label{font-size:.62rem;color:rgba(255,255,255,.5);text-align:right;}
+
+/* ===== STAT GRID ===== */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:600px){.stat-grid{grid-template-columns:repeat(4,1fr);}}
+.stat-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:1rem 1.2rem;}
+.stat-num{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;color:var(--blue);line-height:1;margin-bottom:4px;}
+.stat-label{font-size:.7rem;color:var(--muted);}
+
+/* ===== CARD ===== */
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
+.card-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.card-head-left{display:flex;align-items:center;gap:10px;}
+.card-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.card-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
+.card-body{padding:1.25rem;}
+
+/* ===== BUTTONS ===== */
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.btn-primary{padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s;text-decoration:none;}
+.btn-primary:hover{background:#1a3d85;}
+.btn-gold{padding:9px 18px;background:var(--gold);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s;}
+.btn-gold:hover{opacity:.85;}
+.btn-secondary{padding:9px 18px;background:none;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.8rem;font-weight:700;color:var(--navy);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none;}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+.btn-sm{padding:6px 12px;font-size:.72rem;}
+
+/* ===== PROGRESS BAR ===== */
+.progress-wrap{margin-bottom:1rem;}
+.progress-label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.4rem;}
+.progress-bar-bg{height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:var(--blue);border-radius:4px;transition:width .6s ease;}
+.progress-bar-fill.done{background:var(--green);}
+
+/* ===== TASK SECTION ===== */
+.task-category{margin-bottom:20px;}
+.task-category-title{
+  font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:800;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  padding:.5rem 0;border-bottom:1.5px solid var(--border);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.task-cat-badge{
+  padding:2px 8px;border-radius:20px;font-size:.62rem;font-weight:700;
+  background:rgba(33,74,154,.1);color:var(--blue);
+}
+
+.task-item{
+  display:flex;align-items:flex-start;gap:10px;padding:.7rem .5rem;
+  border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;
+}
+.task-item:last-child{border-bottom:none;}
+.task-item:hover{background:#f8f9ff;}
+.task-item.done-task{opacity:.55;}
+
+.task-check{
+  width:20px;height:20px;border-radius:6px;border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  margin-top:1px;transition:all .2s;background:#fff;
+}
+.task-item.done-task .task-check{background:var(--green);border-color:var(--green);}
+.task-check-icon{color:#fff;font-size:.65rem;display:none;}
+.task-item.done-task .task-check-icon{display:block;}
+
+.task-body{flex:1;min-width:0;}
+.task-title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.task-title{font-size:.85rem;font-weight:500;color:var(--text);}
+.task-item.done-task .task-title{text-decoration:line-through;color:var(--muted);}
+.task-meta{font-size:.7rem;color:var(--muted);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;}
+.task-due{display:inline-flex;align-items:center;gap:3px;}
+.task-due.overdue{color:var(--red);}
+.task-due.soon{color:var(--orange);}
+.task-assignee{display:inline-flex;align-items:center;gap:3px;}
+.task-note{font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;}
+
+.task-action{
+  padding:4px 8px;border-radius:6px;border:none;background:none;
+  color:var(--muted);cursor:pointer;font-size:.75rem;flex-shrink:0;
+  transition:color .2s;
+}
+.task-action:hover{color:var(--blue);}
+
+.empty-state{
+  text-align:center;padding:2rem;color:var(--muted);font-size:.82rem;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.empty-state i{font-size:1.5rem;opacity:.3;}
+
+/* ===== STAGE LAYOUT ===== */
+.layout-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.layout-card{
+  background:var(--bg);border:1.5px solid var(--border);border-radius:12px;
+  overflow:hidden;cursor:pointer;transition:all .2s;
+}
+.layout-card:hover{border-color:var(--blue);box-shadow:0 4px 12px rgba(33,74,154,.1);}
+.layout-thumb{
+  width:100%;height:130px;object-fit:cover;background:#e5e7eb;
+  display:flex;align-items:center;justify-content:center;
+}
+.layout-thumb img{width:100%;height:100%;object-fit:cover;}
+.layout-thumb-placeholder{color:#9ca3af;font-size:1.8rem;}
+.layout-info{padding:.7rem .9rem;}
+.layout-title{font-size:.82rem;font-weight:700;color:var(--navy);}
+.layout-note{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.layout-order{font-family:'Outfit',sans-serif;font-size:.65rem;color:var(--muted);}
+
+/* ===== TABLE ===== */
+.tbl-wrap{overflow-x:auto;}
+.data-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.data-table th{background:var(--navy);color:#fff;padding:.65rem 1rem;text-align:left;font-weight:600;font-family:'Outfit',sans-serif;font-size:.68rem;letter-spacing:.05em;white-space:nowrap;}
+.data-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:#f5f7ff;}
+
+/* フィルター */
+.filter-select{padding:5px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.75rem;font-family:inherit;color:var(--navy);background:#fff;outline:none;cursor:pointer;}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,43,74,.65);z-index:300;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:680px;padding:1.5rem 1.5rem 2.5rem;max-height:92vh;overflow-y:auto;}
+.modal-drag{width:36px;height:4px;background:#e5e7eb;border-radius:2px;margin:0 auto 1.2rem;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;}
+.modal-fg{margin-bottom:1rem;}
+.modal-fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.modal-fg input,.modal-fg select,.modal-fg textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.88rem;font-family:inherit;background:var(--bg);outline:none;transition:border-color .2s;}
+.modal-fg input:focus,.modal-fg select:focus,.modal-fg textarea:focus{border-color:var(--blue);background:#fff;}
+.modal-fg textarea{resize:vertical;min-height:80px;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:10px;margin-top:1.2rem;}
+.btn-cancel{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;}
+.btn-save{flex:2;padding:12px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;}
+.btn-save:hover{background:#1a3d85;}
+.btn-danger{flex:1;padding:12px;border:none;border-radius:10px;background:#fee2e2;color:var(--red);font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+.modal-msg{display:none;border-radius:8px;padding:.7rem 1rem;font-size:.78rem;margin-top:.8rem;}
+.modal-msg.success{display:block;background:#dcfce7;color:#15803d;}
+.modal-msg.error{display:block;background:#fee2e2;color:#991b1b;}
+
+/* ===== 画像プレビュー ===== */
+#imgPreview{
+  width:100%;max-height:200px;object-fit:contain;border-radius:8px;
+  border:1px solid var(--border);margin-top:.5rem;display:none;
+}
+
+/* ===== TOAST ===== */
+#toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--navy);color:#fff;padding:.7rem 1.4rem;border-radius:12px;
+  font-size:.82rem;font-weight:500;z-index:999;opacity:0;transition:all .3s;pointer-events:none;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===== UPLOAD AREA ===== */
+.upload-area{
+  border:2px dashed var(--border);border-radius:12px;padding:1.5rem;
+  text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);
+}
+.upload-area:hover,.upload-area.drag-over{border-color:var(--blue);background:#f0f4ff;}
+.upload-icon{font-size:1.5rem;color:var(--muted);margin-bottom:.5rem;}
+.upload-text{font-size:.78rem;color:var(--muted);}
+.upload-text strong{color:var(--blue);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="panel-nav">
+  <button id="back-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i></button>
+  <div id="panel-title">企画運営委員会</div>
+  <div id="panel-badge">PLANNING</div>
+</nav>
+
+<!-- LOCK -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-eyebrow">COMMITTEE PANEL</div>
+    <div class="lock-title">企画運営委員会</div>
+    <div class="lock-sub">パネルコードを入力してください。<br>担当者のみアクセスできます。</div>
+    <input class="lock-input" type="password" id="codeInput" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="lock-btn" onclick="tryUnlock()"><i class="fa-solid fa-unlock"></i> アクセス</button>
+    <div class="lock-error" id="lockError">パネルコードが違います。</div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="stateLoading" style="display:none;">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">データを読み込み中…</p>
+</div>
+
+<!-- MAIN -->
+<div id="mainContent">
+  <div class="inner">
+
+    <!-- 演奏会カウントダウン -->
+    <div class="concert-banner">
+      <div class="concert-banner-main">
+        <div class="concert-banner-label">NEXT CONCERT</div>
+        <div class="concert-banner-title" id="concertTitle">第一回定期演奏会</div>
+        <div class="concert-banner-date" id="concertDateLabel">2026年12月13日（日）東大阪文化創造館 小ホール</div>
+      </div>
+      <div>
+        <div class="concert-banner-days" id="concertDays">―</div>
+        <div class="concert-banner-days-label">日後</div>
+      </div>
+    </div>
+
+    <!-- サマリー -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">―</div>
+        <div class="stat-label">総タスク数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statDone" style="color:var(--green);">―</div>
+        <div class="stat-label">完了済み</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statOverdue" style="color:var(--red);">―</div>
+        <div class="stat-label">期限超過</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statLayouts">―</div>
+        <div class="stat-label">舞台転換図</div>
+      </div>
+    </div>
+
+    <!-- 進捗バー -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body" style="padding:1rem 1.25rem;">
+        <div class="progress-wrap" style="margin-bottom:0;">
+          <div class="progress-label">
+            <span style="font-weight:700;font-size:.78rem;color:var(--navy);">演奏会準備 総合進捗</span>
+            <span id="progressPct" style="font-family:'Outfit',sans-serif;font-weight:800;color:var(--blue);">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBar" style="width:0%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- タブ -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('tasks')" id="tab-tasks">
+        <i class="fa-solid fa-list-check"></i> タスク
+      </button>
+      <button class="tab-btn" onclick="switchTab('stage')" id="tab-stage">
+        <i class="fa-solid fa-map"></i> 舞台転換図
+      </button>
+      <button class="tab-btn" onclick="switchTab('schedule')" id="tab-schedule">
+        <i class="fa-solid fa-calendar-days"></i> 練習日程
+      </button>
+    </div>
+
+    <!-- ===== タブ: タスク ===== -->
+    <div class="tab-pane active" id="pane-tasks">
+
+      <div class="action-row">
+        <button class="btn-primary" onclick="openTaskModal()">
+          <i class="fa-solid fa-plus"></i> タスクを追加
+        </button>
+        <select class="filter-select" id="taskFilter" onchange="renderTasks()">
+          <option value="">すべてのカテゴリ</option>
+          <option value="会場・設営">会場・設営</option>
+          <option value="出演・プログラム">出演・プログラム</option>
+          <option value="広報・チラシ">広報・チラシ</option>
+          <option value="当日運営">当日運営</option>
+          <option value="その他">その他</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted);cursor:pointer;">
+          <input type="checkbox" id="showDone" onchange="renderTasks()" style="cursor:pointer;">
+          完了済みも表示
+        </label>
+      </div>
+
+      <div class="card">
+        <div id="taskList">
+          <div class="empty-state">
+            <i class="fa-solid fa-list-check"></i>
+            <span>タスクがありません。追加ボタンから登録してください。</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== タブ: 舞台転換図 ===== -->
+    <div class="tab-pane" id="pane-stage">
+
+      <div class="action-row">
+        <button class="btn-primary" onclick="openLayoutModal()">
+          <i class="fa-solid fa-plus"></i> 転換図を追加
+        </button>
+      </div>
+
+      <div id="layoutGrid" class="layout-grid">
+        <div class="empty-state" style="grid-column:1/-1;">
+          <i class="fa-solid fa-map"></i>
+          <span>転換図がまだ登録されていません。</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== タブ: 練習日程 ===== -->
+    <div class="tab-pane" id="pane-schedule">
+
+      <div class="action-row">
+        <button class="btn-primary" onclick="openPracticeModal()">
+          <i class="fa-solid fa-plus"></i> 練習日を追加
+        </button>
+        <button class="btn-secondary" onclick="loadPractices()" style="padding:9px 14px;">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+        <a class="btn-secondary" href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds@gmail.com" target="_blank">
+          <i class="fa-solid fa-calendar"></i> Googleカレンダー
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="card-icon" style="background:rgba(14,165,233,.1);color:#0369a1;"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="card-title">練習スケジュール</div>
+          </div>
+          <select class="filter-select" id="filterMonth" onchange="renderSchedule()">
+            <option value="">全期間</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table class="data-table" style="min-width:480px;">
+            <thead>
+              <tr><th>日付</th><th>曜日</th><th>会場</th><th>時間</th><th>メモ</th><th></th></tr>
+            </thead>
+            <tbody id="scheduleTable">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== タスク追加・編集モーダル ===== -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="taskModalTitle">タスクを追加</div>
+    <input type="hidden" id="taskEditId">
+    <div class="modal-fg">
+      <label>タスク名 <span style="color:var(--gold)">*</span></label>
+      <input type="text" id="taskTitle" placeholder="例：ホール下見・現地確認">
+    </div>
+    <div class="fg-row">
+      <div class="modal-fg">
+        <label>カテゴリ</label>
+        <select id="taskCategory">
+          <option value="会場・設営">会場・設営</option>
+          <option value="出演・プログラム">出演・プログラム</option>
+          <option value="広報・チラシ">広報・チラシ</option>
+          <option value="当日運営">当日運営</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <div class="modal-fg">
+        <label>期日</label>
+        <input type="date" id="taskDue">
+      </div>
+    </div>
+    <div class="modal-fg">
+      <label>担当者</label>
+      <input type="text" id="taskAssignee" placeholder="例：谷将大">
+    </div>
+    <div class="modal-fg">
+      <label>メモ（任意）</label>
+      <textarea id="taskNote" placeholder="補足・詳細があれば"></textarea>
+    </div>
+    <div class="modal-msg" id="taskModalMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('taskModal')">キャンセル</button>
+      <button class="btn-danger" id="taskDeleteBtn" onclick="deleteTask()" style="display:none;">削除</button>
+      <button class="btn-save" onclick="saveTask()"><i class="fa-solid fa-check"></i> 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 舞台転換図 追加モーダル ===== -->
+<div class="modal-overlay" id="layoutModal">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="layoutModalTitle">舞台転換図を追加</div>
+    <input type="hidden" id="layoutEditId">
+    <div class="modal-fg">
+      <label>タイトル <span style="color:var(--gold)">*</span></label>
+      <input type="text" id="layoutTitle" placeholder="例：第1部オープニング配置">
+    </div>
+    <div class="modal-fg">
+      <label>順番</label>
+      <input type="number" id="layoutOrder" placeholder="例：1" min="0">
+    </div>
+    <div class="modal-fg">
+      <label>画像ファイル</label>
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('layoutFile').click()"
+           ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
+        <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+        <div class="upload-text"><strong>クリックまたはドラッグ</strong>して画像を選択<br>JPG / PNG / GIF（最大10MB）</div>
+      </div>
+      <input type="file" id="layoutFile" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+      <img id="imgPreview" alt="プレビュー">
+    </div>
+    <div class="modal-fg">
+      <label>メモ（任意）</label>
+      <textarea id="layoutNote" placeholder="例：指揮者台の位置に注意。第2部と異なる。"></textarea>
+    </div>
+    <div class="modal-msg" id="layoutModalMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('layoutModal')">キャンセル</button>
+      <button class="btn-danger" id="layoutDeleteBtn" onclick="deleteLayout()" style="display:none;">削除</button>
+      <button class="btn-save" onclick="saveLayout()"><i class="fa-solid fa-check"></i> 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 練習日 追加・編集モーダル ===== -->
+<div class="modal-overlay" id="practiceModal">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="practiceModalTitle">練習日を追加</div>
+    <input type="hidden" id="practiceEditId">
+    <div class="modal-fg">
+      <label>日付 <span style="color:var(--gold)">*</span></label>
+      <input type="date" id="inputDate">
+    </div>
+    <div class="fg-row">
+      <div class="modal-fg">
+        <label>開始時間</label>
+        <input type="time" id="inputStart" value="13:00">
+      </div>
+      <div class="modal-fg">
+        <label>終了時間</label>
+        <input type="time" id="inputEnd" value="17:00">
+      </div>
+    </div>
+    <div class="modal-fg">
+      <label>会場 <span style="color:var(--gold)">*</span></label>
+      <input type="text" id="inputVenue" placeholder="例：東大阪文化創造館・第1練習室" list="venueList">
+      <datalist id="venueList">
+        <option value="東大阪文化創造館">
+        <option value="東大阪文化創造館・小ホール">
+        <option value="東大阪文化創造館・第1練習室">
+        <option value="荒本人権文化センター">
+      </datalist>
+    </div>
+    <div class="modal-fg">
+      <label>メモ（任意）</label>
+      <textarea id="inputNote" placeholder="例：定期演奏会前の合奏練習。楽器搬入あり。"></textarea>
+    </div>
+    <div class="modal-msg" id="practiceModalMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('practiceModal')">キャンセル</button>
+      <button class="btn-danger" id="practiceDeleteBtn" onclick="deletePractice()" style="display:none;">削除</button>
+      <button class="btn-save" onclick="savePractice()"><i class="fa-solid fa-check"></i> 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 転換図 拡大表示モーダル ===== -->
+<div class="modal-overlay" id="layoutViewModal">
+  <div class="modal" style="border-radius:24px 24px 0 0;max-height:95vh;">
+    <div class="modal-drag"></div>
+    <div id="layoutViewTitle" style="font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:1rem;"></div>
+    <img id="layoutViewImg" src="" alt="" style="width:100%;border-radius:10px;object-fit:contain;max-height:60vh;">
+    <p id="layoutViewNote" style="font-size:.78rem;color:var(--muted);margin-top:.8rem;line-height:1.7;"></p>
+    <div style="margin-top:1.2rem;display:flex;gap:8px;">
+      <button class="btn-cancel" onclick="closeModal('layoutViewModal')" style="flex:1;">閉じる</button>
+      <button class="btn-save" id="layoutViewEditBtn" style="flex:1;" onclick="editLayoutFromView()">
+        <i class="fa-solid fa-pen"></i> 編集
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const SUPABASE_URL  = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const ORG_ID        = '37cf6fef-551a-4159-b6ab-5010c3951aa8';
+const PANEL_CODE    = 'PLANNING';
+const SESSION_KEY   = 'higasui_planning_unlocked';
+const CONCERT_DATE  = new Date('2026-12-13T14:00:00');
+const CONCERT_TITLE = '第一回定期演奏会';
+
+const SB = {
+  headers: {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+  }
+};
+
+const WEEK = ['日','月','火','水','木','金','土'];
+
+// =============================================
+//  状態
+// =============================================
+let tasks     = [];
+let layouts   = [];
+let practices = [];
+let selectedFile    = null;
+let viewingLayoutId = null;
+
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', async () => {
+  // カウントダウン
+  updateCountdown();
+
+  // セッション確認
+  if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+    showMain();
+    return;
+  }
+
+  // tokenによる自動ログイン
+  const params = new URLSearchParams(location.search);
+  const token  = params.get('token');
+  if (token) {
+    try {
+      const res  = await fetch(`${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(token)}&limit=1`, SB);
+      const mems = await res.json();
+      if (mems && mems.length > 0) {
+        const m = mems[0];
+        const FULL = ['president','vice_president','director'];
+        if (FULL.includes(m.role) || m.committee === 'planning') {
+          sessionStorage.setItem(SESSION_KEY, 'true');
+          showMain();
+          return;
+        }
+      }
+    } catch(e) { console.error(e); }
+  }
+});
+
+function updateCountdown() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff  = Math.round((CONCERT_DATE - today) / (1000*60*60*24));
+  document.getElementById('concertDays').textContent = diff > 0 ? diff : 0;
+}
+
+function tryUnlock() {
+  const val = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (val === PANEL_CODE) {
+    sessionStorage.setItem(SESSION_KEY, 'true');
+    showMain();
+  } else {
+    document.getElementById('lockError').classList.add('show');
+    document.getElementById('codeInput').select();
+  }
+}
+
+async function showMain() {
+  document.getElementById('lockScreen').style.display   = 'none';
+  document.getElementById('stateLoading').style.display = 'flex';
+  await loadAll();
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('mainContent').style.display  = 'block';
+}
+
+function goBack() {
+  const params = new URLSearchParams(location.search);
+  const token  = params.get('token');
+  if (token) {
+    location.href = `member.html?token=${token}`;
+  } else {
+    history.back();
+  }
+}
+
+// =============================================
+//  データ取得
+// =============================================
+async function loadAll() {
+  await Promise.all([loadTasks(), loadLayouts(), loadPractices()]);
+}
+
+async function loadTasks() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/concert_tasks?org_id=eq.${ORG_ID}&order=created_at.asc`,
+      SB
+    );
+    tasks = await res.json() || [];
+  } catch(e) {
+    console.error('タスク取得エラー:', e);
+    tasks = [];
+  }
+  renderTasks();
+  renderStats();
+}
+
+async function loadLayouts() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/stage_layouts?org_id=eq.${ORG_ID}&order=sort_order.asc,created_at.asc`,
+      SB
+    );
+    layouts = await res.json() || [];
+  } catch(e) {
+    console.error('転換図取得エラー:', e);
+    layouts = [];
+  }
+  renderLayouts();
+}
+
+async function loadPractices() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${ORG_ID}&order=date.asc`,
+      SB
+    );
+    practices = await res.json() || [];
+  } catch(e) {
+    console.error('練習日取得エラー:', e);
+    practices = [];
+  }
+  renderSchedule();
+  populateMonthFilter();
+}
+
+// =============================================
+//  描画: サマリー
+// =============================================
+function renderStats() {
+  const total   = tasks.length;
+  const done    = tasks.filter(t => t.done).length;
+  const today   = new Date().toISOString().split('T')[0];
+  const overdue = tasks.filter(t => !t.done && t.due_date && t.due_date < today).length;
+  const pct     = total === 0 ? 0 : Math.round(done / total * 100);
+
+  document.getElementById('statTotal').textContent   = total;
+  document.getElementById('statDone').textContent    = done;
+  document.getElementById('statOverdue').textContent = overdue;
+  document.getElementById('statLayouts').textContent = layouts.length;
+  document.getElementById('progressPct').textContent = pct + '%';
+  const bar = document.getElementById('progressBar');
+  bar.style.width = pct + '%';
+  if (pct >= 100) bar.classList.add('done');
+  else bar.classList.remove('done');
+}
+
+// =============================================
+//  描画: タスク
+// =============================================
+function renderTasks() {
+  const filterCat = document.getElementById('taskFilter').value;
+  const showDone  = document.getElementById('showDone').checked;
+
+  let filtered = tasks;
+  if (filterCat) filtered = filtered.filter(t => t.category === filterCat);
+  if (!showDone) filtered = filtered.filter(t => !t.done);
+
+  // カテゴリ別にグループ化
+  const groups = {};
+  filtered.forEach(t => {
+    const cat = t.category || 'その他';
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(t);
+  });
+
+  const container = document.getElementById('taskList');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-list-check"></i><span>タスクがありません。</span></div>`;
+    return;
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+  const soon  = new Date(); soon.setDate(soon.getDate() + 7);
+  const soonStr = soon.toISOString().split('T')[0];
+
+  let html = '';
+  for (const [cat, items] of Object.entries(groups)) {
+    const doneCount  = items.filter(t => t.done).length;
+    html += `
+      <div class="task-category">
+        <div class="task-category-title">
+          ${cat}
+          <span class="task-cat-badge">${doneCount}/${items.length}</span>
+        </div>`;
+    items.forEach(t => {
+      let dueClass = '', dueIcon = 'fa-calendar';
+      if (t.due_date) {
+        if (!t.done && t.due_date < today)      { dueClass = 'overdue'; dueIcon = 'fa-triangle-exclamation'; }
+        else if (!t.done && t.due_date <= soonStr){ dueClass = 'soon';   dueIcon = 'fa-clock'; }
+      }
+      html += `
+        <div class="task-item ${t.done ? 'done-task' : ''}" onclick="toggleTask('${t.id}')">
+          <div class="task-check">
+            <i class="fa-solid fa-check task-check-icon"></i>
+          </div>
+          <div class="task-body">
+            <div class="task-title-row">
+              <span class="task-title">${escHtml(t.title)}</span>
+            </div>
+            <div class="task-meta">
+              ${t.due_date ? `<span class="task-due ${dueClass}"><i class="fa-solid ${dueIcon}"></i> ${fmtDate(t.due_date)}</span>` : ''}
+              ${t.assignee ? `<span class="task-assignee"><i class="fa-solid fa-user"></i> ${escHtml(t.assignee)}</span>` : ''}
+            </div>
+            ${t.note ? `<div class="task-note">${escHtml(t.note)}</div>` : ''}
+          </div>
+          <button class="task-action" onclick="event.stopPropagation();openTaskModal('${t.id}')">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+        </div>`;
+    });
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+
+// =============================================
+//  描画: 舞台転換図
+// =============================================
+function renderLayouts() {
+  const grid = document.getElementById('layoutGrid');
+  renderStats();
+
+  if (layouts.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-map"></i><span>転換図がまだ登録されていません。</span></div>`;
+    return;
+  }
+
+  grid.innerHTML = layouts.map(l => {
+    const imgUrl = l.file_path
+      ? `${SUPABASE_URL}/storage/v1/object/public/planning/${l.file_path}`
+      : null;
+    return `
+      <div class="layout-card" onclick="viewLayout('${l.id}')">
+        <div class="layout-thumb">
+          ${imgUrl
+            ? `<img src="${imgUrl}" alt="${escHtml(l.title)}" loading="lazy">`
+            : `<i class="fa-solid fa-image layout-thumb-placeholder"></i>`}
+        </div>
+        <div class="layout-info">
+          <div class="layout-order">No.${l.sort_order || '—'}</div>
+          <div class="layout-title">${escHtml(l.title)}</div>
+          ${l.note ? `<div class="layout-note">${escHtml(l.note)}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// =============================================
+//  描画: 練習スケジュール
+// =============================================
+function populateMonthFilter() {
+  const sel    = document.getElementById('filterMonth');
+  const prev   = sel.value;
+  const months = [...new Set(practices.map(p => p.date.slice(0,7)))].sort().reverse();
+  sel.innerHTML = '<option value="">全期間</option>' + months.map(m => {
+    const [y, mo] = m.split('-');
+    return `<option value="${m}"${m === prev ? ' selected' : ''}>${y}年${parseInt(mo)}月</option>`;
+  }).join('');
+}
+
+function renderSchedule() {
+  const filter = document.getElementById('filterMonth').value;
+  const today  = new Date(); today.setHours(0,0,0,0);
+
+  let rows = [...practices].sort((a,b) => a.date.localeCompare(b.date));
+  if (filter) rows = rows.filter(p => p.date.startsWith(filter));
+
+  const tbody = document.getElementById('scheduleTable');
+  if (rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">練習日がありません</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(p => {
+    const d       = new Date(p.date);
+    const isPast  = d < today;
+    const timeStr = p.start_time ? `${p.start_time.slice(0,5)}〜${p.end_time ? p.end_time.slice(0,5) : ''}` : '―';
+    return `
+      <tr style="${isPast ? 'opacity:.5;' : ''}">
+        <td style="white-space:nowrap;">${p.date}</td>
+        <td>${WEEK[d.getDay()]}</td>
+        <td>${escHtml(p.venue || '―')}</td>
+        <td style="white-space:nowrap;">${timeStr}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(p.note || '―')}</td>
+        <td>
+          <button class="btn-secondary btn-sm" onclick="openPracticeModal('${p.id}')">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+// =============================================
+//  タスク: 開閉・保存・削除・チェック
+// =============================================
+function openTaskModal(id) {
+  document.getElementById('taskModalTitle').textContent = id ? 'タスクを編集' : 'タスクを追加';
+  document.getElementById('taskEditId').value    = id || '';
+  document.getElementById('taskModalMsg').className = 'modal-msg';
+  document.getElementById('taskDeleteBtn').style.display = id ? 'block' : 'none';
+
+  if (id) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('taskTitle').value    = t.title    || '';
+    document.getElementById('taskCategory').value = t.category || 'その他';
+    document.getElementById('taskDue').value      = t.due_date || '';
+    document.getElementById('taskAssignee').value = t.assignee || '';
+    document.getElementById('taskNote').value     = t.note     || '';
+  } else {
+    document.getElementById('taskTitle').value    = '';
+    document.getElementById('taskCategory').value = '会場・設営';
+    document.getElementById('taskDue').value      = '';
+    document.getElementById('taskAssignee').value = '';
+    document.getElementById('taskNote').value     = '';
+  }
+  document.getElementById('taskModal').classList.add('open');
+}
+
+async function saveTask() {
+  const id       = document.getElementById('taskEditId').value;
+  const title    = document.getElementById('taskTitle').value.trim();
+  const category = document.getElementById('taskCategory').value;
+  const due_date = document.getElementById('taskDue').value || null;
+  const assignee = document.getElementById('taskAssignee').value.trim() || null;
+  const note     = document.getElementById('taskNote').value.trim() || null;
+  const msgEl    = document.getElementById('taskModalMsg');
+
+  if (!title) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'タスク名を入力してください。';
+    return;
+  }
+
+  const payload = { org_id: ORG_ID, title, category, due_date, assignee, note };
+
+  try {
+    const url    = id ? `${SUPABASE_URL}/rest/v1/concert_tasks?id=eq.${id}` : `${SUPABASE_URL}/rest/v1/concert_tasks`;
+    const method = id ? 'PATCH' : 'POST';
+    const res    = await fetch(url, { method, ...SB, body: JSON.stringify(payload) });
+    if (!res.ok && res.status !== 201 && res.status !== 204) throw new Error();
+    msgEl.className = 'modal-msg success';
+    msgEl.textContent = '✓ 保存しました。';
+    await loadTasks();
+    setTimeout(() => closeModal('taskModal'), 1000);
+  } catch(e) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
+  }
+}
+
+async function deleteTask() {
+  const id = document.getElementById('taskEditId').value;
+  if (!id || !confirm('このタスクを削除しますか？')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/concert_tasks?id=eq.${id}`, { method: 'DELETE', ...SB });
+    closeModal('taskModal');
+    await loadTasks();
+    showToast('タスクを削除しました');
+  } catch(e) {
+    document.getElementById('taskModalMsg').className = 'modal-msg error';
+    document.getElementById('taskModalMsg').textContent = '削除に失敗しました。';
+  }
+}
+
+async function toggleTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/concert_tasks?id=eq.${id}`, {
+      method: 'PATCH', ...SB,
+      body: JSON.stringify({ done: !task.done })
+    });
+    task.done = !task.done;
+    renderTasks();
+    renderStats();
+    showToast(task.done ? '✓ 完了しました' : 'タスクを未完了に戻しました');
+  } catch(e) {
+    showToast('更新に失敗しました');
+  }
+}
+
+// =============================================
+//  舞台転換図: 開閉・保存・削除・表示
+// =============================================
+function openLayoutModal(id) {
+  document.getElementById('layoutModalTitle').textContent = id ? '転換図を編集' : '転換図を追加';
+  document.getElementById('layoutEditId').value = id || '';
+  document.getElementById('layoutModalMsg').className = 'modal-msg';
+  document.getElementById('layoutDeleteBtn').style.display = id ? 'block' : 'none';
+  document.getElementById('imgPreview').style.display = 'none';
+  selectedFile = null;
+
+  if (id) {
+    const l = layouts.find(x => x.id === id);
+    if (!l) return;
+    document.getElementById('layoutTitle').value = l.title      || '';
+    document.getElementById('layoutOrder').value = l.sort_order ?? '';
+    document.getElementById('layoutNote').value  = l.note       || '';
+    if (l.file_path) {
+      const imgEl = document.getElementById('imgPreview');
+      imgEl.src   = `${SUPABASE_URL}/storage/v1/object/public/planning/${l.file_path}`;
+      imgEl.style.display = 'block';
+    }
+  } else {
+    document.getElementById('layoutTitle').value = '';
+    document.getElementById('layoutOrder').value = '';
+    document.getElementById('layoutNote').value  = '';
+  }
+  document.getElementById('layoutModal').classList.add('open');
+}
+
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('imgPreview');
+    img.src = e.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.add('drag-over');
+}
+function handleDragLeave() {
+  document.getElementById('uploadArea').classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = document.getElementById('imgPreview');
+      img.src = ev.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+async function saveLayout() {
+  const id    = document.getElementById('layoutEditId').value;
+  const title = document.getElementById('layoutTitle').value.trim();
+  const order = document.getElementById('layoutOrder').value;
+  const note  = document.getElementById('layoutNote').value.trim() || null;
+  const msgEl = document.getElementById('layoutModalMsg');
+
+  if (!title) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'タイトルを入力してください。';
+    return;
+  }
+
+  msgEl.className = 'modal-msg';
+  const saveBtn = document.querySelector('#layoutModal .btn-save');
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 保存中…';
+
+  try {
+    let file_path = id ? (layouts.find(x => x.id === id)?.file_path || null) : null;
+
+    // 画像アップロード
+    if (selectedFile) {
+      const ext    = selectedFile.name.split('.').pop();
+      const fname  = `${ORG_ID}/${Date.now()}.${ext}`;
+      const upRes  = await fetch(
+        `${SUPABASE_URL}/storage/v1/object/planning/${fname}`,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': selectedFile.type,
+            'x-upsert': 'true',
+          },
+          body: selectedFile,
+        }
+      );
+      if (!upRes.ok) throw new Error('upload failed');
+      file_path = fname;
+    }
+
+    const payload = {
+      org_id: ORG_ID,
+      title,
+      sort_order: order !== '' ? parseInt(order) : 0,
+      note,
+      file_path,
+    };
+
+    const url    = id ? `${SUPABASE_URL}/rest/v1/stage_layouts?id=eq.${id}` : `${SUPABASE_URL}/rest/v1/stage_layouts`;
+    const method = id ? 'PATCH' : 'POST';
+    const res    = await fetch(url, { method, ...SB, body: JSON.stringify(payload) });
+    if (!res.ok && res.status !== 201 && res.status !== 204) throw new Error();
+
+    msgEl.className = 'modal-msg success';
+    msgEl.textContent = '✓ 保存しました。';
+    await loadLayouts();
+    setTimeout(() => closeModal('layoutModal'), 1000);
+  } catch(e) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> 保存';
+  }
+}
+
+async function deleteLayout() {
+  const id = document.getElementById('layoutEditId').value;
+  if (!id || !confirm('この転換図を削除しますか？')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/stage_layouts?id=eq.${id}`, { method: 'DELETE', ...SB });
+    closeModal('layoutModal');
+    await loadLayouts();
+    showToast('転換図を削除しました');
+  } catch(e) {
+    document.getElementById('layoutModalMsg').className = 'modal-msg error';
+    document.getElementById('layoutModalMsg').textContent = '削除に失敗しました。';
+  }
+}
+
+function viewLayout(id) {
+  const l = layouts.find(x => x.id === id);
+  if (!l) return;
+  viewingLayoutId = id;
+  document.getElementById('layoutViewTitle').textContent = l.title;
+  document.getElementById('layoutViewNote').textContent  = l.note || '';
+  const img = document.getElementById('layoutViewImg');
+  if (l.file_path) {
+    img.src = `${SUPABASE_URL}/storage/v1/object/public/planning/${l.file_path}`;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+  document.getElementById('layoutViewModal').classList.add('open');
+}
+
+function editLayoutFromView() {
+  closeModal('layoutViewModal');
+  setTimeout(() => openLayoutModal(viewingLayoutId), 200);
+}
+
+// =============================================
+//  練習日: 開閉・保存・削除
+// =============================================
+function openPracticeModal(id) {
+  document.getElementById('practiceModalTitle').textContent = id ? '練習日を編集' : '練習日を追加';
+  document.getElementById('practiceEditId').value = id || '';
+  document.getElementById('practiceModalMsg').className = 'modal-msg';
+  document.getElementById('practiceDeleteBtn').style.display = id ? 'block' : 'none';
+
+  if (id) {
+    const p = practices.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('inputDate').value  = p.date         || '';
+    document.getElementById('inputStart').value = p.start_time   ? p.start_time.slice(0,5) : '13:00';
+    document.getElementById('inputEnd').value   = p.end_time     ? p.end_time.slice(0,5)   : '17:00';
+    document.getElementById('inputVenue').value = p.venue        || '';
+    document.getElementById('inputNote').value  = p.note         || '';
+  } else {
+    document.getElementById('inputDate').value  = '';
+    document.getElementById('inputStart').value = '13:00';
+    document.getElementById('inputEnd').value   = '17:00';
+    document.getElementById('inputVenue').value = '';
+    document.getElementById('inputNote').value  = '';
+  }
+  document.getElementById('practiceModal').classList.add('open');
+}
+
+async function savePractice() {
+  const id    = document.getElementById('practiceEditId').value;
+  const date  = document.getElementById('inputDate').value;
+  const start = document.getElementById('inputStart').value;
+  const end   = document.getElementById('inputEnd').value;
+  const venue = document.getElementById('inputVenue').value.trim();
+  const note  = document.getElementById('inputNote').value.trim();
+  const msgEl = document.getElementById('practiceModalMsg');
+
+  if (!date || !venue) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '日付と会場は必須です。';
+    return;
+  }
+
+  const payload = {
+    org_id: ORG_ID, date,
+    start_time: start || null,
+    end_time:   end   || null,
+    venue,
+    note: note || null,
+  };
+
+  try {
+    const url    = id ? `${SUPABASE_URL}/rest/v1/practices?id=eq.${id}` : `${SUPABASE_URL}/rest/v1/practices`;
+    const method = id ? 'PATCH' : 'POST';
+    const res    = await fetch(url, { method, ...SB, body: JSON.stringify(payload) });
+    if (!res.ok && res.status !== 201 && res.status !== 204) throw new Error();
+    msgEl.className = 'modal-msg success';
+    msgEl.textContent = '✓ 保存しました。';
+    await loadPractices();
+    setTimeout(() => closeModal('practiceModal'), 1000);
+  } catch(e) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
+  }
+}
+
+async function deletePractice() {
+  const id = document.getElementById('practiceEditId').value;
+  if (!id || !confirm('この練習日を削除しますか？')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/practices?id=eq.${id}`, { method: 'DELETE', ...SB });
+    closeModal('practiceModal');
+    await loadPractices();
+    showToast('練習日を削除しました');
+  } catch(e) {
+    document.getElementById('practiceModalMsg').className = 'modal-msg error';
+    document.getElementById('practiceModalMsg').textContent = '削除に失敗しました。';
+  }
+}
+
+// =============================================
+//  タブ切り替え
+// =============================================
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('pane-' + id).classList.add('active');
+}
+
+// =============================================
+//  共通ユーティリティ
+// =============================================
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtDate(str) {
+  if (!str) return '';
+  const d = new Date(str + 'T00:00:00');
+  return `${d.getMonth()+1}月${d.getDate()}日`;
+}
+</script>
+</body>
+</html>
