@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>安全サポート委員会パネル | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A;
+  --muted:#606070; --border:#DDE1EC;
+  --green:#1D9E75; --red:#C0392B; --orange:#D97706;
+  --radius:16px; --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* ===== PANEL NAV ===== */
+#panel-nav{
+  position:sticky;top:0;z-index:100;height:52px;
+  background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);
+  display:flex;align-items:center;padding:0 1.25rem;gap:12px;
+}
+#back-btn{
+  width:34px;height:34px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;flex-shrink:0;
+}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{
+  margin-left:auto;padding:3px 12px;border-radius:20px;
+  font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;
+  background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;
+}
+
+/* ===== LOCK SCREEN ===== */
+#lockScreen{
+  position:fixed;inset:0;z-index:200;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+}
+.lock-card{
+  background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);
+  border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;
+  text-align:center;backdrop-filter:blur(12px);
+}
+.lock-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;
+}
+.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
+.lock-input{
+  width:100%;padding:13px 16px;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+  color:#fff;font-size:1rem;font-family:inherit;outline:none;
+  text-align:center;letter-spacing:.2em;margin-bottom:.8rem;transition:border-color .2s;
+}
+.lock-input:focus{border-color:var(--gold);}
+.lock-btn{
+  width:100%;padding:13px;border:none;border-radius:12px;
+  background:var(--gold);color:var(--navy);font-family:inherit;
+  font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;
+}
+.lock-btn:hover{opacity:.9;}
+.lock-error{
+  display:none;margin-top:.8rem;padding:.6rem 1rem;
+  background:rgba(192,57,43,.2);border-radius:8px;font-size:.75rem;color:#fca5a5;
+}
+.lock-error.show{display:block;}
+
+/* ===== LOADING ===== */
+#stateLoading{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;min-height:60vh;gap:14px;
+}
+.spinner{
+  width:36px;height:36px;border:3px solid rgba(33,74,154,.12);
+  border-top-color:var(--blue);border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== MAIN ===== */
+#mainContent{display:none;padding:28px 0 80px;}
+
+/* ===== PAGE HEADER ===== */
+.page-header{
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
+  position:relative;overflow:hidden;margin-bottom:32px;
+}
+.page-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,.1) 0%,transparent 55%);
+}
+.page-header-inner{
+  position:relative;z-index:1;padding:2rem 1.5rem 2.5rem;
+  max-width:900px;margin:0 auto;
+}
+.page-eyebrow{
+  font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:8px;margin-bottom:.7rem;
+}
+.page-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.page-header h1{
+  font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3.5vw,2rem);
+  font-weight:700;color:#fff;line-height:1.3;margin-bottom:.4rem;
+}
+.page-header p{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.8;}
+
+/* ===== タブ ===== */
+.tab-bar{
+  display:flex;gap:6px;margin-bottom:24px;
+  background:var(--white);border:1px solid var(--border);
+  border-radius:14px;padding:5px;box-shadow:var(--shadow);
+}
+.tab-btn{
+  flex:1;padding:9px 8px;border:none;border-radius:10px;
+  background:transparent;font-family:inherit;font-size:.72rem;font-weight:700;
+  color:var(--muted);cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.tab-btn i{font-size:.85rem;}
+.tab-btn.active{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(28,43,74,.3);}
+.tab-btn.active i{color:var(--gold);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* ===== セクションラベル ===== */
+.sec-label{
+  font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--blue);
+  display:flex;align-items:center;gap:8px;margin-bottom:16px;
+}
+.sec-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+
+/* ===== カード共通 ===== */
+.card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+.card-head{
+  padding:1rem 1.4rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
+}
+.card-title{
+  font-family:'Shippori Mincho',serif;font-size:.95rem;
+  font-weight:700;color:var(--navy);
+}
+.card-body{padding:1.4rem;}
+
+/* ===== ボタン共通 ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:10px;border:none;cursor:pointer;
+  font-family:inherit;font-size:.82rem;font-weight:700;
+  transition:opacity .2s,transform .15s;
+}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-danger{background:rgba(192,57,43,.08);color:var(--red);border:1.5px solid rgba(192,57,43,.2);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-sm{padding:5px 11px;font-size:.72rem;}
+
+/* ===== フォームパーツ ===== */
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.form-required{color:var(--red);margin-left:3px;}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);
+  border-radius:10px;font-family:inherit;font-size:.88rem;
+  color:var(--text);background:var(--white);outline:none;transition:border-color .2s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);}
+.form-select{cursor:pointer;}
+.form-textarea{resize:vertical;min-height:100px;line-height:1.7;}
+.form-hint{font-size:.72rem;color:var(--muted);margin-top:.3rem;line-height:1.6;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.form-row{grid-template-columns:1fr;}}
+
+/* ===== バッジ ===== */
+.badge{
+  display:inline-flex;align-items:center;padding:3px 10px;
+  border-radius:20px;font-size:.68rem;font-weight:700;
+  font-family:'Outfit',sans-serif;letter-spacing:.04em;white-space:nowrap;
+}
+.badge-open{background:rgba(192,57,43,.1);color:var(--red);}
+.badge-progress{background:rgba(217,119,6,.12);color:var(--orange);}
+.badge-closed{background:rgba(29,158,117,.1);color:var(--green);}
+.badge-note{background:rgba(33,74,154,.08);color:var(--blue);}
+
+/* ===== 風紀記録リスト ===== */
+.incident-list{display:flex;flex-direction:column;gap:10px;}
+.incident-item{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:12px;padding:1rem 1.2rem;
+  cursor:pointer;transition:border-color .2s;
+}
+.incident-item:hover{border-color:rgba(33,74,154,.3);}
+.incident-item-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.4rem;}
+.incident-date{
+  font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);
+}
+.incident-target{font-size:.78rem;font-weight:700;color:var(--navy);}
+.incident-body{font-size:.8rem;color:var(--muted);line-height:1.7;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.incident-item.expanded .incident-body{white-space:normal;overflow:visible;}
+.incident-actions{
+  display:none;margin-top:.8rem;padding-top:.8rem;
+  border-top:1px solid var(--border);gap:6px;flex-wrap:wrap;
+}
+.incident-item.expanded .incident-actions{display:flex;}
+
+/* ===== 緊急連絡先 ===== */
+.ec-member{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:12px;padding:1rem 1.2rem;margin-bottom:8px;
+}
+.ec-member-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin-bottom:.6rem;cursor:pointer;
+}
+.ec-member-name{font-size:.88rem;font-weight:700;color:var(--navy);}
+.ec-member-part{font-size:.72rem;color:var(--muted);}
+.ec-contacts{display:none;flex-direction:column;gap:6px;margin-top:.4rem;}
+.ec-member.open .ec-contacts{display:flex;}
+.ec-contact-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--white);border:1px solid var(--border);
+  border-radius:8px;padding:.6rem .9rem;
+}
+.ec-contact-info{flex:1;min-width:0;}
+.ec-contact-name{font-size:.82rem;font-weight:700;}
+.ec-contact-rel{font-size:.7rem;color:var(--muted);}
+.ec-contact-phone{
+  font-family:'Outfit',sans-serif;font-size:.85rem;
+  font-weight:700;color:var(--blue);
+}
+.copy-btn{
+  width:30px;height:30px;border-radius:8px;border:none;
+  background:rgba(33,74,154,.08);color:var(--blue);
+  cursor:pointer;font-size:.75rem;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.copy-btn:hover{background:rgba(33,74,154,.15);}
+.ec-empty{
+  font-size:.78rem;color:var(--muted);padding:.5rem 0;
+}
+
+/* ===== ルールブック編集 ===== */
+.rb-edit-item{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:10px;
+}
+.rb-edit-head{
+  display:flex;align-items:center;gap:10px;
+  padding:.9rem 1.2rem;cursor:pointer;
+  transition:background .15s;
+}
+.rb-edit-head:hover{background:rgba(33,74,154,.03);}
+.rb-edit-icon{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,#EEF2FB,#D5DFFA);
+  display:flex;align-items:center;justify-content:center;font-size:.9rem;
+}
+.rb-edit-label{flex:1;font-size:.88rem;font-weight:700;color:var(--navy);}
+.rb-edit-meta{font-size:.68rem;color:var(--muted);}
+.rb-edit-arrow{font-size:.7rem;color:var(--muted);transition:transform .25s;}
+.rb-edit-item.open .rb-edit-arrow{transform:rotate(180deg);}
+.rb-edit-body{display:none;padding:0 1.2rem 1.2rem;}
+.rb-edit-item.open .rb-edit-body{display:block;}
+.rb-version-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 9px;border-radius:10px;font-size:.65rem;font-weight:800;
+  font-family:'Outfit',sans-serif;
+  background:rgba(200,164,77,.12);color:#92680a;
+}
+
+/* ===== 空状態 ===== */
+.empty-state{
+  text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.85rem;
+}
+.empty-state i{font-size:2rem;display:block;margin-bottom:.8rem;opacity:.4;}
+
+/* ===== モーダル ===== */
+.modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
+  display:none;align-items:flex-start;justify-content:center;
+  padding:1.5rem;overflow-y:auto;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--white);border-radius:20px;width:100%;max-width:540px;
+  margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+.modal-head{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;
+}
+.modal-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.modal-close{
+  background:none;border:none;color:rgba(255,255,255,.5);
+  cursor:pointer;font-size:1.1rem;transition:color .2s;padding:4px;
+}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:1.4rem;}
+.modal-footer{
+  padding:1rem 1.4rem;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;
+}
+
+/* ===== Toast ===== */
+#toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--navy);color:#fff;padding:.8rem 1.4rem;
+  border-radius:12px;font-size:.82rem;font-weight:700;z-index:9999;
+  opacity:0;transition:opacity .25s,transform .25s;
+  pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===== 連絡先リンクボタン ===== */
+.contact-link-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:1rem 1.2rem;background:var(--bg);
+  border:1.5px solid var(--border);border-radius:12px;
+  text-decoration:none;color:var(--navy);font-weight:700;font-size:.85rem;
+  transition:all .2s;cursor:pointer;
+}
+.contact-link-btn:hover{border-color:var(--blue);background:rgba(33,74,154,.04);}
+.contact-link-btn i{
+  width:34px;height:34px;border-radius:9px;
+  background:rgba(33,74,154,.1);color:var(--blue);
+  display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOCK SCREEN ===== -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-eyebrow">Committee Panel</div>
+    <div class="lock-title">🛡️ 安全サポート委員会</div>
+    <p class="lock-sub">パネルコードを入力してください。<br>担当者のみアクセスできます。</p>
+    <input id="codeInput" class="lock-input" type="password"
+      placeholder="••••••••" autocomplete="off"
+      onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="lock-btn" onclick="tryUnlock()">
+      <i class="fa-solid fa-unlock"></i> アクセス
+    </button>
+    <div class="lock-error" id="lockError">パネルコードが違います。</div>
+  </div>
+</div>
+
+<!-- ===== PANEL NAV ===== -->
+<nav id="panel-nav" style="display:none;">
+  <button id="back-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i></button>
+  <div id="panel-title">安全サポート委員会</div>
+  <div id="panel-badge">SAFETY</div>
+</nav>
+
+<!-- ===== LOADING ===== -->
+<div id="stateLoading">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">データを読み込み中…</p>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div id="mainContent">
+
+  <!-- ページヘッダー -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Safety Support</div>
+      <h1>🛡️ 安全サポート委員会</h1>
+      <p>風紀記録・緊急連絡先・ルールブック管理はこちらから。</p>
+    </div>
+  </div>
+
+  <div class="inner">
+
+    <!-- タブ -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('incident')" id="tab-incident">
+        <i class="fa-solid fa-triangle-exclamation"></i>風紀記録
+      </button>
+      <button class="tab-btn" onclick="switchTab('contact')" id="tab-contact">
+        <i class="fa-solid fa-phone"></i>連絡窓口
+      </button>
+      <button class="tab-btn" onclick="switchTab('emergency')" id="tab-emergency">
+        <i class="fa-solid fa-heart-pulse"></i>緊急連絡先
+      </button>
+      <button class="tab-btn" onclick="switchTab('rulebook')" id="tab-rulebook">
+        <i class="fa-solid fa-book-open"></i>ルールブック
+      </button>
+    </div>
+
+    <!-- ========== TAB: 風紀記録 ========== -->
+    <div class="tab-pane active" id="pane-incident">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">風紀・要対応事項の記録</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <select class="form-select btn-sm" id="filterStatus"
+              onchange="renderIncidents()"
+              style="width:auto;padding:6px 10px;font-size:.75rem;">
+              <option value="">すべて</option>
+              <option value="open">未対応</option>
+              <option value="progress">対応中</option>
+              <option value="closed">解決済み</option>
+            </select>
+            <button class="btn btn-gold btn-sm" onclick="openIncidentModal()">
+              <i class="fa-solid fa-plus"></i> 新規記録
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="incidentList">
+            <div class="empty-state">
+              <i class="fa-solid fa-shield-check"></i>記録はありません
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TAB: 連絡窓口 ========== -->
+    <div class="tab-pane" id="pane-contact">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">保護者・学校関係者への連絡</div>
+        </div>
+        <div class="card-body">
+          <p style="font-size:.82rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem;">
+            保護者・学校関係者への一斉連絡は連絡網パネルから行えます。<br>
+            SAFETY発の案件に関する連絡は、件名に「【安全委員会】」と記載してください。
+          </p>
+          <button class="contact-link-btn" onclick="goToContact()">
+            <i class="fa-solid fa-envelope"></i>
+            <div>
+              <div>連絡網パネルへ</div>
+              <div style="font-size:.72rem;font-weight:400;color:var(--muted);">メール一斉送信・下書き・送信履歴</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="margin-left:auto;font-size:.75rem;color:var(--muted);"></i>
+          </button>
+
+          <div style="margin-top:1.4rem;">
+            <div class="sec-label">送信履歴（安全委員会分）</div>
+            <div id="contactHistory">
+              <div class="empty-state">
+                <i class="fa-solid fa-inbox"></i>送信履歴はありません
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TAB: 緊急連絡先 ========== -->
+    <div class="tab-pane" id="pane-emergency">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">緊急連絡先一覧</div>
+          <button class="btn btn-outline btn-sm" onclick="loadEmergencyContacts()">
+            <i class="fa-solid fa-sync-alt"></i> 更新
+          </button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.7;">
+            📋 団員名をタップすると緊急連絡先が表示されます。電話番号はワンタップでコピーできます。
+          </p>
+          <div id="emergencyList">
+            <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i>読み込み中…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TAB: ルールブック ========== -->
+    <div class="tab-pane" id="pane-rulebook">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">ルールブック管理</div>
+          <button class="btn btn-gold btn-sm" onclick="openRbModal()">
+            <i class="fa-solid fa-plus"></i> 項目追加
+          </button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.7;">
+            ✏️ 編集・保存すると yakkan.html のルールブックセクションに自動反映されます。
+          </p>
+          <div id="rulebookList">
+            <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i>読み込み中…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.inner -->
+</div><!-- /#mainContent -->
+
+<!-- ===== モーダル: 風紀記録 ===== -->
+<div id="incidentModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title" id="incidentModalTitle">📋 風紀記録を追加</div>
+      <button class="modal-close" onclick="closeModal('incidentModal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="incidentId">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">発生日<span class="form-required">*</span></label>
+          <input type="date" id="incidentDate" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">対応状況<span class="form-required">*</span></label>
+          <select id="incidentStatus" class="form-select">
+            <option value="open">未対応</option>
+            <option value="progress">対応中</option>
+            <option value="closed">解決済み</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">対象者<span class="form-required">*</span></label>
+        <select id="incidentMemberSel" class="form-select" onchange="onMemberSelChange()">
+          <option value="">団員から選択</option>
+        </select>
+        <div id="freeInputWrap" style="margin-top:.5rem;display:none;">
+          <input type="text" id="incidentTargetFree" class="form-input"
+            placeholder="氏名・関係者名を入力">
+        </div>
+        <div style="margin-top:.4rem;">
+          <label style="font-size:.75rem;color:var(--blue);cursor:pointer;">
+            <input type="checkbox" id="useFreeInput" onchange="toggleFreeInput()">
+            　団員以外・フリー入力
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">内容<span class="form-required">*</span></label>
+        <textarea id="incidentContent" class="form-textarea"
+          placeholder="発生した事象・状況を記録してください…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">対応メモ</label>
+        <textarea id="incidentNote" class="form-textarea" style="min-height:70px;"
+          placeholder="対応内容・経過・引き継ぎ事項など…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('incidentModal')">キャンセル</button>
+      <button class="btn btn-danger btn-sm" id="incidentDeleteBtn" style="display:none;" onclick="deleteIncident()">
+        <i class="fa-solid fa-trash"></i> 削除
+      </button>
+      <button class="btn btn-blue" onclick="saveIncident()">
+        <i class="fa-solid fa-save"></i> 保存
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== モーダル: ルールブック項目 ===== -->
+<div id="rbModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title" id="rbModalTitle">📖 ルールブック項目を追加</div>
+      <button class="modal-close" onclick="closeModal('rbModal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="rbId">
+      <div class="form-group">
+        <label class="form-label">アイコン（絵文字）</label>
+        <input type="text" id="rbIcon" class="form-input" placeholder="例：📅 🤝 🔧" maxlength="4">
+        <div class="form-hint">1文字の絵文字を入力してください（省略可）</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">タイトル<span class="form-required">*</span></label>
+        <input type="text" id="rbTitle" class="form-input" placeholder="例：練習・活動マナー">
+      </div>
+      <div class="form-group">
+        <label class="form-label">本文<span class="form-required">*</span></label>
+        <textarea id="rbBody" class="form-textarea" style="min-height:160px;"
+          placeholder="ルール内容を入力してください。&#10;改行は自動的に反映されます。&#10;&#10;【セクション名】のように記述するとセクション区切りとして表示されます。"></textarea>
+        <div class="form-hint">
+          「【セクション名】」で見出しを作れます。例：「【出欠・遅刻】」
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">表示順（数値が小さいほど上）</label>
+        <input type="number" id="rbOrder" class="form-input" value="0" min="0">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('rbModal')">キャンセル</button>
+      <button class="btn btn-danger btn-sm" id="rbDeleteBtn" style="display:none;" onclick="deleteRbEntry()">
+        <i class="fa-solid fa-trash"></i> 削除
+      </button>
+      <button class="btn btn-blue" onclick="saveRbEntry()">
+        <i class="fa-solid fa-save"></i> 保存
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// =============================================
+//  設定
+// =============================================
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const PANEL_CODE  = 'SAFETY';
+const SB = {
+  headers: {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+  }
+};
+
+// =============================================
+//  状態
+// =============================================
+let memberToken   = null;
+let memberData    = null;
+let incidentData  = [];
+let memberList    = [];
+let rbData        = [];
+
+// =============================================
+//  初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  memberToken = params.get('token');
+
+  if (!memberToken) return; // tokenなし → ロック画面のまま
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+      SB
+    );
+    const members = await res.json();
+    if (!members || members.length === 0) return;
+
+    memberData = members[0];
+    const role      = memberData.role      || '';
+    const committee = memberData.committee || '';
+
+    const FULL_ACCESS = ['president', 'vice_president', 'director'];
+    const hasAccess = FULL_ACCESS.includes(role) || committee === 'SAFETY' || committee === 'safety';
+    if (hasAccess) showMain();
+  } catch(e) {
+    console.error(e);
+  }
+});
+
+// =============================================
+//  ロック解除
+// =============================================
+function tryUnlock() {
+  const input = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (input === PANEL_CODE) {
+    showMain();
+  } else {
+    document.getElementById('lockError').classList.add('show');
+    document.getElementById('codeInput').select();
+  }
+}
+
+async function showMain() {
+  document.getElementById('lockScreen').style.display  = 'none';
+  document.getElementById('stateLoading').style.display = 'flex';
+  document.getElementById('panel-nav').style.display   = 'flex';
+
+  await loadMembers();
+  await loadIncidents();
+  await loadRulebook();
+  await loadContactHistory();
+  loadEmergencyContacts();
+
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('mainContent').style.display  = 'block';
+}
+
+// =============================================
+//  タブ切替
+// =============================================
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('pane-' + id).classList.add('active');
+}
+
+// =============================================
+//  団員リスト取得
+// =============================================
+async function loadMembers() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,part&order=name.asc&is_active=eq.true`,
+      SB
+    );
+    memberList = await res.json();
+    // 風紀記録モーダルのセレクトに反映
+    const sel = document.getElementById('incidentMemberSel');
+    sel.innerHTML = '<option value="">団員から選択</option>' +
+      memberList.map(m =>
+        `<option value="${esc(m.id)}">${esc(m.name)}${m.part ? '（' + esc(m.part) + '）' : ''}</option>`
+      ).join('');
+  } catch(e) {
+    console.error('団員読み込み失敗:', e);
+  }
+}
+
+// =============================================
+//  ① 風紀記録
+// =============================================
+async function loadIncidents() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/incidents?order=date.desc`,
+      SB
+    );
+    incidentData = await res.json();
+    renderIncidents();
+  } catch(e) {
+    console.error('風紀記録読み込み失敗:', e);
+    document.getElementById('incidentList').innerHTML =
+      '<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i>読み込みに失敗しました</div>';
+  }
+}
+
+function renderIncidents() {
+  const filterStatus = document.getElementById('filterStatus').value;
+  let data = [...incidentData];
+  if (filterStatus) data = data.filter(r => r.status === filterStatus);
+
+  const STATUS_LABEL = { open:'未対応', progress:'対応中', closed:'解決済み' };
+  const STATUS_CLASS = { open:'badge-open', progress:'badge-progress', closed:'badge-closed' };
+
+  if (!data.length) {
+    document.getElementById('incidentList').innerHTML =
+      `<div class="empty-state"><i class="fa-solid fa-shield-check"></i>${filterStatus ? 'この条件の記録はありません' : '記録はありません'}</div>`;
+    return;
+  }
+
+  document.getElementById('incidentList').innerHTML =
+    `<div class="incident-list">` +
+    data.map(r => `
+      <div class="incident-item" onclick="toggleIncident(this)" data-id="${esc(r.id)}">
+        <div class="incident-item-head">
+          <span class="incident-date">${fmtDate(r.date)}</span>
+          <span class="badge ${STATUS_CLASS[r.status] || 'badge-note'}">${STATUS_LABEL[r.status] || r.status}</span>
+          <span class="incident-target">${esc(r.target_name || '―')}</span>
+        </div>
+        <div class="incident-body">${esc(r.content || '')}</div>
+        <div class="incident-actions">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openIncidentEdit('${esc(r.id)}')">
+            <i class="fa-solid fa-pen"></i> 編集
+          </button>
+        </div>
+      </div>
+    `).join('') +
+    `</div>`;
+}
+
+function toggleIncident(el) {
+  el.classList.toggle('expanded');
+}
+
+function openIncidentModal() {
+  document.getElementById('incidentModalTitle').textContent = '📋 風紀記録を追加';
+  document.getElementById('incidentId').value       = '';
+  document.getElementById('incidentDate').value     = new Date().toISOString().slice(0,10);
+  document.getElementById('incidentStatus').value   = 'open';
+  document.getElementById('incidentMemberSel').value = '';
+  document.getElementById('incidentTargetFree').value = '';
+  document.getElementById('incidentContent').value  = '';
+  document.getElementById('incidentNote').value     = '';
+  document.getElementById('useFreeInput').checked   = false;
+  document.getElementById('freeInputWrap').style.display = 'none';
+  document.getElementById('incidentDeleteBtn').style.display = 'none';
+  openModal('incidentModal');
+}
+
+function openIncidentEdit(id) {
+  const r = incidentData.find(x => x.id === id);
+  if (!r) return;
+
+  document.getElementById('incidentModalTitle').textContent = '📋 風紀記録を編集';
+  document.getElementById('incidentId').value       = r.id;
+  document.getElementById('incidentDate').value     = r.date || '';
+  document.getElementById('incidentStatus').value   = r.status || 'open';
+  document.getElementById('incidentContent').value  = r.content || '';
+  document.getElementById('incidentNote').value     = r.note || '';
+  document.getElementById('incidentDeleteBtn').style.display = 'inline-flex';
+
+  // 対象者：member_idがあれば選択、なければフリー入力
+  const hasMember = !!r.member_id;
+  document.getElementById('useFreeInput').checked   = !hasMember;
+  document.getElementById('freeInputWrap').style.display = hasMember ? 'none' : 'block';
+  if (hasMember) {
+    document.getElementById('incidentMemberSel').value = r.member_id;
+    document.getElementById('incidentTargetFree').value = '';
+  } else {
+    document.getElementById('incidentMemberSel').value = '';
+    document.getElementById('incidentTargetFree').value = r.target_name || '';
+  }
+  openModal('incidentModal');
+}
+
+function toggleFreeInput() {
+  const checked = document.getElementById('useFreeInput').checked;
+  document.getElementById('freeInputWrap').style.display = checked ? 'block' : 'none';
+  if (checked) document.getElementById('incidentMemberSel').value = '';
+}
+
+function onMemberSelChange() {
+  // 団員を選んだらフリー入力チェックを外す
+  const val = document.getElementById('incidentMemberSel').value;
+  if (val) {
+    document.getElementById('useFreeInput').checked = false;
+    document.getElementById('freeInputWrap').style.display = 'none';
+  }
+}
+
+async function saveIncident() {
+  const id      = document.getElementById('incidentId').value;
+  const date    = document.getElementById('incidentDate').value;
+  const status  = document.getElementById('incidentStatus').value;
+  const content = document.getElementById('incidentContent').value.trim();
+  const note    = document.getElementById('incidentNote').value.trim();
+
+  if (!date || !content) {
+    showToast('⚠️ 発生日と内容は必須です');
+    return;
+  }
+
+  // 対象者の決定
+  const useFree  = document.getElementById('useFreeInput').checked;
+  const memberId = !useFree ? (document.getElementById('incidentMemberSel').value || null) : null;
+  const freeName = useFree  ? document.getElementById('incidentTargetFree').value.trim() : null;
+
+  let targetName = freeName;
+  if (!useFree && memberId) {
+    const m = memberList.find(x => x.id === memberId);
+    targetName = m ? m.name : '';
+  }
+  if (!targetName && !memberId) {
+    showToast('⚠️ 対象者を入力してください');
+    return;
+  }
+
+  const payload = {
+    date, status, content,
+    note:        note || null,
+    member_id:   memberId,
+    target_name: targetName,
+  };
+
+  try {
+    if (id) {
+      // 更新（論理削除ではなくUPDATE）
+      await fetch(`${SUPABASE_URL}/rest/v1/incidents?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+      showToast('✅ 記録を更新しました');
+    } else {
+      await fetch(`${SUPABASE_URL}/rest/v1/incidents`, {
+        method: 'POST',
+        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+      showToast('✅ 記録を追加しました');
+    }
+    closeModal('incidentModal');
+    await loadIncidents();
+  } catch(e) {
+    showToast('⚠️ 保存に失敗しました');
+    console.error(e);
+  }
+}
+
+async function deleteIncident() {
+  const id = document.getElementById('incidentId').value;
+  if (!id || !confirm('この記録を削除しますか？')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/incidents?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: SB.headers,
+    });
+    showToast('🗑️ 削除しました');
+    closeModal('incidentModal');
+    await loadIncidents();
+  } catch(e) {
+    showToast('⚠️ 削除に失敗しました');
+  }
+}
+
+// =============================================
+//  ② 連絡窓口（連絡網履歴を読み込み）
+// =============================================
+async function loadContactHistory() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/messages?status=eq.sent&order=sent_at.desc&limit=20`,
+      SB
+    );
+    const data = await res.json();
+    const el   = document.getElementById('contactHistory');
+
+    if (!data || !data.length) {
+      el.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox"></i>送信履歴はありません</div>';
+      return;
+    }
+
+    const TARGET_LABELS = {
+      all:'全員', members:'団員', part:'パート',
+      guardians:'保護者', school:'学校関係者', individual:'個人指定'
+    };
+    el.innerHTML = data.map(m => `
+      <div style="display:flex;align-items:center;gap:10px;padding:.7rem 0;
+        border-bottom:1px solid var(--border);font-size:.8rem;">
+        <span style="color:var(--muted);white-space:nowrap;font-size:.72rem;">
+          ${m.sent_at ? fmtDateFull(m.sent_at) : '―'}
+        </span>
+        <span style="background:rgba(33,74,154,.08);color:var(--blue);
+          font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:6px;flex-shrink:0;">
+          ${esc(TARGET_LABELS[m.target_type] || m.target_type)}
+        </span>
+        <span style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+          ${esc(m.subject)}
+        </span>
+      </div>
+    `).join('');
+  } catch(e) {
+    console.error('連絡履歴読み込み失敗:', e);
+  }
+}
+
+function goToContact() {
+  const base = './panel_contact.html';
+  location.href = memberToken ? `${base}?token=${encodeURIComponent(memberToken)}` : base;
+}
+
+// =============================================
+//  ③ 緊急連絡先
+// =============================================
+async function loadEmergencyContacts() {
+  const el = document.getElementById('emergencyList');
+  el.innerHTML = '<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i>読み込み中…</div>';
+  try {
+    // 団員一覧と緊急連絡先を並行取得
+    const [mRes, ecRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/members?select=id,name,part&order=name.asc&is_active=eq.true`, SB),
+      fetch(`${SUPABASE_URL}/rest/v1/emergency_contacts?select=*&order=created_at.asc`, SB),
+    ]);
+    const members  = await mRes.json();
+    const contacts = await ecRes.json();
+
+    if (!members || !members.length) {
+      el.innerHTML = '<div class="empty-state"><i class="fa-solid fa-users-slash"></i>団員データがありません</div>';
+      return;
+    }
+
+    // 団員ごとに緊急連絡先をグループ化
+    const ecMap = {};
+    contacts.forEach(c => {
+      if (!ecMap[c.member_id]) ecMap[c.member_id] = [];
+      ecMap[c.member_id].push(c);
+    });
+
+    el.innerHTML = members.map(m => {
+      const ecs = ecMap[m.id] || [];
+      return `
+        <div class="ec-member" id="ec-${esc(m.id)}">
+          <div class="ec-member-head" onclick="toggleEc('${esc(m.id)}')">
+            <div>
+              <div class="ec-member-name">${esc(m.name)}</div>
+              ${m.part ? `<div class="ec-member-part">${esc(m.part)}</div>` : ''}
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:.72rem;color:var(--muted);">
+                ${ecs.length}件
+              </span>
+              <i class="fa-solid fa-chevron-down" style="font-size:.7rem;color:var(--muted);
+                transition:transform .25s;" id="ec-arrow-${esc(m.id)}"></i>
+            </div>
+          </div>
+          <div class="ec-contacts">
+            ${ecs.length
+              ? ecs.map(c => `
+                <div class="ec-contact-row">
+                  <div class="ec-contact-info">
+                    <div class="ec-contact-name">${esc(c.name)}</div>
+                    <div class="ec-contact-rel">${esc(c.relationship || '続柄未登録')}</div>
+                    ${c.note ? `<div style="font-size:.7rem;color:var(--muted);margin-top:2px;">${esc(c.note)}</div>` : ''}
+                  </div>
+                  <div class="ec-contact-phone">${esc(c.phone || '番号なし')}</div>
+                  ${c.phone ? `
+                    <button class="copy-btn" onclick="copyPhone('${esc(c.phone)}')" title="番号をコピー">
+                      <i class="fa-solid fa-copy"></i>
+                    </button>` : ''}
+                </div>
+              `).join('')
+              : `<div class="ec-empty">⚠️ 緊急連絡先が未登録です</div>`
+            }
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i>読み込みに失敗しました</div>';
+    console.error(e);
+  }
+}
+
+function toggleEc(memberId) {
+  const el    = document.getElementById('ec-' + memberId);
+  const arrow = document.getElementById('ec-arrow-' + memberId);
+  const isOpen = el.classList.toggle('open');
+  if (arrow) arrow.style.transform = isOpen ? 'rotate(180deg)' : '';
+}
+
+function copyPhone(phone) {
+  navigator.clipboard.writeText(phone).then(() => {
+    showToast('📋 ' + phone + ' をコピーしました');
+  }).catch(() => {
+    showToast('コピーに失敗しました');
+  });
+}
+
+// =============================================
+//  ④ ルールブック
+// =============================================
+async function loadRulebook() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/rulebook_entries?order=sort_order.asc,created_at.asc`,
+      SB
+    );
+    rbData = await res.json();
+    renderRulebook();
+  } catch(e) {
+    console.error('ルールブック読み込み失敗:', e);
+    document.getElementById('rulebookList').innerHTML =
+      '<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i>読み込みに失敗しました</div>';
+  }
+}
+
+function renderRulebook() {
+  if (!rbData.length) {
+    document.getElementById('rulebookList').innerHTML =
+      '<div class="empty-state"><i class="fa-solid fa-book-open"></i>項目がありません。「項目追加」から登録してください。</div>';
+    return;
+  }
+  document.getElementById('rulebookList').innerHTML = rbData.map(r => `
+    <div class="rb-edit-item" id="rb-${esc(r.id)}">
+      <div class="rb-edit-head" onclick="toggleRbItem('${esc(r.id)}')">
+        <div class="rb-edit-icon">${esc(r.icon || '📋')}</div>
+        <div class="rb-edit-label">${esc(r.title)}</div>
+        <div class="rb-edit-meta">順: ${r.sort_order ?? 0}</div>
+        <div class="rb-edit-arrow">▼</div>
+      </div>
+      <div class="rb-edit-body">
+        <div style="background:var(--bg);border-radius:10px;padding:.9rem 1rem;
+          font-size:.8rem;line-height:1.9;white-space:pre-wrap;margin-bottom:.8rem;
+          color:var(--muted);">${esc(r.body || '')}</div>
+        <div style="display:flex;gap:6px;justify-content:flex-end;">
+          <button class="btn btn-outline btn-sm" onclick="openRbEdit('${esc(r.id)}')">
+            <i class="fa-solid fa-pen"></i> 編集
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleRbItem(id) {
+  const el = document.getElementById('rb-' + id);
+  el.classList.toggle('open');
+}
+
+function openRbModal() {
+  document.getElementById('rbModalTitle').textContent = '📖 ルールブック項目を追加';
+  document.getElementById('rbId').value    = '';
+  document.getElementById('rbIcon').value  = '';
+  document.getElementById('rbTitle').value = '';
+  document.getElementById('rbBody').value  = '';
+  document.getElementById('rbOrder').value = '0';
+  document.getElementById('rbDeleteBtn').style.display = 'none';
+  openModal('rbModal');
+}
+
+function openRbEdit(id) {
+  const r = rbData.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('rbModalTitle').textContent = '📖 ルールブック項目を編集';
+  document.getElementById('rbId').value    = r.id;
+  document.getElementById('rbIcon').value  = r.icon  || '';
+  document.getElementById('rbTitle').value = r.title || '';
+  document.getElementById('rbBody').value  = r.body  || '';
+  document.getElementById('rbOrder').value = r.sort_order ?? 0;
+  document.getElementById('rbDeleteBtn').style.display = 'inline-flex';
+  openModal('rbModal');
+}
+
+async function saveRbEntry() {
+  const id    = document.getElementById('rbId').value;
+  const icon  = document.getElementById('rbIcon').value.trim();
+  const title = document.getElementById('rbTitle').value.trim();
+  const body  = document.getElementById('rbBody').value.trim();
+  const order = parseInt(document.getElementById('rbOrder').value) || 0;
+
+  if (!title || !body) {
+    showToast('⚠️ タイトルと本文は必須です');
+    return;
+  }
+
+  const payload = { icon: icon || null, title, body, sort_order: order };
+
+  try {
+    if (id) {
+      await fetch(`${SUPABASE_URL}/rest/v1/rulebook_entries?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+      showToast('✅ 更新しました');
+    } else {
+      await fetch(`${SUPABASE_URL}/rest/v1/rulebook_entries`, {
+        method: 'POST',
+        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+        body: JSON.stringify(payload),
+      });
+      showToast('✅ 追加しました');
+    }
+    closeModal('rbModal');
+    await loadRulebook();
+  } catch(e) {
+    showToast('⚠️ 保存に失敗しました');
+    console.error(e);
+  }
+}
+
+async function deleteRbEntry() {
+  const id = document.getElementById('rbId').value;
+  if (!id || !confirm('この項目を削除しますか？')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/rulebook_entries?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: SB.headers,
+    });
+    showToast('🗑️ 削除しました');
+    closeModal('rbModal');
+    await loadRulebook();
+  } catch(e) {
+    showToast('⚠️ 削除に失敗しました');
+  }
+}
+
+// =============================================
+//  ユーティリティ
+// =============================================
+function fmtDate(str) {
+  if (!str) return '―';
+  const d = new Date(str);
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+}
+function fmtDateFull(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+function goBack() { history.back(); }
+
+// モーダル外クリックで閉じる
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
