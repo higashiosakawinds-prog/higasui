@@ -495,7 +495,7 @@ const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
 
 // Supabase Auth SDK クライアント
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // 委員会パネル定義
 const PANELS = [
@@ -520,7 +520,7 @@ let authSession = null;
 //  初期化：セッション確認
 // =============================================
 window.addEventListener('DOMContentLoaded', async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     authSession = session;
     renderPanelGrid(null);
@@ -529,7 +529,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     showState('login');
   }
 
-  supabase.auth.onAuthStateChange((event) => {
+  supabaseClient.auth.onAuthStateChange((event) => {
     if (event === 'SIGNED_OUT') {
       memberData = null;
       authSession = null;
@@ -559,7 +559,7 @@ async function doLogin() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ログイン中…';
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
   if (error) {
     btn.disabled = false;
@@ -594,7 +594,7 @@ async function doResetPassword() {
     return;
   }
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
     redirectTo: 'https://higashiosakawinds-prog.github.io/higasui/member.html',
   });
 
@@ -612,7 +612,7 @@ async function doResetPassword() {
 // =============================================
 async function doLogout() {
   if (!confirm('ログアウトしますか？')) return;
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
 }
 
 // =============================================
@@ -621,7 +621,7 @@ async function doLogout() {
 async function loadMemberData(email) {
   try {
     showState('loading');
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     const token = session?.access_token || SUPABASE_KEY;
     const SB_H = { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` } };
 
@@ -727,7 +727,7 @@ async function loadMessages(d, SB_H) {
 // =============================================
 async function loadScheduleData(d, SB_H) {
   if (!SB_H) {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     const token = session?.access_token || SUPABASE_KEY;
     SB_H = { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` } };
   }
@@ -978,7 +978,7 @@ async function submitEdit() {
   }
 
   try {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     const token = session?.access_token || SUPABASE_KEY;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/requests`, {
       method: 'POST',
