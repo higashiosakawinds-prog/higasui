@@ -605,7 +605,12 @@ function renderFeeTable(members) {
       : s === 'unpaid'
         ? '<span class="badge badge-ng">未納</span>'
         : '<span class="badge badge-warn">確認中</span>';
-    return `<tr style="cursor:pointer;" onclick="openFeeModal('${m.id}','${escHtml(m.name)}','${s}',${JSON.stringify(m.fee_note||'')})">
+    return `<tr style="cursor:pointer;"
+        data-id="${escHtml(m.id)}"
+        data-name="${escHtml(m.name)}"
+        data-status="${escHtml(s)}"
+        data-note="${escHtml(m.fee_note||'')}"
+        onclick="openFeeModalFromRow(this)">
       <td style="font-weight:600;">${escHtml(m.name)}</td>
       <td style="color:var(--muted);font-size:.78rem;">${escHtml(m.part || '―')}</td>
       <td style="font-size:.78rem;">${escHtml(m.member_type || '―')}</td>
@@ -622,6 +627,14 @@ function renderFeeTable(members) {
 // =============================================
 //  会費状況 手動編集
 // =============================================
+function openFeeModalFromRow(row) {
+  const id     = row.dataset.id;
+  const name   = row.dataset.name;
+  const status = row.dataset.status;
+  const note   = row.dataset.note;
+  openFeeModal(id, name, status, note);
+}
+
 function openFeeModal(id, name, status, note) {
   document.getElementById('feeModalId').value     = id;
   document.getElementById('feeModalName').textContent = name + ' さんの会費状況';
