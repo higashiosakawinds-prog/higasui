@@ -485,158 +485,168 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
         <h2 class="rulebook-title">行動規範・運営ルール</h2>
         <p class="rulebook-desc">定款とは別に、日常の活動・コミュニティ運営に関する基本的なルールをまとめています。</p>
       </div>
+
+      <!-- ★ noteはstatic-rulebookの外 -->
       <div class="rulebook-note">
         📝 このルールブックは定款の補足であり、状況に応じて随時更新します。団員の意見をもとに改善していきます。
       </div>
 
-      <!-- 練習・活動マナー -->
-      <div class="rb-item">
-        <button class="rb-btn" onclick="toggleRb(this)">
-          <div class="rb-icon">📅</div>
-          <span class="rb-label">練習・活動マナー</span>
-          <span class="rb-arrow">▼</span>
-        </button>
-        <div class="rb-body">
-          <div class="rb-section">出欠・遅刻</div>
-          <ul>
-            <li>欠席・遅刻は前日までにLINEグループへ連絡する</li>
-            <li>やむを得ない当日欠席は、練習開始1時間前までに連絡する</li>
-            <li>無断欠席が続く場合は、状況確認のうえ対応を検討する</li>
-          </ul>
-          <div class="rb-section">練習中のマナー</div>
-          <ul>
-            <li>練習開始10分前には会場入りし、準備を整える</li>
-            <li>合奏中の私語・スマホ操作は控える</li>
-            <li>指揮者・指導者の指示に従い、わからない場合は終了後に確認する</li>
-            <li>会場の備品・楽器は丁寧に扱い、使用後は元の場所に戻す</li>
-          </ul>
-          <div class="rb-section">会場利用</div>
-          <ul>
-            <li>会場のルールを守り、近隣への配慮を忘れない</li>
-            <li>練習後は必ずゴミを持ち帰り、原状回復して退室する</li>
-          </ul>
-        </div>
-      </div>
+      <!-- ★ static-rulebook ここから（DBが空/エラー時のフォールバック） -->
+      <div id="static-rulebook">
 
-      <!-- SNS・写真撮影ルール -->
-      <div class="rb-item">
-        <button class="rb-btn" onclick="toggleRb(this)">
-          <div class="rb-icon">📷</div>
-          <span class="rb-label">SNS・写真撮影ルール</span>
-          <span class="rb-arrow">▼</span>
-        </button>
-        <div class="rb-body">
-          <div class="rb-section">撮影・投稿の基本</div>
-          <ul>
-            <li>練習・イベントの写真・動画はSNS等に投稿してOK（積極的に発信歓迎！）</li>
-            <li>他の団員が映っている写真を投稿する際は、<strong>本人の了承</strong>を得る</li>
-            <li>未成年（学生）が映っている写真の投稿は、<strong>保護者の同意</strong>を確認する</li>
-            <li>顔が映らないよう配慮が必要な方は事前に申し出ること</li>
-          </ul>
-          <div class="rb-section">公式SNSへの投稿</div>
-          <ul>
-            <li>公式アカウントへの投稿は広報担当が行う</li>
-            <li>投稿内容に関する問い合わせ・クレームは代表または広報担当が対応する</li>
-            <li>団の名誉を損なう投稿・炎上につながりかねない投稿は禁止</li>
-          </ul>
-          <div class="rb-section">学生団員向け</div>
-          <ul>
-            <li>個人SNSでの活動発信は自由だが、個人情報（住所・学校名等）の掲載は禁止</li>
-            <li>不適切な投稿を発見した場合は速やかに代表・保護者に報告する</li>
-          </ul>
+        <!-- 練習・活動マナー -->
+        <div class="rb-item">
+          <button class="rb-btn" onclick="toggleRb(this)">
+            <div class="rb-icon">📅</div>
+            <span class="rb-label">練習・活動マナー</span>
+            <span class="rb-arrow">▼</span>
+          </button>
+          <div class="rb-body">
+            <div class="rb-section">出欠・遅刻</div>
+            <ul>
+              <li>欠席・遅刻は前日までにLINEグループへ連絡する</li>
+              <li>やむを得ない当日欠席は、練習開始1時間前までに連絡する</li>
+              <li>無断欠席が続く場合は、状況確認のうえ対応を検討する</li>
+            </ul>
+            <div class="rb-section">練習中のマナー</div>
+            <ul>
+              <li>練習開始10分前には会場入りし、準備を整える</li>
+              <li>合奏中の私語・スマホ操作は控える</li>
+              <li>指揮者・指導者の指示に従い、わからない場合は終了後に確認する</li>
+              <li>会場の備品・楽器は丁寧に扱い、使用後は元の場所に戻す</li>
+            </ul>
+            <div class="rb-section">会場利用</div>
+            <ul>
+              <li>会場のルールを守り、近隣への配慮を忘れない</li>
+              <li>練習後は必ずゴミを持ち帰り、原状回復して退室する</li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <!-- ハラスメント防止・相談対応 -->
-      <div class="rb-item">
-        <button class="rb-btn" onclick="toggleRb(this)">
-          <div class="rb-icon">🤝</div>
-          <span class="rb-label">ハラスメント防止・相談対応</span>
-          <span class="rb-arrow">▼</span>
-        </button>
-        <div class="rb-body">
-          <div class="rb-section">基本方針</div>
-          <ul>
-            <li>本団はすべてのメンバーが安心して活動できる環境づくりを最優先とする</li>
-            <li>ハラスメント（パワハラ・セクハラ・モラハラ等）は一切認めない</li>
-            <li>年齢・経験・パートの違いによる差別的な扱いを禁止する</li>
-          </ul>
-          <div class="rb-section">相談窓口</div>
-          <ul>
-            <li>困ったこと・気になることは代表または副代表に相談する</li>
-            <li>相談内容は当事者の同意なく他の団員に開示しない</li>
-            <li>学生団員は保護者・学校の先生への相談も推奨する</li>
-          </ul>
-          <div class="rb-section">対応手順</div>
-          <ul>
-            <li>相談受付 → 代表・副代表で事実確認 → 当事者への対応 → 必要に応じて役員会議で審議</li>
-            <li>重大なケースは外部の相談機関への相談も検討する</li>
-          </ul>
+        <!-- SNS・写真撮影ルール -->
+        <div class="rb-item">
+          <button class="rb-btn" onclick="toggleRb(this)">
+            <div class="rb-icon">📷</div>
+            <span class="rb-label">SNS・写真撮影ルール</span>
+            <span class="rb-arrow">▼</span>
+          </button>
+          <div class="rb-body">
+            <div class="rb-section">撮影・投稿の基本</div>
+            <ul>
+              <li>練習・イベントの写真・動画はSNS等に投稿してOK（積極的に発信歓迎！）</li>
+              <li>他の団員が映っている写真を投稿する際は、<strong>本人の了承</strong>を得る</li>
+              <li>未成年（学生）が映っている写真の投稿は、<strong>保護者の同意</strong>を確認する</li>
+              <li>顔が映らないよう配慮が必要な方は事前に申し出ること</li>
+            </ul>
+            <div class="rb-section">公式SNSへの投稿</div>
+            <ul>
+              <li>公式アカウントへの投稿は広報担当が行う</li>
+              <li>投稿内容に関する問い合わせ・クレームは代表または広報担当が対応する</li>
+              <li>団の名誉を損なう投稿・炎上につながりかねない投稿は禁止</li>
+            </ul>
+            <div class="rb-section">学生団員向け</div>
+            <ul>
+              <li>個人SNSでの活動発信は自由だが、個人情報（住所・学校名等）の掲載は禁止</li>
+              <li>不適切な投稿を発見した場合は速やかに代表・保護者に報告する</li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <!-- 備品・会場トラブル対応 -->
-      <div class="rb-item">
-        <button class="rb-btn" onclick="toggleRb(this)">
-          <div class="rb-icon">🔧</div>
-          <span class="rb-label">備品・トラブル対応</span>
-          <span class="rb-arrow">▼</span>
-        </button>
-        <div class="rb-body">
-          <div class="rb-section">備品の破損・紛失</div>
-          <ul>
-            <li>団の備品を破損・紛失した場合は、速やかに楽器管理委員または代表に報告する</li>
-            <li>故意または重大な過失による破損は、修理・弁償を求める場合がある</li>
-            <li>個人楽器の管理は自己責任とするが、団保管中のトラブルは別途協議する</li>
-          </ul>
-          <div class="rb-section">会場・練習中の事故</div>
-          <ul>
-            <li>ケガや体調不良は無理せず申し出る。安全サポート委員が対応する</li>
-            <li>救急対応が必要な場合は迷わず119番通報し、代表へ連絡する</li>
-            <li>学生団員のケガは保護者へ速やかに連絡する</li>
-          </ul>
-          <div class="rb-section">団員間のトラブル</div>
-          <ul>
-            <li>まず当事者同士で話し合いを試みる</li>
-            <li>解決が難しい場合は代表・副代表に相談し、第三者を交えた対話を行う</li>
-            <li>悪質なケースは役員会議にて審議・対応を決定する</li>
-          </ul>
+        <!-- ハラスメント防止・相談対応 -->
+        <div class="rb-item">
+          <button class="rb-btn" onclick="toggleRb(this)">
+            <div class="rb-icon">🤝</div>
+            <span class="rb-label">ハラスメント防止・相談対応</span>
+            <span class="rb-arrow">▼</span>
+          </button>
+          <div class="rb-body">
+            <div class="rb-section">基本方針</div>
+            <ul>
+              <li>本団はすべてのメンバーが安心して活動できる環境づくりを最優先とする</li>
+              <li>ハラスメント（パワハラ・セクハラ・モラハラ等）は一切認めない</li>
+              <li>年齢・経験・パートの違いによる差別的な扱いを禁止する</li>
+            </ul>
+            <div class="rb-section">相談窓口</div>
+            <ul>
+              <li>困ったこと・気になることは代表または副代表に相談する</li>
+              <li>相談内容は当事者の同意なく他の団員に開示しない</li>
+              <li>学生団員は保護者・学校の先生への相談も推奨する</li>
+            </ul>
+            <div class="rb-section">対応手順</div>
+            <ul>
+              <li>相談受付 → 代表・副代表で事実確認 → 当事者への対応 → 必要に応じて役員会議で審議</li>
+              <li>重大なケースは外部の相談機関への相談も検討する</li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <!-- 学生団員・保護者向けルール -->
-      <div class="rb-item">
-        <button class="rb-btn" onclick="toggleRb(this)">
-          <div class="rb-icon">🎓</div>
-          <span class="rb-label">学生団員・保護者の方へ</span>
-          <span class="rb-arrow">▼</span>
-        </button>
-        <div class="rb-body">
-          <div class="rb-section">送迎・引き渡し</div>
-          <ul>
-            <li>練習終了後は速やかに保護者が迎えに来るか、安全な帰宅手段を確保する</li>
-            <li>やむを得ず遅れる場合は練習終了前に担当者へ連絡する</li>
-            <li>夜間・悪天候時の一人帰宅は原則禁止とする</li>
-          </ul>
-          <div class="rb-section">保護者との連携</div>
-          <ul>
-            <li>緊急連絡が必要な場合は登録の保護者連絡先に連絡する</li>
-            <li>学生の体調・状態で気になることがあれば保護者に情報共有する</li>
-            <li>保護者参加のサポートは強制ではなく、可能な範囲でお願いする</li>
-          </ul>
-          <div class="rb-section">学業優先</div>
-          <ul>
-            <li>定期試験・学校行事による欠席は最優先とし、事前に連絡する</li>
-            <li>学業・部活との両立を無理なく続けられる環境を大切にする</li>
-          </ul>
+        <!-- 備品・会場トラブル対応 -->
+        <div class="rb-item">
+          <button class="rb-btn" onclick="toggleRb(this)">
+            <div class="rb-icon">🔧</div>
+            <span class="rb-label">備品・トラブル対応</span>
+            <span class="rb-arrow">▼</span>
+          </button>
+          <div class="rb-body">
+            <div class="rb-section">備品の破損・紛失</div>
+            <ul>
+              <li>団の備品を破損・紛失した場合は、速やかに楽器管理委員または代表に報告する</li>
+              <li>故意または重大な過失による破損は、修理・弁償を求める場合がある</li>
+              <li>個人楽器の管理は自己責任とするが、団保管中のトラブルは別途協議する</li>
+            </ul>
+            <div class="rb-section">会場・練習中の事故</div>
+            <ul>
+              <li>ケガや体調不良は無理せず申し出る。安全サポート委員が対応する</li>
+              <li>救急対応が必要な場合は迷わず119番通報し、代表へ連絡する</li>
+              <li>学生団員のケガは保護者へ速やかに連絡する</li>
+            </ul>
+            <div class="rb-section">団員間のトラブル</div>
+            <ul>
+              <li>まず当事者同士で話し合いを試みる</li>
+              <li>解決が難しい場合は代表・副代表に相談し、第三者を交えた対話を行う</li>
+              <li>悪質なケースは役員会議にて審議・対応を決定する</li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <div class="rb-item" style="background:rgba(33,74,154,0.04);border-color:rgba(33,74,154,0.15);">
-        <div style="padding:1rem 1.2rem;font-size:0.78rem;color:var(--muted);line-height:1.8;">
-          最終更新：2026年4月1日　／　ご意見・改善提案は代表または広報担当までお知らせください。
+        <!-- 学生団員・保護者向けルール -->
+        <div class="rb-item">
+          <button class="rb-btn" onclick="toggleRb(this)">
+            <div class="rb-icon">🎓</div>
+            <span class="rb-label">学生団員・保護者の方へ</span>
+            <span class="rb-arrow">▼</span>
+          </button>
+          <div class="rb-body">
+            <div class="rb-section">送迎・引き渡し</div>
+            <ul>
+              <li>練習終了後は速やかに保護者が迎えに来るか、安全な帰宅手段を確保する</li>
+              <li>やむを得ず遅れる場合は練習終了前に担当者へ連絡する</li>
+              <li>夜間・悪天候時の一人帰宅は原則禁止とする</li>
+            </ul>
+            <div class="rb-section">保護者との連携</div>
+            <ul>
+              <li>緊急連絡が必要な場合は登録の保護者連絡先に連絡する</li>
+              <li>学生の体調・状態で気になることがあれば保護者に情報共有する</li>
+              <li>保護者参加のサポートは強制ではなく、可能な範囲でお願いする</li>
+            </ul>
+            <div class="rb-section">学業優先</div>
+            <ul>
+              <li>定期試験・学校行事による欠席は最優先とし、事前に連絡する</li>
+              <li>学業・部活との両立を無理なく続けられる環境を大切にする</li>
+            </ul>
+          </div>
         </div>
-      </div>
+
+        <div class="rb-item" style="background:rgba(33,74,154,0.04);border-color:rgba(33,74,154,0.15);">
+          <div style="padding:1rem 1.2rem;font-size:0.78rem;color:var(--muted);line-height:1.8;">
+            最終更新：2026年4月1日　／　ご意見・改善提案は代表または広報担当までお知らせください。
+          </div>
+        </div>
+
+      </div><!-- /#static-rulebook -->
+
+      <!-- ★ dynamic-rulebook: DBにデータがあればここに動的生成、static-rulebookは非表示になる -->
+      <div id="dynamic-rulebook" style="display:none;"></div>
 
     </div>
   </div>
@@ -646,7 +656,7 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
   <div class="inner">
     <div class="footer-logo"><img src="/higasui/higasui.svg" alt="東大阪吹奏楽団"></div>
     <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
-        <div class="footer-links">
+    <div class="footer-links">
       <a href="/higasui/about.html">団について</a>
       <a href="/higasui/join.html">練習案内</a>
       <a href="/higasui/faq.html">よくある質問</a>
@@ -665,22 +675,88 @@ footer{background:var(--navy);padding:2.5rem 0 3rem;border-top:2px solid rgba(20
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-const ham=document.getElementById('ham-btn');
-const drawer=document.getElementById('site-drawer');
-ham.addEventListener('click',function(){
-  var o=drawer.classList.contains('open');
-  drawer.classList.toggle('open',!o);
-  document.body.style.overflow=o?'':'hidden';
+// ===== ナビ =====
+const ham = document.getElementById('ham-btn');
+const drawer = document.getElementById('site-drawer');
+ham.addEventListener('click', function() {
+  var o = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !o);
+  document.body.style.overflow = o ? '' : 'hidden';
 });
-function closeNav(){drawer.classList.remove('open');document.body.style.overflow='';}
+function closeNav() { drawer.classList.remove('open'); document.body.style.overflow = ''; }
 
-function toggleRb(btn){
-  var item=btn.closest('.rb-item');
-  var isOpen=item.classList.contains('open');
-  item.classList.toggle('open',!isOpen);
+// ===== ルールブック開閉 =====
+function toggleRb(btn) {
+  var item = btn.closest('.rb-item');
+  var isOpen = item.classList.contains('open');
+  item.classList.toggle('open', !isOpen);
 }
-const st=document.getElementById('scrollTop');
-window.addEventListener('scroll',function(){st.classList.toggle('show',scrollY>400);});
+
+// ===== スクロールトップ =====
+const st = document.getElementById('scrollTop');
+window.addEventListener('scroll', function() { st.classList.toggle('show', scrollY > 400); });
+
+// ===== ルールブック動的読み込み =====
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+
+async function loadDynamicRulebook() {
+  const container = document.getElementById('dynamic-rulebook');
+  if (!container) return;
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/rulebook_entries?order=sort_order.asc,created_at.asc`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const entries = await res.json();
+    if (!entries || !entries.length) return; // DBが空 → static-rulebookをそのまま表示
+
+    // DBにデータあり → 動的生成
+    container.innerHTML = entries.map(r => {
+      const lines = (r.body || '').split('\n').filter(l => l.trim());
+      let bodyHtml = '';
+      lines.forEach(line => {
+        const m = line.match(/^【(.+)】$/);
+        if (m) {
+          bodyHtml += `<div class="rb-section">${escHtml(m[1])}</div>`;
+        } else {
+          bodyHtml += `<ul><li>${escHtml(line.replace(/^[・\-\*]\s*/, ''))}</li></ul>`;
+        }
+      });
+      return `
+        <div class="rb-item">
+          <button class="rb-btn" onclick="toggleRb(this)">
+            <div class="rb-icon">${escHtml(r.icon || '📋')}</div>
+            <span class="rb-label">${escHtml(r.title)}</span>
+            <span class="rb-arrow">▼</span>
+          </button>
+          <div class="rb-body">${bodyHtml}</div>
+        </div>`;
+    }).join('');
+
+    container.insertAdjacentHTML('beforeend', `
+      <div class="rb-item" style="background:rgba(33,74,154,0.04);border-color:rgba(33,74,154,0.15);">
+        <div style="padding:1rem 1.2rem;font-size:0.78rem;color:var(--muted);line-height:1.8;">
+          ※ このルールブックは安全サポート委員会が管理しています。ご意見は代表または広報担当までお知らせください。
+        </div>
+      </div>`);
+
+    // static を非表示にして dynamic を表示
+    document.getElementById('static-rulebook').style.display = 'none';
+    container.style.display = 'block';
+
+  } catch(e) {
+    // エラー時はフォールバック（static-rulebookをそのまま表示）
+    console.warn('ルールブック動的読み込み失敗。既存データを表示します。', e);
+  }
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.addEventListener('DOMContentLoaded', loadDynamicRulebook);
 </script>
 </body>
 </html>
