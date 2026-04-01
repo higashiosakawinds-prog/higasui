@@ -633,7 +633,11 @@ async function getSignedUrl(filePath) {
     );
     if (!res.ok) return null;
     const data = await res.json();
-    return data.signedURL ? `${SUPABASE_URL}/storage/v1${data.signedURL}` : null;
+    // Supabase v2は signedUrl（小文字u）で返る
+    const signed = data.signedUrl || data.signedURL || null;
+    if (!signed) return null;
+    // すでにフルURLの場合とパスのみの場合を両対応
+    return signed.startsWith('http') ? signed : `${SUPABASE_URL}/storage/v1${signed}`;
   } catch(e) {
     console.error('署名付きURL取得エラー:', e);
     return null;
