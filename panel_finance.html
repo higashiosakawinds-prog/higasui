@@ -42,42 +42,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 
 /* ===== LOCK SCREEN ===== */
-#lockScreen{
-  position:fixed;inset:0;z-index:200;
-  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
-  display:flex;align-items:center;justify-content:center;padding:1.5rem;
-}
-.lock-card{
-  background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);
-  border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;
-  backdrop-filter:blur(12px);
-}
-.lock-eyebrow{
-  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
-  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;
-}
-.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
-.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
-.lock-input{
-  width:100%;padding:13px 16px;background:rgba(255,255,255,.08);
-  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
-  color:#fff;font-size:1rem;font-family:inherit;outline:none;
-  text-align:center;letter-spacing:.2em;margin-bottom:.8rem;
-  transition:border-color .2s;
-}
-.lock-input:focus{border-color:var(--gold);}
-.lock-btn{
-  width:100%;padding:13px;border:none;border-radius:12px;
-  background:var(--gold);color:var(--navy);font-family:inherit;
-  font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;
-}
-.lock-btn:hover{opacity:.9;}
-.lock-error{
-  display:none;margin-top:.8rem;padding:.6rem 1rem;
-  background:rgba(192,57,43,.2);border-radius:8px;
-  font-size:.75rem;color:#fca5a5;
-}
-.lock-error.show{display:block;}
 
 /* ===== STATES ===== */
 #stateLoading{
@@ -174,7 +138,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 /* ===== 収支報告書 ===== */
 @media print {
-  #panel-nav, #lockScreen, .action-row, .no-print { display:none !important; }
+  #panel-nav, .action-row, .no-print { display:none !important; }
   body { background:#fff; }
   #mainContent { display:block !important; padding:0; }
   .card, .graph-card { box-shadow:none; border:1px solid #ddd; break-inside:avoid; }
@@ -247,21 +211,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   <div id="panel-badge">FINANCE</div>
 </nav>
 
-<!-- ===== LOCK SCREEN ===== -->
-<div id="lockScreen">
-  <div class="lock-card">
-    <div class="lock-eyebrow">COMMITTEE PANEL</div>
-    <div class="lock-title">会計委員会</div>
-    <div class="lock-sub">パネルコードを入力してください。<br>担当者のみアクセスできます。</div>
-    <input class="lock-input" type="password" id="codeInput"
-      placeholder="••••••••" autocomplete="off"
-      onkeydown="if(event.key==='Enter')tryUnlock()">
-    <button class="lock-btn" onclick="tryUnlock()">
-      <i class="fa-solid fa-unlock"></i> アクセス
-    </button>
-    <div class="lock-error" id="lockError">パネルコードが違います。</div>
-  </div>
-</div>
 
 <!-- ===== LOADING ===== -->
 <div id="stateLoading" style="display:none;">
@@ -412,7 +361,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
     </div>
     <div class="modal-fg">
       <label>摘要 <span style="color:var(--gold)">*</span></label>
-      <input type="text" id="inputDesc" placeholder="例：3月会費（谷）、会場費（文化創造館）">
+      <input type="text" id="inputDesc" placeholder="例：4月会費（山田）、会場費（文化創造館）">
     </div>
     <div class="fg-row">
       <div class="modal-fg">
@@ -421,7 +370,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
       </div>
       <div class="modal-fg">
         <label>カテゴリ</label>
-        <select id="inputCat">
+        <select id="inputCat" onchange="onCatChange()">
           <option value="会費">会費</option>
           <option value="会場費">会場費</option>
           <option value="備品">備品</option>
@@ -454,7 +403,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
 const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
-const PANEL_CODE = 'FINANCE';
 
 // =============================================
 //  状態
@@ -471,68 +419,31 @@ let chartInstance = null;
 window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(location.search);
   memberToken = params.get('token');
+  if (!memberToken) return;
 
-  if (!memberToken) {
-    // tokenなし → ロック画面表示（パネルコードで入れる）
-    return;
-  }
-
-  // tokenあり → Supabaseで権限確認
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
       SB
     );
     const members = await res.json();
-    if (!members || members.length === 0) return; // tokenが無効 → ロック画面のまま
+    if (!members || members.length === 0) return;
 
     memberData = members[0];
     const role      = memberData.role      || '';
     const committee = memberData.committee || '';
-
-    // 権限チェック
     const FULL_ACCESS = ['president', 'vice_president', 'director'];
-    const hasAccess   = FULL_ACCESS.includes(role) || role === 'finance' || committee === 'finance';
-
-    if (hasAccess) {
-      showMain();
-    }
-    // 権限なし → ロック画面のまま（パネルコードでも入れる）
+    const hasAccess   = FULL_ACCESS.includes(role) || committee === 'FINANCE' || committee === 'finance';
+    if (hasAccess) showMain();
   } catch(e) {
     console.error(e);
-    // エラー時はロック画面のまま
   }
 });
 
-// =============================================
-//  ロック解除（パネルコード）
-// =============================================
-function tryUnlock() {
-  const input = document.getElementById('codeInput').value.trim().toUpperCase();
-  if (input === PANEL_CODE) {
-    sessionStorage.setItem('panel_finance_unlocked', 'true');
-    showMain();
-  } else {
-    document.getElementById('lockError').classList.add('show');
-    document.getElementById('codeInput').select();
-  }
 }
 
 async function showMain() {
-  document.getElementById('lockScreen').style.display = 'none';
   document.getElementById('stateLoading').style.display = 'flex';
-
-  // tokenがあれば団員情報取得
-  if (memberToken) {
-    try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
-        SB
-      );
-      const members = await res.json();
-      if (members && members.length > 0) memberData = members[0];
-    } catch(e) { console.error(e); }
-  }
 
   await loadLedger();
   await loadFeeStatus();
@@ -740,16 +651,41 @@ function renderGraph() {
 // =============================================
 //  モーダル
 // =============================================
+function onCatChange() {
+  const cat   = document.getElementById('inputCat').value;
+  const desc  = document.getElementById('inputDesc').value;
+  const now   = new Date();
+  const month = now.getMonth() + 1;
+  const name  = memberData?.name || '';
+  // 会費カテゴリに切り替えたとき、摘要が空か前の会費パターンなら自動上書き
+  const isFeePattern = /^\d+月会費/.test(desc);
+  if (cat === '会費' && (!desc || isFeePattern)) {
+    document.getElementById('inputDesc').value = name
+      ? `${month}月会費（${name}）`
+      : `${month}月会費（　）`;
+  } else if (cat !== '会費' && isFeePattern) {
+    document.getElementById('inputDesc').value = '';
+  }
+}
+
 function openModal() {
-  document.getElementById('editId').value    = '';
-  document.getElementById('inputDate').value = new Date().toISOString().slice(0,10);
-  document.getElementById('inputDesc').value = '';
+  document.getElementById('editId').value      = '';
+  document.getElementById('inputDate').value   = new Date().toISOString().slice(0,10);
   document.getElementById('inputAmount').value = '';
-  document.getElementById('inputCat').value  = '会費';
+  document.getElementById('inputCat').value    = '会費';
   document.getElementById('modalTitle').textContent = '収支を記録';
   document.getElementById('btnDelete').style.display = 'none';
   document.getElementById('modalMsg').className = 'modal-msg';
   setType('income');
+
+  // 会費カテゴリのデフォルト摘要に今月と名前を自動入力
+  const now    = new Date();
+  const month  = now.getMonth() + 1;
+  const name   = memberData?.name || '';
+  document.getElementById('inputDesc').value = name
+    ? `${month}月会費（${name}）`
+    : `${month}月会費（　）`;
+
   document.getElementById('ledgerModal').classList.add('open');
 }
 
