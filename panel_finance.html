@@ -659,7 +659,7 @@ async function saveFeeStatus() {
       `${SUPABASE_URL}/rest/v1/members?id=eq.${id}`,
       {
         method: 'PATCH',
-        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+        headers: { ...makeSB(sessionToken).headers, 'Prefer': 'return=minimal' },
         body: JSON.stringify({ fee_status: status, fee_note: note || null }),
       }
     );
