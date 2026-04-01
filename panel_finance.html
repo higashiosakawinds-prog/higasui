@@ -147,6 +147,35 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .report-only { display:none; }
 
 /* ===== MODAL ===== */
+
+/* ===== 会費編集モーダル ===== */
+#feeModal{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(28,43,74,.65);
+  display:none;align-items:center;justify-content:center;padding:1.5rem;
+}
+#feeModal.open{display:flex;}
+#feeModal .modal-box{
+  background:#fff;border-radius:20px;width:100%;max-width:420px;
+  padding:1.5rem;box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+#feeModal .modal-title{
+  font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;
+  color:var(--navy);margin-bottom:1.2rem;
+}
+#feeModal .modal-fg{margin-bottom:1rem;}
+#feeModal .modal-fg label{
+  display:block;font-size:.72rem;font-weight:700;
+  color:var(--navy);margin-bottom:.4rem;
+}
+#feeModal .modal-fg select,
+#feeModal .modal-fg textarea{
+  width:100%;padding:11px 13px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:.88rem;font-family:inherit;
+  background:var(--bg);outline:none;transition:border-color .2s;
+}
+#feeModal .modal-fg select:focus,
+#feeModal .modal-fg textarea:focus{border-color:var(--blue);background:#fff;}
 .modal-overlay{
   display:none;position:fixed;inset:0;
   background:rgba(28,43,74,.65);z-index:300;
@@ -339,6 +368,33 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 </div>
 
 <!-- ===== 収支入力モーダル ===== -->
+<!-- ===== 会費状況編集モーダル ===== -->
+<div class="modal-overlay" id="feeModal">
+  <div class="modal-box">
+    <div class="modal-title" id="feeModalName">―</div>
+    <input type="hidden" id="feeModalId">
+    <div class="modal-fg">
+      <label>支払い状況</label>
+      <select id="feeModalStatus">
+        <option value="paid">✅ 支払済</option>
+        <option value="unpaid">❌ 未納</option>
+        <option value="pending">⏳ 確認中</option>
+      </select>
+    </div>
+    <div class="modal-fg">
+      <label>備考（任意）</label>
+      <textarea id="feeModalNote" placeholder="例：現金受け取り4月1日（受付：山田）" style="min-height:80px;resize:vertical;"></textarea>
+    </div>
+    <div class="modal-msg" id="feeModalMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeFeeModal()">キャンセル</button>
+      <button class="btn-save" onclick="saveFeeStatus()">
+        <i class="fa-solid fa-check"></i> 保存
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="ledgerModal">
   <div class="modal">
     <div class="modal-drag"></div>
@@ -491,7 +547,7 @@ async function loadLedger() {
 async function loadFeeStatus() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type,fee_status&order=name.asc`,
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type,fee_status,fee_note&order=name.asc`,
       SB
     );
     const members = await res.json() || [];
@@ -518,13 +574,60 @@ function renderFeeTable(members) {
       : s === 'unpaid'
         ? '<span class="badge badge-ng">未納</span>'
         : '<span class="badge badge-warn">確認中</span>';
-    return `<tr>
-      <td style="font-weight:600;">${m.name}</td>
-      <td style="color:var(--muted);font-size:.78rem;">${m.part || '―'}</td>
-      <td style="font-size:.78rem;">${m.member_type || '―'}</td>
+    return `<tr style="cursor:pointer;" onclick="openFeeModal('${m.id}','${escHtml(m.name)}','${s}',${JSON.stringify(m.fee_note||'')})">
+      <td style="font-weight:600;">${escHtml(m.name)}</td>
+      <td style="color:var(--muted);font-size:.78rem;">${escHtml(m.part || '―')}</td>
+      <td style="font-size:.78rem;">${escHtml(m.member_type || '―')}</td>
       <td>${badge}</td>
+      <td style="text-align:right;">
+        ${m.fee_note ? `<span style="font-size:.68rem;color:var(--muted);max-width:120px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(m.fee_note)}">${escHtml(m.fee_note)}</span>` : ''}
+        <i class="fa-solid fa-pen" style="font-size:.65rem;color:var(--muted);margin-left:6px;"></i>
+      </td>
     </tr>`;
   }).join('');
+}
+
+
+// =============================================
+//  会費状況 手動編集
+// =============================================
+function openFeeModal(id, name, status, note) {
+  document.getElementById('feeModalId').value     = id;
+  document.getElementById('feeModalName').textContent = name + ' さんの会費状況';
+  document.getElementById('feeModalStatus').value = status || 'unpaid';
+  document.getElementById('feeModalNote').value   = note  || '';
+  document.getElementById('feeModalMsg').className = 'modal-msg';
+  document.getElementById('feeModal').classList.add('open');
+}
+
+function closeFeeModal() {
+  document.getElementById('feeModal').classList.remove('open');
+}
+
+async function saveFeeStatus() {
+  const id     = document.getElementById('feeModalId').value;
+  const status = document.getElementById('feeModalStatus').value;
+  const note   = document.getElementById('feeModalNote').value.trim();
+  const msgEl  = document.getElementById('feeModalMsg');
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?id=eq.${id}`,
+      {
+        method: 'PATCH',
+        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ fee_status: status, fee_note: note || null }),
+      }
+    );
+    if (!res.ok) throw new Error();
+    msgEl.className = 'modal-msg success';
+    msgEl.textContent = '✅ 保存しました';
+    await loadFeeStatus();
+    setTimeout(() => closeFeeModal(), 800);
+  } catch(e) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '⚠️ 保存に失敗しました';
+  }
 }
 
 // =============================================
