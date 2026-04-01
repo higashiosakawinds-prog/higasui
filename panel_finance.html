@@ -574,14 +574,21 @@ async function loadFeeStatus() {
       `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type,fee_status,fee_note&order=name.asc`,
       makeSB(sessionToken)
     );
-    const members = await res.json() || [];
+    const members = await res.json();
+    // エラーレスポンスチェック
+    if (!Array.isArray(members)) {
+      console.error('会費取得エラー:', members);
+      document.getElementById('feeTable').innerHTML =
+        '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem;">取得できませんでした</td></tr>';
+      return;
+    }
     renderFeeTable(members);
-    // 未納者数をサマリーに反映
     const unpaidCount = members.filter(m => m.fee_status === 'unpaid').length;
     document.getElementById('statUnpaid').textContent = unpaidCount + '名';
   } catch(e) {
+    console.error('会費取得例外:', e);
     document.getElementById('feeTable').innerHTML =
-      '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem;">取得できませんでした</td></tr>';
+      '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem;">取得できませんでした</td></tr>';
   }
 }
 
