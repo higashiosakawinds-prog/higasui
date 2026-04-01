@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
@@ -458,13 +459,24 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 // =============================================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// SBヘッダーはセッションtokenで都度生成
+function makeSB(accessToken) {
+  return {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${accessToken || SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+    }
+  };
+}
 
 // =============================================
 //  状態
 // =============================================
-let memberToken = null;
 let memberData  = null;
+let sessionToken = null; // Supabase Auth access_token
 let ledgerData  = [];
 let currentType = 'income';
 let chartInstance = null;
@@ -473,26 +485,38 @@ let chartInstance = null;
 //  初期化
 // =============================================
 window.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(location.search);
-  memberToken = params.get('token');
-  if (!memberToken) return;
-
   try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      location.href = './member.html';
+      return;
+    }
+    sessionToken = session.access_token;
+
+    const SB = makeSB(sessionToken);
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
+      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`,
       SB
     );
     const members = await res.json();
-    if (!members || members.length === 0) return;
+    if (!members || members.length === 0) {
+      location.href = './member.html';
+      return;
+    }
 
     memberData = members[0];
     const role      = memberData.role      || '';
     const committee = memberData.committee || '';
     const FULL_ACCESS = ['president', 'vice_president', 'director'];
     const hasAccess   = FULL_ACCESS.includes(role) || committee === 'FINANCE' || committee === 'finance';
-    if (hasAccess) showMain();
+    if (hasAccess) {
+      showMain();
+    } else {
+      location.href = './member.html';
+    }
   } catch(e) {
     console.error(e);
+    location.href = './member.html';
   }
 });
 
@@ -518,7 +542,7 @@ async function loadLedger() {
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/ledger?order=date.asc`,
-      SB
+      makeSB(sessionToken)
     );
     const data = await res.json();
     // Supabaseのカラム名をアプリ内部の命名に変換
@@ -548,7 +572,7 @@ async function loadFeeStatus() {
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/members?select=id,name,part,member_type,fee_status,fee_note&order=name.asc`,
-      SB
+      makeSB(sessionToken)
     );
     const members = await res.json() || [];
     renderFeeTable(members);
@@ -848,7 +872,7 @@ async function saveEntry() {
         method: 'PATCH',
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal',
         },
@@ -860,7 +884,7 @@ async function saveEntry() {
         method: 'POST',
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal',
         },
@@ -894,7 +918,7 @@ async function deleteEntry() {
       method: 'DELETE',
       headers: {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
         'Prefer': 'return=minimal',
       },
     });
@@ -974,13 +998,7 @@ function printReport() {
 // =============================================
 //  戻るボタン
 // =============================================
-function goBack() {
-  if (memberToken) {
-    location.href = `./member.html?token=${encodeURIComponent(memberToken)}`;
-  } else {
-    history.back();
-  }
-}
+function goBack() { location.href = './member.html'; }
 </script>
 </body>
 </html>
