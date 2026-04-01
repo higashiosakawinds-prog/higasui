@@ -1003,6 +1003,14 @@ function printReport() {
 }
 
 // =============================================
+//  ユーティリティ
+// =============================================
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// =============================================
 //  戻るボタン
 // =============================================
 function goBack() { location.href = './member.html'; }
