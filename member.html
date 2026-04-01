@@ -693,33 +693,10 @@ async function loadMemberData(email) {
 //  受信ボックス（最新5件）
 // =============================================
 async function loadMessages(d, SB_H) {
+  // TODO: 全体デバッグ時に実装予定（messagesテーブルはtarget_type方式のため受信ボックス設計を見直し中）
   const inbox = document.getElementById('inboxList');
   if (!inbox) return;
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/messages?recipient_id=eq.${d.id}&order=created_at.desc&limit=5`,
-      SB_H
-    );
-    const msgs = await res.json() || [];
-    if (!msgs.length) {
-      inbox.innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">新着メッセージはありません</div>';
-      return;
-    }
-    inbox.innerHTML = msgs.map(m => {
-      const date = new Date(m.created_at);
-      const dateStr = `${date.getMonth()+1}/${date.getDate()}`;
-      const isUnread = !m.read_at;
-      return `<div class="inbox-row${isUnread ? ' unread' : ''}">
-        <div class="inbox-meta">
-          <span class="inbox-sender">${m.sender_name || '運営'}</span>
-          <span class="inbox-date">${dateStr}</span>
-        </div>
-        <div class="inbox-body">${m.body || ''}</div>
-      </div>`;
-    }).join('');
-  } catch (e) {
-    inbox.innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">取得できませんでした</div>';
-  }
+  inbox.innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.8rem;">📭 受信ボックスは準備中です</div>';
 }
 
 // =============================================
