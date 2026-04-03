@@ -639,7 +639,7 @@ async function loadAll() {
 async function loadTasks() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/concert_tasks?org_id=eq.${ORG_ID}&order=created_at.asc`,
+      `${SUPABASE_URL}/rest/v1/concert_tasks?org_id=eq.${memberData?.org_id || '37cf6fef-551a-4159-b6ab-5010c3951aa8'}&order=created_at.asc`,
       SB
     );
     tasks = await res.json() || [];
@@ -654,7 +654,7 @@ async function loadTasks() {
 async function loadLayouts() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/stage_layouts?org_id=eq.${ORG_ID}&order=sort_order.asc,created_at.asc`,
+      `${SUPABASE_URL}/rest/v1/stage_layouts?org_id=eq.${memberData?.org_id || '37cf6fef-551a-4159-b6ab-5010c3951aa8'}&order=sort_order.asc,created_at.asc`,
       SB
     );
     layouts = await res.json() || [];
@@ -668,7 +668,7 @@ async function loadLayouts() {
 async function loadPractices() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${ORG_ID}&order=date.asc`,
+      `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${memberData?.org_id || '37cf6fef-551a-4159-b6ab-5010c3951aa8'}&order=date.asc`,
       SB
     );
     practices = await res.json() || [];
@@ -890,7 +890,7 @@ async function saveTask() {
     return;
   }
 
-  const payload = { org_id: ORG_ID, title, category, due_date, assignee, note };
+  const payload = { org_id: memberData?.org_id || '37cf6fef-551a-4159-b6ab-5010c3951aa8', title, category, due_date, assignee, note };
 
   try {
     const url    = id ? `${SUPABASE_URL}/rest/v1/concert_tasks?id=eq.${id}` : `${SUPABASE_URL}/rest/v1/concert_tasks`;
@@ -1028,7 +1028,7 @@ async function saveLayout() {
     // 画像アップロード
     if (selectedFile) {
       const ext    = selectedFile.name.split('.').pop();
-      const fname  = `${ORG_ID}/${Date.now()}.${ext}`;
+      const fname  = `${memberData?.org_id || '37cf6fef-551a-4159-b6ab-5010c3951aa8'}/${Date.now()}.${ext}`;
       const upRes  = await fetch(
         `${SUPABASE_URL}/storage/v1/object/public/planning/${fname}`,
         {
@@ -1047,7 +1047,7 @@ async function saveLayout() {
     }
 
     const payload = {
-      org_id: ORG_ID,
+      org_id: memberData?.org_id || '37cf6fef-551a-4159-b6ab-5010c3951aa8',
       title,
       sort_order: order !== '' ? parseInt(order) : 0,
       note,
@@ -1150,7 +1150,7 @@ async function savePractice() {
   }
 
   const payload = {
-    org_id: ORG_ID, date,
+    org_id: memberData?.org_id || '37cf6fef-551a-4159-b6ab-5010c3951aa8', date,
     start_time: start || null,
     end_time:   end   || null,
     venue,
