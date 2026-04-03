@@ -31,7 +31,7 @@ async function storageUpload(bucket, file, path) {
     method: 'POST',
     headers: {
       'apikey': STORAGE_KEY,
-      'Authorization': `Bearer ${STORAGE_KEY}`,
+      'Authorization': `Bearer ${window._authToken || STORAGE_KEY}`,
       'Content-Type': file.type || 'application/octet-stream',
       'x-upsert': 'true',
     },
@@ -44,7 +44,7 @@ async function storageUpload(bucket, file, path) {
 async function storageDelete(bucket, path) {
   const res = await fetch(`${STORAGE_URL}/object/${bucket}/${path}`, {
     method: 'DELETE',
-    headers: { 'apikey': STORAGE_KEY, 'Authorization': `Bearer ${STORAGE_KEY}` },
+    headers: { 'apikey': STORAGE_KEY, 'Authorization': `Bearer ${window._authToken || STORAGE_KEY}` },
   });
   if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `削除失敗（${res.status}）`); }
   return true;
@@ -55,7 +55,7 @@ function storagePublicUrl(bucket, path) {
 async function storageSignedUrl(bucket, path, expiresIn = 3600) {
   const res = await fetch(`${STORAGE_URL}/object/sign/${bucket}/${path}`, {
     method: 'POST',
-    headers: { 'apikey': STORAGE_KEY, 'Authorization': `Bearer ${STORAGE_KEY}`, 'Content-Type': 'application/json' },
+    headers: { 'apikey': STORAGE_KEY, 'Authorization': `Bearer ${window._authToken || STORAGE_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ expiresIn }),
   });
   if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `署名付きURL取得失敗（${res.status}）`); }
@@ -536,6 +536,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function showMain() {
+  window._authToken = sessionToken; // Storage関数でsessionTokenを使うため
   document.getElementById('stateLoading').style.display = 'flex';
   await loadNews();
   document.getElementById('stateLoading').style.display = 'none';
