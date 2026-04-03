@@ -273,8 +273,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
     <div class="concert-banner">
       <div class="concert-banner-main">
         <div class="concert-banner-label">NEXT CONCERT</div>
-        <div class="concert-banner-title" id="concertTitle">現在演奏会はありません</div>
-        <div class="concert-banner-date" id="concertDateLabel">ー</div>
+        <div class="concert-banner-title" id="concertTitle">読み込み中…</div>
+        <div class="concert-banner-date" id="concertDateLabel">―</div>
       </div>
       <div>
         <div class="concert-banner-days" id="concertDays">―</div>
@@ -633,8 +633,42 @@ function goBack() { location.href = './member.html'; }
 //  データ取得
 // =============================================
 async function loadAll() {
-  await Promise.all([loadTasks(), loadLayouts(), loadPractices()]);
+  await Promise.all([loadConcert(), loadTasks(), loadLayouts(), loadPractices()]);
 }
+
+async function loadConcert() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/concerts?order=date.asc&limit=1`,
+      makeSB(sessionToken)
+    );
+    const concerts = await res.json();
+    const c = Array.isArray(concerts) && concerts.length > 0 ? concerts[0] : null;
+
+    if (!c) {
+      document.getElementById('concertTitle').textContent    = '現在演奏会はありません';
+      document.getElementById('concertDateLabel').textContent = '―';
+      document.getElementById('concertDays').textContent     = '―';
+      return;
+    }
+
+    const WEEK  = ['日','月','火','水','木','金','土'];
+    const d     = new Date(c.date);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const diff  = Math.round((d - today) / (1000*60*60*24));
+
+    document.getElementById('concertTitle').textContent =
+      c.title || '第一回定期演奏会';
+    document.getElementById('concertDateLabel').textContent =
+      `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${WEEK[d.getDay()]}）${c.venue || ''}`;
+    document.getElementById('concertDays').textContent =
+      diff > 0 ? diff : (diff === 0 ? '今日' : '終了');
+  } catch(e) {
+    console.error('コンサート取得エラー:', e);
+  }
+}
+
+
 
 async function loadTasks() {
   try {
