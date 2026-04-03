@@ -683,6 +683,7 @@
     <div class="loading-text">送信中…</div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // =============================================
 //  設定
@@ -694,33 +695,45 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 //  状態
 // =============================================
 let selectedChoice = null;
-let memberToken = null;
 let practiceId  = null;
 let memberId    = null;
+let sessionToken = null;
+
+// =============================================
+//  Supabase Auth クライアント
+// =============================================
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function makeSB(token) {
+  return { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token || SUPABASE_KEY}` } };
+}
 
 // =============================================
 //  初期化
 // =============================================
 window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(location.search);
-  memberToken = params.get('token');
-  practiceId  = params.get('pid');
-  if (!memberToken) {
-    showState('error');
+  practiceId = params.get('pid');
+
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    location.href = './member.html';
     return;
   }
-  await loadMemberAndPractice();
+  sessionToken = session.access_token;
+  await loadMemberAndPractice(session.user.email);
 });
 
 // =============================================
 //  Supabase からデータ取得
 // =============================================
-async function loadMemberAndPractice() {
+async function loadMemberAndPractice(email) {
   try {
-    // tokenで団員情報取得
+    const SB = makeSB(sessionToken);
+    // emailで団員情報取得
     const mRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(email)}&limit=1`,
+      SB
     );
     const members = await mRes.json();
     if (!members || members.length === 0) { showState('error'); return; }
@@ -738,14 +751,14 @@ async function loadMemberAndPractice() {
     if (practiceId) {
       const pRes = await fetch(
         `${SUPABASE_URL}/rest/v1/practices?id=eq.${practiceId}&limit=1`,
-        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+        makeSB(sessionToken)
       );
       const practices = await pRes.json();
       practice = practices[0] || null;
     } else {
       const pRes = await fetch(
         `${SUPABASE_URL}/rest/v1/practices?org_id=eq.${member.org_id}&order=date.asc&limit=1`,
-        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+        makeSB(sessionToken)
       );
       const practices = await pRes.json();
       practice = practices[0] || null;
@@ -766,7 +779,7 @@ async function loadMemberAndPractice() {
     // 既回答チェック
     const aRes = await fetch(
       `${SUPABASE_URL}/rest/v1/attendances?practice_id=eq.${practiceId}&member_id=eq.${memberId}&limit=1`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      makeSB(sessionToken)
     );
     const attendances = await aRes.json();
     if (attendances && attendances.length > 0) {
@@ -815,7 +828,7 @@ async function submitForm() {
     // 既存チェック
     const aRes = await fetch(
       `${SUPABASE_URL}/rest/v1/attendances?practice_id=eq.${practiceId}&member_id=eq.${memberId}&limit=1`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      makeSB(sessionToken)
     );
     const existing = await aRes.json();
 
@@ -827,7 +840,7 @@ async function submitForm() {
           method: 'PATCH',
           headers: {
             'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
           },
@@ -843,7 +856,7 @@ async function submitForm() {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
           },
