@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
@@ -28,17 +29,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 #panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
 #panel-badge{margin-left:auto;padding:3px 12px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;}
 
-#lockScreen{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
-.lock-card{background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;backdrop-filter:blur(12px);}
-.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
-.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
-.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
-.lock-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-size:1rem;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:.8rem;transition:border-color .2s;}
-.lock-input:focus{border-color:var(--gold);}
-.lock-btn{width:100%;padding:13px;border:none;border-radius:12px;background:var(--gold);color:var(--navy);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;}
-.lock-btn:hover{opacity:.9;}
-.lock-error{display:none;margin-top:.8rem;padding:.6rem 1rem;background:rgba(192,57,43,.2);border-radius:8px;font-size:.75rem;color:#fca5a5;}
-.lock-error.show{display:block;}
 
 #stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
 .spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
@@ -140,21 +130,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 </head>
 <body>
 
-<!-- ロック画面 -->
-<div id="lockScreen">
-  <div class="lock-card">
-    <div class="lock-eyebrow">Committee Panel</div>
-    <div class="lock-title">📣 広報委員会</div>
-    <p class="lock-sub">パネルにアクセスするには<br>パネルコードを入力してください</p>
-    <input id="codeInput" class="lock-input" type="password" placeholder="パネルコード"
-      onkeydown="if(event.key==='Enter')tryUnlock()">
-    <button class="lock-btn" onclick="tryUnlock()">ロック解除</button>
-    <div id="lockError" class="lock-error">パネルコードが違います</div>
-  </div>
-</div>
 
 <!-- NAV -->
-<nav id="panel-nav" style="display:none;">
+<nav id="panel-nav">
   <button id="back-btn" onclick="goBack()" title="戻る"><i class="fas fa-chevron-left"></i></button>
   <div id="panel-title">広報委員会</div>
   <div id="panel-badge">PR</div>
@@ -341,63 +319,48 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 // =============================================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
-const PANEL_CODE  = 'PR';
-const GAS_URL     = 'https://script.google.com/macros/s/AKfycbxe9lKad3YUUIUFCzxdceSgXXJGuzEgaXWcZaRfsVtnIHoaAmRG-WkuR12XypADT-jG6w/exec';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function makeSB(token) {
+  return { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token || SUPABASE_KEY}` } };
+}
 
 // =============================================
-//  イベントデータ（localStorage）
+//  状態
 // =============================================
-const LS_EVENTS = 'higasui_pr_events';
-const DEFAULT_EVENTS = [
-  { id: 'default', name: '今はイベント実施予定はありません！', date: '2000-1-1', venue: '場所', start: '2000-01-01' }
-];
-function getEvents() {
-  const saved = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
-  return [...DEFAULT_EVENTS, ...saved];
-}
+let sessionToken = null;
+let memberData   = null;
+let concerts     = [];
 
 // =============================================
 //  初期化
 // =============================================
-let memberToken = null;
-
 window.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(location.search);
-  memberToken = params.get('token');
-  if (memberToken) {
-    try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`, SB
-      );
-      const members = await res.json();
-      if (members && members.length > 0) {
-        const role = members[0].role || '';
-        const committee = members[0].committee || '';
-        const FULL_ACCESS = ['president', 'vice_president', 'director'];
-        if (FULL_ACCESS.includes(role) || role === 'pr' || committee === 'pr') {
-          showMain(); return;
-        }
-      }
-    } catch(e) { console.error(e); }
-  }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { location.href = './member.html'; return; }
+  sessionToken = session.access_token;
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`,
+      makeSB(sessionToken)
+    );
+    const members = await res.json();
+    if (!members || members.length === 0) { location.href = './member.html'; return; }
+    memberData = members[0];
+    const role = memberData.role || '', committee = memberData.committee || '';
+    const FULL = ['president', 'vice_president', 'director'];
+    if (FULL.includes(role) || role === 'pr' || committee === 'pr') {
+      await showMain();
+    } else {
+      location.href = './member.html';
+    }
+  } catch(e) { console.error(e); location.href = './member.html'; }
 });
 
-function tryUnlock() {
-  const input = document.getElementById('codeInput').value.trim().toUpperCase();
-  if (input === PANEL_CODE) {
-    showMain();
-  } else {
-    document.getElementById('lockError').classList.add('show');
-    document.getElementById('codeInput').select();
-  }
-}
-
-function showMain() {
-  document.getElementById('lockScreen').style.display  = 'none';
-  document.getElementById('panel-nav').style.display   = 'flex';
+async function showMain() {
   document.getElementById('mainContent').style.display = 'block';
-  initCountdown();
+  await loadConcerts();
 }
 
 // =============================================
@@ -424,16 +387,29 @@ async function confirmSendLine() {
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中…';
 
   try {
-    const fd = new FormData();
-    fd.append('action', 'lineNotify');
-    fd.append('message', msg);
-    await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: fd });
-    showToast('✅ LINE通知を送信しました');
-    document.getElementById('lineMessage').value = '';
-    updateCharCount();
-    closeModal('line-confirm-modal');
+    const res = await fetch(
+      `${SUPABASE_URL}/functions/v1/line-notify`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
+        },
+        body: JSON.stringify({ message: msg }),
+      }
+    );
+    const data = await res.json();
+    if (data.success) {
+      showToast('✅ LINE通知を送信しました');
+      document.getElementById('lineMessage').value = '';
+      updateCharCount();
+      closeModal('line-confirm-modal');
+    } else {
+      throw new Error(data.error || 'failed');
+    }
   } catch(e) {
-    showToast('⚠️ 送信に失敗しました');
+    showToast('⚠️ 送信に失敗しました。LINE設定を確認してください。');
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fab fa-line"></i> 送信する';
@@ -441,39 +417,61 @@ async function confirmSendLine() {
 }
 
 // =============================================
-//  カウントダウン
+//  concerts テーブル連携カウントダウン
 // =============================================
+async function loadConcerts() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/concerts?order=date.asc`,
+      makeSB(sessionToken)
+    );
+    concerts = await res.json() || [];
+  } catch(e) {
+    console.error('concerts取得エラー:', e);
+    concerts = [];
+  }
+  initCountdown();
+}
+
 function initCountdown() {
-  const events = getEvents();
   const sel = document.getElementById('event-select');
-  sel.innerHTML = events.map(e =>
-    `<option value="${esc(e.id)}">${esc(e.name)}</option>`
+  if (!concerts.length) {
+    sel.innerHTML = '<option value="">演奏会がありません</option>';
+    document.getElementById('countdown-label').textContent = '演奏会が登録されていません';
+    document.getElementById('countdown-days').innerHTML = '―<span>days</span>';
+    document.getElementById('countdown-date').textContent = '';
+    document.getElementById('theme-text').textContent = '演奏会を追加してください';
+    document.getElementById('deleteEventBtn').style.display = 'none';
+    return;
+  }
+  sel.innerHTML = concerts.map(c =>
+    `<option value="${esc(c.id)}">${esc(c.title)}</option>`
   ).join('');
   updateDeleteBtn();
   renderCountdown();
 }
 
 function renderCountdown() {
-  const events = getEvents();
-  const selId  = document.getElementById('event-select').value;
-  const ev     = events.find(e => e.id === selId) || events[0];
+  const selId = document.getElementById('event-select').value;
+  const ev    = concerts.find(c => c.id === selId) || concerts[0];
   if (!ev) return;
 
   updateDeleteBtn();
 
   const now    = new Date(); now.setHours(0,0,0,0);
   const evDate = new Date(ev.date);
-  const stDate = ev.start ? new Date(ev.start) : new Date(now);
-  const total  = Math.max(1, Math.ceil((evDate - stDate) / 86400000));
   const remain = Math.ceil((evDate - now) / 86400000);
+  // 告知開始は180日前と仮定
+  const total  = 180;
   const elapsed = total - remain;
   const pct    = Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
 
-  document.getElementById('countdown-label').textContent = ev.name + ' まで';
-  document.getElementById('countdown-days').innerHTML =
-    `${Math.max(0, remain)}<span>days</span>`;
+  const WEEK = ['日','月','火','水','木','金','土'];
+  const d = evDate;
+  document.getElementById('countdown-label').textContent = (ev.title || '演奏会') + ' まで';
+  document.getElementById('countdown-days').innerHTML = `${Math.max(0, remain)}<span>days</span>`;
   document.getElementById('countdown-date').textContent =
-    ev.date.replace(/-/g, '/') + (ev.venue ? '　' + ev.venue : '');
+    `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${WEEK[d.getDay()]}）${ev.venue ? '　' + ev.venue : ''}`;
 
   let theme = '';
   if (remain <= 0)   theme = 'お疲れさまでした！感謝・レポート投稿フェーズ🎉';
@@ -488,8 +486,7 @@ function renderCountdown() {
 
 function updateDeleteBtn() {
   const selId = document.getElementById('event-select').value;
-  document.getElementById('deleteEventBtn').style.display =
-    selId === 'default' ? 'none' : 'inline-flex';
+  document.getElementById('deleteEventBtn').style.display = selId ? 'inline-flex' : 'none';
 }
 
 function openEventModal() {
@@ -500,33 +497,45 @@ function openEventModal() {
   openModal('event-modal');
 }
 
-function saveEvent() {
-  const name = document.getElementById('event-name').value.trim();
-  const date = document.getElementById('event-date').value;
-  if (!name || !date) { showToast('⚠️ イベント名と日付を入力してください'); return; }
-  const events = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
-  const newEv  = {
-    id: Date.now().toString(), name, date,
-    venue: document.getElementById('event-venue').value.trim(),
-    start: document.getElementById('event-start').value,
-  };
-  events.push(newEv);
-  localStorage.setItem(LS_EVENTS, JSON.stringify(events));
-  closeModal('event-modal');
-  initCountdown();
-  document.getElementById('event-select').value = newEv.id;
-  renderCountdown();
-  showToast('✅ イベントを追加しました');
+async function saveEvent() {
+  const title = document.getElementById('event-name').value.trim();
+  const date  = document.getElementById('event-date').value;
+  const venue = document.getElementById('event-venue').value.trim();
+  if (!title || !date) { showToast('⚠️ イベント名と日付を入力してください'); return; }
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/concerts`, {
+      method: 'POST',
+      headers: {
+        ...makeSB(sessionToken).headers,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation',
+      },
+      body: JSON.stringify({ title, date, venue: venue || null, org_id: memberData?.org_id || null }),
+    });
+    if (!res.ok && res.status !== 201) throw new Error();
+    showToast('✅ 演奏会を追加しました');
+    closeModal('event-modal');
+    await loadConcerts();
+  } catch(e) {
+    showToast('⚠️ 追加に失敗しました');
+  }
 }
 
-function deleteSelectedEvent() {
+async function deleteSelectedEvent() {
   const selId = document.getElementById('event-select').value;
-  if (selId === 'default') return;
-  if (!confirm('このイベントを削除しますか？')) return;
-  const events = JSON.parse(localStorage.getItem(LS_EVENTS) || '[]');
-  localStorage.setItem(LS_EVENTS, JSON.stringify(events.filter(e => e.id !== selId)));
-  initCountdown();
-  showToast('🗑️ 削除しました');
+  if (!selId || !confirm('この演奏会を削除しますか？')) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/concerts?id=eq.${selId}`, {
+      method: 'DELETE',
+      headers: { ...makeSB(sessionToken).headers, 'Prefer': 'return=minimal' },
+    });
+    if (!res.ok && res.status !== 204) throw new Error();
+    showToast('🗑️ 削除しました');
+    await loadConcerts();
+  } catch(e) {
+    showToast('⚠️ 削除に失敗しました');
+  }
 }
 
 // =============================================
@@ -544,7 +553,7 @@ function esc(str) {
   if (!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function goBack() { history.back(); }
+function goBack() { location.href = './member.html'; }
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
 });
