@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // =============================================
 //  Supabase Storage 共通処理（インライン）
@@ -101,43 +102,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;
 }
 
-/* ===== LOCK SCREEN ===== */
-#lockScreen{
-  position:fixed;inset:0;z-index:200;
-  background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);
-  display:flex;align-items:center;justify-content:center;padding:1.5rem;
-}
-.lock-card{
-  background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);
-  border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;
-  backdrop-filter:blur(12px);
-}
-.lock-eyebrow{
-  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
-  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;
-}
-.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
-.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
-.lock-input{
-  width:100%;padding:13px 16px;background:rgba(255,255,255,.08);
-  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
-  color:#fff;font-size:1rem;font-family:inherit;outline:none;
-  text-align:center;letter-spacing:.2em;margin-bottom:.8rem;
-  transition:border-color .2s;
-}
-.lock-input:focus{border-color:var(--gold);}
-.lock-btn{
-  width:100%;padding:13px;border:none;border-radius:12px;
-  background:var(--gold);color:var(--navy);font-family:inherit;
-  font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;
-}
-.lock-btn:hover{opacity:.9;}
-.lock-error{
-  display:none;margin-top:.8rem;padding:.6rem 1rem;
-  background:rgba(192,57,43,.2);border-radius:8px;
-  font-size:.75rem;color:#fca5a5;
-}
-.lock-error.show{display:block;}
 
 /* ===== STATES ===== */
 #stateLoading{
@@ -358,21 +322,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 </head>
 <body>
 
-<!-- ロック画面 -->
-<div id="lockScreen">
-  <div class="lock-card">
-    <div class="lock-eyebrow">Committee Panel</div>
-    <div class="lock-title">📣 広報委員会</div>
-    <p class="lock-sub">NEWS管理パネルにアクセスするには<br>パネルコードを入力してください</p>
-    <input id="codeInput" class="lock-input" type="password" placeholder="パネルコード"
-      onkeydown="if(event.key==='Enter')tryUnlock()">
-    <button class="lock-btn" onclick="tryUnlock()">ロック解除</button>
-    <div id="lockError" class="lock-error">パネルコードが違います</div>
-  </div>
-</div>
 
 <!-- NAV -->
-<nav id="panel-nav" style="display:none;">
+<nav id="panel-nav">
   <button id="back-btn" onclick="goBack()" title="戻る"><i class="fas fa-chevron-left"></i></button>
   <div id="panel-title">NEWS管理</div>
   <div id="panel-badge">PR / NEWS</div>
@@ -541,63 +493,49 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 // =============================================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
-const PANEL_CODE = 'PR';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function makeSB(token) {
+  return { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token || SUPABASE_KEY}` } };
+}
 
 // =============================================
 //  状態
 // =============================================
-let memberToken   = null;
-let newsData      = [];
-let currentFilter = 'all';
+let sessionToken   = null;
+let memberData     = null;
+let newsData       = [];
+let currentFilter  = 'all';
 let deleteTargetId = null;
-let selectedFile  = null;
+let selectedFile   = null;
 
 // =============================================
 //  初期化
 // =============================================
 window.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(location.search);
-  memberToken = params.get('token');
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { location.href = './member.html'; return; }
+  sessionToken = session.access_token;
 
-  if (memberToken) {
-    try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`,
-        SB
-      );
-      const members = await res.json();
-      if (members && members.length > 0) {
-        const role      = members[0].role      || '';
-        const committee = members[0].committee || '';
-        const FULL_ACCESS = ['president', 'vice_president', 'director'];
-        if (FULL_ACCESS.includes(role) || role === 'pr' || committee === 'pr') {
-          showMain();
-          return;
-        }
-      }
-    } catch(e) { console.error(e); }
-  }
-  // tokenなし or 権限なし → ロック画面のまま
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`,
+      makeSB(sessionToken)
+    );
+    const members = await res.json();
+    if (!members || members.length === 0) { location.href = './member.html'; return; }
+    memberData = members[0];
+    const role = memberData.role || '', committee = memberData.committee || '';
+    const FULL = ['president', 'vice_president', 'director'];
+    if (FULL.includes(role) || role === 'pr' || committee === 'pr') {
+      await showMain();
+    } else {
+      location.href = './member.html';
+    }
+  } catch(e) { console.error(e); location.href = './member.html'; }
 });
 
-// =============================================
-//  ロック解除
-// =============================================
-function tryUnlock() {
-  const input = document.getElementById('codeInput').value.trim().toUpperCase();
-  if (input === PANEL_CODE) {
-    sessionStorage.setItem('panel_pr_news_unlocked', 'true');
-    showMain();
-  } else {
-    document.getElementById('lockError').classList.add('show');
-    document.getElementById('codeInput').select();
-  }
-}
-
 async function showMain() {
-  document.getElementById('lockScreen').style.display   = 'none';
-  document.getElementById('panel-nav').style.display    = 'flex';
   document.getElementById('stateLoading').style.display = 'flex';
   await loadNews();
   document.getElementById('stateLoading').style.display = 'none';
@@ -611,7 +549,7 @@ async function loadNews() {
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/news?order=published_at.desc`,
-      SB
+      makeSB(sessionToken)
     );
     newsData = await res.json() || [];
     renderNews();
@@ -779,7 +717,7 @@ async function saveNews() {
       // 更新
       const res = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${editId}`, {
         method:  'PATCH',
-        headers: { ...SB.headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        headers: { ...makeSB(sessionToken).headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body:    JSON.stringify(payload),
       });
       if (!res.ok) throw new Error('更新失敗');
@@ -788,7 +726,7 @@ async function saveNews() {
       // 新規
       const res = await fetch(`${SUPABASE_URL}/rest/v1/news`, {
         method:  'POST',
-        headers: { ...SB.headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        headers: { ...makeSB(sessionToken).headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body:    JSON.stringify(payload),
       });
       if (!res.ok) throw new Error('投稿失敗');
@@ -827,7 +765,7 @@ async function confirmDelete() {
     // Supabaseからレコード削除
     const res = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${deleteTargetId}`, {
       method:  'DELETE',
-      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+      headers: { ...makeSB(sessionToken).headers, 'Prefer': 'return=minimal' },
     });
     if (!res.ok) throw new Error('削除失敗');
 
@@ -929,7 +867,7 @@ function esc(str) {
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function goBack() { history.back(); }
+function goBack() { location.href = './panel_pr.html'; }
 
 // モーダルオーバーレイクリックで閉じる
 document.querySelectorAll('.modal-overlay').forEach(el => {
