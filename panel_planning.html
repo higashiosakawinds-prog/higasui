@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
@@ -41,7 +42,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   background:rgba(200,164,77,.2);color:#fde68a;letter-spacing:.08em;
 }
 
-/* ロック画面CSS削除済み */
+/* ===== LOCK SCREEN ===== */
 
 /* ===== LOADING ===== */
 #stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
@@ -257,6 +258,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   <div id="panel-badge">PLANNING</div>
 </nav>
 
+
 <!-- LOADING -->
 <div id="stateLoading" style="display:none;">
   <div class="spinner"></div>
@@ -268,7 +270,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   <div class="inner">
 
     <!-- 演奏会カウントダウン -->
-    <div class="concert-banner" id="concertBanner">
+    <div class="concert-banner">
       <div class="concert-banner-main">
         <div class="concert-banner-label">NEXT CONCERT</div>
         <div class="concert-banner-title" id="concertTitle">第一回定期演奏会</div>
@@ -565,26 +567,29 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 // =============================================
 //  設定
 // =============================================
-const SUPABASE_URL  = 'https://eqnacealnnmpipapdguc.supabase.co';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const ORG_ID        = '37cf6fef-551a-4159-b6ab-5010c3951aa8';
-
-const SB = {
-  headers: {
-    'apikey': SUPABASE_KEY,
-    'Authorization': `Bearer ${SUPABASE_KEY}`,
-    'Content-Type': 'application/json',
-  }
-};
-
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const WEEK = ['日','月','火','水','木','金','土'];
+
+function makeSB(token) {
+  return {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${token || SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+    }
+  };
+}
 
 // =============================================
 //  状態
 // =============================================
-let tasks     = [];
-let layouts   = [];
-let practices = [];
+let sessionToken    = null;
+let memberData      = null;
+let tasks           = [];
+let layouts         = [];
+let practices       = [];
 let selectedFile    = null;
 let viewingLayoutId = null;
 
@@ -592,72 +597,28 @@ let viewingLayoutId = null;
 //  初期化
 // =============================================
 window.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(location.search);
-  const token  = params.get('token');
-  if (!token) {
-    document.getElementById('stateLoading').style.display = 'none';
-    return;
-  }
-  try {
-    const res  = await fetch(`${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(token)}&limit=1`, SB);
-    const mems = await res.json();
-    if (mems && mems.length > 0) {
-      const m = mems[0];
-      const FULL = ['president','vice_president','director'];
-      if (FULL.includes(m.role) || m.committee === 'planning') {
-        showMain();
-        return;
-      }
-    }
-  } catch(e) { console.error(e); }
-  document.getElementById('stateLoading').style.display = 'none';
-});
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { location.href = './member.html'; return; }
+  sessionToken = session.access_token;
 
-// =============================================
-//  画像URL取得（publicバケット用）
-// =============================================
-function getSignedUrl(filePath) {
-  if (!filePath) return Promise.resolve(null);
-  return Promise.resolve(`${SUPABASE_URL}/storage/v1/object/public/planning/${filePath}`);
-}
-
-async function loadConcert() {
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/concerts?org_id=eq.${ORG_ID}&status=eq.scheduled&order=date.asc&limit=1`,
-      SB
+    const res  = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`,
+      makeSB(sessionToken)
     );
-    const data = await res.json();
-    const banner = document.getElementById('concertBanner');
+    const mems = await res.json();
+    if (!mems || mems.length === 0) { location.href = './member.html'; return; }
+    memberData = mems[0];
 
-    if (!data || !data.length) {
-      // 演奏会なし
-      if (banner) banner.innerHTML = `
-        <div class="concert-banner-main">
-          <div class="concert-banner-label">NEXT CONCERT</div>
-          <div class="concert-banner-title">現在コンサートの予定はありません</div>
-          <div class="concert-banner-date">—</div>
-        </div>`;
-      return;
+    const FULL = ['president','vice_president','director'];
+    const hasAccess = FULL.includes(memberData.role) || memberData.committee === 'planning';
+    if (hasAccess) {
+      showMain();
+    } else {
+      location.href = './member.html';
     }
-
-    const c = data[0];
-    const concertDate = new Date(c.date + 'T00:00:00');
-    const today = new Date(); today.setHours(0,0,0,0);
-    const diff  = Math.round((concertDate - today) / (1000*60*60*24));
-
-    // 日付フォーマット
-    const WEEK = ['日','月','火','水','木','金','土'];
-    const d = concertDate;
-    const dateLabel = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${WEEK[d.getDay()]}）${c.venue || ''}`;
-
-    document.getElementById('concertTitle').textContent    = c.title || '';
-    document.getElementById('concertDateLabel').textContent = dateLabel;
-    document.getElementById('concertDays').textContent     = diff > 0 ? diff : 0;
-  } catch(e) {
-    console.error('演奏会情報取得エラー:', e);
-  }
-}
+  } catch(e) { console.error(e); location.href = './member.html'; }
+});
 
 async function showMain() {
   document.getElementById('stateLoading').style.display = 'flex';
@@ -666,15 +627,13 @@ async function showMain() {
   document.getElementById('mainContent').style.display  = 'block';
 }
 
-function goBack() {
-  history.back();
-}
+function goBack() { location.href = './member.html'; }
 
 // =============================================
 //  データ取得
 // =============================================
 async function loadAll() {
-  await Promise.all([loadConcert(), loadTasks(), loadLayouts(), loadPractices()]);
+  await Promise.all([loadTasks(), loadLayouts(), loadPractices()]);
 }
 
 async function loadTasks() {
@@ -703,7 +662,7 @@ async function loadLayouts() {
     console.error('転換図取得エラー:', e);
     layouts = [];
   }
-  await renderLayouts();
+  renderLayouts();
 }
 
 async function loadPractices() {
@@ -814,7 +773,7 @@ function renderTasks() {
 // =============================================
 //  描画: 舞台転換図
 // =============================================
-async function renderLayouts() {
+function renderLayouts() {
   const grid = document.getElementById('layoutGrid');
   renderStats();
 
@@ -823,35 +782,24 @@ async function renderLayouts() {
     return;
   }
 
-  // プレースホルダーで先に表示
-  grid.innerHTML = layouts.map(l => `
-    <div class="layout-card" onclick="viewLayout('${l.id}')" id="lcard-${l.id}">
-      <div class="layout-thumb">
-        ${l.file_path
-          ? `<img id="limg-${l.id}" src="" alt="${escHtml(l.title)}" loading="lazy" style="display:none;">
-             <i class="fa-solid fa-spinner fa-spin layout-thumb-placeholder" id="lspin-${l.id}"></i>`
-          : `<i class="fa-solid fa-image layout-thumb-placeholder"></i>`}
-      </div>
-      <div class="layout-info">
-        <div class="layout-order">No.${l.sort_order || '—'}</div>
-        <div class="layout-title">${escHtml(l.title)}</div>
-        ${l.note ? `<div class="layout-note">${escHtml(l.note)}</div>` : ''}
-      </div>
-    </div>`).join('');
-
-  // 署名付きURLを取得して画像を差し込む
-  await Promise.all(layouts.filter(l => l.file_path).map(async l => {
-    const url = await getSignedUrl(l.file_path);
-    const img  = document.getElementById('limg-' + l.id);
-    const spin = document.getElementById('lspin-' + l.id);
-    if (url && img) {
-      img.src = url;
-      img.style.display = 'block';
-      if (spin) spin.style.display = 'none';
-    } else if (spin) {
-      spin.className = 'fa-solid fa-image layout-thumb-placeholder';
-    }
-  }));
+  grid.innerHTML = layouts.map(l => {
+    const imgUrl = l.file_path
+      ? `${SUPABASE_URL}/storage/v1/object/public/planning/${l.file_path}`
+      : null;
+    return `
+      <div class="layout-card" onclick="viewLayout('${l.id}')">
+        <div class="layout-thumb">
+          ${imgUrl
+            ? `<img src="${imgUrl}" alt="${escHtml(l.title)}" loading="lazy">`
+            : `<i class="fa-solid fa-image layout-thumb-placeholder"></i>`}
+        </div>
+        <div class="layout-info">
+          <div class="layout-order">No.${l.sort_order || '—'}</div>
+          <div class="layout-title">${escHtml(l.title)}</div>
+          ${l.note ? `<div class="layout-note">${escHtml(l.note)}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // =============================================
@@ -1009,11 +957,8 @@ function openLayoutModal(id) {
     document.getElementById('layoutNote').value  = l.note       || '';
     if (l.file_path) {
       const imgEl = document.getElementById('imgPreview');
+      imgEl.src   = `${SUPABASE_URL}/storage/v1/object/public/planning/${l.file_path}`;
       imgEl.style.display = 'block';
-      imgEl.src = '';
-      getSignedUrl(l.file_path).then(url => {
-        if (url) imgEl.src = url;
-      });
     }
   } else {
     document.getElementById('layoutTitle').value = '';
@@ -1085,12 +1030,12 @@ async function saveLayout() {
       const ext    = selectedFile.name.split('.').pop();
       const fname  = `${ORG_ID}/${Date.now()}.${ext}`;
       const upRes  = await fetch(
-        `${SUPABASE_URL}/storage/v1/object/planning/${fname}`,
+        `${SUPABASE_URL}/storage/v1/object/public/planning/${fname}`,
         {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
             'Content-Type': selectedFile.type,
             'x-upsert': 'true',
           },
@@ -1149,11 +1094,8 @@ function viewLayout(id) {
   document.getElementById('layoutViewNote').textContent  = l.note || '';
   const img = document.getElementById('layoutViewImg');
   if (l.file_path) {
-    img.src = '';
+    img.src = `${SUPABASE_URL}/storage/v1/object/public/planning/${l.file_path}`;
     img.style.display = 'block';
-    getSignedUrl(l.file_path).then(url => {
-      if (url) img.src = url;
-    });
   } else {
     img.style.display = 'none';
   }
