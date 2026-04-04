@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
@@ -17,26 +18,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;}
-
-/* ===== ロック ===== */
-#lock-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
-#lock-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(200,164,77,0.15) 0%,transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(200,164,77,0.1) 0%,transparent 50%);}
-.lock-card{position:relative;z-index:1;background:rgba(255,255,255,0.05);border:1px solid rgba(200,164,77,0.35);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:400px;text-align:center;backdrop-filter:blur(16px);}
-.lock-icon{font-size:2.5rem;margin-bottom:1rem;}
-.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
-.lock-title{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:white;margin-bottom:0.4rem;}
-.lock-sub{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;}
-.lock-input-wrap{position:relative;margin-bottom:1rem;}
-.lock-input{width:100%;padding:14px 48px 14px 16px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:white;font-size:1rem;font-family:inherit;outline:none;transition:border-color 0.2s;letter-spacing:0.15em;text-align:center;}
-.lock-input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:0;}
-.lock-input:focus{border-color:var(--gold);}
-.lock-input.error{border-color:#E05555;animation:shake 0.3s ease;}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.9rem;}
-.lock-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8933d);color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 20px rgba(200,164,77,0.35);transition:opacity 0.2s,transform 0.15s;}
-.lock-btn:hover{opacity:0.9;transform:translateY(-1px);}
-.lock-err{font-size:0.78rem;color:#F08080;margin-top:0.8rem;min-height:1.2em;}
-.lock-note{font-size:0.68rem;color:rgba(255,255,255,0.22);margin-top:1.5rem;line-height:1.7;}
 
 /* ===== NAV ===== */
 #site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);display:none;}
@@ -72,17 +53,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 /* ===== 新規貸出フォーム ===== */
 .loan-form-card{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:24px;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.form-grid.col3{grid-template-columns:1fr 1fr 1fr;}
 .form-grid.col1{grid-template-columns:1fr;}
-@media(max-width:600px){.form-grid,.form-grid.col3{grid-template-columns:1fr;}}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
 .form-group{display:flex;flex-direction:column;gap:5px;}
-.form-group.span2{grid-column:span 2;}
-@media(max-width:600px){.form-group.span2{grid-column:span 1;}}
 label{font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
 label .req{color:var(--red);margin-left:3px;}
 .form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem;font-family:inherit;color:var(--text);background:var(--bg);outline:none;transition:border-color 0.2s;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);background:var(--white);}
-.form-input.error,.form-select.error{border-color:var(--red);}
 .form-textarea{resize:vertical;min-height:70px;line-height:1.6;}
 .form-hint{font-size:0.7rem;color:var(--muted);margin-top:2px;}
 
@@ -93,19 +70,10 @@ label .req{color:var(--red);margin-left:3px;}
 
 /* 楽器選択ボックス */
 .inst-select-wrap{position:relative;}
-.inst-selected{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;
-  background:var(--bg);cursor:pointer;transition:border-color 0.2s;font-size:0.88rem;
-}
+.inst-selected{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;transition:border-color 0.2s;font-size:0.88rem;}
 .inst-selected:hover,.inst-selected.open{border-color:var(--blue);}
 .inst-selected .placeholder{color:var(--muted);}
-.inst-dropdown{
-  position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;
-  background:var(--white);border:1.5px solid var(--border);border-radius:12px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.1);max-height:240px;overflow-y:auto;
-  display:none;
-}
+.inst-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;background:var(--white);border:1.5px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);max-height:240px;overflow-y:auto;display:none;}
 .inst-dropdown.open{display:block;}
 .inst-search{padding:10px 12px;border-bottom:1px solid var(--border);}
 .inst-search input{width:100%;border:none;outline:none;font-size:0.85rem;font-family:inherit;background:none;}
@@ -167,23 +135,6 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
 </style>
 </head>
 <body>
-
-<!-- ===== LOCK ===== -->
-<div id="lock-screen">
-  <div class="lock-card">
-    <div class="lock-icon">🎺</div>
-    <div class="lock-eyebrow">EQUIPMENT COMMITTEE</div>
-    <div class="lock-title">楽器管理委員会</div>
-    <div class="lock-sub">アクセスコードを入力してください</div>
-    <div class="lock-input-wrap">
-      <input class="lock-input" type="password" id="codeInput" placeholder="ACCESS CODE" onkeydown="if(event.key==='Enter')unlock()">
-      <button class="eye-btn" onclick="toggleEye()" id="eyeBtn"><i class="fa-solid fa-eye-slash"></i></button>
-    </div>
-    <button class="lock-btn" onclick="unlock()"><i class="fa-solid fa-drum" style="margin-right:8px;"></i>ログイン</button>
-    <div class="lock-err" id="lockErr"></div>
-    <div class="lock-note">このページは委員会メンバー専用です</div>
-  </div>
-</div>
 
 <!-- ===== NAV ===== -->
 <nav id="site-nav">
@@ -276,7 +227,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
             </div>
           </div>
 
-          <!-- 団員選択（団員の場合） -->
+          <!-- 団員選択 -->
           <div id="member-select-wrap" style="margin-bottom:16px;">
             <div class="form-group">
               <label>団員<span class="req">*</span></label>
@@ -286,7 +237,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
             </div>
           </div>
 
-          <!-- 外部名（外部の場合） -->
+          <!-- 外部名 -->
           <div id="external-name-wrap" style="display:none;margin-bottom:16px;">
             <div class="form-group">
               <label>団体名・氏名<span class="req">*</span></label>
@@ -383,53 +334,75 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
 <footer><p>© 東大阪吹奏楽団 楽器管理委員会 | EQUIPMENT COMMITTEE PANEL</p></footer>
 
 <script>
+// ============================================================
+// 設定
+// ============================================================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const SB_H = { headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}`, 'Content-Type':'application/json' } };
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const CORRECT_CODE = 'EQUIPMENT';
-const SESSION_KEY  = 'panel_equipment_auth';
+function makeSB(token) {
+  return {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  };
+}
 
+const FULL_ACCESS = ['president', 'vice_president', 'director'];
+function hasEquipmentAccess(member) {
+  return FULL_ACCESS.includes(member.role || '') || (member.committee || '') === 'equipment';
+}
+
+// ============================================================
+// 状態
+// ============================================================
 let allInstruments = [];
 let allMembers     = [];
 let activeLoans    = [];
 let borrowerType   = 'member';
 let selectedInstId = null;
-let returnTargetId = null; // 返却処理中のloan ID
+let returnTargetId = null;
+let SB_H           = null;
 
 // ============================================================
-// ロック
+// 初期化：セッション確認
 // ============================================================
-function unlock() {
-  const val = document.getElementById('codeInput').value.trim().toUpperCase();
-  if (val === CORRECT_CODE) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    showPanel();
-  } else {
-    const inp = document.getElementById('codeInput');
-    inp.classList.add('error');
-    document.getElementById('lockErr').textContent = 'コードが正しくありません';
-    setTimeout(() => inp.classList.remove('error'), 400);
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    location.href = './panel_equipment.html';
+    return;
   }
-}
-function toggleEye() {
-  const inp = document.getElementById('codeInput');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-  document.getElementById('eyeBtn').innerHTML = inp.type === 'password'
-    ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
-}
-function showPanel() {
-  document.getElementById('lock-screen').style.display = 'none';
-  document.getElementById('site-nav').style.display    = 'block';
-  document.getElementById('panel-main').style.display  = 'block';
-  // 今日の日付をデフォルトセット
+
+  try {
+    SB_H = makeSB(session.access_token);
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`,
+      SB_H
+    );
+    const members = await res.json();
+    if (!members || members.length === 0 || !hasEquipmentAccess(members[0])) {
+      location.href = './panel_equipment.html';
+      return;
+    }
+  } catch(e) {
+    console.error(e);
+    location.href = './panel_equipment.html';
+    return;
+  }
+
+  // 権限OK → パネル表示
+  document.getElementById('site-nav').style.display   = 'block';
+  document.getElementById('panel-main').style.display = 'block';
+
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('fLoanFrom').value   = today;
   document.getElementById('fReturnDate').value = today;
+
   loadAll();
-}
-window.addEventListener('DOMContentLoaded', () => {
-  if (sessionStorage.getItem(SESSION_KEY) === '1') showPanel();
 });
 
 // ============================================================
@@ -522,13 +495,10 @@ function buildMemberSelect() {
   });
 }
 
-// 貸出中・修理中のIDセット
 function getUnavailableIds() {
   const loanedIds = new Set(activeLoans.map(l => l.instrument_id));
   const repairIds = new Set(
-    allInstruments
-      .filter(i => i.condition === 'in_repair')
-      .map(i => i.id)
+    allInstruments.filter(i => i.condition === 'in_repair').map(i => i.id)
   );
   return new Set([...loanedIds, ...repairIds]);
 }
@@ -572,7 +542,6 @@ function toggleInstDropdown() {
   if (!isOpen) document.getElementById('instSearchInput').focus();
 }
 
-// 外クリックでドロップダウン閉じる
 document.addEventListener('click', e => {
   const wrap = document.querySelector('.inst-select-wrap');
   if (wrap && !wrap.contains(e.target)) {
@@ -610,7 +579,6 @@ function resetLoanForm() {
 }
 
 async function submitLoan() {
-  // バリデーション
   if (!selectedInstId) { showToast('楽器を選択してください', 'error'); return; }
   const from = document.getElementById('fLoanFrom').value;
   if (!from) { showToast('貸出日を入力してください', 'error'); return; }
@@ -690,8 +658,8 @@ async function execReturn() {
       method: 'PATCH',
       headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
       body: JSON.stringify({
-        returned_at:  returnDate,
-        damage_note:  document.getElementById('fDamageNote').value.trim() || null,
+        returned_at: returnDate,
+        damage_note: document.getElementById('fDamageNote').value.trim() || null,
       }),
     });
     if (res.ok) {
