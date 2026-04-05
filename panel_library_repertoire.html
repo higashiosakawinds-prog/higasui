@@ -13,7 +13,7 @@
 :root{
   --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
   --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
-  --green:#1D9E75;--red:#C0392B;
+  --green:#1D9E75;--red:#C0392B;--orange:#E67E22;
   --radius:16px;--shadow:0 2px 12px rgba(33,74,154,0.06);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -46,12 +46,18 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .sec-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
 .sec-title{font-family:'Shippori Mincho',serif;font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:var(--navy);}
 
+.tab-bar{display:flex;gap:4px;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:24px;border:1px solid var(--border);}
+.tab-btn{flex:1;padding:9px 14px;border:none;border-radius:9px;font-size:0.8rem;font-weight:700;font-family:inherit;cursor:pointer;background:none;color:var(--muted);transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.tab-btn.active{background:var(--white);color:var(--navy);box-shadow:0 1px 6px rgba(33,74,154,0.1);}
+.tab-badge{background:var(--red);color:white;font-size:0.6rem;padding:1px 6px;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:800;}
+
 .btn{padding:10px 18px;border-radius:10px;font-size:0.85rem;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:opacity 0.2s,transform 0.15s;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
 .btn:hover{opacity:0.88;transform:translateY(-1px);}
 .btn-primary{background:var(--blue);color:white;}
 .btn-gold{background:linear-gradient(135deg,var(--gold),#b8933d);color:white;}
 .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
 .btn-danger{background:var(--red);color:white;}
+.btn-success{background:var(--green);color:white;}
 .btn-sm{padding:7px 13px;font-size:0.78rem;}
 
 .summary-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
@@ -87,6 +93,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .badge-diff-medium{background:rgba(200,164,77,0.12);color:#92680a;}
 .badge-diff-hard{background:rgba(192,57,43,0.1);color:var(--red);}
 .badge-has-score{background:rgba(33,74,154,0.1);color:var(--blue);}
+.badge-voting{background:rgba(230,126,34,0.15);color:var(--orange);}
 .rep-toggle{color:var(--muted);font-size:0.72rem;transition:transform 0.2s;flex-shrink:0;}
 .rep-toggle.open{transform:rotate(180deg);}
 .rep-body{display:none;border-top:1px solid var(--border);padding:14px 16px;background:#fafbfc;}
@@ -97,7 +104,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .rep-detail-value{color:var(--navy);font-weight:600;}
 .rep-memo{background:rgba(33,74,154,0.04);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:10px 12px;font-size:0.78rem;color:var(--navy);line-height:1.8;margin-bottom:12px;white-space:pre-wrap;}
 .rep-memo-empty{font-size:0.75rem;color:var(--muted);margin-bottom:12px;}
-.rep-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+.rep-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center;}
 
 .status-btns{display:flex;gap:6px;flex-wrap:wrap;}
 .status-btn{flex:1;min-width:80px;padding:8px;border-radius:9px;border:1.5px solid var(--border);background:none;font-size:0.75rem;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.15s;color:var(--muted);}
@@ -106,15 +113,39 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .status-btn.active-candidate{border-color:var(--gold);background:rgba(200,164,77,0.1);color:#92680a;}
 .status-btn.active-rejected{border-color:var(--muted);background:rgba(96,96,112,0.08);color:var(--muted);}
 
-.modal-overlay{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:1.5rem;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--white);border-radius:20px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;padding:1.8rem;}
-.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
-.modal-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);}
-.modal-close{background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;}
-.form-grid{display:grid;gap:14px;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
+.vote-toggle{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;font-size:0.75rem;font-weight:700;transition:all 0.2s;background:var(--white);font-family:inherit;}
+.vote-toggle.on{border-color:var(--orange);background:rgba(230,126,34,0.08);color:var(--orange);}
+.vote-toggle.off{color:var(--muted);}
+.vote-toggle-dot{width:10px;height:10px;border-radius:50%;background:var(--muted);transition:background 0.2s;flex-shrink:0;}
+.vote-toggle.on .vote-toggle-dot{background:var(--orange);}
+
+.proposal-card{background:var(--white);border:1.5px solid rgba(200,164,77,0.3);border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:12px;}
+.proposal-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.proposal-meta{font-size:0.72rem;color:var(--muted);margin-bottom:8px;}
+.proposal-proposer{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--blue);background:rgba(33,74,154,0.08);padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.proposal-note{font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:12px;}
+.proposal-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+.vote-ranking{display:flex;flex-direction:column;gap:10px;}
+.vote-rank-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1rem 1.4rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.vote-rank-num{font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;width:48px;text-align:center;flex-shrink:0;}
+.rank-1{color:var(--gold);}
+.rank-2{color:var(--muted);}
+.rank-3{color:#c27c3a;}
+.vote-rank-info{flex:1;min-width:160px;}
+.vote-rank-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);}
+.vote-rank-meta{font-size:0.72rem;color:var(--muted);margin-top:2px;}
+.vote-rank-bar-wrap{flex:1;max-width:200px;min-width:100px;}
+.vote-rank-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.vote-rank-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:4px;}
+.vote-rank-score{font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:800;color:var(--navy);white-space:nowrap;}
+.vote-breakdown{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.vote-chip{font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:10px;}
+.chip-1st{background:rgba(200,164,77,0.15);color:#92680a;}
+.chip-2nd{background:rgba(96,96,112,0.1);color:var(--muted);}
+.chip-3rd{background:rgba(194,124,58,0.12);color:#c27c3a;}
+
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
 .form-label{font-size:0.78rem;font-weight:700;color:var(--navy);}
 .form-label span{font-size:0.68rem;font-weight:400;color:var(--muted);margin-left:4px;}
 .form-input,.form-select,.form-textarea{padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem;font-family:inherit;color:var(--text);background:var(--white);outline:none;transition:border-color 0.2s;}
@@ -124,6 +155,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 @media(max-width:540px){.form-row{grid-template-columns:1fr;}}
 .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 @media(max-width:560px){.form-row-3{grid-template-columns:1fr 1fr;}}
+
+.modal-overlay{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;padding:1.8rem;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);}
+.modal-close{background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;}
+.form-grid{display:flex;flex-direction:column;gap:0;}
 
 #toast{position:fixed;bottom:24px;right:24px;z-index:9000;background:var(--navy);color:white;padding:12px 20px;border-radius:12px;font-size:0.85rem;font-weight:500;transform:translateY(80px);opacity:0;transition:transform 0.3s,opacity 0.3s;pointer-events:none;max-width:300px;line-height:1.5;}
 #toast.show{transform:translateY(0);opacity:1;}
@@ -159,58 +199,103 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
     <div class="page-header-inner">
       <div class="page-eyebrow"><span>LIBRARY / REPERTOIRE</span></div>
       <h1>曲目リスト</h1>
-      <p>演奏会候補曲・レパートリーの管理</p>
+      <p>候補曲の管理・団員提案のレビュー・投票集計</p>
     </div>
   </div>
 
   <div class="sec">
     <div class="inner">
-      <div class="sec-head">
-        <div>
-          <div class="sec-eyebrow"><span>REPERTOIRE</span></div>
-          <div class="sec-title">曲目一覧</div>
-        </div>
-        <button class="btn btn-gold" onclick="openAddModal()">
-          <i class="fa-solid fa-plus"></i> 曲を追加
+
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-list" onclick="switchTab('list')">
+          <i class="fa-solid fa-music"></i> 曲目一覧
+        </button>
+        <button class="tab-btn" id="tab-proposals" onclick="switchTab('proposals')">
+          <i class="fa-solid fa-lightbulb"></i> 提案レビュー
+          <span class="tab-badge" id="proposalBadge" style="display:none;">0</span>
+        </button>
+        <button class="tab-btn" id="tab-votes" onclick="switchTab('votes')">
+          <i class="fa-solid fa-ranking-star"></i> 投票集計
         </button>
       </div>
 
-      <div class="summary-bar">
-        <div class="summary-chip active" onclick="filterByStatus('')" id="chip-all">
-          <span class="chip-count" id="cnt-all">—</span>
-          <span class="chip-label">すべて</span>
+      <!-- ① 曲目一覧 -->
+      <div id="pane-list">
+        <div class="sec-head">
+          <div>
+            <div class="sec-eyebrow"><span>REPERTOIRE</span></div>
+            <div class="sec-title">曲目一覧</div>
+          </div>
+          <button class="btn btn-gold" onclick="openAddModal()">
+            <i class="fa-solid fa-plus"></i> 曲を追加
+          </button>
         </div>
-        <div class="summary-chip filter-decided" onclick="filterByStatus('decided')" id="chip-decided">
-          <i class="fa-solid fa-circle-check" style="color:var(--green);font-size:0.8rem;"></i>
-          <span class="chip-count" id="cnt-decided">—</span>
-          <span class="chip-label">決定</span>
+
+        <div class="summary-bar">
+          <div class="summary-chip active" onclick="filterByStatus('')" id="chip-all">
+            <span class="chip-count" id="cnt-all">—</span><span class="chip-label">すべて</span>
+          </div>
+          <div class="summary-chip filter-decided" onclick="filterByStatus('decided')" id="chip-decided">
+            <i class="fa-solid fa-circle-check" style="color:var(--green);font-size:0.8rem;"></i>
+            <span class="chip-count" id="cnt-decided">—</span><span class="chip-label">決定</span>
+          </div>
+          <div class="summary-chip filter-candidate" onclick="filterByStatus('candidate')" id="chip-candidate">
+            <i class="fa-solid fa-star" style="color:var(--gold);font-size:0.8rem;"></i>
+            <span class="chip-count" id="cnt-candidate">—</span><span class="chip-label">候補</span>
+          </div>
+          <div class="summary-chip filter-rejected" onclick="filterByStatus('rejected')" id="chip-rejected">
+            <i class="fa-solid fa-circle-xmark" style="color:var(--muted);font-size:0.8rem;"></i>
+            <span class="chip-count" id="cnt-rejected">—</span><span class="chip-label">不採用</span>
+          </div>
         </div>
-        <div class="summary-chip filter-candidate" onclick="filterByStatus('candidate')" id="chip-candidate">
-          <i class="fa-solid fa-star" style="color:var(--gold);font-size:0.8rem;"></i>
-          <span class="chip-count" id="cnt-candidate">—</span>
-          <span class="chip-label">候補</span>
+
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" class="search-input" id="searchInput" placeholder="曲名・作曲者で検索…" oninput="applyFilter()">
         </div>
-        <div class="summary-chip filter-rejected" onclick="filterByStatus('rejected')" id="chip-rejected">
-          <i class="fa-solid fa-circle-xmark" style="color:var(--muted);font-size:0.8rem;"></i>
-          <span class="chip-count" id="cnt-rejected">—</span>
-          <span class="chip-label">不採用</span>
-        </div>
+
+        <div id="repList"><div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div></div>
       </div>
 
-      <div class="search-wrap">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" class="search-input" id="searchInput" placeholder="曲名・作曲者で検索…" oninput="applyFilter()">
+      <!-- ② 提案レビュー -->
+      <div id="pane-proposals" style="display:none;">
+        <div class="sec-head">
+          <div>
+            <div class="sec-eyebrow"><span>PROPOSALS</span></div>
+            <div class="sec-title">団員からの提案</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadProposals()"><i class="fa-solid fa-rotate"></i> 更新</button>
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
+          団員がマイページから「この曲やりたい！」と提案した曲です。<br>
+          「承認」すると候補リストに追加されます。「却下」は不採用扱いになります。
+        </p>
+        <div id="proposalList"><div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div></div>
       </div>
 
-      <div id="repList">
-        <div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div>
+      <!-- ③ 投票集計 -->
+      <div id="pane-votes" style="display:none;">
+        <div class="sec-head">
+          <div>
+            <div class="sec-eyebrow"><span>VOTE RESULTS</span></div>
+            <div class="sec-title">投票集計結果</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadVotes()"><i class="fa-solid fa-rotate"></i> 更新</button>
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
+          1位 3点 / 2位 2点 / 3位 1点 で集計しています。<br>
+          投票対象にするには、曲目一覧の「投票OFF」ボタンをONにしてください。
+        </p>
+        <div id="voteList"><div class="loader"><i class="fa-solid fa-spinner"></i>集計中…</div></div>
       </div>
+
     </div>
   </div>
 </div>
 
 <footer><p>© 東大阪吹奏楽団 蔵書委員会 | REPERTOIRE MANAGEMENT</p></footer>
 
+<!-- 追加・編集モーダル -->
 <div class="modal-overlay" id="repModal">
   <div class="modal">
     <div class="modal-head">
@@ -226,11 +311,11 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">作曲者</label>
-          <input type="text" id="repComposer" class="form-input" placeholder="例：Jan Van der Roost">
+          <input type="text" id="repComposer" class="form-input">
         </div>
         <div class="form-group">
           <label class="form-label">編曲者</label>
-          <input type="text" id="repArranger" class="form-input" placeholder="例：（原典版）">
+          <input type="text" id="repArranger" class="form-input">
         </div>
       </div>
       <div class="form-row-3">
@@ -244,7 +329,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
         </div>
         <div class="form-group">
           <label class="form-label">演奏時間（分）</label>
-          <input type="number" id="repDuration" class="form-input" placeholder="例：8" min="1" max="60">
+          <input type="number" id="repDuration" class="form-input" min="1" max="60">
         </div>
         <div class="form-group">
           <label class="form-label">状態</label>
@@ -256,15 +341,13 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.68rem;color:rgba(255,255,25
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">メモ <span>編成・吹き替え指示など</span></label>
-        <textarea id="repNote" class="form-textarea" placeholder="例：Eb Clarinetはオプション。Percussionは最低3名必要。"></textarea>
+        <label class="form-label">メモ</label>
+        <textarea id="repNote" class="form-textarea" placeholder="編成・吹き替え指示など"></textarea>
       </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost btn-sm" onclick="closeModal('repModal')">キャンセル</button>
-      <button class="btn btn-gold btn-sm" onclick="saveRep()">
-        <i class="fa-solid fa-floppy-disk"></i> 保存
-      </button>
+      <button class="btn btn-gold btn-sm" onclick="saveRep()"><i class="fa-solid fa-floppy-disk"></i> 保存</button>
     </div>
   </div>
 </div>
@@ -280,19 +363,16 @@ function makeSB(token) {
   return { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } };
 }
 const FULL_ACCESS = ['president', 'vice_president', 'director'];
-function hasLibraryAccess(member) {
-  return FULL_ACCESS.includes(member.role || '') || (member.committee || '') === 'library';
+function hasLibraryAccess(m) {
+  return FULL_ACCESS.includes(m.role || '') || (m.committee || '') === 'library';
 }
 
 const STATUS_LABEL = { decided:'決定', candidate:'候補', rejected:'不採用' };
-const STATUS_CLASS = { decided:'badge-decided', candidate:'badge-candidate', rejected:'badge-rejected' };
-const DIFF_LABEL   = { easy:'易しい', medium:'普通', hard:'難しい' };
-const DIFF_CLASS   = { easy:'badge-diff-easy', medium:'badge-diff-medium', hard:'badge-diff-hard' };
+const STATUS_CLASS  = { decided:'badge-decided', candidate:'badge-candidate', rejected:'badge-rejected' };
+const DIFF_LABEL    = { easy:'易しい', medium:'普通', hard:'難しい' };
+const DIFF_CLASS    = { easy:'badge-diff-easy', medium:'badge-diff-medium', hard:'badge-diff-hard' };
 
-let allRep     = [];
-let allScores  = [];
-let activeFilter = '';
-let SB_H = null;
+let allRep = [], allScores = [], allVotes = [], activeFilter = '', SB_H = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -301,10 +381,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     SB_H = makeSB(session.access_token);
     const res = await fetch(`${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`, SB_H);
     const members = await res.json();
-    if (!members || members.length === 0 || !hasLibraryAccess(members[0])) {
+    if (!members || !members.length || !hasLibraryAccess(members[0])) {
       location.href = './panel_library.html'; return;
     }
-  } catch(e) { console.error(e); location.href = './panel_library.html'; return; }
+  } catch(e) { location.href = './panel_library.html'; return; }
 
   document.getElementById('site-nav').style.display   = 'block';
   document.getElementById('panel-main').style.display = 'block';
@@ -313,14 +393,32 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 async function doLogout() { await supabaseClient.auth.signOut(); location.href = './member.html'; }
 
+function switchTab(tab) {
+  ['list','proposals','votes'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+    document.getElementById(`pane-${t}`).style.display = t === tab ? 'block' : 'none';
+  });
+  if (tab === 'proposals') loadProposals();
+  if (tab === 'votes') loadVotes();
+}
+
 async function loadAll() {
   try {
-    const [repRes, scoresRes] = await Promise.all([
+    const [repRes, scoresRes, votesRes] = await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/repertoire?select=*&order=created_at.desc`, SB_H),
       fetch(`${SUPABASE_URL}/rest/v1/scores?select=id,title&order=title.asc`, SB_H),
+      fetch(`${SUPABASE_URL}/rest/v1/repertoire_votes?select=repertoire_id,rank,member_id`, SB_H),
     ]);
     allRep    = await repRes.json()    || [];
     allScores = await scoresRes.json() || [];
+    allVotes  = await votesRes.json()  || [];
+
+    // 提案バッジ（proposed_byがnullでないcandidateの曲数）
+    const proposalCount = allRep.filter(r => r.proposed_by && r.status === 'candidate').length;
+    const badge = document.getElementById('proposalBadge');
+    badge.textContent = proposalCount;
+    badge.style.display = proposalCount > 0 ? 'inline' : 'none';
+
     updateSummary();
     applyFilter();
   } catch(e) {
@@ -339,7 +437,7 @@ function updateSummary() {
 function filterByStatus(status) {
   activeFilter = status;
   ['all','decided','candidate','rejected'].forEach(s => {
-    document.getElementById(`chip-${s}`).classList.toggle('active', (status === '' ? s === 'all' : s === status));
+    document.getElementById(`chip-${s}`).classList.toggle('active', status === '' ? s === 'all' : s === status);
   });
   applyFilter();
 }
@@ -348,7 +446,7 @@ function applyFilter() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const filtered = allRep.filter(r => {
     const matchS = !activeFilter || r.status === activeFilter;
-    const matchQ = !q || (r.title||'').toLowerCase().includes(q) || (r.composer||'').toLowerCase().includes(q) || (r.arranger||'').toLowerCase().includes(q);
+    const matchQ = !q || (r.title||'').toLowerCase().includes(q) || (r.composer||'').toLowerCase().includes(q);
     return matchS && matchQ;
   });
   renderList(filtered);
@@ -359,62 +457,70 @@ function renderList(items) {
     document.getElementById('repList').innerHTML = '<div class="empty"><i class="fa-solid fa-music"></i><p>該当する曲目がありません</p></div>';
     return;
   }
-  document.getElementById('repList').innerHTML = `<div class="rep-list">${
-    items.map((r, idx) => {
-      const statusLabel = STATUS_LABEL[r.status] || r.status;
-      const statusClass = STATUS_CLASS[r.status] || '';
-      const diffLabel   = DIFF_LABEL[r.difficulty] || '—';
-      const diffClass   = DIFF_CLASS[r.difficulty] || '';
-      const meta = [r.composer, r.arranger].filter(Boolean).join(' / ');
-      const duration = r.duration_min ? `${r.duration_min}分` : null;
-      const linkedScore = allScores.find(s => s.title.trim().toLowerCase() === (r.title||'').trim().toLowerCase());
-      return `<div class="rep-card status-${r.status||'candidate'}">
-        <div class="rep-card-head" onclick="toggleRep(${idx})">
-          <div class="rep-title-wrap">
-            <div class="rep-title">${r.title || '（タイトル未設定）'}</div>
-            ${meta ? `<div class="rep-meta">${meta}</div>` : ''}
-          </div>
-          <div class="rep-badges">
-            <span class="rep-badge ${statusClass}">${statusLabel}</span>
-            ${r.difficulty ? `<span class="rep-badge ${diffClass}">${diffLabel}</span>` : ''}
-            ${duration ? `<span class="rep-badge" style="background:rgba(33,74,154,0.08);color:var(--blue);">${duration}</span>` : ''}
-            ${linkedScore ? `<span class="rep-badge badge-has-score"><i class="fa-solid fa-file-pdf" style="margin-right:3px;"></i>楽譜あり</span>` : ''}
-          </div>
-          <i class="fa-solid fa-chevron-down rep-toggle" id="rtog-${idx}"></i>
+  document.getElementById('repList').innerHTML = `<div class="rep-list">${items.map((r, idx) => {
+    const statusLabel = STATUS_LABEL[r.status] || r.status;
+    const statusClass = STATUS_CLASS[r.status] || '';
+    const diffLabel   = DIFF_LABEL[r.difficulty] || '';
+    const diffClass   = DIFF_CLASS[r.difficulty] || '';
+    const meta = [r.composer, r.arranger].filter(Boolean).join(' / ');
+    const linkedScore = allScores.find(s => s.title.trim().toLowerCase() === (r.title||'').trim().toLowerCase());
+    const voteCount = allVotes.filter(v => v.repertoire_id === r.id).length;
+    const isVoting = r.is_voting;
+    return `<div class="rep-card status-${r.status||'candidate'}">
+      <div class="rep-card-head" onclick="toggleRep(${idx})">
+        <div class="rep-title-wrap">
+          <div class="rep-title">${r.title || '（タイトル未設定）'}</div>
+          ${meta ? `<div class="rep-meta">${meta}</div>` : ''}
         </div>
-        <div class="rep-body" id="rbod-${idx}">
-          <div class="rep-detail-grid">
-            ${r.composer ? `<div class="rep-detail-item"><div class="rep-detail-label">作曲者</div><div class="rep-detail-value">${r.composer}</div></div>` : ''}
-            ${r.arranger ? `<div class="rep-detail-item"><div class="rep-detail-label">編曲者</div><div class="rep-detail-value">${r.arranger}</div></div>` : ''}
-            ${r.difficulty ? `<div class="rep-detail-item"><div class="rep-detail-label">難易度</div><div class="rep-detail-value">${diffLabel}</div></div>` : ''}
-            ${r.duration_min ? `<div class="rep-detail-item"><div class="rep-detail-label">演奏時間</div><div class="rep-detail-value">${r.duration_min}分</div></div>` : ''}
-          </div>
-          ${r.note
-            ? `<div class="rep-memo"><i class="fa-solid fa-note-sticky" style="margin-right:6px;color:var(--blue);"></i>${escapeHtml(r.note)}</div>`
-            : '<div class="rep-memo-empty">メモなし</div>'
-          }
-          <div class="rep-actions">
-            ${linkedScore
-              ? `<a class="btn btn-primary btn-sm" href="./panel_library_scores.html" target="_blank"><i class="fa-solid fa-file-pdf"></i> 楽譜管理で確認</a>`
-              : `<span style="font-size:0.72rem;color:var(--muted);align-self:center;"><i class="fa-solid fa-circle-info" style="margin-right:4px;"></i>楽譜未登録</span>`
-            }
-            <div class="status-btns">
-              <button class="status-btn ${r.status==='decided'?'active-decided':''}" onclick="changeStatus('${r.id}','decided')">✅ 決定</button>
-              <button class="status-btn ${r.status==='candidate'?'active-candidate':''}" onclick="changeStatus('${r.id}','candidate')">⭐ 候補</button>
-              <button class="status-btn ${r.status==='rejected'?'active-rejected':''}" onclick="changeStatus('${r.id}','rejected')">✗ 不採用</button>
-            </div>
-            <button class="btn btn-ghost btn-sm" onclick="openEditModal('${r.id}')"><i class="fa-solid fa-pen"></i> 編集</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteRep('${r.id}','${(r.title||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
-          </div>
+        <div class="rep-badges">
+          <span class="rep-badge ${statusClass}">${statusLabel}</span>
+          ${isVoting ? `<span class="rep-badge badge-voting"><i class="fa-solid fa-vote-yea" style="margin-right:3px;"></i>投票中 ${voteCount}票</span>` : ''}
+          ${diffLabel ? `<span class="rep-badge ${diffClass}">${diffLabel}</span>` : ''}
+          ${r.duration_min ? `<span class="rep-badge" style="background:rgba(33,74,154,0.08);color:var(--blue);">${r.duration_min}分</span>` : ''}
+          ${linkedScore ? `<span class="rep-badge badge-has-score"><i class="fa-solid fa-file-pdf" style="margin-right:3px;"></i>楽譜あり</span>` : ''}
         </div>
-      </div>`;
-    }).join('')
-  }</div>`;
+        <i class="fa-solid fa-chevron-down rep-toggle" id="rtog-${idx}"></i>
+      </div>
+      <div class="rep-body" id="rbod-${idx}">
+        <div class="rep-detail-grid">
+          ${r.composer ? `<div class="rep-detail-item"><div class="rep-detail-label">作曲者</div><div class="rep-detail-value">${r.composer}</div></div>` : ''}
+          ${r.arranger ? `<div class="rep-detail-item"><div class="rep-detail-label">編曲者</div><div class="rep-detail-value">${r.arranger}</div></div>` : ''}
+          ${diffLabel ? `<div class="rep-detail-item"><div class="rep-detail-label">難易度</div><div class="rep-detail-value">${diffLabel}</div></div>` : ''}
+          ${r.duration_min ? `<div class="rep-detail-item"><div class="rep-detail-label">演奏時間</div><div class="rep-detail-value">${r.duration_min}分</div></div>` : ''}
+        </div>
+        ${r.note ? `<div class="rep-memo"><i class="fa-solid fa-note-sticky" style="margin-right:6px;color:var(--blue);"></i>${escapeHtml(r.note)}</div>` : '<div class="rep-memo-empty">メモなし</div>'}
+        <div class="rep-actions">
+          <button class="vote-toggle ${isVoting ? 'on' : 'off'}" onclick="toggleVoting('${r.id}',${!!isVoting})">
+            <span class="vote-toggle-dot"></span>
+            ${isVoting ? '投票中' : '投票OFF'}
+          </button>
+          <div class="status-btns">
+            <button class="status-btn ${r.status==='decided'?'active-decided':''}" onclick="changeStatus('${r.id}','decided')">✅ 決定</button>
+            <button class="status-btn ${r.status==='candidate'?'active-candidate':''}" onclick="changeStatus('${r.id}','candidate')">⭐ 候補</button>
+            <button class="status-btn ${r.status==='rejected'?'active-rejected':''}" onclick="changeStatus('${r.id}','rejected')">✗ 不採用</button>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="openEditModal('${r.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deleteRep('${r.id}','${(r.title||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
 }
 
 function toggleRep(idx) {
   document.getElementById(`rbod-${idx}`).classList.toggle('open');
   document.getElementById(`rtog-${idx}`).classList.toggle('open');
+}
+
+async function toggleVoting(id, current) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire?id=eq.${id}`, {
+      method: 'PATCH', headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ is_voting: !current }),
+    });
+    showToast(current ? '投票をOFFにしました' : '✅ 投票をONにしました');
+    await loadAll();
+  } catch { showToast('❌ 更新に失敗しました'); }
 }
 
 async function changeStatus(id, status) {
@@ -423,10 +529,147 @@ async function changeStatus(id, status) {
       method: 'PATCH', headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
       body: JSON.stringify({ status }),
     });
-    const labels = { decided:'決定', candidate:'候補', rejected:'不採用' };
-    showToast(`✅ 「${labels[status]}」に変更しました`);
+    showToast(`✅ 「${STATUS_LABEL[status]}」に変更しました`);
     await loadAll();
   } catch { showToast('❌ 更新に失敗しました'); }
+}
+
+async function loadProposals() {
+  document.getElementById('proposalList').innerHTML = '<div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div>';
+  try {
+    const proposals = allRep.filter(r => r.proposed_by && r.status === 'candidate');
+    // メンバー名を取得
+    const memberIds = [...new Set(proposals.map(r => r.proposed_by))];
+    let memberMap = {};
+    if (memberIds.length > 0) {
+      const mRes = await fetch(`${SUPABASE_URL}/rest/v1/members?id=in.(${memberIds.join(',')})&select=id,name,part`, SB_H);
+      const members = await mRes.json() || [];
+      members.forEach(m => { memberMap[m.id] = m; });
+    }
+
+    if (!proposals.length) {
+      document.getElementById('proposalList').innerHTML = '<div class="empty"><i class="fa-solid fa-lightbulb"></i><p>提案中の曲はありません</p></div>';
+      return;
+    }
+    document.getElementById('proposalList').innerHTML = proposals.map(r => {
+      const proposer = memberMap[r.proposed_by];
+      const proposerName = proposer ? `${proposer.name}${proposer.part ? `（${proposer.part}）` : ''}` : '不明';
+      const meta = [r.composer, r.arranger].filter(Boolean).join(' / ');
+      return `<div class="proposal-card">
+        <div class="proposal-title">${r.title || '（タイトル未設定）'}</div>
+        ${meta ? `<div class="proposal-meta">${meta}</div>` : ''}
+        <div class="proposal-proposer"><i class="fa-solid fa-user"></i> ${proposerName} さんの提案</div>
+        ${r.note ? `<div class="proposal-note">${escapeHtml(r.note)}</div>` : ''}
+        <div class="proposal-actions">
+          <button class="btn btn-success btn-sm" onclick="approveProposal('${r.id}')"><i class="fa-solid fa-check"></i> 承認（候補に追加）</button>
+          <button class="btn btn-ghost btn-sm" onclick="rejectProposal('${r.id}','${(r.title||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-xmark"></i> 却下</button>
+          <button class="btn btn-ghost btn-sm" onclick="openEditModal('${r.id}')"><i class="fa-solid fa-pen"></i> 編集して追加</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    console.error(e);
+    document.getElementById('proposalList').innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><p>取得できませんでした</p></div>';
+  }
+}
+
+async function approveProposal(id) {
+  if (!confirm('この曲を候補リストに承認しますか？')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire?id=eq.${id}`, {
+      method: 'PATCH', headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ proposed_by: null }),
+    });
+    showToast('✅ 候補リストに追加しました');
+    await loadAll();
+    loadProposals();
+  } catch { showToast('❌ 処理に失敗しました'); }
+}
+
+async function rejectProposal(id, title) {
+  if (!confirm(`「${title}」の提案を却下しますか？`)) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire?id=eq.${id}`, {
+      method: 'PATCH', headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'rejected' }),
+    });
+    showToast('却下しました');
+    await loadAll();
+    loadProposals();
+  } catch { showToast('❌ 処理に失敗しました'); }
+}
+
+async function loadVotes() {
+  document.getElementById('voteList').innerHTML = '<div class="loader"><i class="fa-solid fa-spinner"></i>集計中…</div>';
+  try {
+    const [vRes, rRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/repertoire_votes?select=repertoire_id,rank,member_id`, SB_H),
+      fetch(`${SUPABASE_URL}/rest/v1/repertoire?is_voting=eq.true&select=id,title,composer,arranger,status`, SB_H),
+    ]);
+    const votes     = await vRes.json() || [];
+    const votingReps = await rRes.json() || [];
+
+    if (!votingReps.length) {
+      document.getElementById('voteList').innerHTML = '<div class="empty"><i class="fa-solid fa-ranking-star"></i><p>投票対象の曲がありません<br>曲目一覧から「投票OFF」ボタンをONにしてください</p></div>';
+      return;
+    }
+
+    // 集計（1位3点/2位2点/3位1点）
+    const scoreMap = {}, cnt = { 1:{}, 2:{}, 3:{} };
+    votes.forEach(v => {
+      const pts = v.rank === 1 ? 3 : v.rank === 2 ? 2 : 1;
+      scoreMap[v.repertoire_id] = (scoreMap[v.repertoire_id] || 0) + pts;
+      cnt[v.rank][v.repertoire_id] = (cnt[v.rank][v.repertoire_id] || 0) + 1;
+    });
+
+    const ranked = votingReps.map(r => ({
+      ...r,
+      score: scoreMap[r.id] || 0,
+      cnt1: cnt[1][r.id] || 0,
+      cnt2: cnt[2][r.id] || 0,
+      cnt3: cnt[3][r.id] || 0,
+    })).sort((a, b) => b.score - a.score || b.cnt1 - a.cnt1);
+
+    const maxScore   = ranked[0]?.score || 1;
+    const totalVotes = votes.length;
+    const uniqueVoters = new Set(votes.map(v => v.member_id)).size;
+
+    document.getElementById('voteList').innerHTML = `
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:10px 14px;">
+        投票対象：<strong style="color:var(--navy);font-family:'Outfit',sans-serif;">${votingReps.length}</strong>曲　／　
+        投票者数：<strong style="color:var(--navy);font-family:'Outfit',sans-serif;">${uniqueVoters}</strong>人　／　
+        総投票数：<strong style="color:var(--navy);font-family:'Outfit',sans-serif;">${totalVotes}</strong>票
+      </div>
+      <div class="vote-ranking">
+        ${ranked.map((r, idx) => {
+          const rankNum = idx + 1;
+          const rankClass = rankNum <= 3 ? `rank-${rankNum}` : '';
+          const rankDisp = rankNum === 1 ? '🥇' : rankNum === 2 ? '🥈' : rankNum === 3 ? '🥉' : `${rankNum}位`;
+          const barWidth = maxScore > 0 ? Math.round((r.score / maxScore) * 100) : 0;
+          const meta = [r.composer, r.arranger].filter(Boolean).join(' / ');
+          return `<div class="vote-rank-card">
+            <div class="vote-rank-num ${rankClass}">${rankDisp}</div>
+            <div class="vote-rank-info">
+              <div class="vote-rank-title">${r.title}</div>
+              ${meta ? `<div class="vote-rank-meta">${meta}</div>` : ''}
+              <div class="vote-breakdown">
+                ${r.cnt1 > 0 ? `<span class="vote-chip chip-1st">1位×${r.cnt1}</span>` : ''}
+                ${r.cnt2 > 0 ? `<span class="vote-chip chip-2nd">2位×${r.cnt2}</span>` : ''}
+                ${r.cnt3 > 0 ? `<span class="vote-chip chip-3rd">3位×${r.cnt3}</span>` : ''}
+                ${r.score === 0 ? '<span style="font-size:0.68rem;color:var(--muted);">未投票</span>' : ''}
+              </div>
+            </div>
+            <div class="vote-rank-bar-wrap">
+              <div class="vote-rank-bar"><div class="vote-rank-bar-fill" style="width:${barWidth}%"></div></div>
+            </div>
+            <div class="vote-rank-score">${r.score}点</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+  } catch(e) {
+    console.error(e);
+    document.getElementById('voteList').innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><p>取得できませんでした</p></div>';
+  }
 }
 
 function openAddModal() {
