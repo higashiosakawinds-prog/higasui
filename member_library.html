@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root{
   --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
@@ -189,6 +190,9 @@ footer p{font-family:'Outfit',sans-serif;font-size:0.65rem;color:rgba(255,255,25
         <div class="sec-eyebrow"><span>MY SCORES</span></div>
         <div class="sec-title">配布中の楽譜</div>
       </div>
+      <button id="dlAllBtn" onclick="downloadAllPDFs()" style="display:none;padding:8px 14px;background:linear-gradient(135deg,var(--gold),#b8933d);color:white;border:none;border-radius:10px;font-size:0.78rem;font-weight:700;font-family:inherit;cursor:pointer;align-items:center;gap:6px;">
+        <i class="fa-solid fa-file-zipper"></i> まとめてDL
+      </button>
     </div>
     <div id="scoreList">
       <div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div>
@@ -255,10 +259,11 @@ function makeSB(token) {
   return { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } };
 }
 
-let memberData = null;
-let SB_H       = null;
-let myVotes    = {}; // { repId: rank }
-let votingReps = []; // 投票中の曲一覧
+let memberData    = null;
+let SB_H          = null;
+let myVotes       = {};
+let votingReps    = [];
+let dlTargetFiles = []; // まとめDL対象 { filePath, fileName }
 
 // ============================================================
 // 初期化
@@ -327,6 +332,8 @@ async function loadScores() {
     );
     const allFiles = await filesRes.json() || [];
 
+    // まとめDL対象を収集
+    dlTargetFiles = [];
     const html = scoreIds.map(scoreId => {
       const { score, parts } = scoreMap[scoreId];
       const files = allFiles.filter(f => f.score_id === scoreId && (
@@ -335,6 +342,14 @@ async function loadScores() {
       const title    = score?.title    || '（曲名不明）';
       const composer = score?.composer || '';
       const partTags = [...new Set(parts)].join('・');
+
+      // DL対象に追加
+      files.forEach(f => {
+        dlTargetFiles.push({
+          filePath: f.file_path,
+          fileName: `${title}_${f.part_tag || 'その他'}.pdf`,
+        });
+      });
 
       if (!files.length) {
         return `<div class="score-card">
@@ -363,10 +378,58 @@ async function loadScores() {
     }).join('');
 
     document.getElementById('scoreList').innerHTML = html;
+
+    // まとめDLボタンを表示
+    if (dlTargetFiles.length > 0) {
+      const btn = document.getElementById('dlAllBtn');
+      btn.style.display = 'inline-flex';
+    }
   } catch(e) {
     console.error(e);
     document.getElementById('scoreList').innerHTML =
       `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>取得できませんでした</p></div>`;
+  }
+}
+
+// ============================================================
+// まとめDL（JSZip）
+// ============================================================
+async function downloadAllPDFs() {
+  if (!dlTargetFiles.length) return;
+
+  const btn = document.getElementById('dlAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 準備中…';
+
+  try {
+    const zip = new JSZip();
+
+    await Promise.all(dlTargetFiles.map(async ({ filePath, fileName }) => {
+      // Storage は anon key（TODO: Storageポリシー整備後に変更）
+      const res = await fetch(
+        `${SUPABASE_URL}/storage/v1/object/scores/${filePath}`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      if (!res.ok) throw new Error(`Failed: ${fileName}`);
+      const blob = await res.blob();
+      zip.file(fileName, blob);
+    }));
+
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `楽譜_${new Date().toISOString().slice(0,10)}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('✅ ダウンロードしました！', 'success');
+  } catch(e) {
+    console.error(e);
+    showToast('ダウンロードに失敗しました', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-file-zipper"></i> まとめてDL';
   }
 }
 
