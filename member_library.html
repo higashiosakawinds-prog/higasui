@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>楽譜・選曲 | 東大阪吹奏楽団</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;
+  --green:#1D9E75;--red:#C0392B;--orange:#E67E22;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ===== NAV ===== */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;max-width:640px;margin:0 auto;padding:0 1.2rem;}
+.nav-back{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.82rem;transition:color 0.2s;}
+.nav-back:hover{color:white;}
+.nav-title{font-family:'Shippori Mincho',serif;color:#fff;font-size:0.95rem;font-weight:700;}
+
+/* ===== MAIN ===== */
+main{padding-top:56px;max-width:640px;margin:0 auto;padding-left:1.2rem;padding-right:1.2rem;}
+
+/* ===== PAGE HEADER ===== */
+.page-header{
+  background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);
+  margin:0 -1.2rem;padding:2rem 1.2rem 2.5rem;
+  position:relative;overflow:hidden;
+}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,0.15) 0%,transparent 55%);}
+.page-header-inner{position:relative;z-index:1;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:1.6rem;font-weight:700;color:white;line-height:1.3;margin-bottom:0.3rem;}
+.page-header p{font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.8;}
+
+/* ===== セクション ===== */
+.sec{padding:28px 0;}
+.sec + .sec{padding-top:0;}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sec-eyebrow{font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:0.25em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:6px;}
+.sec-eyebrow::before{content:'';width:12px;height:1.5px;background:var(--gold);}
+.sec-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-top:3px;}
+
+/* ===== 楽譜カード ===== */
+.score-card{
+  background:var(--white);border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px;margin-bottom:10px;
+  display:flex;align-items:center;gap:14px;
+}
+.score-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(192,57,43,0.08);color:var(--red);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+}
+.score-info{flex:1;min-width:0;}
+.score-title{font-family:'Shippori Mincho',serif;font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.score-meta{font-size:0.72rem;color:var(--muted);}
+.score-part-tag{display:inline-block;font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(33,74,154,0.08);color:var(--blue);margin-left:6px;}
+.score-btn{
+  flex-shrink:0;padding:8px 14px;background:var(--blue);color:white;
+  border:none;border-radius:10px;font-size:0.75rem;font-weight:700;
+  font-family:inherit;cursor:pointer;transition:opacity 0.2s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.score-btn:hover{opacity:0.85;}
+
+/* ===== 投票セクション ===== */
+.vote-info-banner{
+  background:rgba(33,74,154,0.05);border:1px solid rgba(33,74,154,0.15);
+  border-radius:12px;padding:12px 14px;margin-bottom:16px;
+  font-size:0.78rem;color:var(--navy);line-height:1.8;
+}
+.vote-info-banner strong{color:var(--blue);}
+
+/* ランキング選択UI */
+.vote-list{display:flex;flex-direction:column;gap:10px;}
+.vote-card{
+  background:var(--white);border:1.5px solid var(--border);border-radius:14px;
+  padding:14px 16px;transition:all 0.2s;
+}
+.vote-card-head{display:flex;align-items:center;gap:12px;}
+.vote-card-title{font-family:'Shippori Mincho',serif;font-size:0.95rem;font-weight:700;color:var(--navy);flex:1;}
+.vote-card-meta{font-size:0.72rem;color:var(--muted);margin-top:2px;}
+.rank-btns{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.rank-btn{
+  padding:7px 14px;border-radius:10px;border:1.5px solid var(--border);
+  background:none;font-size:0.78rem;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:all 0.15s;color:var(--muted);
+}
+.rank-btn:hover{border-color:var(--blue);color:var(--blue);}
+.rank-btn.selected-1{border-color:#FFD700;background:rgba(255,215,0,0.12);color:#92680a;}
+.rank-btn.selected-2{border-color:#C0C0C0;background:rgba(192,192,192,0.15);color:#606060;}
+.rank-btn.selected-3{border-color:#CD7F32;background:rgba(205,127,50,0.12);color:#7c4e1e;}
+.rank-badge{
+  font-family:'Outfit',sans-serif;font-size:0.75rem;font-weight:800;
+  padding:2px 10px;border-radius:20px;
+}
+.rank-badge-1{background:rgba(255,215,0,0.2);color:#92680a;}
+.rank-badge-2{background:rgba(192,192,192,0.2);color:#606060;}
+.rank-badge-3{background:rgba(205,127,50,0.2);color:#7c4e1e;}
+
+.vote-submit-wrap{margin-top:20px;}
+.vote-submit-btn{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--blue),#1a3d8a);
+  color:white;border:none;border-radius:12px;font-size:0.95rem;font-weight:700;
+  font-family:inherit;cursor:pointer;transition:opacity 0.2s;
+}
+.vote-submit-btn:hover{opacity:0.9;}
+.vote-submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.vote-already{
+  background:rgba(29,158,117,0.06);border:1.5px solid rgba(29,158,117,0.2);
+  border-radius:12px;padding:14px 16px;text-align:center;
+  font-size:0.82rem;color:var(--green);font-weight:700;
+}
+
+/* ===== 提案フォーム ===== */
+.propose-form{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px;}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.form-group:last-child{margin-bottom:0;}
+.form-label{font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;}
+.form-input,.form-textarea{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:0.88rem;font-family:inherit;color:var(--text);background:var(--bg);
+  outline:none;transition:border-color 0.2s;
+}
+.form-input:focus,.form-textarea:focus{border-color:var(--blue);background:var(--white);}
+.form-textarea{resize:vertical;min-height:72px;line-height:1.6;}
+.form-hint{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+.propose-btn{
+  width:100%;padding:13px;margin-top:14px;
+  background:linear-gradient(135deg,var(--gold),#b8933d);
+  color:white;border:none;border-radius:12px;font-size:0.9rem;font-weight:700;
+  font-family:inherit;cursor:pointer;transition:opacity 0.2s;
+}
+.propose-btn:hover{opacity:0.9;}
+.propose-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* ===== ローダー・空状態 ===== */
+.loader{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;}
+.loader i{animation:spin 1s linear infinite;display:block;font-size:1.5rem;margin-bottom:0.5rem;color:var(--blue);}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:2rem;color:var(--muted);}
+.empty-state i{font-size:2rem;display:block;margin-bottom:0.8rem;opacity:0.25;}
+.empty-state p{font-size:0.82rem;line-height:1.7;}
+
+/* ===== トースト ===== */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:white;padding:12px 24px;border-radius:12px;font-size:0.85rem;font-weight:700;z-index:9000;transition:transform 0.3s;pointer-events:none;white-space:nowrap;opacity:0;}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+#toast.success{background:var(--green);}
+#toast.error{background:var(--red);}
+
+footer{background:var(--navy);padding:20px;text-align:center;margin-top:32px;}
+footer p{font-family:'Outfit',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.3);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+
+<nav id="site-nav">
+  <div class="nav-inner">
+    <a class="nav-back" href="./member.html"><i class="fa-solid fa-chevron-left"></i> マイページ</a>
+    <span class="nav-title">楽譜・選曲</span>
+    <div style="width:80px;"></div>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">MEMBER / LIBRARY</div>
+      <h1>楽譜・選曲</h1>
+      <p>配布中の楽譜を閲覧したり、<br>演奏会の選曲アンケートに参加できます</p>
+    </div>
+  </div>
+
+  <!-- ===== 配布中の楽譜 ===== -->
+  <div class="sec">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow"><span>MY SCORES</span></div>
+        <div class="sec-title">配布中の楽譜</div>
+      </div>
+    </div>
+    <div id="scoreList">
+      <div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div>
+    </div>
+  </div>
+
+  <!-- ===== 選曲アンケート ===== -->
+  <div class="sec">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow"><span>VOTE</span></div>
+        <div class="sec-title">選曲アンケート</div>
+      </div>
+    </div>
+    <div class="vote-info-banner">
+      <strong>やりたい曲に投票しよう！</strong><br>
+      1位・2位・3位の3曲を選んでください。同じ曲を複数のランクに選ぶことはできません。
+      投票は後から変更できます。
+    </div>
+    <div id="voteList">
+      <div class="loader"><i class="fa-solid fa-spinner"></i>読み込み中…</div>
+    </div>
+  </div>
+
+  <!-- ===== 曲の提案 ===== -->
+  <div class="sec">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow"><span>PROPOSE</span></div>
+        <div class="sec-title">曲を提案する</div>
+      </div>
+    </div>
+    <div class="propose-form">
+      <div class="form-group">
+        <label class="form-label">曲名 <span style="color:var(--red);">*</span></label>
+        <input type="text" class="form-input" id="propTitle" placeholder="例：アルセナール">
+      </div>
+      <div class="form-group">
+        <label class="form-label">作曲者</label>
+        <input type="text" class="form-input" id="propComposer" placeholder="例：Jan Van der Roost">
+      </div>
+      <div class="form-group">
+        <label class="form-label">コメント・理由</label>
+        <textarea class="form-textarea" id="propNote" placeholder="例：以前から好きな曲で、ぜひ演奏してみたいです！"></textarea>
+        <div class="form-hint">蔵書委員会が確認し、候補リストに追加します</div>
+      </div>
+      <button class="propose-btn" id="proposeBtn" onclick="submitProposal()">
+        <i class="fa-solid fa-paper-plane" style="margin-right:8px;"></i>提案する
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<footer><p>© 東大阪吹奏楽団</p></footer>
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function makeSB(token) {
+  return { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } };
+}
+
+let memberData = null;
+let SB_H       = null;
+let myVotes    = {}; // { repId: rank }
+let votingReps = []; // 投票中の曲一覧
+
+// ============================================================
+// 初期化
+// ============================================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { location.href = './member.html'; return; }
+
+  SB_H = makeSB(session.access_token);
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`,
+      SB_H
+    );
+    const members = await res.json();
+    if (!members || members.length === 0) { location.href = './member.html'; return; }
+    memberData = members[0];
+  } catch(e) { console.error(e); location.href = './member.html'; return; }
+
+  await Promise.all([loadScores(), loadVotes()]);
+});
+
+// ============================================================
+// 配布中の楽譜
+// ============================================================
+async function loadScores() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const memberPart = memberData.part || '';
+
+    // 自分のパート or 全体配布の score_distributions を取得
+    const distRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/score_distributions?or=(valid_until.is.null,valid_until.gte.${today})&select=*,scores(title,composer)`,
+      SB_H
+    );
+    const dists = await distRes.json() || [];
+
+    // アクセス権フィルタ
+    const myDists = dists.filter(d => {
+      if (d.target_type === 'all') return true;
+      if (d.target_type === 'part') return d.target_part === memberPart;
+      if (d.target_type === 'individual') return d.target_member_id === memberData.id;
+      return false;
+    });
+
+    if (!myDists.length) {
+      document.getElementById('scoreList').innerHTML =
+        `<div class="empty-state"><i class="fa-solid fa-music"></i><p>現在、配布中の楽譜はありません</p></div>`;
+      return;
+    }
+
+    // score_id でグループ化（同じ曲の複数パートをまとめる）
+    const scoreMap = {};
+    myDists.forEach(d => {
+      if (!scoreMap[d.score_id]) scoreMap[d.score_id] = { score: d.scores, parts: [] };
+      if (d.target_type === 'part' && d.target_part) scoreMap[d.score_id].parts.push(d.target_part);
+      else if (d.target_type === 'all') scoreMap[d.score_id].parts.push('全パート');
+      else if (d.target_type === 'individual') scoreMap[d.score_id].parts.push('個人貸出');
+    });
+
+    // 各スコアの score_files を取得してPDFリンクを生成
+    const scoreIds = Object.keys(scoreMap);
+    const filesRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/score_files?score_id=in.(${scoreIds.join(',')})&select=*`,
+      SB_H
+    );
+    const allFiles = await filesRes.json() || [];
+
+    const html = scoreIds.map(scoreId => {
+      const { score, parts } = scoreMap[scoreId];
+      const files = allFiles.filter(f => f.score_id === scoreId && (
+        parts.includes('全パート') || parts.includes('個人貸出') || parts.includes(f.part_tag)
+      ));
+      const title    = score?.title    || '（曲名不明）';
+      const composer = score?.composer || '';
+      const partTags = [...new Set(parts)].join('・');
+
+      if (!files.length) {
+        return `<div class="score-card">
+          <div class="score-icon"><i class="fa-solid fa-file-pdf"></i></div>
+          <div class="score-info">
+            <div class="score-title">${title}</div>
+            <div class="score-meta">${composer}<span class="score-part-tag">${partTags}</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">PDFファイルが未登録です</div>
+          </div>
+        </div>`;
+      }
+
+      return files.map(f => {
+        const viewUrl = `./panel_library_viewer.html?path=${encodeURIComponent(f.file_path)}&token=${encodeURIComponent(memberData.token || '')}`;
+        return `<div class="score-card">
+          <div class="score-icon"><i class="fa-solid fa-file-pdf"></i></div>
+          <div class="score-info">
+            <div class="score-title">${title}</div>
+            <div class="score-meta">${composer}<span class="score-part-tag">${f.part_tag || 'その他'}</span></div>
+          </div>
+          <a class="score-btn" href="${viewUrl}" target="_blank">
+            <i class="fa-solid fa-eye"></i> 閲覧
+          </a>
+        </div>`;
+      }).join('');
+    }).join('');
+
+    document.getElementById('scoreList').innerHTML = html;
+  } catch(e) {
+    console.error(e);
+    document.getElementById('scoreList').innerHTML =
+      `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>取得できませんでした</p></div>`;
+  }
+}
+
+// ============================================================
+// 選曲アンケート
+// ============================================================
+async function loadVotes() {
+  try {
+    const [repRes, myVotesRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/repertoire?is_voting=eq.true&select=*&order=created_at.asc`, SB_H),
+      fetch(`${SUPABASE_URL}/rest/v1/repertoire_votes?member_id=eq.${memberData.id}&select=repertoire_id,rank`, SB_H),
+    ]);
+    votingReps = await repRes.json() || [];
+    const votes = await myVotesRes.json() || [];
+
+    // 自分の投票状況をマップ化
+    myVotes = {};
+    votes.forEach(v => { myVotes[v.repertoire_id] = v.rank; });
+
+    renderVoteList();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('voteList').innerHTML =
+      `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>取得できませんでした</p></div>`;
+  }
+}
+
+function renderVoteList() {
+  if (!votingReps.length) {
+    document.getElementById('voteList').innerHTML =
+      `<div class="empty-state"><i class="fa-solid fa-person-booth"></i><p>現在、アンケート実施中の曲はありません</p></div>`;
+    return;
+  }
+
+  const html = `
+    <div class="vote-list">
+      ${votingReps.map(r => {
+        const myRank = myVotes[r.id] || 0;
+        const meta = [r.composer, r.arranger].filter(Boolean).join(' / ');
+        const rankBadge = myRank
+          ? `<span class="rank-badge rank-badge-${myRank}">${myRank === 1 ? '🥇 1位' : myRank === 2 ? '🥈 2位' : '🥉 3位'}</span>`
+          : '';
+        return `<div class="vote-card">
+          <div class="vote-card-head">
+            <div style="flex:1;min-width:0;">
+              <div class="vote-card-title">${r.title}</div>
+              ${meta ? `<div class="vote-card-meta">${meta}</div>` : ''}
+            </div>
+            ${rankBadge}
+          </div>
+          <div class="rank-btns">
+            ${[1,2,3].map(rank => {
+              const emoji = rank === 1 ? '🥇 1位' : rank === 2 ? '🥈 2位' : '🥉 3位';
+              const isSelected = myRank === rank;
+              return `<button class="rank-btn ${isSelected ? `selected-${rank}` : ''}"
+                onclick="selectRank('${r.id}', ${rank})">${emoji}</button>`;
+            }).join('')}
+            ${myRank ? `<button class="rank-btn" onclick="clearRank('${r.id}')" style="color:var(--red);border-color:rgba(192,57,43,0.2);">
+              <i class="fa-solid fa-xmark"></i> 取消
+            </button>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+  document.getElementById('voteList').innerHTML = html;
+}
+
+async function selectRank(repId, rank) {
+  // 他の曲で同じランクが使われていないかチェック
+  const conflictId = Object.entries(myVotes).find(([id, r]) => r === rank && id !== repId)?.[0];
+  if (conflictId) {
+    const conflictTitle = votingReps.find(r => r.id === conflictId)?.title || '';
+    showToast(`「${conflictTitle}」が既に${rank}位に選ばれています`, 'error');
+    return;
+  }
+
+  // 同じ曲を既に別ランクで投票している場合は更新
+  const existingRank = myVotes[repId];
+
+  try {
+    if (existingRank) {
+      // 更新（DELETE → INSERT）
+      await fetch(`${SUPABASE_URL}/rest/v1/repertoire_votes?member_id=eq.${memberData.id}&repertoire_id=eq.${repId}`, {
+        method: 'DELETE', headers: { ...SB_H.headers, 'Prefer': 'return=minimal' }
+      });
+    }
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire_votes`, {
+      method: 'POST',
+      headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ member_id: memberData.id, repertoire_id: repId, rank }),
+    });
+    myVotes[repId] = rank;
+    renderVoteList();
+    showToast(`✅ ${rank}位に投票しました！`, 'success');
+  } catch(e) {
+    console.error(e);
+    showToast('投票に失敗しました', 'error');
+  }
+}
+
+async function clearRank(repId) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire_votes?member_id=eq.${memberData.id}&repertoire_id=eq.${repId}`, {
+      method: 'DELETE', headers: { ...SB_H.headers, 'Prefer': 'return=minimal' }
+    });
+    delete myVotes[repId];
+    renderVoteList();
+    showToast('投票を取り消しました');
+  } catch(e) {
+    showToast('取り消しに失敗しました', 'error');
+  }
+}
+
+// ============================================================
+// 曲の提案
+// ============================================================
+async function submitProposal() {
+  const title    = document.getElementById('propTitle').value.trim();
+  const composer = document.getElementById('propComposer').value.trim();
+  const note     = document.getElementById('propNote').value.trim();
+
+  if (!title) { showToast('曲名を入力してください', 'error'); return; }
+
+  const btn = document.getElementById('proposeBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:8px;"></i>送信中…';
+
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/repertoire`, {
+      method: 'POST',
+      headers: { ...SB_H.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        title,
+        composer:    composer || null,
+        note:        note || null,
+        status:      'candidate',
+        proposed_by: memberData.id,
+      }),
+    });
+    document.getElementById('propTitle').value    = '';
+    document.getElementById('propComposer').value = '';
+    document.getElementById('propNote').value     = '';
+    showToast('✅ 提案しました！蔵書委員会が確認します', 'success');
+  } catch(e) {
+    console.error(e);
+    showToast('送信に失敗しました', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-paper-plane" style="margin-right:8px;"></i>提案する';
+  }
+}
+
+// ============================================================
+// トースト
+// ============================================================
+let toastTimer = null;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = type ? `show ${type}` : 'show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+}
+</script>
+</body>
+</html>
