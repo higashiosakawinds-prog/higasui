@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <style>
@@ -20,6 +21,7 @@
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#fff;display:flex;flex-direction:column;}
 
+/* ===== ローディング／エラー画面 ===== */
 #stateLoading,#stateError{
   position:fixed;inset:0;z-index:9999;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -30,6 +32,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#fff;displ
 .state-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.8);}
 .state-sub{font-size:0.8rem;color:rgba(255,255,255,0.4);line-height:1.7;}
 
+/* ===== ナビバー ===== */
 #viewer-nav{
   height:52px;flex-shrink:0;
   background:rgba(28,43,74,0.98);backdrop-filter:blur(12px);
@@ -38,47 +41,93 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#fff;displ
   padding:0 1rem;gap:10px;z-index:100;
 }
 .nav-info{flex:1;min-width:0;}
-.nav-score-title{font-family:'Outfit',sans-serif;font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.nav-part-tag{font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:700;background:rgba(200,164,77,0.2);color:var(--gold);padding:2px 8px;border-radius:10px;margin-left:6px;}
+.nav-score-title{
+  font-family:'Outfit',sans-serif;font-size:0.75rem;font-weight:700;
+  color:rgba(255,255,255,0.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.nav-part-tag{
+  font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:700;
+  background:rgba(200,164,77,0.2);color:var(--gold);
+  padding:2px 8px;border-radius:10px;margin-left:6px;
+}
 .nav-member{font-size:0.62rem;color:rgba(255,255,255,0.35);margin-top:1px;}
 .nav-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.nav-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:0.75rem;font-weight:700;font-family:inherit;transition:opacity 0.2s;}
+.nav-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:7px 12px;border-radius:8px;border:none;cursor:pointer;
+  font-size:0.75rem;font-weight:700;font-family:inherit;
+  transition:opacity 0.2s;
+}
 .nav-btn-dl{background:var(--gold);color:white;}
 .nav-btn-dl:hover{opacity:0.88;}
-.nav-btn-dl:disabled{opacity:0.5;cursor:not-allowed;}
 .nav-btn-close{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);}
 .nav-btn-close:hover{background:rgba(255,255,255,0.15);color:white;}
 
+/* ===== ページコントロール ===== */
 #page-ctrl{
   height:48px;flex-shrink:0;
   background:rgba(15,15,30,0.9);
   display:flex;align-items:center;justify-content:center;
   gap:12px;border-top:1px solid rgba(255,255,255,0.06);
 }
-.page-btn{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.15s;}
+.page-btn{
+  width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);
+  display:flex;align-items:center;justify-content:center;font-size:0.85rem;
+  transition:all 0.15s;
+}
 .page-btn:hover:not(:disabled){background:rgba(200,164,77,0.3);color:var(--gold);}
 .page-btn:disabled{opacity:0.25;cursor:default;}
-.page-indicator{font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:700;color:rgba(255,255,255,0.7);min-width:80px;text-align:center;}
+.page-indicator{
+  font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:700;
+  color:rgba(255,255,255,0.7);min-width:80px;text-align:center;
+}
 
-#canvas-wrap{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;background:var(--bg);}
-#pdf-canvas{max-width:100%;max-height:100%;display:block;box-shadow:0 8px 40px rgba(0,0,0,0.6);}
+/* ===== キャンバスエリア ===== */
+#canvas-wrap{
+  flex:1;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;background:var(--bg);
+}
+#pdf-canvas{
+  max-width:100%;max-height:100%;
+  display:block;
+  box-shadow:0 8px 40px rgba(0,0,0,0.6);
+}
 
-#swipe-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.5);color:rgba(255,255,255,0.4);font-size:0.65rem;padding:5px 12px;border-radius:20px;pointer-events:none;transition:opacity 0.5s;}
+/* ===== スワイプヒント ===== */
+#swipe-hint{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.5);color:rgba(255,255,255,0.4);
+  font-size:0.65rem;padding:5px 12px;border-radius:20px;
+  pointer-events:none;transition:opacity 0.5s;
+}
 
-#canvas-wrap.flip-next{animation:flipNext 0.18s ease-out;}
-#canvas-wrap.flip-prev{animation:flipPrev 0.18s ease-out;}
-@keyframes flipNext{0%{opacity:1;transform:translateX(0);}50%{opacity:0;transform:translateX(-24px);}100%{opacity:1;transform:translateX(0);}}
-@keyframes flipPrev{0%{opacity:1;transform:translateX(0);}50%{opacity:0;transform:translateX(24px);}100%{opacity:1;transform:translateX(0);}}
+/* ===== ページめくりアニメ ===== */
+#canvas-wrap.flip-next{ animation:flipNext 0.18s ease-out; }
+#canvas-wrap.flip-prev{ animation:flipPrev 0.18s ease-out; }
+@keyframes flipNext{
+  0%{opacity:1;transform:translateX(0);}
+  50%{opacity:0;transform:translateX(-24px);}
+  100%{opacity:1;transform:translateX(0);}
+}
+@keyframes flipPrev{
+  0%{opacity:1;transform:translateX(0);}
+  50%{opacity:0;transform:translateX(24px);}
+  100%{opacity:1;transform:translateX(0);}
+}
 </style>
 </head>
 <body>
 
+<!-- ローディング -->
 <div id="stateLoading">
   <div class="spinner"></div>
   <div class="state-title">楽譜を読み込んでいます…</div>
   <div class="state-sub">しばらくお待ちください</div>
 </div>
 
+<!-- エラー -->
 <div id="stateError" style="display:none;">
   <div style="font-size:2.5rem;">🔒</div>
   <div class="state-title" style="color:#fca5a5;">アクセスできません</div>
@@ -86,7 +135,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#fff;displ
   <a href="./member.html" style="margin-top:12px;color:var(--gold);font-size:0.82rem;">マイページへ戻る</a>
 </div>
 
+<!-- ===== ビューア本体 ===== -->
 <div id="viewerMain" style="display:none;flex-direction:column;height:100%;">
+
+  <!-- ナビバー -->
   <div id="viewer-nav">
     <div class="nav-info">
       <div>
@@ -96,7 +148,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#fff;displ
       <div class="nav-member" id="navMember">—</div>
     </div>
     <div class="nav-actions">
-      <button class="nav-btn nav-btn-dl" id="dlBtn" onclick="downloadWithWatermark()">
+      <button class="nav-btn nav-btn-dl" onclick="downloadWithWatermark()">
         <i class="fa-solid fa-download"></i> DL
       </button>
       <button class="nav-btn nav-btn-close" onclick="history.back()">
@@ -105,11 +157,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#fff;displ
     </div>
   </div>
 
+  <!-- キャンバス -->
   <div id="canvas-wrap">
     <canvas id="pdf-canvas"></canvas>
     <div id="swipe-hint">← スワイプでページめくり →</div>
   </div>
 
+  <!-- ページコントロール -->
   <div id="page-ctrl">
     <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled>
       <i class="fa-solid fa-chevron-left"></i>
@@ -119,22 +173,32 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#fff;displ
       <i class="fa-solid fa-chevron-right"></i>
     </button>
   </div>
+
 </div>
 
 <script>
+// ===================================================
+//  設定
+// ===================================================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
 const SB_H = { headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}` } };
 
+// PDF.js ワーカー設定
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+// ===================================================
+//  状態
+// ===================================================
 let pdfDoc      = null;
 let currentPage = 1;
 let memberData  = null;
 let fileData    = null;
-let pdfBytes    = null;
+let pdfBytes    = null; // DL用にキャッシュ
 let memberPartTags = [];
+
+// スワイプ用
 let touchStartX = 0;
 let touchStartY = 0;
 
@@ -143,8 +207,8 @@ let touchStartY = 0;
 // ===================================================
 window.addEventListener('DOMContentLoaded', async () => {
   const params   = new URLSearchParams(location.search);
-  const filePath = params.get('path');
-  const token    = params.get('token');
+  const filePath = params.get('path');   // scores/{id}/{filename}
+  const token    = params.get('token');  // member token
 
   if (!filePath || !token) {
     showError('URLが無効です。マイページのリンクから開いてください。');
@@ -171,7 +235,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (!files?.length) { showError('楽譜ファイルが見つかりません。'); return; }
     fileData = files[0];
 
-    // 3. アクセス権限チェック
+    // 3. アクセス権限チェック（score_distributionsに配布設定があるか）
     const today = new Date().toISOString().split('T')[0];
     const dRes = await fetch(
       `${SUPABASE_URL}/rest/v1/score_distributions?score_id=eq.${fileData.score_id}&or=(valid_until.is.null,valid_until.gte.${today})`,
@@ -189,7 +253,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       if (d.target_type === 'part') {
         const distPart = String(d.target_part || '').trim().toLowerCase();
         const filePart = String(fileData.part_tag || '').trim().toLowerCase();
-        // memberPartTags に distPart が含まれ、かつファイルのパートと一致
         return memberPartTags.includes(distPart) && distPart === filePart;
       }
       if (d.target_type === 'individual' && String(d.target_member_id) === String(memberData.id)) return true;
@@ -213,7 +276,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     );
     if (!pdfRes.ok) throw new Error('PDF fetch failed');
     const arrayBuf = await pdfRes.arrayBuffer();
-    pdfBytes = new Uint8Array(arrayBuf);
+    pdfBytes = new Uint8Array(arrayBuf); // DL用にキャッシュ
 
     // 6. PDF.jsで読み込み
     pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
@@ -221,6 +284,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     // 7. ビューア表示
     showViewer();
     await renderPage(1);
+
+    // 8. アクセスログ記録
+    await logAccess(fileData.id, memberData.id, false);
 
   } catch(e) {
     console.error(e);
@@ -237,25 +303,31 @@ async function renderPage(pageNum, direction = null) {
   const ctx    = canvas.getContext('2d');
   const wrap   = document.getElementById('canvas-wrap');
 
+  // ビューポートサイズに合わせてスケール計算（Retina対応）
   const viewportRaw = page.getViewport({ scale: 1 });
   const maxW = wrap.clientWidth  * 0.96;
   const maxH = wrap.clientHeight * 0.96;
-  const scale = Math.min(maxW / viewportRaw.width, maxH / viewportRaw.height);
+  const dpr = window.devicePixelRatio || 1;
+  const scale = Math.min(maxW / viewportRaw.width, maxH / viewportRaw.height) * dpr;
   const viewport = page.getViewport({ scale });
 
   canvas.width  = viewport.width;
   canvas.height = viewport.height;
+  canvas.style.width  = `${viewport.width / dpr}px`;
+  canvas.style.height = `${viewport.height / dpr}px`;
 
+  // PDFレンダリング
   await page.render({ canvasContext: ctx, viewport }).promise;
-  drawHanko(ctx, canvas.width, canvas.height, memberData?.name || '');
 
+  // ページめくりアニメ
   if (direction) {
     wrap.classList.remove('flip-next','flip-prev');
-    void wrap.offsetWidth;
+    void wrap.offsetWidth; // reflow
     wrap.classList.add(direction === 'next' ? 'flip-next' : 'flip-prev');
     setTimeout(()=>wrap.classList.remove('flip-next','flip-prev'), 200);
   }
 
+  // UI更新
   currentPage = pageNum;
   document.getElementById('pageIndicator').textContent = `${pageNum} / ${pdfDoc.numPages}`;
   document.getElementById('prevBtn').disabled = pageNum <= 1;
@@ -263,16 +335,17 @@ async function renderPage(pageNum, direction = null) {
 }
 
 // ===================================================
-//  ハンコ描画
+//  ハンコ描画（右上・丸枠・赤）
 // ===================================================
 function drawHanko(ctx, canvasW, canvasH, memberName) {
-  const r     = Math.min(canvasW, canvasH) * 0.09;
-  const cx    = canvasW - r - canvasW * 0.03;
-  const cy    = r + canvasH * 0.02;
-  const color = 'rgba(192,57,43,0.75)';
+  const r       = Math.min(canvasW, canvasH) * 0.09; // 半径（ページサイズ比）
+  const cx      = canvasW - r - canvasW * 0.03;       // 右端から少し内側
+  const cy      = r + canvasH * 0.02;                  // 上端から少し下
+  const color   = 'rgba(192,57,43,0.75)';              // 赤・少し透過
 
   ctx.save();
 
+  // 外枠（二重丸）
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI*2);
   ctx.strokeStyle = color;
@@ -285,12 +358,19 @@ function drawHanko(ctx, canvasW, canvasH, memberName) {
   ctx.lineWidth   = r * 0.03;
   ctx.stroke();
 
-  ctx.font      = `bold ${r*0.25}px 'Noto Sans JP',sans-serif`;
+  // 団名（上段・小さめ）
+  const orgText  = '東大阪吹奏楽団';
+  const nameFontSize = r * 0.28;
+  ctx.font      = `bold ${nameFontSize}px 'Noto Sans JP', sans-serif`;
   ctx.fillStyle = color;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('東大阪吹奏楽団', cx, cy - r * 0.22);
 
+  // テキストを縦2行に収める
+  ctx.font = `bold ${r*0.25}px 'Noto Sans JP',sans-serif`;
+  ctx.fillText(orgText, cx, cy - r * 0.22);
+
+  // 区切り線
   ctx.beginPath();
   ctx.moveTo(cx - r*0.6, cy);
   ctx.lineTo(cx + r*0.6, cy);
@@ -298,7 +378,13 @@ function drawHanko(ctx, canvasW, canvasH, memberName) {
   ctx.lineWidth   = r*0.03;
   ctx.stroke();
 
-  const displayName = fitTextInCircle(ctx, memberName || '', r * 0.27, r * 1.2);
+  // 団員名（下段）
+  const displayName = fitTextInCircle(
+    ctx,
+    memberName || '',
+    r * 0.27,
+    r * 1.2
+  );
   ctx.font = `bold ${displayName.fontSize}px 'Noto Sans JP',sans-serif`;
   ctx.fillText(displayName.text, cx, cy + r * 0.28);
 
@@ -314,11 +400,13 @@ async function changePage(delta) {
   await renderPage(next, delta > 0 ? 'next' : 'prev');
 }
 
+// キーボード操作
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changePage(1);
   if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changePage(-1);
 });
 
+// タッチスワイプ
 document.getElementById('canvas-wrap')?.addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
@@ -329,6 +417,7 @@ document.getElementById('canvas-wrap')?.addEventListener('touchend', e => {
   const dy = e.changedTouches[0].clientY - touchStartY;
   if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
     changePage(dx < 0 ? 1 : -1);
+    // スワイプヒント非表示
     const hint = document.getElementById('swipe-hint');
     if (hint) hint.style.opacity = '0';
   }
@@ -338,39 +427,15 @@ document.getElementById('canvas-wrap')?.addEventListener('touchend', e => {
 //  ダウンロード（ハンコ焼き付け）
 // ===================================================
 async function downloadWithWatermark() {
-  const btn = document.getElementById('dlBtn');
+  const btn = document.querySelector('.nav-btn-dl');
   btn.innerHTML = '<i class="fa-solid fa-spinner" style="animation:spin .8s linear infinite;"></i> 生成中…';
   btn.disabled = true;
 
   try {
-    const pdfOut = await PDFLib.PDFDocument.create();
+    await downloadAsWatermarkedPdf();
 
-    for (let i = 1; i <= pdfDoc.numPages; i++) {
-      const page     = await pdfDoc.getPage(i);
-      const viewport = page.getViewport({ scale: 2.0 });
-      const offscreen = document.createElement('canvas');
-      offscreen.width  = viewport.width;
-      offscreen.height = viewport.height;
-      const octx = offscreen.getContext('2d');
-      await page.render({ canvasContext:octx, viewport }).promise;
-      drawHanko(octx, offscreen.width, offscreen.height, memberData?.name || '');
-      const jpegDataUrl = offscreen.toDataURL('image/jpeg', 0.92);
-      const jpgImage = await pdfOut.embedJpg(jpegDataUrl);
-      const outPage = pdfOut.addPage([offscreen.width, offscreen.height]);
-      outPage.drawImage(jpgImage, { x:0, y:0, width:offscreen.width, height:offscreen.height });
-    }
-
-    const scoreTitle = fileData?.scores?.title || '楽譜';
-    const partTag    = fileData?.part_tag || '';
-    const memberName = memberData?.name || '';
-    const pdfBin = await pdfOut.save();
-    const blob = new Blob([pdfBin], { type:'application/pdf' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = `${sanitizeFilename(scoreTitle)}_${sanitizeFilename(partTag)}_${sanitizeFilename(memberName)}.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // DLログ記録
+    await logAccess(fileData.id, memberData.id, true);
 
   } catch(e) {
     console.error(e);
@@ -378,6 +443,67 @@ async function downloadWithWatermark() {
   } finally {
     btn.innerHTML = '<i class="fa-solid fa-download"></i> DL';
     btn.disabled = false;
+  }
+}
+
+async function downloadAsWatermarkedPdf() {
+  const pdfOut = await PDFLib.PDFDocument.create();
+
+  for (let i = 1; i <= pdfDoc.numPages; i++) {
+    const page     = await pdfDoc.getPage(i);
+    const viewport = page.getViewport({ scale: 2.0 }); // 高解像度
+    const offscreen = document.createElement('canvas');
+    offscreen.width  = viewport.width;
+    offscreen.height = viewport.height;
+    const octx = offscreen.getContext('2d');
+    await page.render({ canvasContext:octx, viewport }).promise;
+    drawHanko(octx, offscreen.width, offscreen.height, memberData?.name || '');
+    const jpegDataUrl = offscreen.toDataURL('image/jpeg', 0.92);
+    const jpgImage = await pdfOut.embedJpg(jpegDataUrl);
+    const outPage = pdfOut.addPage([offscreen.width, offscreen.height]);
+    outPage.drawImage(jpgImage, {
+      x: 0,
+      y: 0,
+      width: offscreen.width,
+      height: offscreen.height,
+    });
+  }
+
+  const scoreTitle = fileData?.scores?.title || '楽譜';
+  const partTag    = fileData?.part_tag || '';
+  const memberName = memberData?.name || '';
+  const pdfBin = await pdfOut.save();
+  const blob = new Blob([pdfBin], { type:'application/pdf' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `${sanitizeFilename(scoreTitle)}_${sanitizeFilename(partTag)}_${sanitizeFilename(memberName)}.pdf`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ===================================================
+//  アクセスログ記録
+// ===================================================
+async function logAccess(scoreFileId, memberId, downloaded) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/score_loans`, {
+      method: 'POST',
+      headers: {
+        ...SB_H.headers,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        score_file_id: scoreFileId,
+        member_id:     memberId,
+        accessed_at:   new Date().toISOString(),
+        downloaded:    downloaded,
+      }),
+    });
+  } catch(e) {
+    console.error('ログ記録失敗:', e);
+    // ログ失敗は表示には影響させない
   }
 }
 
@@ -389,6 +515,7 @@ function showViewer() {
   document.getElementById('stateError').style.display   = 'none';
   const main = document.getElementById('viewerMain');
   main.style.display = 'flex';
+  // スワイプヒント3秒後に消す
   setTimeout(()=>{
     const hint = document.getElementById('swipe-hint');
     if(hint) hint.style.opacity = '0';
@@ -401,15 +528,13 @@ function showError(msg) {
   document.getElementById('errorMsg').textContent       = msg;
 }
 
+// リサイズ時に再レンダリング
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(()=>{ if(pdfDoc) renderPage(currentPage); }, 200);
 });
 
-// ===================================================
-//  ユーティリティ
-// ===================================================
 function fitTextInCircle(ctx, text, baseSize, maxWidth) {
   const safeText = String(text || '団員');
   let fontSize = baseSize;
@@ -433,10 +558,8 @@ function normalizeTargetMembers(memberIds) {
   return [];
 }
 
-// ★ ここが修正ポイント：member.part を最初に参照するよう追加
 function extractMemberPartTags(member) {
   const candidates = [
-    member?.part,       // ← 追加！実際のカラム名
     member?.part_tag,
     member?.part_tags,
     member?.parts,
