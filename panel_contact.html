@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
@@ -28,33 +29,29 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 #panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
 #panel-badge{margin-left:auto;padding:3px 12px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;background:rgba(200,164,77,.2);color:var(--gold);letter-spacing:.08em;}
 
-/* ===== ロック ===== */
-#lockScreen{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
-.lock-card{background:rgba(255,255,255,.06);border:1px solid rgba(200,164,77,.3);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;backdrop-filter:blur(12px);}
-.lock-eyebrow{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
-.lock-title{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
-.lock-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.7;}
-.lock-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-size:1rem;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:.8rem;transition:border-color .2s;}
-.lock-input:focus{border-color:var(--gold);}
-.lock-btn{width:100%;padding:13px;border:none;border-radius:12px;background:var(--gold);color:var(--navy);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;transition:opacity .2s;}
-.lock-btn:hover{opacity:.9;}
-.lock-error{display:none;margin-top:.8rem;padding:.6rem 1rem;background:rgba(192,57,43,.2);border-radius:8px;font-size:.75rem;color:#fca5a5;}
-.lock-error.show{display:block;}
-
 /* ===== ローディング ===== */
-#stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;}
+#stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px;}
 .spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 #mainContent{display:none;padding:28px 0 80px;}
 
 /* ===== ページヘッダー ===== */
-.page-header{background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);position:relative;overflow:hidden;margin-bottom:32px;}
+.page-header{background:linear-gradient(160deg,var(--navy) 0%,#0d1b35 100%);position:relative;overflow:hidden;margin-bottom:0;}
 .page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,.1) 0%,transparent 55%);}
 .page-header-inner{position:relative;z-index:1;padding:2rem 1.5rem 2.5rem;max-width:900px;margin:0 auto;}
 .page-eyebrow{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.7rem;}
 .page-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
 .page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;color:#fff;line-height:1.3;margin-bottom:.4rem;}
 .page-header p{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.8;}
+
+/* ===== タブ ===== */
+.tab-bar{background:var(--navy);border-bottom:2px solid rgba(200,164,77,.2);position:sticky;top:52px;z-index:90;overflow-x:auto;}
+.tab-bar-inner{display:flex;max-width:900px;margin:0 auto;padding:0 1.25rem;min-width:max-content;}
+.tab-btn{padding:.8rem 1.1rem;border:none;background:none;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:700;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;margin-bottom:-2px;}
+.tab-btn:hover{color:rgba(255,255,255,.85);}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-pane{display:none;padding:28px 0 80px;}
+.tab-pane.active{display:block;}
 
 /* ===== セクション ===== */
 .sec{margin-bottom:32px;}
@@ -118,8 +115,27 @@ table.history-table tr:hover td{background:rgba(33,74,154,.02);}
 .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;font-family:'Outfit',sans-serif;letter-spacing:.05em;white-space:nowrap;}
 .badge-sent{background:rgba(29,158,117,.1);color:var(--green);}
 .badge-draft{background:rgba(200,164,77,.15);color:#9A7020;}
+.badge-pending{background:rgba(200,164,77,.15);color:#9A7020;}
+.badge-accepted{background:rgba(29,158,117,.1);color:var(--green);}
+.badge-rejected{background:rgba(192,57,43,.1);color:var(--red);}
 .target-label{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:700;background:rgba(33,74,154,.08);color:var(--blue);}
 .history-empty{padding:2.5rem;text-align:center;color:var(--muted);font-size:.85rem;}
+
+/* ===== 見学申込カード ===== */
+.visit-card{background:var(--white);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px;}
+.visit-card-head{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.visit-card-name{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);}
+.visit-card-yomi{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.visit-card-body{padding:1rem 1.2rem;display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1.2rem;}
+@media(max-width:480px){.visit-card-body{grid-template-columns:1fr;}}
+.visit-info-item{font-size:.8rem;}
+.visit-info-label{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;font-family:'Outfit',sans-serif;letter-spacing:.06em;margin-bottom:2px;}
+.visit-info-value{color:var(--text);line-height:1.5;}
+.visit-card-footer{padding:.8rem 1.2rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.visit-note{background:var(--bg);border-radius:10px;padding:.8rem 1rem;font-size:.8rem;color:var(--text);line-height:1.7;grid-column:1/-1;white-space:pre-wrap;word-break:break-all;}
+.visit-count-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.visit-count-info{font-size:.82rem;color:var(--muted);}
+.visit-count-info strong{color:var(--navy);font-family:'Outfit',sans-serif;}
 
 /* ===== モーダル ===== */
 .modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
@@ -153,19 +169,6 @@ table.history-table tr:hover td{background:rgba(33,74,154,.02);}
 </head>
 <body>
 
-<!-- ロック画面 -->
-<div id="lockScreen">
-  <div class="lock-card">
-    <div class="lock-eyebrow">Committee Panel</div>
-    <div class="lock-title">📨 連絡網</div>
-    <p class="lock-sub">パネルにアクセスするには<br>パネルコードを入力してください</p>
-    <input id="codeInput" class="lock-input" type="password" placeholder="パネルコード"
-      onkeydown="if(event.key==='Enter')tryUnlock()">
-    <button class="lock-btn" onclick="tryUnlock()">ロック解除</button>
-    <div id="lockError" class="lock-error">パネルコードが違います</div>
-  </div>
-</div>
-
 <!-- NAV -->
 <nav id="panel-nav" style="display:none;">
   <button id="back-btn" onclick="goBack()" title="戻る"><i class="fas fa-chevron-left"></i></button>
@@ -174,7 +177,7 @@ table.history-table tr:hover td{background:rgba(33,74,154,.02);}
 </nav>
 
 <!-- ローディング -->
-<div id="stateLoading" style="display:none;">
+<div id="stateLoading">
   <div class="spinner"></div>
   <p style="font-size:.82rem;color:var(--muted);">読み込んでいます…</p>
 </div>
@@ -185,117 +188,153 @@ table.history-table tr:hover td{background:rgba(33,74,154,.02);}
     <div class="page-header-inner">
       <div class="page-eyebrow">Contact Panel</div>
       <h1>📨 連絡網パネル</h1>
-      <p>団員・保護者・関係者へのメール一斉送信・下書き保存・送信履歴の確認ができます。</p>
+      <p>団員・保護者・関係者へのメール一斉送信、送信履歴、見学申込の確認ができます。</p>
     </div>
   </div>
 
-  <div class="inner">
+  <!-- タブバー -->
+  <div class="tab-bar">
+    <div class="tab-bar-inner">
+      <button class="tab-btn active" onclick="switchTab('mail')" id="tab-mail">
+        <i class="fas fa-envelope"></i> メール送信
+      </button>
+      <button class="tab-btn" onclick="switchTab('visit')" id="tab-visit">
+        <i class="fas fa-user-check"></i> 見学申込
+        <span id="visitBadge" style="display:none;background:var(--red);color:#fff;border-radius:20px;font-size:.62rem;padding:1px 7px;font-family:'Outfit',sans-serif;font-weight:800;"></span>
+      </button>
+    </div>
+  </div>
 
-    <!-- 新規作成フォーム -->
-    <div class="sec">
-      <div class="sec-label">新規メール作成</div>
-      <div class="compose-card">
-        <div class="compose-head">
-          <i class="fas fa-envelope" style="color:#fff;font-size:1rem;"></i>
-          <div class="compose-head-title">メール作成</div>
-        </div>
-        <div class="compose-body">
+  <!-- ===== タブ1：メール送信 ===== -->
+  <div id="pane-mail" class="tab-pane active">
+    <div class="inner">
 
-          <!-- 送信先 -->
-          <div class="form-group">
-            <label class="form-label">送信先<span class="form-required">*</span></label>
-            <select id="targetType" class="form-select" onchange="onTargetTypeChange()">
-              <option value="">送信先を選択してください</option>
-              <option value="all">全員（団員＋保護者＋関係者）</option>
-              <option value="members">団員のみ</option>
-              <option value="part">パートメンバー</option>
-              <option value="guardians">保護者のみ</option>
-              <option value="school">学校関係者のみ</option>
-              <option value="individual">個人指定</option>
-            </select>
+      <!-- 新規作成フォーム -->
+      <div class="sec">
+        <div class="sec-label">新規メール作成</div>
+        <div class="compose-card">
+          <div class="compose-head">
+            <i class="fas fa-envelope" style="color:#fff;font-size:1rem;"></i>
+            <div class="compose-head-title">メール作成</div>
           </div>
+          <div class="compose-body">
 
-          <!-- パート選択（パートのときだけ表示） -->
-          <div id="partWrap" style="display:none;" class="form-group">
-            <label class="form-label">パートを選択<span class="form-required">*</span></label>
-            <select id="targetPart" class="form-select">
-              <option value="">パートを選択</option>
-              <option value="flute">フルート</option>
-              <option value="oboe">オーボエ</option>
-              <option value="clarinet">クラリネット</option>
-              <option value="bassoon">ファゴット</option>
-              <option value="saxophone">サックス</option>
-              <option value="horn">ホルン</option>
-              <option value="trumpet">トランペット</option>
-              <option value="trombone">トロンボーン</option>
-              <option value="euphonium">ユーフォニアム</option>
-              <option value="tuba">チューバ</option>
-              <option value="percussion">パーカッション</option>
-              <option value="contrabass">コントラバス</option>
-            </select>
-          </div>
-
-          <!-- 個人指定（個人指定のときだけ表示） -->
-          <div id="individualWrap">
-            <label class="form-label">団員を選択<span class="form-required">*</span></label>
-            <div id="memberCheckList" class="member-check-list">
-              <p style="font-size:.8rem;color:var(--muted);padding:.3rem;">読み込み中…</p>
+            <div class="form-group">
+              <label class="form-label">送信先<span class="form-required">*</span></label>
+              <select id="targetType" class="form-select" onchange="onTargetTypeChange()">
+                <option value="">送信先を選択してください</option>
+                <option value="all">全員（団員＋保護者＋関係者）</option>
+                <option value="members">団員のみ</option>
+                <option value="part">パートメンバー</option>
+                <option value="guardians">保護者のみ</option>
+                <option value="school">学校関係者のみ</option>
+                <option value="individual">個人指定</option>
+              </select>
             </div>
-          </div>
 
-          <!-- 送信先プレビュー -->
-          <div id="previewBadgeWrap" style="margin-bottom:1rem;display:none;">
-            <span class="preview-badge has-targets" id="previewBadge">
-              <i class="fas fa-users"></i>
-              <span id="previewBadgeText">—</span>
-            </span>
-          </div>
+            <div id="partWrap" style="display:none;" class="form-group">
+              <label class="form-label">パートを選択<span class="form-required">*</span></label>
+              <select id="targetPart" class="form-select">
+                <option value="">パートを選択</option>
+                <option value="flute">フルート</option>
+                <option value="oboe">オーボエ</option>
+                <option value="clarinet">クラリネット</option>
+                <option value="bassoon">ファゴット</option>
+                <option value="saxophone">サックス</option>
+                <option value="horn">ホルン</option>
+                <option value="trumpet">トランペット</option>
+                <option value="trombone">トロンボーン</option>
+                <option value="euphonium">ユーフォニアム</option>
+                <option value="tuba">チューバ</option>
+                <option value="percussion">パーカッション</option>
+                <option value="contrabass">コントラバス</option>
+              </select>
+            </div>
 
-          <!-- 件名 -->
-          <div class="form-group">
-            <label class="form-label">件名<span class="form-required">*</span></label>
-            <input id="subject" class="form-input" type="text" placeholder="例：2026年4月 練習スケジュールのご連絡">
-          </div>
+            <div id="individualWrap">
+              <label class="form-label">団員を選択<span class="form-required">*</span></label>
+              <div id="memberCheckList" class="member-check-list">
+                <p style="font-size:.8rem;color:var(--muted);padding:.3rem;">読み込み中…</p>
+              </div>
+            </div>
 
-          <!-- 本文 -->
-          <div class="form-group">
-            <label class="form-label">本文<span class="form-required">*</span></label>
-            <textarea id="body" class="form-textarea"
-              placeholder="本文を入力してください…"
-              oninput="updateBodyCount()"></textarea>
-            <div class="char-count" id="bodyCount">0文字</div>
-          </div>
+            <div id="previewBadgeWrap" style="margin-bottom:1rem;display:none;">
+              <span class="preview-badge has-targets" id="previewBadge">
+                <i class="fas fa-users"></i>
+                <span id="previewBadgeText">—</span>
+              </span>
+            </div>
 
-        </div>
-        <div class="compose-footer">
-          <button class="btn btn-outline" onclick="saveDraft()">
-            <i class="fas fa-save"></i> 下書き保存
-          </button>
-          <button class="btn btn-gold" onclick="openPreviewModal()">
-            <i class="fas fa-paper-plane"></i> 確認して送信
-          </button>
+            <div class="form-group">
+              <label class="form-label">件名<span class="form-required">*</span></label>
+              <input id="subject" class="form-input" type="text" placeholder="例：2026年4月 練習スケジュールのご連絡">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">本文<span class="form-required">*</span></label>
+              <textarea id="body" class="form-textarea"
+                placeholder="本文を入力してください…"
+                oninput="updateBodyCount()"></textarea>
+              <div class="char-count" id="bodyCount">0文字</div>
+            </div>
+
+          </div>
+          <div class="compose-footer">
+            <button class="btn btn-outline" onclick="saveDraft()">
+              <i class="fas fa-save"></i> 下書き保存
+            </button>
+            <button class="btn btn-gold" onclick="openPreviewModal()">
+              <i class="fas fa-paper-plane"></i> 確認して送信
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 送信済み・下書き履歴 -->
-    <div class="sec">
-      <div class="sec-label">送信履歴・下書き</div>
-      <div class="history-table-wrap">
-        <div class="history-table-head">
-          <div class="history-table-head-title">メール一覧</div>
-          <button class="btn btn-outline btn-sm" onclick="loadHistory()">
-            <i class="fas fa-sync-alt"></i> 更新
-          </button>
+      <!-- 送信済み・下書き履歴 -->
+      <div class="sec">
+        <div class="sec-label">送信履歴・下書き</div>
+        <div class="history-table-wrap">
+          <div class="history-table-head">
+            <div class="history-table-head-title">メール一覧</div>
+            <button class="btn btn-outline btn-sm" onclick="loadHistory()">
+              <i class="fas fa-sync-alt"></i> 更新
+            </button>
+          </div>
+          <div id="historyBody">
+            <div class="history-empty"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>
+          </div>
         </div>
-        <div id="historyBody">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== タブ2：見学申込 ===== -->
+  <div id="pane-visit" class="tab-pane">
+    <div class="inner">
+      <div class="sec">
+        <div class="visit-count-bar">
+          <div class="sec-label" style="margin-bottom:0;">見学申込一覧</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <select id="visitFilter" class="form-select" style="width:auto;font-size:.78rem;padding:6px 12px;" onchange="loadVisitApplications()">
+              <option value="pending">未対応のみ</option>
+              <option value="all">すべて表示</option>
+              <option value="accepted">対応済み</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="loadVisitApplications()">
+              <i class="fas fa-sync-alt"></i> 更新
+            </button>
+          </div>
+        </div>
+        <div class="visit-count-info" id="visitCountInfo" style="margin-bottom:16px;"></div>
+        <div id="visitList">
           <div class="history-empty"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>
         </div>
       </div>
     </div>
-
   </div>
-</div>
+
+</div><!-- /mainContent -->
 
 <!-- 送信確認モーダル -->
 <div id="previewModal" class="modal-overlay">
@@ -327,8 +366,7 @@ table.history-table tr:hover td{background:rgba(33,74,154,.02);}
       <div class="modal-head-title">📝 下書きを編集</div>
       <button class="modal-close" onclick="closeModal('draftModal')"><i class="fas fa-times"></i></button>
     </div>
-    <div class="modal-body" id="draftModalBody">
-    </div>
+    <div class="modal-body" id="draftModalBody"></div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('draftModal')">閉じる</button>
       <button class="btn btn-gold" onclick="loadDraftToForm()">
@@ -338,70 +376,88 @@ table.history-table tr:hover td{background:rgba(33,74,154,.02);}
   </div>
 </div>
 
+<!-- 見学申込詳細モーダル -->
+<div id="visitModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title">👤 見学申込 詳細</div>
+      <button class="modal-close" onclick="closeModal('visitModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="visitModalBody"></div>
+    <div class="modal-footer" id="visitModalFooter"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
 // =============================================
 //  設定
 // =============================================
-const SUPABASE_URL  = 'https://eqnacealnnmpipapdguc.supabase.co';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const SUPABASE_URL      = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
 const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-contact`;
-const PANEL_CODE    = 'CONTACT';
 
-const SB = {
-  headers: {
-    'apikey': SUPABASE_KEY,
-    'Authorization': `Bearer ${SUPABASE_KEY}`,
-    'Content-Type': 'application/json',
-  }
-};
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function makeSB(token) {
+  return {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  };
+}
 
 // =============================================
 //  状態管理
 // =============================================
-let allMembers = [];       // 全団員リスト
-let currentDraftId = null; // 下書き読み込み用
+let SB = null;
+let allMembers   = [];
+let currentDraftId = null;
+let currentVisitId = null;
 
 // =============================================
-//  初期化
+//  Auth 初期化
 // =============================================
 window.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(location.search);
-  const memberToken = params.get('token');
-  if (memberToken) {
-    try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/members?token=eq.${encodeURIComponent(memberToken)}&limit=1`, SB
-      );
-      const members = await res.json();
-      if (members && members.length > 0) {
-        const role = members[0].role || '';
-        const FULL_ACCESS = ['president', 'vice_president', 'director'];
-        if (FULL_ACCESS.includes(role) || role === 'committee') {
-          showMain(); return;
-        }
-      }
-    } catch(e) { console.error(e); }
-  }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { location.href = './member.html'; return; }
+
+  const token = session.access_token;
+  SB = makeSB(token);
+
+  // 権限確認
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`, SB
+  );
+  const members = await res.json();
+  if (!members || !members.length) { location.href = './member.html'; return; }
+  const role = members[0].role || '';
+  const ALLOWED = ['president','vice_president','director','committee'];
+  if (!ALLOWED.includes(role)) { location.href = './member.html'; return; }
+
+  showMain();
 });
 
-function tryUnlock() {
-  const input = document.getElementById('codeInput').value.trim().toUpperCase();
-  if (input === PANEL_CODE) {
-    showMain();
-  } else {
-    document.getElementById('lockError').classList.add('show');
-    document.getElementById('codeInput').select();
-  }
-}
-
 async function showMain() {
-  document.getElementById('lockScreen').style.display  = 'none';
-  document.getElementById('panel-nav').style.display   = 'flex';
-  document.getElementById('mainContent').style.display = 'block';
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('panel-nav').style.display    = 'flex';
+  document.getElementById('mainContent').style.display  = 'block';
   await loadMembers();
   await loadHistory();
+  await loadVisitApplications();
+}
+
+// =============================================
+//  タブ切り替え
+// =============================================
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('pane-' + name).classList.add('active');
 }
 
 // =============================================
@@ -414,9 +470,7 @@ async function loadMembers() {
     );
     allMembers = await res.json();
     renderMemberCheckList();
-  } catch(e) {
-    console.error('団員読み込み失敗:', e);
-  }
+  } catch(e) { console.error('団員読み込み失敗:', e); }
 }
 
 function renderMemberCheckList() {
@@ -447,15 +501,10 @@ async function updatePreviewBadge() {
   const targetType = document.getElementById('targetType').value;
   const wrap = document.getElementById('previewBadgeWrap');
   if (!targetType) { wrap.style.display = 'none'; return; }
-
   wrap.style.display = 'block';
   const count = await countTargets(targetType);
-  const labels = {
-    all: '全員', members: '団員のみ', part: 'パートメンバー',
-    guardians: '保護者のみ', school: '学校関係者', individual: '個人指定'
-  };
-  document.getElementById('previewBadgeText').textContent =
-    `${labels[targetType] || targetType}：${count}名に送信`;
+  const labels = { all:'全員', members:'団員のみ', part:'パートメンバー', guardians:'保護者のみ', school:'学校関係者', individual:'個人指定' };
+  document.getElementById('previewBadgeText').textContent = `${labels[targetType] || targetType}：${count}名に送信`;
 }
 
 async function countTargets(targetType) {
@@ -472,8 +521,7 @@ async function countTargets(targetType) {
     } else if (targetType === 'school') {
       url += `&role=eq.instructor`;
     } else if (targetType === 'individual') {
-      const checked = getCheckedMemberIds();
-      return checked.length;
+      return getCheckedMemberIds().length;
     }
     const res = await fetch(url, { ...SB, headers: { ...SB.headers, 'Prefer': 'count=exact', 'Range': '0-0' } });
     const countHeader = res.headers.get('Content-Range');
@@ -504,7 +552,6 @@ function validateForm() {
   const targetType = document.getElementById('targetType').value;
   const subject    = document.getElementById('subject').value.trim();
   const body       = document.getElementById('body').value.trim();
-
   if (!targetType)  { showToast('⚠️ 送信先を選択してください'); return false; }
   if (targetType === 'part' && !document.getElementById('targetPart').value) {
     showToast('⚠️ パートを選択してください'); return false;
@@ -526,7 +573,6 @@ async function saveDraft() {
   try {
     let res;
     if (currentDraftId) {
-      // 既存下書きを更新
       res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${currentDraftId}`, {
         method: 'PATCH',
         headers: { ...SB.headers, 'Prefer': 'return=representation' },
@@ -550,79 +596,46 @@ async function saveDraft() {
 }
 
 // =============================================
-//  送信確認モーダル表示
+//  送信確認モーダル
 // =============================================
 async function openPreviewModal() {
   if (!validateForm()) return;
-
+  const targetType = document.getElementById('targetType').value;
   const subject    = document.getElementById('subject').value.trim();
   const body       = document.getElementById('body').value.trim();
-  const targetType = document.getElementById('targetType').value;
-  const count      = await countTargets(targetType);
-
-  const targetLabels = {
-    all: '全員', members: '団員のみ', part: 'パートメンバー',
-    guardians: '保護者のみ', school: '学校関係者', individual: '個人指定'
-  };
+  const count = await countTargets(targetType);
+  const labels = { all:'全員', members:'団員のみ', part:'パートメンバー', guardians:'保護者のみ', school:'学校関係者のみ', individual:'個人指定' };
 
   document.getElementById('previewSubject').textContent = subject;
-  document.getElementById('previewMeta').innerHTML =
-    `<span class="badge badge-sent"><i class="fas fa-users"></i> ${esc(targetLabels[targetType] || targetType)}：${count}名</span>`;
+  document.getElementById('previewMeta').innerHTML = `
+    <span class="target-label">送信先：${esc(labels[targetType] || targetType)}</span>
+    <span class="target-label">${count}名</span>
+  `;
   document.getElementById('previewBodyText').textContent = body;
-
   openModal('previewModal');
 }
 
 // =============================================
-//  メール送信
+//  送信
 // =============================================
 async function sendMail() {
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中…';
-
-  const targetType = document.getElementById('targetType').value;
-  const targetPart = document.getElementById('targetPart').value;
-  const subject    = document.getElementById('subject').value.trim();
-  const body       = document.getElementById('body').value.trim();
-
+  const payload = buildPayload('sent');
   try {
-    // 1. messagesテーブルに保存（送信中ステータス）
-    const payload = buildPayload('sent');
-    const saveRes = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
       method: 'POST',
       headers: { ...SB.headers, 'Prefer': 'return=representation' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ ...payload, sent_at: new Date().toISOString() }),
     });
-    const saved = await saveRes.json();
-    const messageId = saved[0]?.id;
-
-    // 2. Edge Functionで送信（APIキーはサーバー側で管理）
-    const efRes = await fetch(EDGE_FUNCTION_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
-      body: JSON.stringify({ message_id: messageId }),
-    });
-    const efData = await efRes.json();
-
-    if (!efRes.ok) {
-      showToast(`⚠️ 送信に失敗しました：${efData.error || 'unknown error'}`);
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i> 送信する';
-      return;
-    }
-
-    const successCount = efData.sent_count ?? 0;
-
-    // 3. 下書きIDをリセット・フォームクリア
-    currentDraftId = null;
-    clearForm();
+    if (!res.ok) throw new Error();
     closeModal('previewModal');
-    showToast(`✅ ${successCount}名にメールを送信しました`);
+    clearForm();
+    showToast('✅ 送信しました（messagesに記録）');
     await loadHistory();
-
   } catch(e) {
-    showToast('⚠️ 送信処理中にエラーが発生しました');
+    showToast('⚠️ 送信に失敗しました');
     console.error(e);
   } finally {
     btn.disabled = false;
@@ -630,70 +643,38 @@ async function sendMail() {
   }
 }
 
-// =============================================
-//  送信先メールアドレス取得
-// =============================================
-async function fetchTargetEmails(targetType, targetPart) {
-  let url = `${SUPABASE_URL}/rest/v1/members?select=email`;
-  if (targetType === 'members') {
-    url += `&role=in.(president,vice_president,conductor,director,committee,member)`;
-  } else if (targetType === 'part') {
-    url += `&part=eq.${encodeURIComponent(targetPart)}`;
-  } else if (targetType === 'guardians') {
-    url += `&role=eq.guardian`;
-  } else if (targetType === 'school') {
-    url += `&role=eq.instructor`;
-  } else if (targetType === 'individual') {
-    const ids = getCheckedMemberIds();
-    if (!ids.length) return [];
-    url += `&id=in.(${ids.join(',')})`;
-  }
-  const res  = await fetch(url, SB);
-  const data = await res.json();
-  return data.map(m => m.email).filter(Boolean);
-}
-
-// =============================================
-//  ペイロード構築
-// =============================================
 function buildPayload(status) {
   const targetType = document.getElementById('targetType').value;
-  const targetPart = targetType === 'part' ? document.getElementById('targetPart').value : null;
-  const targetIds  = targetType === 'individual' ? getCheckedMemberIds() : null;
+  const targetPart = document.getElementById('targetPart').value;
   return {
-    subject:     document.getElementById('subject').value.trim(),
-    body:        document.getElementById('body').value.trim(),
-    target_type: targetType,
-    target_part: targetPart,
-    target_ids:  targetIds,
-    status:      status,
-    ...(status === 'sent' ? { sent_at: new Date().toISOString() } : {}),
+    status,
+    target_type:    targetType,
+    target_part:    targetType === 'part' ? targetPart : null,
+    target_members: targetType === 'individual' ? getCheckedMemberIds() : null,
+    subject:        document.getElementById('subject').value.trim(),
+    body:           document.getElementById('body').value.trim(),
   };
 }
 
 // =============================================
-//  履歴読み込み
+//  送信履歴
 // =============================================
 async function loadHistory() {
   const wrap = document.getElementById('historyBody');
-  wrap.innerHTML = '<div class="history-empty"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>';
   try {
-    const res  = await fetch(
-      `${SUPABASE_URL}/rest/v1/messages?select=*&order=created_at.desc&limit=50`, SB
-    );
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/messages?order=created_at.desc&limit=50`, SB);
     const data = await res.json();
     if (!data.length) {
-      wrap.innerHTML = '<div class="history-empty">📭 まだメールはありません</div>';
+      wrap.innerHTML = '<div class="history-empty">送信履歴・下書きはありません</div>';
       return;
     }
-    const targetLabels = {
-      all: '全員', members: '団員', part: 'パート', guardians: '保護者', school: '学校関係者', individual: '個人指定'
-    };
+    const targetLabels = { all:'全員', members:'団員のみ', part:'パート', guardians:'保護者のみ', school:'学校関係者', individual:'個人指定' };
     wrap.innerHTML = `
+      <div style="overflow-x:auto;">
       <table class="history-table">
         <thead>
           <tr>
-            <th>ステータス</th>
+            <th>状態</th>
             <th>件名</th>
             <th>送信先</th>
             <th>送信数</th>
@@ -722,6 +703,7 @@ async function loadHistory() {
           `).join('')}
         </tbody>
       </table>
+      </div>
     `;
   } catch(e) {
     wrap.innerHTML = '<div class="history-empty">⚠️ 読み込みに失敗しました</div>';
@@ -739,11 +721,7 @@ async function openDraftModal(id) {
     if (!data[0]) return;
     const m = data[0];
     currentDraftId = m.id;
-
-    const targetLabels = {
-      all: '全員', members: '団員のみ', part: 'パートメンバー',
-      guardians: '保護者のみ', school: '学校関係者', individual: '個人指定'
-    };
+    const targetLabels = { all:'全員', members:'団員のみ', part:'パートメンバー', guardians:'保護者のみ', school:'学校関係者', individual:'個人指定' };
     document.getElementById('draftModalBody').innerHTML = `
       <div style="margin-bottom:1rem;">
         <div style="font-size:.72rem;color:var(--muted);margin-bottom:.2rem;">送信先</div>
@@ -759,9 +737,7 @@ async function openDraftModal(id) {
       </div>
     `;
     openModal('draftModal');
-  } catch(e) {
-    showToast('⚠️ 下書きの読み込みに失敗しました');
-  }
+  } catch(e) { showToast('⚠️ 下書きの読み込みに失敗しました'); }
 }
 
 async function loadDraftToForm() {
@@ -771,20 +747,17 @@ async function loadDraftToForm() {
     const data = await res.json();
     if (!data[0]) return;
     const m = data[0];
-
     document.getElementById('targetType').value = m.target_type || '';
     onTargetTypeChange();
     if (m.target_part) document.getElementById('targetPart').value = m.target_part;
     document.getElementById('subject').value = m.subject || '';
     document.getElementById('body').value    = m.body    || '';
     updateBodyCount();
-
     closeModal('draftModal');
     showToast('📝 下書きをフォームに読み込みました');
+    switchTab('mail');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  } catch(e) {
-    showToast('⚠️ 読み込みに失敗しました');
-  }
+  } catch(e) { showToast('⚠️ 読み込みに失敗しました'); }
 }
 
 // =============================================
@@ -804,9 +777,153 @@ function clearForm() {
 }
 
 // =============================================
+//  見学申込 読み込み
+// =============================================
+async function loadVisitApplications() {
+  const wrap   = document.getElementById('visitList');
+  const filter = document.getElementById('visitFilter').value;
+  wrap.innerHTML = '<div class="history-empty"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>';
+
+  try {
+    let url = `${SUPABASE_URL}/rest/v1/applications?member_type=eq.見学&order=created_at.desc&limit=100`;
+    if (filter === 'pending')  url += '&status=eq.pending';
+    if (filter === 'accepted') url += '&status=in.(accepted,rejected)';
+
+    const res  = await fetch(url, SB);
+    const data = await res.json();
+
+    // バッジ更新（未対応件数）
+    const pendingCount = data.filter(d => d.status === 'pending').length;
+    const badge = document.getElementById('visitBadge');
+    if (pendingCount > 0) {
+      badge.textContent = pendingCount;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    document.getElementById('visitCountInfo').innerHTML =
+      `全 <strong>${data.length}</strong> 件${pendingCount > 0 ? `（うち未対応 <strong style="color:var(--red);">${pendingCount}</strong> 件）` : ''}`;
+
+    if (!data.length) {
+      wrap.innerHTML = '<div class="history-empty">見学申込はありません</div>';
+      return;
+    }
+
+    const partLabels = {
+      flute:'フルート', oboe:'オーボエ', clarinet:'クラリネット', bassoon:'ファゴット',
+      saxophone:'サックス', horn:'ホルン', trumpet:'トランペット', trombone:'トロンボーン',
+      euphonium:'ユーフォニアム', tuba:'チューバ', percussion:'パーカッション', contrabass:'コントラバス',
+    };
+
+    wrap.innerHTML = data.map(a => {
+      const statusBadge = a.status === 'pending'
+        ? '<span class="badge badge-pending">⏳ 未対応</span>'
+        : a.status === 'accepted'
+          ? '<span class="badge badge-accepted">✅ 対応済み</span>'
+          : '<span class="badge badge-rejected">❌ お断り</span>';
+
+      return `
+        <div class="visit-card">
+          <div class="visit-card-head">
+            <div>
+              <div class="visit-card-name">${esc(a.name)}</div>
+              <div class="visit-card-yomi">${esc(a.yomi || '')}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              ${statusBadge}
+            </div>
+          </div>
+          <div class="visit-card-body">
+            <div class="visit-info-item">
+              <div class="visit-info-label">メール</div>
+              <div class="visit-info-value"><a href="mailto:${esc(a.email)}" style="color:var(--blue);">${esc(a.email)}</a></div>
+            </div>
+            <div class="visit-info-item">
+              <div class="visit-info-label">電話</div>
+              <div class="visit-info-value">${esc(a.phone || '—')}</div>
+            </div>
+            <div class="visit-info-item">
+              <div class="visit-info-label">希望パート</div>
+              <div class="visit-info-value">${esc(partLabels[a.part] || a.part || '未選択')}</div>
+            </div>
+            <div class="visit-info-item">
+              <div class="visit-info-label">生年月日</div>
+              <div class="visit-info-value">${esc(a.birthday || '—')}</div>
+            </div>
+            <div class="visit-info-item">
+              <div class="visit-info-label">申込日時</div>
+              <div class="visit-info-value">${fmtDate(a.created_at)}</div>
+            </div>
+            ${a.guardian_name ? `
+            <div class="visit-info-item">
+              <div class="visit-info-label">保護者氏名</div>
+              <div class="visit-info-value">${esc(a.guardian_name)}</div>
+            </div>
+            <div class="visit-info-item">
+              <div class="visit-info-label">保護者連絡先</div>
+              <div class="visit-info-value">${esc(a.emergency_phone || '—')}</div>
+            </div>
+            ` : ''}
+            ${a.comment ? `
+            <div class="visit-info-item" style="grid-column:1/-1;">
+              <div class="visit-info-label">希望日程・コメント</div>
+              <div class="visit-note">${esc(a.comment)}</div>
+            </div>
+            ` : ''}
+          </div>
+          <div class="visit-card-footer">
+            ${a.status === 'pending' ? `
+              <button class="btn btn-green btn-sm" onclick="updateVisitStatus('${esc(a.id)}','accepted')">
+                <i class="fas fa-check"></i> 対応済みにする
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="updateVisitStatus('${esc(a.id)}','rejected')">
+                <i class="fas fa-times"></i> お断り
+              </button>
+            ` : `
+              <button class="btn btn-outline btn-sm" onclick="updateVisitStatus('${esc(a.id)}','pending')">
+                <i class="fas fa-undo"></i> 未対応に戻す
+              </button>
+            `}
+            <a href="mailto:${esc(a.email)}" class="btn btn-blue btn-sm" style="text-decoration:none;">
+              <i class="fas fa-envelope"></i> メールを送る
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch(e) {
+    wrap.innerHTML = '<div class="history-empty">⚠️ 読み込みに失敗しました</div>';
+    console.error(e);
+  }
+}
+
+// =============================================
+//  見学申込 ステータス更新
+// =============================================
+async function updateVisitStatus(id, status) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/applications?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status }),
+    });
+    if (!res.ok) throw new Error();
+    const labels = { accepted:'✅ 対応済みにしました', rejected:'❌ お断りにしました', pending:'↩️ 未対応に戻しました' };
+    showToast(labels[status] || '更新しました');
+    await loadVisitApplications();
+  } catch(e) {
+    showToast('⚠️ 更新に失敗しました');
+    console.error(e);
+  }
+}
+
+// =============================================
 //  ユーティリティ
 // =============================================
 function fmtDate(iso) {
+  if (!iso) return '—';
   const d = new Date(iso);
   return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
@@ -822,7 +939,7 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
-function goBack() { history.back(); }
+function goBack() { location.href = './member.html'; }
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
 });
