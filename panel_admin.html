@@ -154,8 +154,12 @@ table.member-table tr:hover td{background:rgba(33,74,154,.02);}
         <i class="fas fa-user-plus"></i> 団員招待
       </button>
       <button class="tab-btn" onclick="switchTab('requests')" id="tab-requests">
-        <i class="fas fa-inbox"></i> 変更申請
+        <i class="fas fa-user-pen"></i> 情報変更申請
         <span id="requestsBadge" style="display:none;background:var(--red);color:#fff;border-radius:20px;font-size:.62rem;padding:1px 7px;font-family:'Outfit',sans-serif;font-weight:800;"></span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('other-requests')" id="tab-other-requests">
+        <i class="fas fa-inbox"></i> その他申請
+        <span id="otherRequestsBadge" style="display:none;background:var(--red);color:#fff;border-radius:20px;font-size:.62rem;padding:1px 7px;font-family:'Outfit',sans-serif;font-weight:800;"></span>
       </button>
       <button class="tab-btn" onclick="switchTab('security')" id="tab-security">
         <i class="fas fa-shield-halved"></i> セキュリティ
@@ -277,13 +281,13 @@ table.member-table tr:hover td{background:rgba(33,74,154,.02);}
     </div>
   </div>
 
-  <!-- ===== タブ3：変更申請 ===== -->
+  <!-- ===== タブ3：情報変更申請 ===== -->
   <div id="pane-requests" class="tab-pane">
     <div class="inner">
       <div class="sec">
         <div class="card">
           <div class="card-head">
-            <div class="card-title">変更申請一覧</div>
+            <div class="card-title">情報変更申請</div>
             <div style="display:flex;gap:8px;align-items:center;">
               <select id="requestsFilter" class="form-select" style="width:auto;font-size:.78rem;padding:6px 12px;" onchange="loadRequests()">
                 <option value="pending">未対応のみ</option>
@@ -304,7 +308,34 @@ table.member-table tr:hover td{background:rgba(33,74,154,.02);}
     </div>
   </div>
 
-  <!-- ===== タブ4：セキュリティ（2FA） ===== -->
+  <!-- ===== タブ4：その他申請 ===== -->
+  <div id="pane-other-requests" class="tab-pane">
+    <div class="inner">
+      <div class="sec">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">その他申請（楽譜貸出・WS・備品等）</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="otherRequestsFilter" class="form-select" style="width:auto;font-size:.78rem;padding:6px 12px;" onchange="loadOtherRequests()">
+                <option value="pending">未対応のみ</option>
+                <option value="all">すべて</option>
+                <option value="approved">承認済み</option>
+                <option value="rejected">却下済み</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="loadOtherRequests()">
+                <i class="fas fa-sync-alt"></i> 更新
+              </button>
+            </div>
+          </div>
+          <div class="card-body" id="otherRequestsBody">
+            <div class="empty-state"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== タブ5：セキュリティ（2FA） ===== -->
   <div id="pane-security" class="tab-pane">
     <div class="inner">
       <div class="sec">
@@ -498,6 +529,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   await loadMembers();
   await loadRequests();
+  await loadOtherRequests();
   await check2FAStatus();
 });
 
@@ -616,14 +648,14 @@ async function saveMember() {
 }
 
 // =============================================
-//  変更申請
+//  情報変更申請（info_change）- 承認で自動反映
 // =============================================
 async function loadRequests() {
   const wrap   = document.getElementById('requestsBody');
   const filter = document.getElementById('requestsFilter').value;
   if (wrap) wrap.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>';
 
-  let url = `${SUPABASE_URL}/rest/v1/requests?order=created_at.desc&limit=100`;
+  let url = `${SUPABASE_URL}/rest/v1/requests?type=eq.info_change&order=created_at.desc&limit=100`;
   if (filter === 'pending')  url += '&status=eq.pending';
   if (filter === 'approved') url += '&status=eq.approved';
   if (filter === 'rejected') url += '&status=eq.rejected';
@@ -631,61 +663,46 @@ async function loadRequests() {
   const res  = await fetch(url, SB);
   const data = await res.json();
 
-  // 未対応バッジ更新
+  // バッジ更新
   const pendingCount = data.filter(d => d.status === 'pending').length;
   const badge = document.getElementById('requestsBadge');
-  if (badge) {
-    badge.textContent    = pendingCount;
-    badge.style.display  = pendingCount > 0 ? 'inline' : 'none';
-  }
+  if (badge) { badge.textContent = pendingCount; badge.style.display = pendingCount > 0 ? 'inline' : 'none'; }
 
   if (!wrap) return;
-  if (!data.length) {
-    wrap.innerHTML = '<div class="empty-state">申請はありません</div>';
-    return;
-  }
-
-  const TYPE_LABEL = {
-    member_edit: '情報変更', join: '入団申込', withdraw: '退団申請',
-    leave_temp: '休団申請', return: '復団申請', loan: '貸出申請',
-    purchase: '備品購入', schedule: '日程回答', ws_join: 'WS参加', ws_request: 'WSリクエスト',
-  };
-  const STATUS_BADGE = {
-    pending:  '<span class="badge badge-pending">⏳ 未対応</span>',
-    approved: '<span class="badge badge-paid">✅ 承認</span>',
-    rejected: '<span class="badge badge-unpaid">❌ 却下</span>',
-  };
+  if (!data.length) { wrap.innerHTML = '<div class="empty-state">情報変更申請はありません</div>'; return; }
 
   wrap.innerHTML = data.map(r => {
-    const p       = r.payload || {};
-    const typeLabel = TYPE_LABEL[r.type] || r.type;
+    const p = typeof r.payload === 'string' ? JSON.parse(r.payload) : (r.payload || {});
     const created = r.created_at ? new Date(r.created_at).toLocaleDateString('ja-JP') : '—';
-
-    // payloadの内容をサマリー表示
-    const summary = Object.entries(p)
-      .filter(([k]) => !['org_id'].includes(k))
-      .map(([k, v]) => `<span style="color:var(--muted);font-size:.72rem;">${esc(k)}:</span> ${esc(String(v))}`)
-      .join('　');
-
+    const STATUS_BADGE = {
+      pending:  '<span class="badge badge-pending">⏳ 未対応</span>',
+      approved: '<span class="badge badge-paid">✅ 承認済み</span>',
+      rejected: '<span class="badge badge-unpaid">❌ 却下済み</span>',
+    };
     return `
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:10px;">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.6rem;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.8rem;">
           ${STATUS_BADGE[r.status] || ''}
-          <span style="font-weight:700;font-size:.85rem;">${esc(typeLabel)}</span>
+          <span style="font-weight:700;">情報変更申請</span>
           <span style="color:var(--muted);font-size:.72rem;margin-left:auto;">${created}</span>
         </div>
-        <div style="font-size:.78rem;line-height:1.8;margin-bottom:.8rem;">${summary || '詳細なし'}</div>
+        <table style="width:100%;font-size:.82rem;border-collapse:collapse;margin-bottom:.8rem;">
+          ${p.name  ? `<tr><td style="color:var(--muted);width:80px;padding:3px 0;">氏名</td><td style="font-weight:700;">${esc(p.name)}</td></tr>` : ''}
+          ${p.part  ? `<tr><td style="color:var(--muted);padding:3px 0;">パート</td><td>${esc(p.part)}</td></tr>` : ''}
+          ${p.email ? `<tr><td style="color:var(--muted);padding:3px 0;">メール</td><td>${esc(p.email)}</td></tr>` : ''}
+          ${p.note  ? `<tr><td style="color:var(--muted);padding:3px 0;">備考</td><td>${esc(p.note)}</td></tr>` : ''}
+        </table>
         ${r.status === 'pending' ? `
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-green btn-sm" onclick="updateRequest('${esc(r.id)}','approved')">
-              <i class="fas fa-check"></i> 承認
+            <button class="btn btn-green btn-sm" onclick="approveInfoChange('${esc(r.id)}','${esc(r.member_id)}',${JSON.stringify(p).replace(/"/g,'&quot;')})">
+              <i class="fas fa-check"></i> 承認してmembersに反映
             </button>
-            <button class="btn btn-danger btn-sm" onclick="updateRequest('${esc(r.id)}','rejected')">
+            <button class="btn btn-danger btn-sm" onclick="updateRequest('${esc(r.id)}','rejected','requests')">
               <i class="fas fa-times"></i> 却下
             </button>
           </div>
         ` : `
-          <button class="btn btn-outline btn-sm" onclick="updateRequest('${esc(r.id)}','pending')">
+          <button class="btn btn-outline btn-sm" onclick="updateRequest('${esc(r.id)}','pending','requests')">
             <i class="fas fa-undo"></i> 未対応に戻す
           </button>
         `}
@@ -694,7 +711,107 @@ async function loadRequests() {
   }).join('');
 }
 
-async function updateRequest(id, status) {
+async function approveInfoChange(requestId, memberId, payload) {
+  if (!memberId) { showToast('⚠️ member_idがありません。手動で更新してください'); return; }
+  try {
+    // membersテーブルを自動更新
+    const updatePayload = {};
+    if (payload.name)  updatePayload.name  = payload.name;
+    if (payload.part)  updatePayload.part  = payload.part;
+    if (payload.email) updatePayload.email = payload.email;
+
+    const mRes = await fetch(`${SUPABASE_URL}/rest/v1/members?id=eq.${memberId}`, {
+      method: 'PATCH',
+      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(updatePayload),
+    });
+    if (!mRes.ok) throw new Error('members更新失敗');
+
+    // requestsのstatusをapprovedに
+    await fetch(`${SUPABASE_URL}/rest/v1/requests?id=eq.${requestId}`, {
+      method: 'PATCH',
+      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'approved' }),
+    });
+
+    showToast('✅ 承認しました！membersテーブルに反映しました');
+    await loadRequests();
+    await loadMembers();
+  } catch(e) {
+    showToast('⚠️ 反映に失敗しました: ' + e.message);
+  }
+}
+
+// =============================================
+//  その他申請（貸出・WS・備品等）
+// =============================================
+async function loadOtherRequests() {
+  const wrap   = document.getElementById('otherRequestsBody');
+  const filter = document.getElementById('otherRequestsFilter').value;
+  if (wrap) wrap.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>';
+
+  let url = `${SUPABASE_URL}/rest/v1/requests?type=neq.info_change&order=created_at.desc&limit=100`;
+  if (filter === 'pending')  url += '&status=eq.pending';
+  if (filter === 'approved') url += '&status=eq.approved';
+  if (filter === 'rejected') url += '&status=eq.rejected';
+
+  const res  = await fetch(url, SB);
+  const data = await res.json();
+
+  // バッジ更新
+  const pendingCount = data.filter(d => d.status === 'pending').length;
+  const badge = document.getElementById('otherRequestsBadge');
+  if (badge) { badge.textContent = pendingCount; badge.style.display = pendingCount > 0 ? 'inline' : 'none'; }
+
+  if (!wrap) return;
+  if (!data.length) { wrap.innerHTML = '<div class="empty-state">申請はありません</div>'; return; }
+
+  const TYPE_LABEL = {
+    join:'入団申込', withdraw:'退団申請', leave_temp:'休団申請', return:'復団申請',
+    loan:'楽譜・楽器貸出', purchase:'備品購入リクエスト', schedule:'日程回答',
+    ws_join:'WS参加申請', ws_request:'WSリクエスト', event_intent:'演奏会参加意向',
+  };
+  const STATUS_BADGE = {
+    pending:  '<span class="badge badge-pending">⏳ 未対応</span>',
+    approved: '<span class="badge badge-paid">✅ 承認済み</span>',
+    rejected: '<span class="badge badge-unpaid">❌ 却下済み</span>',
+  };
+
+  wrap.innerHTML = data.map(r => {
+    const p = typeof r.payload === 'string' ? JSON.parse(r.payload) : (r.payload || {});
+    const created = r.created_at ? new Date(r.created_at).toLocaleDateString('ja-JP') : '—';
+    const summary = Object.entries(p)
+      .filter(([k]) => !['org_id'].includes(k))
+      .map(([k, v]) => `<span style="color:var(--muted);font-size:.72rem;">${esc(k)}:</span> ${esc(String(v))}`)
+      .join('　');
+    return `
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.6rem;">
+          ${STATUS_BADGE[r.status] || ''}
+          <span style="font-weight:700;">${esc(TYPE_LABEL[r.type] || r.type)}</span>
+          <span style="color:var(--muted);font-size:.72rem;margin-left:auto;">${created}</span>
+        </div>
+        <div style="font-size:.78rem;line-height:1.8;margin-bottom:.8rem;">${summary || '詳細なし'}</div>
+        ${r.status === 'pending' ? `
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-green btn-sm" onclick="updateRequest('${esc(r.id)}','approved','other-requests')">
+              <i class="fas fa-check"></i> 対応済み
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="updateRequest('${esc(r.id)}','rejected','other-requests')">
+              <i class="fas fa-times"></i> 却下
+            </button>
+          </div>
+        ` : `
+          <button class="btn btn-outline btn-sm" onclick="updateRequest('${esc(r.id)}','pending','other-requests')">
+            <i class="fas fa-undo"></i> 未対応に戻す
+          </button>
+        `}
+      </div>
+    `;
+  }).join('');
+}
+
+async function updateRequest(id, status, tab) {
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/requests?id=eq.${id}`, {
       method: 'PATCH',
@@ -702,9 +819,10 @@ async function updateRequest(id, status) {
       body: JSON.stringify({ status }),
     });
     if (!res.ok) throw new Error();
-    const labels = { approved:'✅ 承認しました', rejected:'❌ 却下しました', pending:'↩️ 未対応に戻しました' };
+    const labels = { approved:'✅ 対応済みにしました', rejected:'❌ 却下しました', pending:'↩️ 未対応に戻しました' };
     showToast(labels[status] || '更新しました');
-    await loadRequests();
+    if (tab === 'other-requests') await loadOtherRequests();
+    else await loadRequests();
   } catch(e) {
     showToast('⚠️ 更新に失敗しました');
   }
