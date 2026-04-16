@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>管理者パネル | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;
+  --muted:#606070;--border:#DDE1EC;
+  --green:#1D9E75;--red:#C0392B;--orange:#D97706;
+  --radius:16px;--shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+#panel-nav{position:sticky;top:0;z-index:100;height:52px;background:var(--navy);border-bottom:1px solid rgba(200,164,77,.25);display:flex;align-items:center;padding:0 1.25rem;gap:12px;}
+#back-btn{width:34px;height:34px;border-radius:8px;border:none;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0;}
+#back-btn:hover{background:rgba(255,255,255,.2);}
+#panel-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+#panel-badge{margin-left:auto;padding:3px 12px;border-radius:20px;font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;background:rgba(239,68,68,.2);color:#fca5a5;letter-spacing:.08em;}
+
+#stateLoading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px;}
+.spinner{width:36px;height:36px;border:3px solid rgba(33,74,154,.12);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#mainContent{display:none;padding:28px 0 80px;}
+
+.page-header{background:linear-gradient(160deg,#2d0a0a 0%,#7b1a1a 100%);position:relative;overflow:hidden;margin-bottom:0;}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(200,164,77,.08) 0%,transparent 55%);}
+.page-header-inner{position:relative;z-index:1;padding:2rem 1.5rem 2.5rem;max-width:900px;margin:0 auto;}
+.page-eyebrow{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.7rem;}
+.page-eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.page-header h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;color:#fff;line-height:1.3;margin-bottom:.4rem;}
+.page-header p{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.8;}
+
+.tab-bar{background:var(--navy);border-bottom:2px solid rgba(200,164,77,.2);position:sticky;top:52px;z-index:90;overflow-x:auto;}
+.tab-bar-inner{display:flex;max-width:900px;margin:0 auto;padding:0 1.25rem;min-width:max-content;}
+.tab-btn{padding:.8rem 1.1rem;border:none;background:none;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:700;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;margin-bottom:-2px;}
+.tab-btn:hover{color:rgba(255,255,255,.85);}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-pane{display:none;padding:28px 0 40px;}
+.tab-pane.active{display:block;}
+
+.sec{margin-bottom:32px;}
+.sec-label{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.sec-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;transition:opacity .2s,transform .15s;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-danger{background:rgba(192,57,43,.1);color:var(--red);border:1.5px solid rgba(192,57,43,.2);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-sm{padding:6px 12px;font-size:.75rem;}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);}
+.card-head{padding:1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.card-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
+.card-body{padding:1.4rem;}
+
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.form-req{color:var(--red);margin-left:3px;}
+.form-opt{color:var(--muted);font-weight:400;font-size:.7rem;margin-left:4px;}
+.form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--blue);}
+.form-select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.88rem;color:var(--text);background:var(--white);outline:none;cursor:pointer;}
+.form-select:focus{border-color:var(--blue);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.form-row{grid-template-columns:1fr;}}
+
+/* 団員テーブル */
+.member-table-wrap{overflow-x:auto;}
+table.member-table{width:100%;border-collapse:collapse;min-width:600px;}
+table.member-table th{padding:.7rem 1rem;font-size:.72rem;font-weight:700;font-family:'Outfit',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
+table.member-table td{padding:.8rem 1rem;font-size:.82rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+table.member-table tr:last-child td{border-bottom:none;}
+table.member-table tr:hover td{background:rgba(33,74,154,.02);}
+
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;font-family:'Outfit',sans-serif;white-space:nowrap;}
+.badge-active{background:rgba(29,158,117,.1);color:var(--green);}
+.badge-inactive{background:rgba(192,57,43,.1);color:var(--red);}
+.badge-paid{background:rgba(29,158,117,.1);color:var(--green);}
+.badge-unpaid{background:rgba(192,57,43,.1);color:var(--red);}
+.badge-pending{background:rgba(217,119,6,.12);color:var(--orange);}
+
+/* 2FA */
+.twofa-card{background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.2);border-radius:16px;padding:1.4rem;margin-bottom:16px;}
+.twofa-status{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.twofa-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.twofa-icon.enabled{background:rgba(29,158,117,.12);color:var(--green);}
+.twofa-icon.disabled{background:rgba(192,57,43,.1);color:var(--red);}
+.twofa-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--navy);}
+.twofa-sub{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.qr-wrap{text-align:center;padding:1.5rem;background:var(--white);border-radius:12px;border:1px solid var(--border);margin:1rem 0;}
+.qr-wrap img{max-width:180px;}
+.totp-input{width:100%;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:1.4rem;font-family:'Outfit',sans-serif;font-weight:800;letter-spacing:.4em;text-align:center;outline:none;transition:border-color .2s;}
+.totp-input:focus{border-color:var(--blue);}
+
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:520px;margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-head{background:linear-gradient(135deg,var(--navy),var(--blue));padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;}
+.modal-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:1.1rem;transition:color .2s;padding:4px;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:1.4rem;}
+.modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
+
+.empty-state{padding:2.5rem;text-align:center;color:var(--muted);font-size:.85rem;}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:.8rem 1.4rem;border-radius:12px;font-size:.82rem;font-weight:700;z-index:9999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<nav id="panel-nav" style="display:none;">
+  <button id="back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+  <div id="panel-title">管理者パネル</div>
+  <div id="panel-badge">ADMIN</div>
+</nav>
+
+<div id="stateLoading">
+  <div class="spinner"></div>
+  <p style="font-size:.82rem;color:var(--muted);">認証中…</p>
+</div>
+
+<div id="mainContent">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Admin Panel</div>
+      <h1>🛡️ 管理者パネル</h1>
+      <p>団員招待・会費管理・セキュリティ設定はこちらから。</p>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-bar-inner">
+      <button class="tab-btn active" onclick="switchTab('members')" id="tab-members">
+        <i class="fas fa-users"></i> 団員管理
+      </button>
+      <button class="tab-btn" onclick="switchTab('invite')" id="tab-invite">
+        <i class="fas fa-user-plus"></i> 団員招待
+      </button>
+      <button class="tab-btn" onclick="switchTab('security')" id="tab-security">
+        <i class="fas fa-shield-halved"></i> セキュリティ
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== タブ1：団員管理 ===== -->
+  <div id="pane-members" class="tab-pane active">
+    <div class="inner">
+      <div class="sec">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">団員一覧</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <select id="memberFilter" class="form-select" style="width:auto;font-size:.78rem;padding:6px 12px;" onchange="loadMembers()">
+                <option value="">全員</option>
+                <option value="active">在籍中</option>
+                <option value="inactive">退団</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="loadMembers()">
+                <i class="fas fa-sync-alt"></i> 更新
+              </button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="member-table-wrap">
+              <div id="memberTableBody">
+                <div class="empty-state"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== タブ2：団員招待 ===== -->
+  <div id="pane-invite" class="tab-pane">
+    <div class="inner">
+      <div class="sec">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">新規団員を招待</div>
+          </div>
+          <div class="card-body">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.7;">
+              招待メールが送信され、団員がパスワードを設定するとDXシステムにログインできるようになります。
+            </p>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">氏名<span class="form-req">*</span></label>
+                <input type="text" id="invName" class="form-input" placeholder="山田 花子">
+              </div>
+              <div class="form-group">
+                <label class="form-label">ふりがな<span class="form-opt">任意</span></label>
+                <input type="text" id="invYomi" class="form-input" placeholder="やまだ はなこ">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">メールアドレス<span class="form-req">*</span></label>
+              <input type="email" id="invEmail" class="form-input" placeholder="hanako@example.com">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">パート<span class="form-opt">任意</span></label>
+                <select id="invPart" class="form-select">
+                  <option value="">選択してください</option>
+                  <option>フルート</option><option>オーボエ</option><option>クラリネット</option>
+                  <option>ファゴット</option><option>サックス</option><option>ホルン</option>
+                  <option>トランペット</option><option>トロンボーン</option><option>ユーフォニアム</option>
+                  <option>チューバ</option><option>パーカッション</option><option>コントラバス</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">ロール<span class="form-req">*</span></label>
+                <select id="invRole" class="form-select">
+                  <option value="member">正会員</option>
+                  <option value="committee">委員</option>
+                  <option value="director">理事/GM</option>
+                  <option value="vice_president">副団長</option>
+                  <option value="president">団長</option>
+                  <option value="conductor">指揮者</option>
+                  <option value="instructor">外部指導者</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">会員種別<span class="form-req">*</span></label>
+                <select id="invMemberType" class="form-select">
+                  <option value="正会員（大人）">正会員（大人）</option>
+                  <option value="学生会員">学生会員</option>
+                  <option value="ボランティア会員">ボランティア会員</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">委員会<span class="form-opt">任意</span></label>
+                <select id="invCommittee" class="form-select">
+                  <option value="">なし</option>
+                  <option value="FINANCE">会計</option>
+                  <option value="VENUE">会場</option>
+                  <option value="PR">広報</option>
+                  <option value="PLANNING">企画</option>
+                  <option value="LIBRARY">楽譜</option>
+                  <option value="EQUIPMENT">備品</option>
+                  <option value="SAFETY">安全サポート</option>
+                </select>
+              </div>
+            </div>
+            <div id="inviteErr" style="display:none;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:8px;padding:.8rem 1rem;font-size:.8rem;margin-bottom:1rem;"></div>
+            <div id="inviteOk" style="display:none;background:#dcfce7;color:#15803d;border:1px solid #86efac;border-radius:8px;padding:.8rem 1rem;font-size:.8rem;margin-bottom:1rem;"></div>
+            <button class="btn btn-gold" id="inviteBtn" onclick="sendInvite()" style="width:100%;justify-content:center;padding:13px;">
+              <i class="fas fa-paper-plane"></i> 招待メールを送信する
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== タブ3：セキュリティ（2FA） ===== -->
+  <div id="pane-security" class="tab-pane">
+    <div class="inner">
+      <div class="sec">
+        <div class="sec-label">二要素認証（2FA）</div>
+
+        <!-- 2FA未設定 -->
+        <div id="twofa-setup" class="twofa-card">
+          <div class="twofa-status">
+            <div class="twofa-icon disabled"><i class="fas fa-lock-open"></i></div>
+            <div>
+              <div class="twofa-title">2FAが未設定です</div>
+              <div class="twofa-sub">管理者は2FAの設定が必要です。Google AuthenticatorまたはAuthyをご利用ください。</div>
+            </div>
+          </div>
+          <button class="btn btn-danger" onclick="startTwoFA()" id="twofaSetupBtn">
+            <i class="fas fa-shield-halved"></i> 2FAを設定する
+          </button>
+        </div>
+
+        <!-- 2FA設定済み -->
+        <div id="twofa-enabled" style="display:none;" class="card">
+          <div class="card-body">
+            <div class="twofa-status">
+              <div class="twofa-icon enabled"><i class="fas fa-shield-check"></i></div>
+              <div>
+                <div class="twofa-title" style="color:var(--green);">2FAが有効です</div>
+                <div class="twofa-sub">認証アプリと連携済みです。</div>
+              </div>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="disableTwoFA()">
+              <i class="fas fa-trash"></i> 2FAを無効化する
+            </button>
+          </div>
+        </div>
+
+        <!-- QRコード表示エリア -->
+        <div id="twofa-qr-area" style="display:none;" class="card">
+          <div class="card-body">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.7;">
+              <strong>① Google Authenticator</strong>または<strong>Authy</strong>アプリでQRコードを読み取ってください。
+            </p>
+            <div class="qr-wrap">
+              <img id="twofaQR" src="" alt="QRコード">
+              <p style="font-size:.72rem;color:var(--muted);margin-top:.8rem;">QRコードが読み取れない場合はシークレットキーを手動入力してください</p>
+              <p id="twofaSecret" style="font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;color:var(--navy);margin-top:.4rem;letter-spacing:.1em;"></p>
+            </div>
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.8rem;">② アプリに表示された<strong>6桁のコード</strong>を入力して確認してください。</p>
+            <input type="text" id="totpCode" class="totp-input" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+            <div id="twofaErr" style="display:none;color:var(--red);font-size:.78rem;margin-top:.5rem;"></div>
+            <button class="btn btn-green" onclick="verifyTwoFA()" style="width:100%;justify-content:center;margin-top:1rem;padding:13px;" id="twofaVerifyBtn">
+              <i class="fas fa-check"></i> 確認して2FAを有効化する
+            </button>
+          </div>
+        </div>
+
+        <!-- セキュリティ情報 -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-head"><div class="card-title">セキュリティ状況</div></div>
+          <div class="card-body">
+            <table style="width:100%;font-size:.82rem;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:.7rem 0;color:var(--muted);">認証方式</td>
+                <td style="padding:.7rem 0;font-weight:700;">Supabase Auth（メール＋パスワード）</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:.7rem 0;color:var(--muted);">ブルートフォース対策</td>
+                <td style="padding:.7rem 0;font-weight:700;">Supabaseレート制限（有効）</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:.7rem 0;color:var(--muted);">カード情報の取り扱い</td>
+                <td style="padding:.7rem 0;font-weight:700;">自社では一切保持しない（Stripe Payment Linkのみ）</td>
+              </tr>
+              <tr>
+                <td style="padding:.7rem 0;color:var(--muted);">二要素認証（2FA）</td>
+                <td style="padding:.7rem 0;font-weight:700;" id="secStatus2FA">確認中…</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 団員編集モーダル -->
+<div id="memberModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title">👤 団員情報を編集</div>
+      <button class="modal-close" onclick="closeModal('memberModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editMemberId">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">氏名</label>
+          <input type="text" id="editName" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">パート</label>
+          <select id="editPart" class="form-select">
+            <option value="">なし</option>
+            <option>フルート</option><option>オーボエ</option><option>クラリネット</option>
+            <option>ファゴット</option><option>サックス</option><option>ホルン</option>
+            <option>トランペット</option><option>トロンボーン</option><option>ユーフォニアム</option>
+            <option>チューバ</option><option>パーカッション</option><option>コントラバス</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">ロール</label>
+          <select id="editRole" class="form-select">
+            <option value="member">正会員</option>
+            <option value="committee">委員</option>
+            <option value="director">理事/GM</option>
+            <option value="vice_president">副団長</option>
+            <option value="president">団長</option>
+            <option value="conductor">指揮者</option>
+            <option value="instructor">外部指導者</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">会費状況</label>
+          <select id="editFeeStatus" class="form-select">
+            <option value="paid">支払い済み</option>
+            <option value="unpaid">未払い</option>
+            <option value="pending">確認中</option>
+            <option value="exempt">免除</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ステータス</label>
+        <select id="editStatus" class="form-select">
+          <option value="active">在籍中</option>
+          <option value="inactive">退団</option>
+          <option value="rest">休団中</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('memberModal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveMember()"><i class="fas fa-save"></i> 保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL      = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const EDGE_INVITE_URL   = `${SUPABASE_URL}/functions/v1/invite-member`;
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let SB = null;
+let currentSession = null;
+let memberData = null;
+
+// =============================================
+//  Auth 初期化
+// =============================================
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { location.href = './member.html'; return; }
+
+  currentSession = session;
+  SB = {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json',
+    }
+  };
+
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/members?email=eq.${encodeURIComponent(session.user.email)}&limit=1`, SB
+  );
+  const members = await res.json();
+  if (!members || !members.length) { location.href = './member.html'; return; }
+
+  memberData = members[0];
+  const ALLOWED = ['president', 'vice_president', 'director'];
+  if (!ALLOWED.includes(memberData.role)) { location.href = './member.html'; return; }
+
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('panel-nav').style.display    = 'flex';
+  document.getElementById('mainContent').style.display  = 'block';
+
+  await loadMembers();
+  await check2FAStatus();
+});
+
+// =============================================
+//  タブ切り替え
+// =============================================
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('pane-' + name).classList.add('active');
+}
+
+// =============================================
+//  団員一覧
+// =============================================
+async function loadMembers() {
+  const wrap   = document.getElementById('memberTableBody');
+  const filter = document.getElementById('memberFilter').value;
+
+  wrap.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto 10px;"></div>読み込み中…</div>';
+
+  let url = `${SUPABASE_URL}/rest/v1/members?select=id,name,yomi,email,part,role,status,fee_status,member_type&order=name.asc`;
+  if (filter) url += `&status=eq.${filter}`;
+
+  const res  = await fetch(url, SB);
+  const data = await res.json();
+
+  if (!data.length) {
+    wrap.innerHTML = '<div class="empty-state">団員がいません</div>';
+    return;
+  }
+
+  const ROLE_LABEL = {
+    president:'団長', vice_president:'副団長', conductor:'指揮者',
+    director:'理事/GM', committee:'委員', member:'正会員',
+    guardian:'保護者', instructor:'外部指導者',
+  };
+  const FEE_LABEL = { paid:'支払済', unpaid:'未払い', pending:'確認中', exempt:'免除' };
+  const FEE_CLASS = { paid:'badge-paid', unpaid:'badge-unpaid', pending:'badge-pending', exempt:'badge-pending' };
+  const STATUS_CLASS = { active:'badge-active', inactive:'badge-inactive', rest:'badge-pending' };
+  const STATUS_LABEL = { active:'在籍', inactive:'退団', rest:'休団' };
+
+  wrap.innerHTML = `
+    <table class="member-table">
+      <thead>
+        <tr>
+          <th>氏名</th>
+          <th>パート</th>
+          <th>ロール</th>
+          <th>会費</th>
+          <th>状態</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.map(m => `
+          <tr>
+            <td>
+              <div style="font-weight:700;">${esc(m.name)}</div>
+              <div style="font-size:.72rem;color:var(--muted);">${esc(m.email)}</div>
+            </td>
+            <td>${esc(m.part || '—')}</td>
+            <td>${esc(ROLE_LABEL[m.role] || m.role || '—')}</td>
+            <td><span class="badge ${FEE_CLASS[m.fee_status] || 'badge-pending'}">${esc(FEE_LABEL[m.fee_status] || '未設定')}</span></td>
+            <td><span class="badge ${STATUS_CLASS[m.status] || 'badge-pending'}">${esc(STATUS_LABEL[m.status] || m.status || '—')}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="openMemberEdit('${esc(m.id)}')">
+                <i class="fas fa-pen"></i> 編集
+              </button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+let memberCache = [];
+async function openMemberEdit(id) {
+  const res  = await fetch(`${SUPABASE_URL}/rest/v1/members?id=eq.${id}&limit=1`, SB);
+  const data = await res.json();
+  if (!data[0]) return;
+  const m = data[0];
+  document.getElementById('editMemberId').value    = m.id;
+  document.getElementById('editName').value        = m.name || '';
+  document.getElementById('editPart').value        = m.part || '';
+  document.getElementById('editRole').value        = m.role || 'member';
+  document.getElementById('editFeeStatus').value   = m.fee_status || 'unpaid';
+  document.getElementById('editStatus').value      = m.status || 'active';
+  openModal('memberModal');
+}
+
+async function saveMember() {
+  const id = document.getElementById('editMemberId').value;
+  const payload = {
+    name:       document.getElementById('editName').value.trim(),
+    part:       document.getElementById('editPart').value || null,
+    role:       document.getElementById('editRole').value,
+    fee_status: document.getElementById('editFeeStatus').value,
+    status:     document.getElementById('editStatus').value,
+  };
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/members?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error();
+    closeModal('memberModal');
+    showToast('✅ 保存しました');
+    await loadMembers();
+  } catch(e) {
+    showToast('⚠️ 保存に失敗しました');
+  }
+}
+
+// =============================================
+//  団員招待
+// =============================================
+async function sendInvite() {
+  const name       = document.getElementById('invName').value.trim();
+  const yomi       = document.getElementById('invYomi').value.trim();
+  const email      = document.getElementById('invEmail').value.trim();
+  const part       = document.getElementById('invPart').value;
+  const role       = document.getElementById('invRole').value;
+  const memberType = document.getElementById('invMemberType').value;
+  const committee  = document.getElementById('invCommittee').value;
+
+  const errEl = document.getElementById('inviteErr');
+  const okEl  = document.getElementById('inviteOk');
+  const btn   = document.getElementById('inviteBtn');
+  errEl.style.display = 'none';
+  okEl.style.display  = 'none';
+
+  if (!name || !email) {
+    errEl.textContent = '氏名とメールアドレスは必須です';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中…';
+
+  try {
+    const res = await fetch(EDGE_INVITE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`,
+      },
+      body: JSON.stringify({ name, yomi, email, part, role, member_type: memberType, committee }),
+    });
+    const data = await res.json();
+    if (!res.ok && res.status !== 207) throw new Error(data.error || '招待失敗');
+
+    if (data.warning) {
+      okEl.textContent = `⚠️ Auth招待は成功しましたが、membersテーブルへの追加に失敗しました。手動でSQLを実行してください。`;
+    } else {
+      okEl.textContent = `✅ ${email} に招待メールを送信しました！`;
+    }
+    okEl.style.display = 'block';
+
+    // フォームリセット
+    ['invName','invYomi','invEmail'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('invPart').value = '';
+    document.getElementById('invRole').value = 'member';
+    document.getElementById('invCommittee').value = '';
+
+    await loadMembers();
+  } catch(e) {
+    errEl.textContent = e.message || '招待に失敗しました';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> 招待メールを送信する';
+  }
+}
+
+// =============================================
+//  2FA
+// =============================================
+async function check2FAStatus() {
+  try {
+    const { data } = await supabaseClient.auth.mfa.listFactors();
+    const verified = data?.totp?.filter(f => f.status === 'verified') || [];
+    const enabled  = verified.length > 0;
+
+    document.getElementById('twofa-setup').style.display   = enabled ? 'none'  : 'block';
+    document.getElementById('twofa-enabled').style.display = enabled ? 'block' : 'none';
+    document.getElementById('secStatus2FA').textContent    = enabled ? '✅ 有効' : '❌ 未設定';
+    document.getElementById('secStatus2FA').style.color    = enabled ? 'var(--green)' : 'var(--red)';
+  } catch(e) {
+    console.error('2FAステータス確認失敗:', e);
+  }
+}
+
+async function startTwoFA() {
+  const btn = document.getElementById('twofaSetupBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 準備中…';
+
+  try {
+    const { data, error } = await supabaseClient.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'ひがすいDX' });
+    if (error) throw error;
+
+    document.getElementById('twofaQR').src      = data.totp.qr_code;
+    document.getElementById('twofaSecret').textContent = data.totp.secret;
+    document.getElementById('twofa-qr-area').style.display = 'block';
+    document.getElementById('twofa-setup').style.display   = 'none';
+
+    // factorIdを保存
+    window._twofaFactorId = data.id;
+  } catch(e) {
+    showToast('⚠️ 2FAの設定開始に失敗しました: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-shield-halved"></i> 2FAを設定する';
+  }
+}
+
+async function verifyTwoFA() {
+  const code = document.getElementById('totpCode').value.trim();
+  const errEl = document.getElementById('twofaErr');
+  const btn   = document.getElementById('twofaVerifyBtn');
+  errEl.style.display = 'none';
+
+  if (code.length !== 6) {
+    errEl.textContent = '6桁のコードを入力してください';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 確認中…';
+
+  try {
+    const { data: challengeData, error: challengeErr } = await supabaseClient.auth.mfa.challenge({ factorId: window._twofaFactorId });
+    if (challengeErr) throw challengeErr;
+
+    const { error: verifyErr } = await supabaseClient.auth.mfa.verify({
+      factorId:    window._twofaFactorId,
+      challengeId: challengeData.id,
+      code,
+    });
+    if (verifyErr) throw verifyErr;
+
+    document.getElementById('twofa-qr-area').style.display = 'none';
+    showToast('🔐 2FAを有効化しました！');
+    await check2FAStatus();
+  } catch(e) {
+    errEl.textContent = 'コードが正しくありません。アプリの表示を確認してください。';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> 確認して2FAを有効化する';
+  }
+}
+
+async function disableTwoFA() {
+  if (!confirm('2FAを無効化しますか？セキュリティが低下します。')) return;
+  try {
+    const { data } = await supabaseClient.auth.mfa.listFactors();
+    const factors  = data?.totp || [];
+    for (const f of factors) {
+      await supabaseClient.auth.mfa.unenroll({ factorId: f.id });
+    }
+    showToast('2FAを無効化しました');
+    await check2FAStatus();
+  } catch(e) {
+    showToast('⚠️ 無効化に失敗しました: ' + e.message);
+  }
+}
+
+// =============================================
+//  ユーティリティ
+// =============================================
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+function goBack() { location.href = './member.html'; }
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
