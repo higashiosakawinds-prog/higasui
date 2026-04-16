@@ -656,7 +656,7 @@ function switchTab(id) {
 async function loadMembers() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/members?select=id,name,part&is_active=eq.true&order=name.asc`,
+      `${SUPABASE_URL}/rest/v1/members?select=id,name,part&status=eq.active&order=name.asc`,
       SB
     );
     memberList = await res.json();
@@ -912,7 +912,7 @@ async function loadEmergencyContacts() {
   try {
     // 団員一覧と緊急連絡先を並行取得
     const [mRes, ecRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/members?select=id,name,part&is_active=eq.true&order=name.asc`, SB),
+      fetch(`${SUPABASE_URL}/rest/v1/members?select=id,name,part&status=eq.active&order=name.asc`, SB),
       fetch(`${SUPABASE_URL}/rest/v1/emergency_contacts?select=*&order=created_at.asc`, SB),
     ]);
     const members  = await mRes.json();
