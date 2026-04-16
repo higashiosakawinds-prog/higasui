@@ -746,7 +746,7 @@ async function approveInfoChange(requestId, memberId, payloadEncoded) {
     const updatePayload = {};
     if (p.name)  updatePayload.name  = p.name;
     if (p.part)  updatePayload.part  = p.part;
-    if (p.email) updatePayload.email = p.email;
+    // emailはAuth側と連動が必要なため自動反映しない
 
     // membersテーブル更新
     const mRes = await fetch(`${SUPABASE_URL}/rest/v1/members?id=eq.${memberId}`, {
