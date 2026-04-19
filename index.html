@@ -178,6 +178,19 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   border: 1px solid #A5D6A7; margin-left: 0.5rem; vertical-align: middle;
 }
 
+/* パートカード */
+.part-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin: 2rem 0; text-align: left; }
+.part-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 1.2rem 1rem; }
+.part-card.full { background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.07); opacity: 0.6; }
+.part-card.hot { border-color: var(--gold); background: rgba(200,164,77,0.12); }
+.part-name { font-weight: 700; font-size: 0.95rem; color: white; margin-bottom: 0.4rem; }
+.part-slots { font-size: 0.78rem; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 0.4rem; }
+.part-slots i { font-size: 0.7rem; }
+.slot-open { color: #81C784; }
+.slot-full { color: rgba(255,255,255,0.35); }
+.slot-hot { color: var(--gold); }
+.part-note { font-size: 0.7rem; color: rgba(255,255,255,0.45); margin-top: 0.4rem; line-height: 1.4; }
+
 footer { background: var(--navy); padding: 4rem 0; text-align: center; border-top: 2px solid var(--gold); color: white; }
 .footer-logo img { height: 40px; filter: brightness(0) invert(1); margin-bottom: 1.5rem; }
 .footer-sns { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
@@ -213,12 +226,12 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 
 <div id="site-drawer">
   <ul>
-    <li><a href="about.html" onclick="closeNav()">🎷 団について</a></li>
-    <li><a href="join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
-    <li><a href="faq.html" onclick="closeNav()">❓ よくある質問</a></li>
-    <li><a href="visit.html" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="about.html" onclick="closeNav()"><i class="fas fa-users" style="width:1.2rem;"></i> 団について</a></li>
+    <li><a href="join.html" onclick="closeNav()"><i class="fas fa-calendar" style="width:1.2rem;"></i> 練習案内・入団</a></li>
+    <li><a href="faq.html" onclick="closeNav()"><i class="fas fa-circle-question" style="width:1.2rem;"></i> よくある質問</a></li>
+    <li><a href="visit.html" onclick="closeNav()"><i class="fas fa-pen-to-square" style="width:1.2rem;"></i> 見学申込</a></li>
   </ul>
-  <a href="visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む（無料！）</a>
+  <a href="visit.html" id="drawer-cta" onclick="closeNav()"><i class="fas fa-star" style="margin-right:0.4rem;"></i> 見学・体験を申し込む（無料！）</a>
 </div>
 
 <section class="hero">
@@ -232,8 +245,8 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p class="hero-en">Higashi Osaka Wind Orchestra</p>
       <p class="hero-desc"><strong>ブランク何年でも大歓迎。</strong><br>東大阪に、大人も子供も一緒に音楽を楽しめる場所を作りたい。奇数週土曜日は一緒に奏でましょう！</p>
       <div class="hero-btns">
-        <a href="visit.html" class="btn-gold">🎺 見学・体験を申し込む（今なら無料！）</a>
-        <a href="about.html" class="btn-ghost">団について詳しく見る</a>
+        <a href="visit.html" class="btn-gold"><i class="fas fa-music" style="margin-right:0.4rem;"></i> 見学・体験を申し込む（今なら無料！）</a>
+        <a href="about.html" class="btn-ghost"><i class="fas fa-circle-info" style="margin-right:0.4rem;"></i> 団について詳しく見る</a>
       </div>
     </div>
   </div>
@@ -346,26 +359,87 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p class="lead">見学はいつでもOK！まずは雰囲気だけ感じに来てください。</p>
     </div>
     <div class="pcards reveal">
-      <div class="pcard"><div class="pcard-icon">📅</div><div><div class="pcard-cat">練習日</div><div class="pcard-val">奇数週 土曜日</div><p class="pcard-sub">13:00〜17:00</p></div></div>
-      <div class="pcard"><div class="pcard-icon">📍</div><div><div class="pcard-cat">場所</div><div class="pcard-val">東大阪市内</div><p class="pcard-sub">東大阪文化創造館 ほか</p></div></div>
-      <div class="pcard"><div class="pcard-icon">👀</div><div><div class="pcard-cat">費用</div><div class="pcard-val">見学・体験 無料！<span class="free-badge">期間限定</span></div><p class="pcard-sub">まずは気軽にお越しください</p></div></div>
-      <div class="pcard"><div class="pcard-icon">🎒</div><div><div class="pcard-cat">持ち物</div><div class="pcard-val">楽器・譜面台</div><p class="pcard-sub">お持ちでない方は応相談</p></div></div>
+      <div class="pcard"><div class="pcard-icon"><i class="fas fa-calendar-days" style="color:var(--blue);"></i></div><div><div class="pcard-cat">練習日</div><div class="pcard-val">奇数週 土曜日</div><p class="pcard-sub">13:00〜17:00</p></div></div>
+      <div class="pcard"><div class="pcard-icon"><i class="fas fa-location-dot" style="color:var(--blue);"></i></div><div><div class="pcard-cat">場所</div><div class="pcard-val">東大阪市内</div><p class="pcard-sub">東大阪文化創造館 ほか</p></div></div>
+      <div class="pcard"><div class="pcard-icon"><i class="fas fa-eye" style="color:var(--blue);"></i></div><div><div class="pcard-cat">費用</div><div class="pcard-val">見学・体験 無料！<span class="free-badge">期間限定</span></div><p class="pcard-sub">まずは気軽にお越しください</p></div></div>
+      <div class="pcard"><div class="pcard-icon"><i class="fas fa-bag-shopping" style="color:var(--blue);"></i></div><div><div class="pcard-cat">持ち物</div><div class="pcard-val">楽器・譜面台</div><p class="pcard-sub">お持ちでない方は応相談</p></div></div>
     </div>
   </div>
 </section>
 
 <section class="sec sec-blue" id="recruit">
-  <div class="inner reveal">
+  <div class="inner reveal" style="text-align:center;">
     <div class="recruit-num"><span>現在</span>7<span>名</span></div>
     <p style="margin-bottom:1rem; opacity:0.8;">CURRENT MEMBERS · 目標20名</p>
     <h2 class="h2 h2-white">団員募集中！</h2>
-    <p style="margin-bottom:2rem;">立ち上げメンバーとして一緒に団を育てていきませんか？</p>
-    <div class="parts">
-      <span class="part">Trumpet</span><span class="part">Trombone</span><span class="part">Horn</span>
-      <span class="part">Euphonium</span><span class="part">Tuba</span><span class="part">Clarinet</span>
-      <span class="part">Flute</span><span class="part">Oboe</span>
-      <span class="part">Percussion 🥁</span><span class="part">その他</span>
+    <p style="margin-bottom:0.5rem;">立ち上げメンバーとして一緒に団を育てていきませんか？</p>
+    <p style="font-size:0.8rem; opacity:0.6; margin-bottom:0;">※ 募集枠が埋まっているパートもお気軽にご相談ください</p>
+
+    <div class="part-grid">
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>フルート・ピッコロ</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り2枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>クラリネット</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り2枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>バスクラリネット</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>オーボエ</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>ファゴット</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>アルトサックス</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>テナーサックス</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card full">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>バリトンサックス</div>
+        <div class="part-slots slot-full"><i class="fas fa-circle-xmark"></i> 募集停止中</div>
+        <div class="part-note">ご希望の方はご相談ください</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>トランペット</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り2枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>ホルン</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>トロンボーン</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>ユーフォニアム</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>チューバ</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card">
+        <div class="part-name"><i class="fas fa-music" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.6;"></i>コントラバス</div>
+        <div class="part-slots slot-open"><i class="fas fa-circle-check"></i> 残り1枠</div>
+      </div>
+      <div class="part-card hot">
+        <div class="part-name"><i class="fas fa-drum" style="font-size:0.8rem;margin-right:0.4rem;opacity:0.8;"></i>パーカッション</div>
+        <div class="part-slots slot-hot"><i class="fas fa-star"></i> 大募集中！</div>
+        <div class="part-note" style="color:rgba(255,255,255,0.6);">何人でも歓迎します</div>
+      </div>
     </div>
+
     <a href="visit.html" class="btn-gold" style="max-width:300px; margin:0 auto;">見学・体験を申し込む（無料）</a>
   </div>
 </section>
@@ -378,12 +452,12 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p class="lead">まずは雰囲気を感じに来てください。見学・体験は今なら無料！</p>
     </div>
     <div class="reveal" style="max-width:480px;margin:2rem auto 0;background:#fff;border-radius:20px;border:1px solid var(--border);padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(33,74,154,.07);">
-      <div style="font-size:2.5rem;margin-bottom:1rem;">🎺</div>
+      <div style="font-size:2.5rem;margin-bottom:1rem;"><i class="fas fa-trumpet" style="color:var(--blue);"></i></div>
       <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:.6rem;">見学申込フォームへ</div>
       <p style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;">
         申込フォームの入力は<br>専用ページからお手続きいただけます。
       </p>
-      <a href="visit.html" class="btn-gold" style="display:block;text-align:center;">🎺 見学・体験を申し込む（今なら無料！）</a>
+      <a href="visit.html" class="btn-gold" style="display:block;text-align:center;"><i class="fas fa-music" style="margin-right:0.4rem;"></i> 見学・体験を申し込む（今なら無料！）</a>
     </div>
   </div>
 </section>
@@ -398,19 +472,19 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
     </div>
     <div class="contact-grid reveal">
       <div class="contact-card">
-        <div class="icon">🎼</div>
+        <div class="icon"><i class="fas fa-music" style="color:var(--blue);"></i></div>
         <h3>演奏・出演依頼</h3>
         <p>イベント・式典・コンサートへの出演依頼を承っております。まずはメールにてご相談ください。</p>
-        <a href="mailto:higashiosaka.winds@gmail.com?subject=演奏依頼について" class="btn-mail">📧 メールで依頼する</a>
+        <a href="mailto:higashiosaka.winds@gmail.com?subject=演奏依頼について" class="btn-mail"><i class="fas fa-envelope" style="margin-right:0.4rem;"></i> メールで依頼する</a>
       </div>
       <div class="contact-card">
-        <div class="icon">💬</div>
+        <div class="icon"><i class="fas fa-comment-dots" style="color:var(--blue);"></i></div>
         <h3>一般お問い合わせ</h3>
         <p>取材・メディア掲載・その他ご不明な点がございましたら、お気軽にメールにてお問い合わせください。</p>
-        <a href="mailto:higashiosaka.winds@gmail.com?subject=お問い合わせ" class="btn-mail">📧 メールする</a>
+        <a href="mailto:higashiosaka.winds@gmail.com?subject=お問い合わせ" class="btn-mail"><i class="fas fa-envelope" style="margin-right:0.4rem;"></i> メールする</a>
       </div>
     </div>
-    <p style="text-align:center; margin-top:2rem; font-size:0.8rem; color:var(--muted);">📮 higashiosaka.winds@gmail.com</p>
+    <p style="text-align:center; margin-top:2rem; font-size:0.8rem; color:var(--muted);"><i class="fas fa-envelope" style="margin-right:0.3rem;"></i> higashiosaka.winds@gmail.com</p>
   </div>
 </section>
 
