@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>東大阪吹奏楽団 | 一緒に奏でよう東大阪の音</title>
-<meta name="description" content="東大阪市の地域吹奏楽団。ブランク歓迎・年齢不問・毎週土曜練習。楽器をもう一度吹きませんか？見学¥500〜">
+<meta name="description" content="東大阪市の地域吹奏楽団。ブランク歓迎・年齢不問・奇数週土曜練習。楽器をもう一度吹きませんか？見学無料！">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
@@ -153,6 +153,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .parts { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin: 2rem 0; }
 .part { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; }
 
+/* 演奏依頼セクション */
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+.contact-card { background: white; border-radius: 16px; padding: 2rem; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+.contact-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.contact-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+.contact-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+.btn-mail { display: inline-block; background: var(--blue); color: white; padding: 14px 24px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 0.9rem; transition: background 0.2s; }
+.btn-mail:hover { background: var(--navy); }
+
 .form-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; color: var(--text); }
 .form-head { background: var(--navy); color: white; padding: 1.5rem; text-align: center; border-bottom: 2px solid var(--gold); }
 .form-body { padding: 2rem; }
@@ -161,6 +170,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .fg label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; }
 .fg input, .fg select, .fg textarea { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; }
 .form-note { font-size: 0.7rem; color: var(--muted); margin-top: 1rem; line-height: 1.6; text-align: center; }
+
+/* 無料バッジ */
+.free-badge {
+  display: inline-block; background: #E8F5E9; color: #2E7D32;
+  font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  border: 1px solid #A5D6A7; margin-left: 0.5rem; vertical-align: middle;
+}
 
 footer { background: var(--navy); padding: 4rem 0; text-align: center; border-top: 2px solid var(--gold); color: white; }
 .footer-logo img { height: 40px; filter: brightness(0) invert(1); margin-bottom: 1.5rem; }
@@ -202,7 +218,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
     <li><a href="faq.html" onclick="closeNav()">❓ よくある質問</a></li>
     <li><a href="visit.html" onclick="closeNav()">📝 見学申込</a></li>
   </ul>
-  <a href="visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+  <a href="visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む（無料！）</a>
 </div>
 
 <section class="hero">
@@ -214,16 +230,16 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
     <div class="inner">
       <h1 class="hero-h1">楽しく楽器、<br>一緒に吹きましょう！</h1>
       <p class="hero-en">Higashi Osaka Wind Orchestra</p>
-      <p class="hero-desc"><strong>ブランク何年でも大歓迎。</strong><br>東大阪に、大人も子供も一緒に音楽を楽しめる場所を作りたい。毎週土曜日は一緒に奏でましょう！</p>
+      <p class="hero-desc"><strong>ブランク何年でも大歓迎。</strong><br>東大阪に、大人も子供も一緒に音楽を楽しめる場所を作りたい。奇数週土曜日は一緒に奏でましょう！</p>
       <div class="hero-btns">
-        <a href="visit.html" class="btn-gold">🎺 見学・体験を申し込む（¥500〜）</a>
+        <a href="visit.html" class="btn-gold">🎺 見学・体験を申し込む（今なら無料！）</a>
         <a href="about.html" class="btn-ghost">団について詳しく見る</a>
       </div>
     </div>
   </div>
   <div class="stats">
-    <div class="stat"><span class="stat-num">¥500</span><span class="stat-label">見学・体験</span></div>
-    <div class="stat"><span class="stat-num">毎週</span><span class="stat-label">土曜練習</span></div>
+    <div class="stat"><span class="stat-num">無料</span><span class="stat-label">見学・体験</span></div>
+    <div class="stat"><span class="stat-num">奇数週</span><span class="stat-label">土曜練習</span></div>
     <div class="stat"><span class="stat-num">全</span><span class="stat-label">世代・パート歓迎</span></div>
   </div>
 </section>
@@ -294,7 +310,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <div class="feat">
         <div class="feat-num">02</div>
         <div>
-          <div class="feat-title">毎週土曜のゆるやかな練習</div>
+          <div class="feat-title">奇数週土曜のゆるやかな練習</div>
           <p class="feat-text">仕事・家庭・学業と両立できるペースで活動。参加できない週があっても大丈夫。無理なく続けられる環境を大切にしています。</p>
         </div>
       </div>
@@ -327,12 +343,12 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
     <div class="reveal">
       <p class="eyebrow">Practice</p>
       <h2 class="h2">練習案内</h2>
-      <p class="lead">見学はいつでもOK!まずは雰囲気だけ感じに来てください。</p>
+      <p class="lead">見学はいつでもOK！まずは雰囲気だけ感じに来てください。</p>
     </div>
     <div class="pcards reveal">
-      <div class="pcard"><div class="pcard-icon">📅</div><div><div class="pcard-cat">練習日</div><div class="pcard-val">毎週土曜日</div><p class="pcard-sub">18:00〜21:00</p></div></div>
+      <div class="pcard"><div class="pcard-icon">📅</div><div><div class="pcard-cat">練習日</div><div class="pcard-val">奇数週 土曜日</div><p class="pcard-sub">13:00〜17:00</p></div></div>
       <div class="pcard"><div class="pcard-icon">📍</div><div><div class="pcard-cat">場所</div><div class="pcard-val">東大阪市内</div><p class="pcard-sub">東大阪文化創造館 ほか</p></div></div>
-      <div class="pcard"><div class="pcard-icon">👀</div><div><div class="pcard-cat">費用</div><div class="pcard-val">見学 ¥500 / 回</div><p class="pcard-sub">最大3回まで体験可能</p></div></div>
+      <div class="pcard"><div class="pcard-icon">👀</div><div><div class="pcard-cat">費用</div><div class="pcard-val">見学・体験 無料！<span class="free-badge">期間限定</span></div><p class="pcard-sub">まずは気軽にお越しください</p></div></div>
       <div class="pcard"><div class="pcard-icon">🎒</div><div><div class="pcard-cat">持ち物</div><div class="pcard-val">楽器・譜面台</div><p class="pcard-sub">お持ちでない方は応相談</p></div></div>
     </div>
   </div>
@@ -340,17 +356,17 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 
 <section class="sec sec-blue" id="recruit">
   <div class="inner reveal">
-    <div class="recruit-num"><span>現在</span>4<span>名</span></div>
+    <div class="recruit-num"><span>現在</span>7<span>名</span></div>
     <p style="margin-bottom:1rem; opacity:0.8;">CURRENT MEMBERS · 目標20名</p>
-    <h2 class="h2 h2-white">全パート大募集中！</h2>
+    <h2 class="h2 h2-white">団員募集中！</h2>
     <p style="margin-bottom:2rem;">立ち上げメンバーとして一緒に団を育てていきませんか？</p>
     <div class="parts">
       <span class="part">Trumpet</span><span class="part">Trombone</span><span class="part">Horn</span>
       <span class="part">Euphonium</span><span class="part">Tuba</span><span class="part">Clarinet</span>
-      <span class="part">Saxophone</span><span class="part">Flute</span><span class="part">Oboe</span>
+      <span class="part">Flute</span><span class="part">Oboe</span>
       <span class="part">Percussion 🥁</span><span class="part">その他</span>
     </div>
-    <a href="visit.html" class="btn-gold" style="max-width:300px; margin:0 auto;">見学・体験を申し込む</a>
+    <a href="visit.html" class="btn-gold" style="max-width:300px; margin:0 auto;">見学・体験を申し込む（無料）</a>
   </div>
 </section>
 
@@ -359,16 +375,42 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
     <div class="reveal" style="text-align:center;">
       <p class="eyebrow">Join Us</p>
       <h2 class="h2">見学・体験を申し込む</h2>
-      <p class="lead">まずは雰囲気を感じに来てください。見学費¥500 / 回（最大3回）。</p>
+      <p class="lead">まずは雰囲気を感じに来てください。見学・体験は今なら無料！</p>
     </div>
     <div class="reveal" style="max-width:480px;margin:2rem auto 0;background:#fff;border-radius:20px;border:1px solid var(--border);padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(33,74,154,.07);">
       <div style="font-size:2.5rem;margin-bottom:1rem;">🎺</div>
       <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:.6rem;">見学申込フォームへ</div>
       <p style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;">
-        申込フォームの入力・見学費のお支払いは<br>専用ページからお手続きいただけます。
+        申込フォームの入力は<br>専用ページからお手続きいただけます。
       </p>
-      <a href="visit.html" class="btn-gold" style="display:block;text-align:center;">🎺 見学・体験を申し込む（¥500〜）</a>
+      <a href="visit.html" class="btn-gold" style="display:block;text-align:center;">🎺 見学・体験を申し込む（今なら無料！）</a>
     </div>
+  </div>
+</section>
+
+<!-- 演奏依頼・お問い合わせセクション -->
+<section class="sec sec-bg" id="contact">
+  <div class="inner">
+    <div class="reveal" style="text-align:center;">
+      <p class="eyebrow">Contact</p>
+      <h2 class="h2">演奏依頼・お問い合わせ</h2>
+      <p class="lead">演奏会・イベントへの出演依頼、取材・メディア掲載のご相談など、お気軽にご連絡ください。</p>
+    </div>
+    <div class="contact-grid reveal">
+      <div class="contact-card">
+        <div class="icon">🎼</div>
+        <h3>演奏・出演依頼</h3>
+        <p>イベント・式典・コンサートへの出演依頼を承っております。まずはメールにてご相談ください。</p>
+        <a href="mailto:higashiosaka.winds@gmail.com?subject=演奏依頼について" class="btn-mail">📧 メールで依頼する</a>
+      </div>
+      <div class="contact-card">
+        <div class="icon">💬</div>
+        <h3>一般お問い合わせ</h3>
+        <p>取材・メディア掲載・その他ご不明な点がございましたら、お気軽にメールにてお問い合わせください。</p>
+        <a href="mailto:higashiosaka.winds@gmail.com?subject=お問い合わせ" class="btn-mail">📧 メールする</a>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:2rem; font-size:0.8rem; color:var(--muted);">📮 higashiosaka.winds@gmail.com</p>
   </div>
 </section>
 
@@ -383,6 +425,7 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <a href="join.html" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">練習案内</a>
       <a href="faq.html" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">よくある質問</a>
       <a href="visit.html" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">見学申込</a>
+      <a href="#contact" style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;">お問い合わせ</a>
       <a href="yakkan.html" style="font-size:0.75rem;color:rgba(255,255,255,0.3);text-decoration:none;">定款</a>
     </div>
     <div class="footer-sns">
@@ -452,40 +495,6 @@ async function loadNews() {
   }
 }
 loadNews();
-
-// フォーム送信
-const GAS = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
-const theForm = document.getElementById('theForm');
-if (theForm) {
-  theForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name = document.getElementById('f-name').value.trim();
-    const inst = document.getElementById('f-inst').value;
-    const email = document.getElementById('f-email').value.trim();
-    const msg = document.getElementById('f-msg') ? document.getElementById('f-msg').value.trim() : '';
-    const err = document.getElementById('errBox');
-    if (err) err.style.display = 'none';
-    if (!name || !inst || !email) {
-      if (err) { err.textContent = '※ お名前・楽器・メールアドレスは必須です。'; err.style.display = 'block'; }
-      return;
-    }
-    const btn = document.getElementById('f-btn');
-    if (btn) btn.disabled = true;
-    const fd = new FormData();
-    fd.append('name', name); fd.append('instrument', inst);
-    fd.append('email', email); fd.append('message', msg);
-    fetch(GAS, {method:'POST', mode:'no-cors', body:fd})
-      .then(() => {
-        if (theForm) theForm.style.display = 'none';
-        const ok = document.getElementById('okBox');
-        if (ok) ok.style.display = 'block';
-      })
-      .catch(() => {
-        if (err) { err.textContent = '送信に失敗しました。'; err.style.display = 'block'; }
-        if (btn) btn.disabled = false;
-      });
-  });
-}
 
 // カルーセル
 function initCarousel(slides) {
