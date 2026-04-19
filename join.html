@@ -4,591 +4,343 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>練習案内・入団申込 | 東大阪吹奏楽団</title>
-<meta name="description" content="東大阪吹奏楽団の練習日程・場所・入団方法・見学申込はこちら。毎週土曜練習、見学¥500〜。">
+<meta name="description" content="東大阪吹奏楽団の練習案内・入団申込ページ。奇数週土曜13:00〜17:00、東大阪市内で練習中。見学無料！楽器がない方もご相談ください。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --blue: #214A9A;
-  --navy: #1C2B4A;
-  --gold: #C8A44D;
-  --goldhv: #D9B85E;
-  --white: #ffffff;
-  --bg: #F7F8FA;
-  --text: #1A1A1A;
-  --muted: #606070;
-  --border: #DDE1EC;
+  --blue:#214A9A; --navy:#1C2B4A; --gold:#C8A44D;
+  --white:#fff; --bg:#F7F8FA; --text:#1A1A1A; --muted:#606070; --border:#DDE1EC;
 }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:1000px;margin:0 auto;padding:0 1.5rem;width:100%;}
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+#site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(200,164,77,0.25);
+}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;}
+#nav-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+#ham-btn{width:44px;height:44px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+#ham-btn span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
 
-.inner { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; width: 100%; }
+#site-drawer{display:none;position:fixed;top:56px;left:0;right:0;bottom:0;z-index:999;background:var(--navy);overflow-y:auto;padding:1.5rem 1.5rem 3rem;}
+#site-drawer.open{display:block;}
+#site-drawer ul{list-style:none;}
+#site-drawer ul li a{display:flex;align-items:center;gap:0.8rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);text-decoration:none;font-size:1rem;font-weight:500;}
+#drawer-cta{display:block;text-align:center;margin-top:1.5rem;background:var(--gold);color:white;padding:16px;border-radius:14px;font-weight:700;text-decoration:none;}
 
-/* ===== NAV ===== */
-#site-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  height: 56px;
-  background: rgba(28, 43, 74, 0.97);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(200, 164, 77, 0.25);
-}
-.nav-inner {
-  height: 100%;
-  display: flex; align-items: center; justify-content: space-between;
-}
-#nav-logo img { height: 32px; width: auto; filter: brightness(0) invert(1); }
-#ham-btn {
-  width: 44px; height: 44px; border: none; background: none; cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-}
-#ham-btn span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: all 0.3s; }
+.page-hero{background:var(--navy);padding:100px 0 60px;text-align:center;color:white;}
+.page-hero .eyebrow{font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:800;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.8rem;}
+.page-hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;margin-bottom:1rem;}
+.page-hero p{font-size:0.95rem;color:rgba(255,255,255,0.75);line-height:1.8;}
 
-/* ===== DRAWER ===== */
-#site-drawer {
-  display: none;
-  position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
-  z-index: 999;
-  background: var(--navy);
-  overflow-y: auto;
-  padding: 1.5rem 1.5rem 3rem;
-}
-#site-drawer.open { display: block; }
-#site-drawer ul { list-style: none; }
-#site-drawer ul li a {
-  display: flex; align-items: center; gap: 0.8rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.85); text-decoration: none;
-  font-size: 1rem; font-weight: 500;
-}
-#drawer-cta {
-  display: block; text-align: center; margin-top: 1.5rem;
-  background: var(--gold); color: white;
-  padding: 16px; border-radius: 14px;
-  font-weight: 700; text-decoration: none;
-}
+.breadcrumb{background:var(--navy);border-top:1px solid rgba(255,255,255,0.08);padding:0.6rem 0;}
+.breadcrumb-inner{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:rgba(255,255,255,0.4);}
+.breadcrumb-inner a{color:rgba(255,255,255,0.4);text-decoration:none;}
+.breadcrumb-inner a:hover{color:rgba(255,255,255,0.7);}
 
-/* ===== PAGE HEADER ===== */
-.page-header {
-  padding-top: 56px;
-  background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 100%);
-  position: relative; overflow: hidden;
-}
-.page-header::before {
-  content: '';
-  position: absolute; top: -60px; right: -60px;
-  width: 300px; height: 300px; border-radius: 50%;
-  background: rgba(200, 164, 77, 0.08);
-}
-.page-header-inner {
-  position: relative; z-index: 1;
-  padding: 3rem 1.5rem 3.5rem;
-  max-width: 1000px; margin: 0 auto;
-}
-.page-eyebrow {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--gold);
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 0.8rem;
-}
-.page-eyebrow::before { content: ''; width: 16px; height: 1.5px; background: var(--gold); }
-.page-header h1 {
-  font-family: 'Shippori Mincho', serif;
-  font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 700;
-  color: white; line-height: 1.3; margin-bottom: 0.8rem;
-}
-.page-header p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.72); line-height: 1.9; }
+.sec{padding:80px 0;}
+.sec-bg{background:var(--bg);}
+.sec-white{background:var(--white);}
+.sec-navy{background:var(--navy);color:white;}
 
-/* ===== BREADCRUMB ===== */
-.breadcrumb { background: var(--white); padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
-.breadcrumb-inner { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--muted); }
-.breadcrumb-inner a { color: var(--blue); text-decoration: none; }
+.eyebrow{font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:800;color:var(--blue);margin-bottom:0.8rem;letter-spacing:0.2em;text-transform:uppercase;}
+.eyebrow-white{color:var(--gold);}
+.h2{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:1.5rem;}
+.h2-white{color:white;}
 
-/* ===== SECTIONS ===== */
-.sec { padding: 64px 0; }
-.sec-white { background: var(--white); }
-.sec-bg { background: var(--bg); }
-.sec-navy { background: var(--navy); }
-.gold-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(200, 164, 77, 0.4), transparent); }
+/* カレンダー */
+.cal-wrap{background:white;border-radius:16px;border:1px solid var(--border);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.cal-head{background:var(--navy);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.cal-head span{color:white;font-weight:700;font-size:0.9rem;}
+.cal-head a{color:var(--gold);font-size:0.75rem;text-decoration:none;}
+.cal-head a:hover{text-decoration:underline;}
+.cal-body{padding:1rem;}
+#cal-list{min-height:80px;}
+.cal-item{display:flex;align-items:flex-start;gap:1rem;padding:0.8rem 0;border-bottom:1px solid var(--border);}
+.cal-item:last-child{border-bottom:none;}
+.cal-date-box{background:var(--blue);color:white;border-radius:10px;padding:0.4rem 0.7rem;text-align:center;min-width:52px;flex-shrink:0;}
+.cal-date-box .mon{font-size:0.6rem;opacity:0.8;}
+.cal-date-box .day{font-size:1.3rem;font-weight:800;font-family:'Outfit',sans-serif;line-height:1;}
+.cal-info-title{font-weight:700;font-size:0.9rem;color:var(--navy);}
+.cal-info-sub{font-size:0.78rem;color:var(--muted);margin-top:0.2rem;}
 
-.eyebrow {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.63rem; font-weight: 800; letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--blue); margin-bottom: 0.5rem;
-  display: flex; align-items: center; gap: 8px;
-}
-.eyebrow::before { content: ''; width: 16px; height: 1.5px; background: var(--gold); }
-.eyebrow-light { color: var(--gold); }
-.h2 {
-  font-family: 'Shippori Mincho', serif;
-  font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700;
-  line-height: 1.35; margin-bottom: 1rem; color: var(--navy);
-}
-.h2-white { color: white; }
-.lead { font-size: 0.9rem; color: var(--muted); line-height: 1.95; margin-bottom: 2rem; }
+/* 会場カード */
+.venue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:2rem;}
+.venue-card{background:white;border-radius:16px;border:1px solid var(--border);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.venue-map{width:100%;height:180px;border:none;display:block;}
+.venue-body{padding:1.2rem;}
+.venue-name{font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:0.4rem;}
+.venue-addr{font-size:0.8rem;color:var(--muted);line-height:1.6;}
+.venue-access{font-size:0.78rem;color:var(--blue);margin-top:0.5rem;display:flex;align-items:flex-start;gap:0.4rem;}
 
-/* ===== CALENDAR ===== */
-.cal-wrap {
-  background: var(--navy); border-radius: 16px; overflow: hidden;
-  border: 1px solid rgba(200, 164, 77, 0.2);
-  box-shadow: 0 4px 24px rgba(33, 74, 154, 0.15);
-}
-.cal-head {
-  display: flex; align-items: center; gap: 0.8rem;
-  padding: 1rem 1.2rem;
-  border-bottom: 1px solid rgba(200, 164, 77, 0.2);
-}
-.cal-head-title { font-size: 0.82rem; font-weight: 700; color: white; flex: 1; }
-.cal-head-link { font-size: 0.7rem; color: var(--gold); text-decoration: none; white-space: nowrap; }
-.cal-head-link:hover { text-decoration: underline; }
+/* 持ち物 */
+.prepare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem;}
+.prepare-card{background:white;border-radius:14px;border:1px solid var(--border);padding:1.5rem;text-align:center;}
+.prepare-icon{font-size:1.8rem;color:var(--blue);margin-bottom:0.8rem;}
+.prepare-title{font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
+.prepare-desc{font-size:0.8rem;color:var(--muted);line-height:1.6;}
 
-.cal-item {
-  display: grid; grid-template-columns: 76px 1fr;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-.cal-item:last-child { border-bottom: none; }
-.cal-date {
-  padding: 1rem 0.8rem;
-  background: rgba(255, 255, 255, 0.04);
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.cal-mon { font-family: 'Outfit', sans-serif; font-size: 0.58rem; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.05em; margin-bottom: 1px; }
-.cal-day { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: white; line-height: 1; }
-.cal-wd { font-size: 0.62rem; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-top: 3px; }
-.cal-wd-sat { background: rgba(33, 74, 154, 0.5); color: #9BB3E8; }
-.cal-wd-sun { background: rgba(192, 57, 43, 0.4); color: #E8A0A0; }
-.cal-wd-week { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.5); }
-.cal-info { padding: 1rem 1.2rem; }
-.cal-title { font-size: 0.9rem; font-weight: 700; color: white; margin-bottom: 0.25rem; }
-.cal-loc { font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); }
-.cal-desc-text { font-size: 0.75rem; color: rgba(255, 255, 255, 0.4); margin-top: 0.2rem; }
-.cal-empty { padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; color: rgba(255, 255, 255, 0.45); line-height: 1.8; }
-.cal-loading { padding: 1.5rem; font-size: 0.8rem; color: rgba(255, 255, 255, 0.4); }
+.alert-box{background:#FFF8E1;border:1px solid #FFE082;border-radius:12px;padding:1.2rem 1.5rem;margin-top:2rem;font-size:0.88rem;line-height:1.7;color:#5D4037;display:flex;gap:0.8rem;align-items:flex-start;}
+.alert-box i{color:#F9A825;margin-top:0.1rem;flex-shrink:0;}
 
-/* ===== LOCATION ===== */
-.location-grid { display: flex; flex-direction: column; gap: 1rem; }
-@media (min-width: 700px) { .location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; } }
-.location-card {
-  background: var(--white); border-radius: 16px; overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: 0 2px 12px rgba(33, 74, 154, 0.07);
-}
-.location-map iframe { width: 100%; height: 200px; display: block; border: none; }
-.location-body { padding: 1.2rem; }
-.location-name { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
-.location-address { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.6rem; }
-.location-access { font-size: 0.78rem; color: var(--muted); display: flex; align-items: flex-start; gap: 5px; line-height: 1.6; }
-.location-access::before { content: '🚃'; flex-shrink: 0; font-size: 0.75rem; margin-top: 1px; }
+/* 費用 */
+.fee-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2rem;}
+.fee-card{background:white;border-radius:16px;border:2px solid var(--border);padding:2rem;text-align:center;}
+.fee-card.featured{border-color:var(--gold);box-shadow:0 4px 20px rgba(200,164,77,0.15);}
+.fee-badge{display:inline-block;background:var(--gold);color:white;font-size:0.65rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:0.8rem;}
+.fee-label{font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem;}
+.fee-price{font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:800;color:var(--navy);line-height:1;}
+.fee-price span{font-size:1rem;font-weight:400;}
+.fee-free{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:#2E7D32;line-height:1;}
+.fee-note{font-size:0.75rem;color:var(--muted);margin-top:0.8rem;line-height:1.6;}
 
-/* ===== CHECKLIST ===== */
-.checklist { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.5rem; }
-.check-item {
-  background: var(--white); border-radius: 12px; padding: 1rem;
-  border: 1px solid var(--border);
-  display: flex; gap: 0.8rem; align-items: flex-start;
-}
-.check-icon {
-  width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px;
-  background: linear-gradient(135deg, #EEF2FB, #D5DFFA);
-  display: flex; align-items: center; justify-content: center; font-size: 1rem;
-}
-.check-label { font-size: 0.7rem; font-weight: 700; color: var(--blue); margin-bottom: 0.15rem; }
-.check-val { font-size: 0.88rem; font-weight: 700; color: var(--navy); }
-.check-note { font-size: 0.74rem; color: var(--muted); margin-top: 0.1rem; }
-.notice-box {
-  background: rgba(33, 74, 154, 0.06); border-radius: 12px;
-  padding: 1.2rem; border-left: 3px solid var(--blue);
-}
-.notice-box p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
-.notice-box strong { color: var(--navy); }
+/* 入団フロー */
+.flow{display:grid;gap:1rem;margin-top:2rem;}
+.flow-item{display:flex;gap:1.5rem;background:white;border-radius:16px;padding:1.5rem;border:1px solid var(--border);align-items:flex-start;}
+.flow-num{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:var(--border);line-height:1;flex-shrink:0;min-width:2rem;}
+.flow-title{font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
+.flow-desc{font-size:0.85rem;color:var(--muted);line-height:1.7;}
 
-/* ===== FEE ===== */
-.fee-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-.fee-card {
-  background: var(--white); border-radius: 14px; padding: 1.4rem 1rem;
-  text-align: center; border: 1px solid var(--border);
-  box-shadow: 0 2px 10px rgba(33, 74, 154, 0.07);
-}
-.fee-card.featured { border-color: var(--gold); background: linear-gradient(135deg, #FFFBF0, #FFF8E0); }
-.fee-label { font-size: 0.7rem; font-weight: 700; color: var(--muted); margin-bottom: 0.6rem; letter-spacing: 0.05em; }
-.fee-price {
-  display: flex; align-items: baseline; justify-content: center; gap: 2px;
-  font-family: 'Outfit', sans-serif; color: var(--navy); margin-bottom: 0.4rem;
-}
-.fee-price .yen { font-size: 0.9rem; font-weight: 600; }
-.fee-price .num { font-size: 2.2rem; font-weight: 800; line-height: 1; }
-.fee-card.featured .fee-price { color: var(--gold); }
-.fee-note { font-size: 0.72rem; color: var(--muted); line-height: 1.6; }
+.btn-gold{background:var(--gold);color:white;padding:16px;border-radius:12px;font-weight:700;text-decoration:none;display:block;text-align:center;}
+.btn-ghost{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:14px;border-radius:12px;text-decoration:none;display:block;text-align:center;}
 
-/* ===== FLOW ===== */
-.flow { display: flex; flex-direction: column; }
-.flow-item { display: flex; gap: 1rem; position: relative; }
-.flow-item:not(:last-child)::before {
-  content: ''; position: absolute; left: 19px; top: 40px; bottom: 0;
-  width: 2px; background: linear-gradient(to bottom, var(--gold), rgba(200, 164, 77, 0.1));
-}
-.flow-num {
-  width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%;
-  background: var(--gold); color: white;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.9rem;
-  position: relative; z-index: 1;
-}
-.flow-body { padding: 0 0 2rem; }
-.flow-title { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; padding-top: 0.5rem; }
-.flow-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+footer{background:var(--navy);padding:4rem 0;text-align:center;border-top:2px solid var(--gold);color:white;}
+.footer-logo img{height:40px;filter:brightness(0) invert(1);margin-bottom:1.5rem;}
+.footer-links{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;margin:1.2rem 0;}
+.footer-links a{font-size:0.75rem;color:rgba(255,255,255,0.5);text-decoration:none;}
+.footer-sns{display:flex;justify-content:center;gap:1rem;margin:2rem 0;}
+.footer-sns a{width:44px;height:44px;background:rgba(255,255,255,0.05);border-radius:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.1rem;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);transition:background 0.2s,color 0.2s;}
+.footer-sns a.sns-instagram:hover{background:#E1306C;border-color:#E1306C;color:white;}
+.footer-sns a.sns-youtube:hover{background:#FF0000;border-color:#FF0000;color:white;}
+.footer-sns a.sns-line:hover{background:#06C755;border-color:#06C755;color:white;}
 
-/* ===== FORM ===== */
-.form-card {
-  background: var(--white); border-radius: 20px; overflow: hidden;
-  box-shadow: 0 8px 40px rgba(33, 74, 154, 0.1);
-  border: 1px solid var(--border);
-}
-.form-head {
-  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
-  padding: 1.5rem; border-bottom: 2px solid var(--gold);
-}
-.form-head-title { font-size: 1.05rem; font-weight: 700; color: white; margin-bottom: 0.2rem; }
-.form-head-sub { font-size: 0.75rem; color: rgba(255, 255, 255, 0.65); }
-.form-body { padding: 1.5rem; }
-.fg { margin-bottom: 1rem; }
-.fg label { display: block; font-size: 0.73rem; font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; }
-.fg label .req { color: var(--gold); margin-left: 2px; }
-.fg input, .fg select, .fg textarea {
-  width: 100%; padding: 11px 13px;
-  border: 1.5px solid var(--border); border-radius: 10px;
-  font-size: 0.88rem; font-family: inherit;
-  background: var(--bg); outline: none;
-  transition: border-color 0.2s;
-  -webkit-appearance: none; color: var(--text);
-}
-.fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--blue); background: white; }
-.fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-.btn-submit {
-  width: 100%; padding: 15px;
-  background: var(--gold); color: white; border: none; border-radius: 12px;
-  font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer;
-  box-shadow: 0 4px 16px rgba(200, 164, 77, 0.35);
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  transition: background 0.2s;
-}
-.btn-submit:hover { background: var(--goldhv); }
-.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-.spinner {
-  width: 16px; height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.4); border-top-color: white;
-  border-radius: 50%; animation: spin 0.7s linear infinite; display: none;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.form-note { font-size: 0.7rem; color: var(--muted); text-align: center; margin-top: 0.8rem; line-height: 1.6; }
-.err-box {
-  display: none; background: #FFF0F0; border: 1.5px solid #FFCCCC;
-  border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; color: #C0392B; margin-bottom: 1rem;
-}
-.ok-box { display: none; text-align: center; padding: 2.5rem 1rem; }
-.ok-icon { font-size: 3rem; margin-bottom: 1rem; }
-.ok-title { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
-.ok-text { font-size: 0.85rem; color: var(--muted); line-height: 1.8; }
-
-/* ===== FOOTER ===== */
-footer {
-  background: var(--navy); padding: 2.5rem 0 3rem;
-  border-top: 2px solid rgba(200, 164, 77, 0.2);
-}
-.footer-logo { margin-bottom: 1rem; }
-.footer-logo img { height: 36px; width: auto; filter: brightness(0) invert(1); opacity: 0.8; }
-.footer-desc { font-size: 0.78rem; color: rgba(255, 255, 255, 0.5); line-height: 1.85; margin-bottom: 1.5rem; max-width: 500px; }
-.footer-links { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; margin-bottom: 2rem; max-width: 320px; }
-.footer-links a { color: rgba(255, 255, 255, 0.55); text-decoration: none; font-size: 0.8rem; padding: 5px 0; transition: color 0.2s; }
-.footer-links a:hover { color: var(--gold); }
-.footer-sns { display: flex; gap: 1rem; margin-bottom: 2rem; }
-.footer-sns a {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; text-decoration: none; color: rgba(255, 255, 255, 0.7); transition: background 0.2s, color 0.2s;
-}
-.footer-sns a.sns-instagram:hover { background: #E1306C; border-color: #E1306C; color: white; }
-.footer-sns a.sns-youtube:hover { background: #FF0000; border-color: #FF0000; color: white; }
-.footer-sns a.sns-line:hover { background: #06C755; border-color: #06C755; color: white; }
-.footer-copy { font-size: 0.67rem; color: rgba(255, 255, 255, 0.2); }
-
-/* ===== UTILS ===== */
-.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s ease, transform 0.65s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.scroll-top {
-  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50;
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--blue); color: white; border: 2px solid var(--gold);
-  font-size: 1rem; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity 0.3s;
-  box-shadow: 0 4px 16px rgba(33, 74, 154, 0.35);
-}
-.scroll-top.show { opacity: 1; }
+.scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;z-index:50;width:42px;height:42px;border-radius:50%;background:var(--blue);color:white;border:2px solid var(--gold);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;box-shadow:0 4px 16px rgba(33,74,154,0.35);}
+.scroll-top.show{opacity:1;}
+.reveal{opacity:0;transform:translateY(20px);transition:0.8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav id="site-nav">
   <div class="inner nav-inner">
-    <a href="" id="nav-logo"><img src="higasui.svg" alt="東大阪吹奏楽団"></a>
-    <button id="ham-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+    <a href="index.html" id="nav-logo"><img src="higasui.svg" alt="東大阪吹奏楽団"></a>
+    <button id="ham-btn"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<!-- DRAWER -->
 <div id="site-drawer">
   <ul>
-    <li><a href="about.html" onclick="closeNav()">🎷 団について</a></li>
-    <li><a href="join.html" onclick="closeNav()">📅 練習案内・入団</a></li>
-    <li><a href="faq.html" onclick="closeNav()">❓ よくある質問</a></li>
-    <li><a href="visit.html" onclick="closeNav()">📝 見学申込</a></li>
+    <li><a href="about.html" onclick="closeNav()"><i class="fas fa-users" style="width:1.2rem;"></i> 団について</a></li>
+    <li><a href="join.html" onclick="closeNav()"><i class="fas fa-calendar" style="width:1.2rem;"></i> 練習案内・入団</a></li>
+    <li><a href="faq.html" onclick="closeNav()"><i class="fas fa-circle-question" style="width:1.2rem;"></i> よくある質問</a></li>
+    <li><a href="visit.html" onclick="closeNav()"><i class="fas fa-pen-to-square" style="width:1.2rem;"></i> 見学申込</a></li>
   </ul>
-  <a href="visit.html" id="drawer-cta" onclick="closeNav()">🎺 見学・体験を申し込む</a>
+  <a href="visit.html" id="drawer-cta" onclick="closeNav()"><i class="fas fa-star" style="margin-right:0.4rem;"></i> 見学・体験を申し込む（無料！）</a>
 </div>
 
-<!-- PAGE HEADER -->
-<div class="page-header">
-  <div class="page-header-inner">
-    <p class="page-eyebrow">Practice &amp; Join</p>
+<section class="page-hero">
+  <div class="inner">
+    <p class="eyebrow">Practice &amp; Join</p>
     <h1>練習案内・入団申込</h1>
-    <p>毎週土曜日、東大阪市内で練習しています。見学は¥500〜、楽器がない方もご相談ください。</p>
+    <p>奇数週土曜日、東大阪市内で練習しています。見学は今なら無料！楽器がない方もご相談ください。</p>
   </div>
-</div>
+</section>
 
-<!-- BREADCRUMB -->
 <div class="breadcrumb">
   <div class="inner breadcrumb-inner">
-    <a href="">TOP</a>
-    <span>›</span>
+    <a href="index.html">TOP</a>
+    <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
     <span>練習案内・入団申込</span>
   </div>
 </div>
 
-<!-- CALENDAR -->
-<section class="sec sec-bg" id="calendar">
-  <div class="inner">
-    <div class="reveal">
-      <p class="eyebrow">Schedule</p>
-      <h2 class="h2">練習日程</h2>
-      <p class="lead">最新の練習日程はこちらから確認できます。変更がある場合はInstagramでもお知らせします。</p>
-    </div>
-    <div class="cal-wrap reveal">
+<!-- 練習日程 -->
+<section class="sec sec-bg" id="schedule">
+  <div class="inner reveal">
+    <p class="eyebrow">Schedule</p>
+    <h2 class="h2">練習日程</h2>
+    <p style="color:var(--muted);line-height:1.8;margin-bottom:1.5rem;">最新の練習日程はこちらから確認できます。変更がある場合はInstagramでもお知らせします。</p>
+    <div class="cal-wrap">
       <div class="cal-head">
-        <span style="font-size:1rem;">📅</span>
-        <span class="cal-head-title">練習スケジュール（直近3ヶ月）</span>
-        <a href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds%40gmail.com" target="_blank" class="cal-head-link">Googleカレンダーで開く →</a>
+        <span><i class="fas fa-calendar-days" style="margin-right:0.5rem;color:var(--gold);"></i>練習スケジュール（直近3ヶ月）</span>
+        <a href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds%40gmail.com" target="_blank">Googleカレンダーで開く <i class="fas fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i></a>
       </div>
-      <div id="cal-list">
-        <div class="cal-loading">読み込み中...</div>
+      <div class="cal-body">
+        <div id="cal-list"><p style="color:var(--muted);font-size:0.85rem;padding:1rem 0;">読み込み中...</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="gold-line"></div>
-
-<!-- LOCATION -->
+<!-- 練習場所 -->
 <section class="sec sec-white" id="location">
-  <div class="inner">
-    <div class="reveal">
-      <p class="eyebrow">Location</p>
-      <h2 class="h2">練習場所</h2>
-      <p class="lead">複数の施設を輪番で使用しています。各回の場所はGoogleカレンダーでご確認ください。</p>
-    </div>
-    <div class="location-grid reveal">
-      <div class="location-card">
-        <div class="location-map">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.556998415136!2d135.58694277574298!3d34.665889172932104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000df0a5a8af777%3A0xcf12aaac9129be2b!2z5p2x5aSn6Ziq5biC5paH5YyW5Ym16YCg6aSo!5e0!3m2!1sja!2sjp!4v1773658213326!5m2!1sja!2sjp" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <div class="location-body">
-          <div class="location-name">東大阪文化創造館</div>
-          <div class="location-address">〒577-0034 大阪府東大阪市御厨南2丁目3−4</div>
-          <div class="location-access">近鉄奈良線「八戸ノ里」駅 北約200m 徒歩約5分</div>
+  <div class="inner reveal">
+    <p class="eyebrow">Location</p>
+    <h2 class="h2">練習場所</h2>
+    <p style="color:var(--muted);line-height:1.8;margin-bottom:0;">複数の施設を輪番で使用しています。各回の場所はGoogleカレンダーでご確認ください。</p>
+    <div class="venue-grid">
+      <div class="venue-card">
+        <iframe class="venue-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.0!2d135.5766!3d34.6651!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000dfc7e8303061%3A0x173d32fbd47e485a!2z5p2x5aSn6Ziq5biC56uLIOW4guawkeWkmuebrueahOOCu-ODs-OCv-ODvA!5e0!3m2!1sja!2sjp!4v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="venue-body">
+          <div class="venue-name"><i class="fas fa-building" style="color:var(--blue);margin-right:0.4rem;font-size:0.85rem;"></i>東大阪文化創造館</div>
+          <div class="venue-addr">〒577-0034<br>大阪府東大阪市御厨南2丁目3−4</div>
+          <div class="venue-access"><i class="fas fa-train"></i>近鉄奈良線「八戸ノ里」駅 北約200m 徒歩約5分</div>
         </div>
       </div>
-      <div class="location-card">
-        <div class="location-map">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2451617479783!2d135.60012301158724!3d34.673761472816366!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60012075c9389fe5%3A0x7a25da0c3820f6c5!2z5p2x5aSn6Ziq5biC56uL6I2S5pys5Lq65qip5paH5YyW44K744Oz44K_44O8!5e0!3m2!1sja!2sjp!4v1773658277267!5m2!1sja!2sjp" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <div class="location-body">
-          <div class="location-name">東大阪市立荒本人権文化センター</div>
-          <div class="location-address">〒577-0023 大阪府東大阪市荒本2丁目6−1</div>
-          <div class="location-access">近鉄けいはんな線「荒本」駅 2番出口より南へ約500m 徒歩約10分</div>
+      <div class="venue-card">
+        <iframe class="venue-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.0!2d135.5731!3d34.6649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e00ea8d1b5c5%3A0x172d37fb3d8d785a!2z5p2x5aSn6Ziq5biC5Yid5biC5rCX5aSa55uu55qE44K744Oz44K_44O8!5e0!3m2!1sja!2sjp!4v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="venue-body">
+          <div class="venue-name"><i class="fas fa-building" style="color:var(--blue);margin-right:0.4rem;font-size:0.85rem;"></i>東大阪市立市民多目的センター</div>
+          <div class="venue-addr">〒577-0054<br>大阪府東大阪市高井田元町1丁目2−13</div>
+          <div class="venue-access"><i class="fas fa-train"></i>近鉄けいはんな線「高井田」駅すぐ</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="gold-line"></div>
-
-<!-- PREPARE -->
+<!-- 持ち物 -->
 <section class="sec sec-bg" id="prepare">
-  <div class="inner">
-    <div class="reveal">
-      <p class="eyebrow">Prepare</p>
-      <h2 class="h2">持ち物・注意事項</h2>
-    </div>
-    <div class="checklist reveal">
-      <div class="check-item">
-        <div class="check-icon">🎺</div>
-        <div>
-          <div class="check-label">楽器</div>
-          <div class="check-val">担当楽器をお持ちください</div>
-          <div class="check-note">お持ちでない方はお申込み時にご相談ください。貸出し・購入相談も対応します。</div>
-        </div>
+  <div class="inner reveal">
+    <p class="eyebrow">Prepare</p>
+    <h2 class="h2">持ち物・注意事項</h2>
+    <div class="prepare-grid">
+      <div class="prepare-card">
+        <div class="prepare-icon"><i class="fas fa-music"></i></div>
+        <div class="prepare-title">楽器</div>
+        <p class="prepare-desc">担当楽器をお持ちください。お持ちでない方はお申込み時にご相談ください。貸出し・購入相談も対応します。</p>
       </div>
-      <div class="check-item">
-        <div class="check-icon">🎼</div>
-        <div>
-          <div class="check-label">楽譜立て</div>
-          <div class="check-val">折りたたみ式のものがあると便利</div>
-          <div class="check-note">会場に備え付けがない場合があります。</div>
-        </div>
+      <div class="prepare-card">
+        <div class="prepare-icon"><i class="fas fa-sheet-plastic"></i></div>
+        <div class="prepare-title">楽譜立て</div>
+        <p class="prepare-desc">折りたたみ式のものがあると便利です。会場に備え付けがない場合があります。</p>
       </div>
-      <div class="check-item">
-        <div class="check-icon">💧</div>
-        <div>
-          <div class="check-label">飲み物</div>
-          <div class="check-val">水分補給用の飲み物</div>
-          <div class="check-note">練習中はこまめに水分を取りましょう。</div>
-        </div>
+      <div class="prepare-card">
+        <div class="prepare-icon"><i class="fas fa-bottle-water"></i></div>
+        <div class="prepare-title">飲み物</div>
+        <p class="prepare-desc">水分補給用の飲み物をお持ちください。練習中はこまめに水分を取りましょう。</p>
       </div>
-      <div class="check-item">
-        <div class="check-icon">👟</div>
-        <div>
-          <div class="check-label">服装</div>
-          <div class="check-val">動きやすい服装</div>
-          <div class="check-note">制服・ドレスコードはありません。お気軽にどうぞ。</div>
-        </div>
+      <div class="prepare-card">
+        <div class="prepare-icon"><i class="fas fa-shirt"></i></div>
+        <div class="prepare-title">服装</div>
+        <p class="prepare-desc">動きやすい服装でお越しください。制服・ドレスコードはありません。</p>
       </div>
     </div>
-    <div class="notice-box reveal">
-      <p><strong>⚠️ 初回見学の方へ</strong><br>見学当日は受付にて¥500をお支払いください。最大3回まで見学・体験が可能です。4回目以降は正式入団の手続きをお願いします。</p>
+    <div class="alert-box">
+      <i class="fas fa-circle-info"></i>
+      <div><strong>初回見学の方へ</strong><br>見学・体験は現在無料キャンペーン中です！事前に見学申込フォームからお申込みください。最大3回まで見学・体験が可能です。4回目以降は正式入団の手続きをお願いします。</div>
     </div>
   </div>
 </section>
 
-<div class="gold-line"></div>
-
-<!-- FEE -->
+<!-- 費用 -->
 <section class="sec sec-white" id="fee">
-  <div class="inner">
-    <div class="reveal">
-      <p class="eyebrow">Fee</p>
-      <h2 class="h2">費用について</h2>
-      <p class="lead">見学・体験は¥500/回（最大3回）。正式入団後の月会費は¥3,000を予定しています。</p>
-    </div>
-    <div class="fee-grid reveal">
+  <div class="inner reveal">
+    <p class="eyebrow">Fee</p>
+    <h2 class="h2">費用について</h2>
+    <p style="color:var(--muted);line-height:1.8;margin-bottom:0;">見学・体験は現在無料キャンペーン中！正式入団後の月会費は¥3,000を予定しています。</p>
+    <div class="fee-grid">
       <div class="fee-card featured">
+        <div class="fee-badge">期間限定キャンペーン</div>
         <div class="fee-label">見学・体験（1回）</div>
-        <div class="fee-price"><span class="yen">¥</span><span class="num">500</span></div>
+        <div class="fee-free">無料！</div>
         <div class="fee-note">最大3回まで<br>楽器貸出は要相談</div>
       </div>
       <div class="fee-card">
         <div class="fee-label">月会費（入団後）</div>
-        <div class="fee-price"><span class="yen">¥</span><span class="num">3,000</span></div>
+        <div class="fee-price">¥3,000<span>/月</span></div>
         <div class="fee-note">月額（予定）<br>学生割引あり（検討中）</div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="gold-line"></div>
-
-<!-- FLOW -->
+<!-- 入団フロー -->
 <section class="sec sec-bg" id="flow">
-  <div class="inner">
-    <div class="reveal">
-      <p class="eyebrow">How to Join</p>
-      <h2 class="h2">入団までの流れ</h2>
-    </div>
-    <div class="flow reveal">
+  <div class="inner reveal">
+    <p class="eyebrow">How to Join</p>
+    <h2 class="h2">入団までの流れ</h2>
+    <div class="flow">
       <div class="flow-item">
         <div class="flow-num">01</div>
-        <div class="flow-body">
-          <div class="flow-title">見学申込フォームから申込</div>
-          <div class="flow-desc">このページ下部のフォームから希望日・楽器・連絡先を送信してください。</div>
+        <div>
+          <div class="flow-title"><i class="fas fa-pen-to-square" style="color:var(--blue);margin-right:0.4rem;font-size:0.85rem;"></i>見学申込フォームから申込</div>
+          <p class="flow-desc">このページ下部のフォームから希望日・楽器・連絡先を送信してください。</p>
         </div>
       </div>
       <div class="flow-item">
         <div class="flow-num">02</div>
-        <div class="flow-body">
-          <div class="flow-title">メールでご連絡</div>
-          <div class="flow-desc"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="066e6f6167756e6f6975676d6728716f68627546616b676f6a2865696b">[email&#160;protected]</a> より練習日程・場所をご案内します。通常2〜3日以内に返信します。</div>
+        <div>
+          <div class="flow-title"><i class="fas fa-envelope" style="color:var(--blue);margin-right:0.4rem;font-size:0.85rem;"></i>メールでご連絡</div>
+          <p class="flow-desc">higashiosaka.winds@gmail.com より練習日程・場所をご案内します。通常2〜3日以内に返信します。</p>
         </div>
       </div>
       <div class="flow-item">
         <div class="flow-num">03</div>
-        <div class="flow-body">
-          <div class="flow-title">見学・体験（最大3回）</div>
-          <div class="flow-desc">¥500/回で練習に参加できます。楽器がない方もご相談ください。雰囲気を見てから決めてOKです。</div>
+        <div>
+          <div class="flow-title"><i class="fas fa-eye" style="color:var(--blue);margin-right:0.4rem;font-size:0.85rem;"></i>見学・体験（最大3回）</div>
+          <p class="flow-desc">現在無料キャンペーン中！練習に参加できます。楽器がない方もご相談ください。雰囲気を見てから決めてOKです。</p>
         </div>
       </div>
       <div class="flow-item">
         <div class="flow-num">04</div>
-        <div class="flow-body">
-          <div class="flow-title">入団手続き</div>
-          <div class="flow-desc">参加を決めたら入団書類の記入をお願いします。一緒に東大阪の音楽を盛り上げましょう！</div>
+        <div>
+          <div class="flow-title"><i class="fas fa-handshake" style="color:var(--blue);margin-right:0.4rem;font-size:0.85rem;"></i>入団手続き</div>
+          <p class="flow-desc">参加を決めたら入団書類の記入をお願いします。一緒に東大阪の音楽を盛り上げましょう！</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FORM -->
-<section class="sec sec-navy" id="form">
-  <div class="inner">
-    <div class="reveal" style="text-align:center;">
-      <p class="eyebrow eyebrow-light">Apply</p>
-      <h2 class="h2 h2-white">見学・体験を申し込む</h2>
-      <p style="font-size:.88rem;color:rgba(255,255,255,.7);line-height:1.9;">専用ページから申込・お支払いができます。</p>
-    </div>
-    <div class="reveal" style="max-width:480px;margin:2rem auto 0;background:#fff;border-radius:20px;padding:2rem;text-align:center;">
-      <div style="font-size:2.5rem;margin-bottom:1rem;">🎺</div>
-      <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:#1C2B4A;margin-bottom:.6rem;">見学申込フォームへ</div>
-      <p style="font-size:.82rem;color:#606070;line-height:1.7;margin-bottom:1.5rem;">申込・見学費のお支払いは<br>専用ページからお手続きください。</p>
-      <a href="visit.html" style="display:block;background:#C8A44D;color:#fff;padding:14px;border-radius:12px;font-weight:700;text-decoration:none;">🎺 見学・体験を申し込む（¥500〜）</a>
+<!-- 見学申込 -->
+<section class="sec sec-navy" id="apply">
+  <div class="inner reveal" style="text-align:center;">
+    <p class="eyebrow eyebrow-white">Apply</p>
+    <h2 class="h2 h2-white">見学・体験を申し込む</h2>
+    <p style="color:rgba(255,255,255,0.75);margin-bottom:2rem;">専用ページから申込ができます。今なら無料！</p>
+    <div style="max-width:480px;margin:0 auto;background:rgba(255,255,255,0.05);border-radius:20px;border:1px solid rgba(255,255,255,0.15);padding:2rem;">
+      <div style="font-size:2rem;color:var(--gold);margin-bottom:1rem;"><i class="fas fa-music"></i></div>
+      <div style="font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:white;margin-bottom:0.6rem;">見学申込フォームへ</div>
+      <p style="font-size:.82rem;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:1.5rem;">
+        申込フォームの入力は<br>専用ページからお手続きいただけます。
+      </p>
+      <a href="visit.html" class="btn-gold"><i class="fas fa-music" style="margin-right:0.4rem;"></i> 見学・体験を申し込む（今なら無料！）</a>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
 <footer>
   <div class="inner">
     <div class="footer-logo"><img src="higasui.svg" alt="東大阪吹奏楽団"></div>
-    <p class="footer-desc">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
-        <div class="footer-links">
+    <p style="font-size:0.8rem;opacity:0.6;line-height:1.8;max-width:600px;margin:0 auto;">学校・地域・世代をつなぐ"新しい吹奏楽のかたち"を東大阪から。</p>
+    <div class="footer-links">
       <a href="about.html">団について</a>
       <a href="join.html">練習案内</a>
       <a href="faq.html">よくある質問</a>
       <a href="visit.html">見学申込</a>
-      <a href="yakkan.html">定款</a>
+      <a href="index.html#contact">お問い合わせ</a>
+      <a href="yakkan.html" style="opacity:0.5;">定款</a>
     </div>
     <div class="footer-sns">
       <a href="https://www.instagram.com/higashiosaka.winds/" target="_blank" class="sns-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
       <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
       <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-line" aria-label="LINE"><i class="fab fa-line"></i></a>
     </div>
-    <p class="footer-copy">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
+    <p style="font-size:0.7rem;opacity:0.3;">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
   </div>
 </footer>
 
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
 <script>
-const CAL_PROXY = 'https://script.google.com/macros/s/AKfycbxDsZjj2G6lsjx7Knz8HQ1cyIcSt8WjCVm4I1fCy2G7pQLQlJMELH1NJm5zXxc6WMoNQA/exec';
-const GAS = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
-
-// ハンバーガー
 const ham = document.getElementById('ham-btn');
 const drawer = document.getElementById('site-drawer');
 ham.addEventListener('click', function() {
@@ -601,58 +353,38 @@ function closeNav() {
   document.body.style.overflow = '';
 }
 
-// カレンダー
+// Googleカレンダー読み込み
 async function loadCalendar() {
   const el = document.getElementById('cal-list');
   try {
-    const res = await fetch(CAL_PROXY);
+    const calId = 'higashiosaka.winds%40gmail.com';
+    const apiKey = 'AIzaSyD-placeholder'; // GASから取得する場合はGAS経由に変更
+    const now = new Date().toISOString();
+    const end = new Date(Date.now() + 90*24*60*60*1000).toISOString();
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${calId}/events?key=${apiKey}&timeMin=${now}&timeMax=${end}&singleEvents=true&orderBy=startTime&maxResults=6`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error();
     const data = await res.json();
-    if (!data || data.length === 0) {
-      el.innerHTML = '<div class="cal-empty">現在登録されている予定はありません。<br>Instagramでもお知らせします 📷</div>';
-      return;
-    }
-    el.innerHTML = data.map(function(ev) {
-      const parts = ev.date.split('.');
-      const mon = parts[1];
-      const day = parts[2];
-      let loc = ev.location || '';
-      if (loc.length > 20) {
-        const m = loc.match(/[^\s,、]+(?:センター|ホール|館|会館|施設|体育館)/);
-        if (m) loc = m[0];
-        else loc = loc.split(',')[0].replace(/〒[\d-]+\s*/, '').trim().split('　')[0];
-      }
-      const wdClass = ev.weekday === '土' ? 'cal-wd-sat' : ev.weekday === '日' ? 'cal-wd-sun' : 'cal-wd-week';
-      return '<div class="cal-item">'
-        + '<div class="cal-date">'
-        + '<span class="cal-mon">' + mon + '月</span>'
-        + '<span class="cal-day">' + day + '</span>'
-        + '<span class="cal-wd ' + wdClass + '">' + ev.weekday + '</span>'
-        + '</div>'
-        + '<div class="cal-info">'
-        + '<div class="cal-title">' + ev.title + '</div>'
-        + (loc ? '<div class="cal-loc">📍 ' + loc + '</div>' : '')
-        + (ev.description ? '<div class="cal-desc-text">' + ev.description + '</div>' : '')
-        + '</div>'
-        + '</div>';
+    if (!data.items || data.items.length === 0) throw new Error();
+    el.innerHTML = data.items.map(ev => {
+      const start = new Date(ev.start.dateTime || ev.start.date);
+      const mon = start.toLocaleDateString('ja-JP',{month:'short'});
+      const day = start.getDate();
+      const time = ev.start.dateTime ? start.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}) : '終日';
+      return `<div class="cal-item"><div class="cal-date-box"><div class="mon">${mon}</div><div class="day">${day}</div></div><div><div class="cal-info-title">${ev.summary}</div><div class="cal-info-sub"><i class="fas fa-clock" style="margin-right:0.3rem;font-size:0.7rem;"></i>${time}${ev.location ? ' · '+ev.location : ''}</div></div></div>`;
     }).join('');
-  } catch(e) {
-    el.innerHTML = '<div class="cal-empty">読み込みに失敗しました。<br>しばらくしてから再度お試しください。</div>';
+  } catch {
+    el.innerHTML = `<p style="color:var(--muted);font-size:0.85rem;padding:1rem 0;"><i class="fas fa-calendar-days" style="margin-right:0.4rem;color:var(--blue);"></i>最新の日程は<a href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds%40gmail.com" target="_blank" style="color:var(--blue);">Googleカレンダー</a>でご確認ください。</p>`;
   }
 }
 loadCalendar();
 
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i*80); });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-
-// スクロールリビール
-const obs = new IntersectionObserver(function(entries) {
-  entries.forEach(function(e, i) {
-    if (e.isIntersecting) setTimeout(function() { e.target.classList.add('visible'); }, i * 80);
-  });
-}, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
-
-// スクロールトップボタン
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', () => {
   document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
 });
 </script>
