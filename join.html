@@ -195,7 +195,7 @@ footer{background:var(--navy);padding:4rem 0;text-align:center;border-top:2px so
         </div>
       </div>
       <div class="venue-card">
-        <iframe class="venue-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.0!2d135.5731!3d34.6649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e00ea8d1b5c5%3A0x172d37fb3d8d785a!2z5p2x5aSn6Ziq5biC5Yid5biC5rCX5aSa55uu55qE44K744Oz44K_44O8!5e0!3m2!1sja!2sjp!4v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe class="venue-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d617.0962613851704!2d135.5720969020637!3d34.66472699587853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000dfc7e8303061%3A0x173d32fbd47e485a!2z5p2x5aSn6Ziq5biC56uLIOW4guawkeWkmuebrueahOOCu-ODs-OCv-ODvA!5e0!3m2!1sja!2sjp!4v1776564604744!5m2!1sja!2sjp" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         <div class="venue-body">
           <div class="venue-name"><i class="fas fa-building" style="color:var(--blue);margin-right:0.4rem;font-size:0.85rem;"></i>東大阪市立市民多目的センター</div>
           <div class="venue-addr">〒577-0054<br>大阪府東大阪市高井田元町1丁目2−13</div>
@@ -353,28 +353,43 @@ function closeNav() {
   document.body.style.overflow = '';
 }
 
-// Googleカレンダー読み込み
+const CAL_PROXY = 'https://script.google.com/macros/s/AKfycbxDsZjj2G6lsjx7Knz8HQ1cyIcSt8WjCVm4I1fCy2G7pQLQlJMELH1NJm5zXxc6WMoNQA/exec';
+
 async function loadCalendar() {
   const el = document.getElementById('cal-list');
   try {
-    const calId = 'higashiosaka.winds%40gmail.com';
-    const apiKey = 'AIzaSyD-placeholder'; // GASから取得する場合はGAS経由に変更
-    const now = new Date().toISOString();
-    const end = new Date(Date.now() + 90*24*60*60*1000).toISOString();
-    const url = `https://www.googleapis.com/calendar/v3/calendars/${calId}/events?key=${apiKey}&timeMin=${now}&timeMax=${end}&singleEvents=true&orderBy=startTime&maxResults=6`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error();
+    const res = await fetch(CAL_PROXY);
     const data = await res.json();
-    if (!data.items || data.items.length === 0) throw new Error();
-    el.innerHTML = data.items.map(ev => {
-      const start = new Date(ev.start.dateTime || ev.start.date);
-      const mon = start.toLocaleDateString('ja-JP',{month:'short'});
-      const day = start.getDate();
-      const time = ev.start.dateTime ? start.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}) : '終日';
-      return `<div class="cal-item"><div class="cal-date-box"><div class="mon">${mon}</div><div class="day">${day}</div></div><div><div class="cal-info-title">${ev.summary}</div><div class="cal-info-sub"><i class="fas fa-clock" style="margin-right:0.3rem;font-size:0.7rem;"></i>${time}${ev.location ? ' · '+ev.location : ''}</div></div></div>`;
+    if (!data || data.length === 0) {
+      el.innerHTML = '<div style="padding:2rem;text-align:center;font-size:0.85rem;color:rgba(255,255,255,0.45);">現在登録されている予定はありません。<br>Instagramでもお知らせします。</div>';
+      return;
+    }
+    el.innerHTML = data.map(function(ev) {
+      const parts = ev.date.split('.');
+      const mon = parts[1];
+      const day = parts[2];
+      let loc = ev.location || '';
+      if (loc.length > 20) {
+        const m = loc.match(/[^\s,、]+(?:センター|ホール|館|会館|施設|体育館)/);
+        if (m) loc = m[0];
+        else loc = loc.split(',')[0].replace(/〒[\d-]+\s*/, '').trim().split('　')[0];
+      }
+      const wdClass = ev.weekday === '土' ? 'cal-wd-sat' : ev.weekday === '日' ? 'cal-wd-sun' : 'cal-wd-week';
+      return '<div class="cal-item">'
+        + '<div class="cal-date">'
+        + '<span class="cal-mon">' + mon + '月</span>'
+        + '<span class="cal-day">' + day + '</span>'
+        + '<span class="cal-wd ' + wdClass + '">' + ev.weekday + '</span>'
+        + '</div>'
+        + '<div class="cal-info">'
+        + '<div class="cal-title">' + ev.title + '</div>'
+        + (loc ? '<div class="cal-loc"><i class="fas fa-location-dot" style="margin-right:0.3rem;font-size:0.7rem;"></i>' + loc + '</div>' : '')
+        + (ev.description ? '<div class="cal-desc-text">' + ev.description + '</div>' : '')
+        + '</div>'
+        + '</div>';
     }).join('');
-  } catch {
-    el.innerHTML = `<p style="color:var(--muted);font-size:0.85rem;padding:1rem 0;"><i class="fas fa-calendar-days" style="margin-right:0.4rem;color:var(--blue);"></i>最新の日程は<a href="https://calendar.google.com/calendar/r?cid=higashiosaka.winds%40gmail.com" target="_blank" style="color:var(--blue);">Googleカレンダー</a>でご確認ください。</p>`;
+  } catch(e) {
+    el.innerHTML = '<div style="padding:2rem;text-align:center;font-size:0.85rem;color:rgba(255,255,255,0.45);">読み込みに失敗しました。しばらくしてから再度お試しください。</div>';
   }
 }
 loadCalendar();
