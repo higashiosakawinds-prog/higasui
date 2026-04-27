@@ -198,7 +198,6 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
           <div class="fg-row">
             <div class="fg">
               <label>生年月日<span class="req">*</span></label>
-              <input type="date" id="f-birthday">
             </div>
             <div class="fg">
               <label>会員種別<span class="req">*</span></label>
@@ -470,7 +469,6 @@ function validate(step) {
   if (step === 1) {
     if (!document.getElementById('f-name').value.trim())    { showErr(1, '氏名を入力してください'); return false; }
     if (!document.getElementById('f-yomi').value.trim())    { showErr(1, 'ふりがなを入力してください'); return false; }
-    if (!document.getElementById('f-birthday').value)       { showErr(1, '生年月日を入力してください'); return false; }
     if (!document.getElementById('f-type').value)           { showErr(1, '会員種別を選択してください'); return false; }
     if (!document.getElementById('f-part').value)           { showErr(1, '担当楽器を選択してください'); return false; }
     if (document.getElementById('guardianSection').style.display !== 'none') {
@@ -567,7 +565,6 @@ async function submitForm() {
 
   const name         = document.getElementById('f-name').value.trim();
   const yomi         = document.getElementById('f-yomi').value.trim();
-  const birthday     = document.getElementById('f-birthday').value;
   const memberType   = document.getElementById('f-type').value;
   const part         = document.getElementById('f-part').value;
   const email        = document.getElementById('f-email').value.trim();
@@ -606,7 +603,6 @@ async function submitForm() {
       body: JSON.stringify({
         org_id:          ORG_ID,
         name, yomi,
-        birthday:        birthday || null,
         member_type:     memberType,
         part,
         email,
