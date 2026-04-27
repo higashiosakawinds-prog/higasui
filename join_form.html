@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入団届 | 東大阪吹奏楽団</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;
+  --white:#fff;--bg:#F7F8FA;--text:#1A1A1A;
+  --muted:#606070;--border:#DDE1EC;--green:#1D9E75;
+  --radius:20px;--radius-sm:12px;
+  --shadow:0 4px 20px rgba(33,74,154,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+.inner{max-width:640px;margin:0 auto;padding:0 1.25rem;width:100%;}
+
+/* NAV */
+#site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:rgba(28,43,74,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,164,77,0.25);}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;}
+#nav-logo img{height:28px;width:auto;filter:brightness(0) invert(1);}
+
+/* HERO */
+.hero{padding-top:56px;background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 100%);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(200,164,77,0.08);}
+.hero-inner{position:relative;z-index:1;padding:2.5rem 1.25rem 3rem;max-width:640px;margin:0 auto;}
+.eyebrow{font-family:'Outfit',sans-serif;font-size:.6rem;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:.7rem;}
+.eyebrow::before{content:'';width:14px;height:1.5px;background:var(--gold);}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,5vw,2.2rem);font-weight:700;color:#fff;line-height:1.3;margin-bottom:.6rem;}
+.hero p{font-size:.85rem;color:rgba(255,255,255,.7);line-height:1.9;}
+
+/* STEP BAR */
+.step-bar{background:var(--white);border-bottom:1px solid var(--border);padding:.8rem 1.25rem;position:sticky;top:56px;z-index:50;}
+.step-bar-inner{display:flex;align-items:center;justify-content:center;gap:0;max-width:640px;margin:0 auto;}
+.step-item{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;color:var(--muted);}
+.step-item.active{color:var(--blue);}
+.step-item.done{color:var(--green);}
+.step-num{width:22px;height:22px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:800;flex-shrink:0;}
+.step-item.done .step-num{background:var(--green);border-color:var(--green);color:#fff;}
+.step-item.active .step-num{background:var(--blue);border-color:var(--blue);color:#fff;}
+.step-sep{width:24px;height:1.5px;background:var(--border);margin:0 4px;flex-shrink:0;}
+.step-sep.done{background:var(--green);}
+
+/* MAIN */
+.main{padding:28px 0 80px;}
+.form-step{display:none;}
+.form-step.active{display:block;}
+
+/* CARD */
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
+.card-head{padding:1.2rem 1.4rem;background:linear-gradient(135deg,var(--navy),var(--blue));display:flex;align-items:center;gap:10px;}
+.card-head-icon{width:32px;height:32px;border-radius:8px;background:rgba(200,164,77,.2);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.card-head-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:#fff;}
+.card-head-sub{font-size:.72rem;color:rgba(255,255,255,.6);margin-top:1px;}
+.card-body{padding:1.4rem;}
+
+/* FORM */
+.fg{margin-bottom:1rem;}
+.fg label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
+.fg label .req{color:var(--gold);margin-left:2px;}
+.fg label .opt{color:var(--muted);font-weight:400;font-size:.68rem;margin-left:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.88rem;font-family:inherit;background:var(--bg);outline:none;transition:border-color .2s;color:var(--text);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);background:#fff;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:480px){.fg-row{grid-template-columns:1fr;}}
+.fg-section{margin:1.2rem 0 .8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
+.fg-section-title{font-size:.68rem;font-weight:800;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif;}
+
+/* パスワード強度 */
+.pw-strength{height:4px;border-radius:2px;margin-top:.4rem;transition:all .3s;background:var(--border);}
+.pw-strength.weak{background:#ef4444;width:33%;}
+.pw-strength.medium{background:#f59e0b;width:66%;}
+.pw-strength.strong{background:var(--green);width:100%;}
+.pw-hint{font-size:.68rem;color:var(--muted);margin-top:.3rem;}
+
+/* 保護者セクション */
+#guardianSection{display:none;}
+
+/* 規約ボックス */
+.agree-box{background:var(--bg);border-radius:10px;padding:1rem;margin-bottom:1rem;border:1px solid var(--border);max-height:120px;overflow-y:auto;font-size:.75rem;color:var(--muted);line-height:1.8;}
+.agree-check{display:flex;align-items:flex-start;gap:.6rem;cursor:pointer;margin-bottom:.8rem;}
+.agree-check input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--blue);}
+.agree-check span{font-size:.8rem;color:var(--navy);line-height:1.6;}
+.agree-check span a{color:var(--blue);text-decoration:none;}
+
+/* ボタン */
+.btn-next{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:var(--radius-sm);background:var(--blue);color:#fff;font-size:.9rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s;margin-top:.5rem;}
+.btn-next:hover{opacity:.88;}
+.btn-next:disabled{opacity:.5;cursor:not-allowed;}
+.btn-back{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;border-radius:var(--radius-sm);background:none;border:1.5px solid var(--border);color:var(--muted);font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;margin-top:8px;}
+.btn-back:hover{border-color:var(--blue);color:var(--blue);}
+.btn-submit{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:var(--radius-sm);background:var(--gold);color:var(--navy);font-size:.95rem;font-weight:800;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s;margin-top:.5rem;box-shadow:0 4px 16px rgba(200,164,77,.3);}
+.btn-submit:hover{opacity:.88;}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.btn-stripe{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:var(--radius-sm);background:#635bff;color:#fff;font-size:.9rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s;margin-top:8px;}
+.btn-stripe:hover{opacity:.88;}
+.btn-member{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:var(--radius-sm);background:none;border:1.5px solid var(--border);color:var(--navy);font-size:.85rem;font-weight:700;text-decoration:none;transition:all .2s;margin-top:8px;}
+.btn-member:hover{border-color:var(--blue);color:var(--blue);}
+
+/* エラー */
+.err-box{display:none;background:#fee2e2;border:1.5px solid #fca5a5;border-radius:10px;padding:.8rem 1rem;font-size:.8rem;color:#991b1b;margin-bottom:1rem;line-height:1.6;}
+
+/* 完了画面 */
+.ok-screen{text-align:center;padding:2rem 1rem;}
+.ok-icon{font-size:3.5rem;margin-bottom:1rem;}
+.ok-title{font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:700;color:var(--navy);margin-bottom:.6rem;}
+.ok-text{font-size:.85rem;color:var(--muted);line-height:1.9;margin-bottom:1.5rem;}
+.ok-fee-box{background:rgba(33,74,154,.05);border:1px solid rgba(33,74,154,.15);border-radius:14px;padding:1.2rem;margin-bottom:1rem;text-align:left;}
+.ok-fee-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.8rem;}
+.fee-options{display:flex;flex-direction:column;gap:8px;}
+
+/* ノートボックス */
+.notice{border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1.2rem;font-size:.8rem;line-height:1.8;}
+.notice-blue{background:rgba(33,74,154,.06);border-left:3px solid var(--blue);color:var(--navy);}
+.notice-gold{background:rgba(200,164,77,.08);border-left:3px solid var(--gold);color:#6B4E00;}
+
+/* スピナー */
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+footer{background:var(--navy);padding:24px 0;text-align:center;}
+footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255,.3);}
+</style>
+</head>
+<body>
+
+<nav id="site-nav">
+  <div class="nav-inner">
+    <a href="./index.html" id="nav-logo"><img src="./higasui.svg" alt="東大阪吹奏楽団"></a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span>JOIN US</span></div>
+    <h1>入団届</h1>
+    <p>フォームに入力してDXシステムのアカウントを作成します。<br>完了後すぐにマイページにログインできます。</p>
+  </div>
+</div>
+
+<!-- ステップバー -->
+<div class="step-bar">
+  <div class="step-bar-inner">
+    <div class="step-item active" id="stepItem1">
+      <div class="step-num">1</div>
+      <span>基本情報</span>
+    </div>
+    <div class="step-sep" id="stepSep1"></div>
+    <div class="step-item" id="stepItem2">
+      <div class="step-num">2</div>
+      <span>連絡先</span>
+    </div>
+    <div class="step-sep" id="stepSep2"></div>
+    <div class="step-item" id="stepItem3">
+      <div class="step-num">3</div>
+      <span>アカウント設定</span>
+    </div>
+    <div class="step-sep" id="stepSep3"></div>
+    <div class="step-item" id="stepItem4">
+      <div class="step-num">4</div>
+      <span>確認・完了</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="inner">
+
+    <!-- ===== STEP 1：基本情報 ===== -->
+    <div class="form-step active" id="step1">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-icon"><i class="fa-solid fa-user"></i></div>
+          <div>
+            <div class="card-head-title">基本情報</div>
+            <div class="card-head-sub">お名前・楽器・会員種別</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="err-box" id="err1"></div>
+          <div class="fg-row">
+            <div class="fg">
+              <label>お名前<span class="req">*</span></label>
+              <input type="text" id="f-name" placeholder="山田 花子">
+            </div>
+            <div class="fg">
+              <label>ふりがな<span class="req">*</span></label>
+              <input type="text" id="f-yomi" placeholder="やまだ はなこ">
+            </div>
+          </div>
+          <div class="fg-row">
+            <div class="fg">
+              <label>生年月日<span class="req">*</span></label>
+              <input type="date" id="f-birthday">
+            </div>
+            <div class="fg">
+              <label>会員種別<span class="req">*</span></label>
+              <select id="f-type" onchange="onTypeChange()">
+                <option value="">選択してください</option>
+                <option value="正会員（大人）">正会員（大人）¥3,000/月</option>
+                <option value="学生会員">学生会員 ¥1,500/月</option>
+                <option value="ボランティア会員">ボランティア会員</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>担当楽器・パート<span class="req">*</span></label>
+            <select id="f-part">
+              <option value="">選択してください</option>
+              <optgroup label="木管">
+                <option>フルート</option><option>オーボエ</option><option>クラリネット</option>
+                <option>ファゴット</option><option>アルトサックス</option><option>テナーサックス</option>
+                <option>バリトンサックス</option>
+              </optgroup>
+              <optgroup label="金管">
+                <option>トランペット</option><option>ホルン</option><option>トロンボーン</option>
+                <option>ユーフォニアム</option><option>チューバ</option>
+              </optgroup>
+              <optgroup label="打楽器"><option>パーカッション</option></optgroup>
+              <optgroup label="その他"><option>コントラバス</option><option>ピアノ</option><option>未定・相談したい</option></optgroup>
+            </select>
+          </div>
+
+          <!-- 未成年セクション -->
+          <div id="guardianSection">
+            <div class="fg-section"><span class="fg-section-title">保護者情報</span></div>
+            <div class="notice notice-gold">
+              <i class="fa-solid fa-shield-heart"></i>
+              未成年の方は保護者の方の情報が必要です。
+            </div>
+            <div class="fg">
+              <label>保護者氏名<span class="req">*</span></label>
+              <input type="text" id="f-guardian-name" placeholder="山田 太郎">
+            </div>
+            <div class="fg">
+              <label>保護者連絡先<span class="req">*</span></label>
+              <input type="tel" id="f-guardian-phone" placeholder="090-0000-0000">
+            </div>
+            <label class="agree-check">
+              <input type="checkbox" id="f-guardian-agree">
+              <span>保護者の同意を得ています<span class="req">*</span></span>
+            </label>
+          </div>
+
+          <button class="btn-next" onclick="goStep(2)">
+            次へ <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 2：連絡先 ===== -->
+    <div class="form-step" id="step2">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <div class="card-head-title">連絡先</div>
+            <div class="card-head-sub">メール・電話・LINE</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="err-box" id="err2"></div>
+          <div class="notice notice-blue">
+            <i class="fa-solid fa-info-circle"></i>
+            メールアドレスはDXシステムへのログインIDになります。
+          </div>
+          <div class="fg">
+            <label>メールアドレス<span class="req">*</span></label>
+            <input type="email" id="f-email" placeholder="your@email.com" autocomplete="email">
+          </div>
+          <div class="fg">
+            <label>電話番号<span class="req">*</span></label>
+            <input type="tel" id="f-phone" placeholder="090-0000-0000">
+          </div>
+          <div class="fg">
+            <label>LINE ID<span class="opt">任意</span></label>
+            <input type="text" id="f-line" placeholder="例：higasui_taro">
+          </div>
+          <div class="fg">
+            <label>ひとこと<span class="opt">任意</span></label>
+            <textarea id="f-comment" rows="3" placeholder="演奏歴・意気込みなどお気軽にどうぞ！"></textarea>
+          </div>
+          <button class="btn-next" onclick="goStep(3)">
+            次へ <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <button class="btn-back" onclick="goStep(1)">
+            <i class="fa-solid fa-chevron-left"></i> 戻る
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 3：アカウント設定 ===== -->
+    <div class="form-step" id="step3">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-icon"><i class="fa-solid fa-lock"></i></div>
+          <div>
+            <div class="card-head-title">アカウント設定</div>
+            <div class="card-head-sub">マイページへのログインパスワード</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="err-box" id="err3"></div>
+          <div class="notice notice-blue">
+            <i class="fa-solid fa-info-circle"></i>
+            設定したパスワードでマイページにログインできます。8文字以上で設定してください。
+          </div>
+          <div class="fg">
+            <label>パスワード<span class="req">*</span></label>
+            <input type="password" id="f-password" placeholder="8文字以上" autocomplete="new-password" oninput="checkPwStrength()">
+            <div class="pw-strength" id="pwStrength"></div>
+            <div class="pw-hint" id="pwHint">8文字以上、英数字を含めてください</div>
+          </div>
+          <div class="fg">
+            <label>パスワード（確認）<span class="req">*</span></label>
+            <input type="password" id="f-password2" placeholder="もう一度入力" autocomplete="new-password">
+          </div>
+          <button class="btn-next" onclick="goStep(4)">
+            次へ <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <button class="btn-back" onclick="goStep(2)">
+            <i class="fa-solid fa-chevron-left"></i> 戻る
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 4：確認・送信 ===== -->
+    <div class="form-step" id="step4">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-icon"><i class="fa-solid fa-check"></i></div>
+          <div>
+            <div class="card-head-title">内容確認・同意</div>
+            <div class="card-head-sub">入力内容を確認して送信してください</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="err-box" id="err4"></div>
+
+          <!-- 確認サマリー -->
+          <div id="confirmSummary" style="background:var(--bg);border-radius:12px;padding:1rem;margin-bottom:1.2rem;font-size:.82rem;"></div>
+
+          <!-- 規約 -->
+          <div class="agree-box">
+            入団にあたり、以下の事項に同意いただく必要があります。<br>
+            ・東大阪吹奏楽団定款および各種規則を遵守すること<br>
+            ・会費を毎月期日までに支払うこと<br>
+            ・団の活動において撮影された写真・動画がSNSや広報物に使用される場合があること<br>
+            ・退団・休団の際は所定の手続きを行うこと<br>
+            ・未成年者は保護者の同意を得た上で参加すること
+          </div>
+          <label class="agree-check">
+            <input type="checkbox" id="f-agree">
+            <span>上記の内容および<a href="./yakkan.html" target="_blank">定款</a>に同意します<span class="req">*</span></span>
+          </label>
+
+          <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span id="submitBtnText">入団届を送信する</span>
+            <div class="spinner" id="submitSpinner"></div>
+          </button>
+          <button class="btn-back" onclick="goStep(3)">
+            <i class="fa-solid fa-chevron-left"></i> 戻る
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 完了画面 ===== -->
+    <div class="form-step" id="stepDone">
+      <div class="card">
+        <div class="card-body">
+          <div class="ok-screen">
+            <div class="ok-icon">🎺</div>
+            <div class="ok-title">入団届の送信が完了しました！</div>
+            <div class="ok-text">
+              東大阪吹奏楽団へようこそ！<br>
+              アカウントが作成されました。<br>
+              マイページからDXシステムをご利用いただけます。
+            </div>
+          </div>
+
+          <div class="ok-fee-box">
+            <div class="ok-fee-title">💳 会費のお支払い</div>
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;line-height:1.7;">
+              会費のお支払いはStripeの安全な決済ページで行います。<br>
+              クレジットカードで毎月自動引き落としになります。
+            </p>
+            <div class="fee-options" id="feeOptions">
+              <!-- JSで会員種別に応じて表示 -->
+            </div>
+          </div>
+
+          <a href="./member.html" class="btn-member">
+            <i class="fa-solid fa-home"></i> マイページへ（後で支払う）
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer><p>© 東大阪吹奏楽団</p></footer>
+
+<script>
+const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const ORG_ID = '37cf6fef-551a-4159-b6ab-5010c3951aa8';
+
+const STRIPE_GENERAL = 'https://buy.stripe.com/aFa6oI4wHdc9gX8gRofUQ00';
+const STRIPE_STUDENT = 'https://buy.stripe.com/9B6fZiaV5egd0YafNkfUQ01';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentStep = 1;
+
+// =============================================
+//  ステップ移動
+// =============================================
+function goStep(n) {
+  // バリデーション
+  if (n > currentStep) {
+    if (!validate(currentStep)) return;
+  }
+
+  // 確認画面に移る前にサマリーを更新
+  if (n === 4) renderSummary();
+
+  document.getElementById('step' + currentStep).classList.remove('active');
+  document.getElementById('step' + n)?.classList.add('active');
+
+  // ステップバー更新
+  for (let i = 1; i <= 4; i++) {
+    const item = document.getElementById('stepItem' + i);
+    item.classList.remove('active', 'done');
+    if (i < n) item.classList.add('done');
+    else if (i === n) item.classList.add('active');
+  }
+  for (let i = 1; i <= 3; i++) {
+    const sep = document.getElementById('stepSep' + i);
+    sep.classList.toggle('done', i < n);
+  }
+
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =============================================
+//  バリデーション
+// =============================================
+function validate(step) {
+  const showErr = (id, msg) => {
+    const el = document.getElementById('err' + step);
+    el.textContent = msg;
+    el.style.display = 'block';
+  };
+  document.getElementById('err' + step).style.display = 'none';
+
+  if (step === 1) {
+    if (!document.getElementById('f-name').value.trim())    { showErr(1, '氏名を入力してください'); return false; }
+    if (!document.getElementById('f-yomi').value.trim())    { showErr(1, 'ふりがなを入力してください'); return false; }
+    if (!document.getElementById('f-birthday').value)       { showErr(1, '生年月日を入力してください'); return false; }
+    if (!document.getElementById('f-type').value)           { showErr(1, '会員種別を選択してください'); return false; }
+    if (!document.getElementById('f-part').value)           { showErr(1, '担当楽器を選択してください'); return false; }
+    if (document.getElementById('guardianSection').style.display !== 'none') {
+      if (!document.getElementById('f-guardian-name').value.trim())  { showErr(1, '保護者氏名を入力してください'); return false; }
+      if (!document.getElementById('f-guardian-phone').value.trim()) { showErr(1, '保護者連絡先を入力してください'); return false; }
+      if (!document.getElementById('f-guardian-agree').checked)      { showErr(1, '保護者の同意にチェックしてください'); return false; }
+    }
+  }
+  if (step === 2) {
+    const email = document.getElementById('f-email').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    if (!email) { showErr(2, 'メールアドレスを入力してください'); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr(2, 'メールアドレスの形式が正しくありません'); return false; }
+    if (!phone) { showErr(2, '電話番号を入力してください'); return false; }
+  }
+  if (step === 3) {
+    const pw  = document.getElementById('f-password').value;
+    const pw2 = document.getElementById('f-password2').value;
+    if (pw.length < 8)  { showErr(3, 'パスワードは8文字以上で設定してください'); return false; }
+    if (pw !== pw2)     { showErr(3, 'パスワードが一致しません'); return false; }
+  }
+  return true;
+}
+
+// =============================================
+//  会員種別変更
+// =============================================
+function onTypeChange() {
+  const type = document.getElementById('f-type').value;
+  document.getElementById('guardianSection').style.display = type === '学生会員' ? 'block' : 'none';
+}
+
+// =============================================
+//  パスワード強度チェック
+// =============================================
+function checkPwStrength() {
+  const pw = document.getElementById('f-password').value;
+  const bar = document.getElementById('pwStrength');
+  const hint = document.getElementById('pwHint');
+  bar.className = 'pw-strength';
+  if (!pw) return;
+  const hasLetter = /[a-zA-Z]/.test(pw);
+  const hasNum    = /[0-9]/.test(pw);
+  if (pw.length < 8) {
+    bar.classList.add('weak');
+    hint.textContent = '短すぎます（8文字以上）';
+  } else if (pw.length >= 8 && (!hasLetter || !hasNum)) {
+    bar.classList.add('medium');
+    hint.textContent = '英数字を混ぜるとより安全です';
+  } else {
+    bar.classList.add('strong');
+    hint.textContent = '強いパスワードです ✓';
+  }
+}
+
+// =============================================
+//  確認サマリー
+// =============================================
+function renderSummary() {
+  const rows = [
+    ['氏名',     document.getElementById('f-name').value],
+    ['ふりがな', document.getElementById('f-yomi').value],
+    ['会員種別', document.getElementById('f-type').value],
+    ['楽器',     document.getElementById('f-part').value],
+    ['メール',   document.getElementById('f-email').value],
+    ['電話',     document.getElementById('f-phone').value],
+  ];
+  document.getElementById('confirmSummary').innerHTML = rows.map(([label, val]) =>
+    `<div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem;">
+      <span style="color:var(--muted);min-width:72px;flex-shrink:0;">${label}</span>
+      <span style="font-weight:500;">${val || '—'}</span>
+    </div>`
+  ).join('');
+}
+
+// =============================================
+//  送信
+// =============================================
+async function submitForm() {
+  if (!document.getElementById('f-agree').checked) {
+    const el = document.getElementById('err4');
+    el.textContent = '定款への同意が必要です';
+    el.style.display = 'block';
+    return;
+  }
+  document.getElementById('err4').style.display = 'none';
+
+  const btn     = document.getElementById('submitBtn');
+  const btnText = document.getElementById('submitBtnText');
+  const spinner = document.getElementById('submitSpinner');
+  btn.disabled       = true;
+  btnText.textContent = '送信中…';
+  spinner.style.display = 'block';
+
+  const name         = document.getElementById('f-name').value.trim();
+  const yomi         = document.getElementById('f-yomi').value.trim();
+  const birthday     = document.getElementById('f-birthday').value;
+  const memberType   = document.getElementById('f-type').value;
+  const part         = document.getElementById('f-part').value;
+  const email        = document.getElementById('f-email').value.trim();
+  const phone        = document.getElementById('f-phone').value.trim();
+  const lineId       = document.getElementById('f-line').value.trim();
+  const comment      = document.getElementById('f-comment').value.trim();
+  const password     = document.getElementById('f-password').value;
+  const guardianName  = document.getElementById('f-guardian-name')?.value.trim() || null;
+  const guardianPhone = document.getElementById('f-guardian-phone')?.value.trim() || null;
+
+  try {
+    // ① Supabase Authにサインアップ
+    const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
+
+    if (authError) {
+      if (authError.message.includes('already registered') || authError.message.includes('already been registered')) {
+        throw new Error('このメールアドレスはすでに登録されています。');
+      }
+      throw new Error(authError.message);
+    }
+
+    // ② membersテーブルに登録
+    const token = authData.session?.access_token || SUPABASE_KEY;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/members`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        org_id:          ORG_ID,
+        name, yomi,
+        birthday:        birthday || null,
+        member_type:     memberType,
+        part,
+        email,
+        phone:           phone || null,
+        line_id:         lineId || null,
+        guardian_name:   guardianName,
+        emergency_phone: guardianPhone,
+        role:            'member',
+        status:          'active',
+        fee_status:      'unpaid',
+        joined_at:       new Date().toISOString().split('T')[0],
+      }),
+    });
+
+    if (!res.ok && res.status !== 201) {
+      console.error('members登録失敗:', await res.text());
+      // Auth登録は成功しているので続行
+    }
+
+    // 完了画面へ
+    showDone(memberType);
+
+  } catch(e) {
+    const el = document.getElementById('err4');
+    el.textContent = e.message || 'エラーが発生しました。もう一度お試しください。';
+    el.style.display = 'block';
+    btn.disabled = false;
+    btnText.textContent = '入団届を送信する';
+    spinner.style.display = 'none';
+  }
+}
+
+// =============================================
+//  完了画面
+// =============================================
+function showDone(memberType) {
+  document.getElementById('step4').classList.remove('active');
+  document.getElementById('stepDone').classList.add('active');
+
+  // ステップバー全完了
+  for (let i = 1; i <= 4; i++) {
+    const item = document.getElementById('stepItem' + i);
+    item.classList.remove('active');
+    item.classList.add('done');
+  }
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('stepSep' + i).classList.add('done');
+  }
+
+  // 会費ボタン表示
+  const feeOptions = document.getElementById('feeOptions');
+  if (memberType === '学生会員') {
+    feeOptions.innerHTML = `
+      <a href="${STRIPE_STUDENT}" target="_blank" class="btn-stripe">
+        <i class="fa-brands fa-stripe"></i> 学生団費 ¥1,500/月 を支払う
+      </a>`;
+  } else if (memberType === '正会員（大人）') {
+    feeOptions.innerHTML = `
+      <a href="${STRIPE_GENERAL}" target="_blank" class="btn-stripe">
+        <i class="fa-brands fa-stripe"></i> 一般団費 ¥3,000/月 を支払う
+      </a>`;
+  } else {
+    feeOptions.innerHTML = `<p style="font-size:.8rem;color:var(--muted);">会費については担当者よりご案内します。</p>`;
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
