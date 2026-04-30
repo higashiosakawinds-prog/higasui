@@ -210,67 +210,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .pi-admin    {background:rgba(239,68,68,.1);  color:#991b1b;}
 
 /* ===== 各種申請リンク ===== */
-
-/* ===== MEMBER HERO ===== */
-.member-hero{display:flex;align-items:center;gap:14px;margin-bottom:1rem;}
-.member-avatar{width:52px;height:52px;border-radius:50%;background:rgba(200,164,77,.25);border:2px solid rgba(200,164,77,.5);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--gold);flex-shrink:0;}
-.member-name{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:#fff;line-height:1.3;}
-.member-badges{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
-.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:20px;font-size:.68rem;font-weight:700;font-family:'Outfit',sans-serif;}
-.badge-role{background:rgba(200,164,77,.2);color:var(--gold);}
-.badge-part{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);}
-.fee-warning{display:flex;align-items:center;gap:8px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:.7rem 1rem;margin-top:.8rem;font-size:.78rem;color:#fca5a5;font-weight:500;}
-.main-wrap{padding:20px 0 80px;}
-.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;}
-.card-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);}
-.card-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
-.card-title{font-family:'Shippori Mincho',serif;font-size:.92rem;font-weight:700;color:var(--navy);}
-.card-sub{font-size:.68rem;color:var(--muted);margin-top:1px;}
-.card-body{padding:16px;}
-.attend-list{display:flex;flex-direction:column;gap:0;margin-bottom:12px;}
-.attend-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.82rem;}
-.attend-row:last-child{border-bottom:none;}
-.attend-date{color:var(--muted);font-size:.75rem;flex-shrink:0;min-width:130px;}
-.attend-badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:20px;font-size:.68rem;font-weight:700;}
-.ab-attend{background:#dcfce7;color:#15803d;}
-.ab-late{background:#fef9c3;color:#854d0e;}
-.ab-absent{background:#fee2e2;color:#991b1b;}
-.ab-none{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
-.attend-note{font-size:.7rem;color:var(--muted);}
-.btn-attend{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:var(--radius-sm);background:var(--blue);color:#fff;font-size:.85rem;font-weight:700;text-decoration:none;transition:opacity .2s;}
-.btn-attend:hover{opacity:.88;}
-.fee-status-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.fee-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
-.dot-ok{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.12);}
-.dot-ng{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.12);}
-.dot-warn{background:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.12);}
-.fee-label{font-size:.95rem;font-weight:700;color:var(--navy);}
-.fee-sub{font-size:.72rem;color:var(--muted);margin-top:1px;}
-.section-label{font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin:24px 0 12px;}
-.section-label::before{content:'';width:14px;height:1.5px;background:var(--gold);}
-.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:400px){.panel-grid{grid-template-columns:1fr;}}
-.panel-link{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--white);border:1.5px solid var(--border);text-decoration:none;color:var(--navy);transition:all .2s;box-shadow:var(--shadow);}
-.panel-link:hover:not(.wip){border-color:var(--blue);box-shadow:0 6px 24px rgba(33,74,154,.12);transform:translateY(-1px);}
-.panel-link.wip{opacity:.5;cursor:default;pointer-events:none;}
-.panel-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
-.panel-name{font-family:'Shippori Mincho',serif;font-size:.82rem;font-weight:700;line-height:1.3;}
-.panel-tag{font-size:.6rem;color:var(--muted);margin-top:2px;}
-.panel-arrow{margin-left:auto;color:var(--muted);font-size:.7rem;flex-shrink:0;}
-.pi-planning{background:rgba(33,74,154,.1);color:var(--blue);}
-.pi-finance{background:rgba(200,164,77,.12);color:#92680a;}
-.pi-pr{background:rgba(139,82,160,.1);color:#6b3fa8;}
-.pi-contact{background:rgba(14,165,233,.1);color:#0369a1;}
-.modal-msg{display:none;border-radius:8px;padding:.7rem 1rem;font-size:.78rem;margin-top:.8rem;}
-.modal-msg.success{display:block;background:#dcfce7;color:#15803d;}
-.modal-msg.error{display:block;background:#fee2e2;color:#991b1b;}
-.modal-actions{display:flex;gap:10px;margin-top:1.2rem;}
-.btn-cancel{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;}
-.btn-save{flex:2;padding:12px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;}
-.btn-save:hover{background:#1a3d85;}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:10px;background:var(--gold);color:var(--navy);font-weight:700;font-size:.85rem;text-decoration:none;border:none;cursor:pointer;font-family:inherit;}
-.part-count{font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;color:var(--muted);flex-shrink:0;}
-
 .link-list{display:flex;flex-direction:column;gap:8px;}
 .app-link{
   display:flex;align-items:center;gap:12px;
@@ -436,15 +375,15 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
           <div id="feePayArea" style="display:none;">
             <select class="plan-select" id="planSelect">
               <option value="">プランを選択してください</option>
-              <option value="https://buy.stripe.com/aFa6oI4wHdc9gX8gRofUQ00">一般団員・月額 ¥3,000</option>
-              <option value="https://buy.stripe.com/9B6fZiaV5egd0YafNkfUQ01">学生団員・月額 ¥1,500</option>
+              <option value="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800">一般団員・月額 ¥3,000</option>
+              <option value="https://buy.stripe.com/test_14A14oe5m8ZSc343OK04801">学生団員・月額 ¥1,500</option>
             </select>
             <button class="btn-stripe" onclick="goToStripe()">
               <i class="fa-brands fa-stripe"></i> 会費を支払う
             </button>
           </div>
           <div id="feePortalArea" style="display:none;">
-            <a class="btn-stripe-paid" href="https://buy.stripe.com/aFa6oI4wHdc9gX8gRofUQ00" target="_blank">
+            <a class="btn-stripe-paid" href="https://buy.stripe.com/test_bJe5kE6CU1xq4AC99404800" target="_blank">
               <i class="fa-solid fa-arrow-up-right-from-square"></i> Stripeで支払い情報を確認
             </a>
           </div>
@@ -568,7 +507,7 @@ const PANELS = [
   { id:'equipment', name:'楽器管理委員会',     icon:'fa-solid fa-drum',            colorClass:'pi-equipment', file:'panel_equipment.html', ready:true  },
   { id:'safety',    name:'安全サポート委員会', icon:'fa-solid fa-shield-heart',    colorClass:'pi-safety',    file:'panel_safety.html',    ready:true  },
   { id:'contact',   name:'連絡網',             icon:'fa-solid fa-paper-plane',     colorClass:'pi-venue',     file:'panel_contact.html',   ready:true  },
-  { id:'admin',     name:'管理者パネル',        icon:'fa-solid fa-shield-halved',   colorClass:'pi-admin',     file:'panel_admin.html',     ready:true  },
+  { id:'admin',     name:'GMパネル',           icon:'fa-solid fa-shield-halved',   colorClass:'pi-admin',     file:'panel_admin.html',     ready:false },
 ];
 
 // =============================================
@@ -880,29 +819,20 @@ function renderHeader(d) {
   if (d.part) { partEl.textContent = d.part; partEl.style.display = ''; }
   else { partEl.style.display = 'none'; }
 
-  document.getElementById('feeWarning').style.display = d.fee_status === 'unpaid' ? 'flex' : 'none';
+  // [Phase 1] fee_status カラム廃止に伴い警告バナーを非表示
+  // [Phase 2] fee_payments テーブル参照に書き換え予定
+  document.getElementById('feeWarning').style.display = 'none';
 }
 
 function renderFeeCard(d) {
-  const MAP = {
-    paid: { cls:'dot-ok', text:'支払い済み', sub:'毎月自動で請求されます' },
-    unpaid: { cls:'dot-ng', text:'未納があります', sub:'以下からお支払いをお願いします' },
-    pending: { cls:'dot-warn', text:'確認中', sub:'しばらくお待ちください' },
-  };
-  const s = MAP[d.fee_status] || { cls:'dot-warn', text:'未設定', sub:'プランを選択してお支払いください' };
-  document.getElementById('feeDot').className = 'fee-dot ' + s.cls;
-  document.getElementById('feeLabel').textContent = s.text;
-  document.getElementById('feeSub').textContent = s.sub;
+  // [Phase 1] fee_status カラム廃止に伴い表示を「準備中」に固定
+  // [Phase 2] fee_payments テーブルを参照する月別マトリクス表示に再実装予定
+  document.getElementById('feeDot').className = 'fee-dot dot-warn';
+  document.getElementById('feeLabel').textContent = '会費機能を改修中';
+  document.getElementById('feeSub').textContent = 'まもなく新しい画面でご確認いただけます';
 
-  const payArea = document.getElementById('feePayArea');
-  const portalArea = document.getElementById('feePortalArea');
-  if (d.fee_status === 'paid') {
-    payArea.style.display = 'none';
-    portalArea.style.display = 'block';
-  } else {
-    payArea.style.display = 'block';
-    portalArea.style.display = 'none';
-  }
+  document.getElementById('feePayArea').style.display = 'none';
+  document.getElementById('feePortalArea').style.display = 'none';
 }
 
 function goToStripe() {
