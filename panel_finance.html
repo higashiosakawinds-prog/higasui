@@ -19,7 +19,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-.inner{max-width:900px;margin:0 auto;padding:0 1.25rem;width:100%;}
+.inner{max-width:1080px;margin:0 auto;padding:0 1.25rem;width:100%;}
 
 /* ===== PANEL NAV ===== */
 #panel-nav{
@@ -88,7 +88,37 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ===== MAIN ===== */
-#mainContent{display:none;padding:28px 0 80px;}
+#mainContent{display:none;padding:0 0 80px;}
+
+/* ===== TAB NAV ===== */
+.tab-nav{
+  background:var(--white);border-bottom:1px solid var(--border);
+  position:sticky;top:52px;z-index:50;
+  padding:10px 0;
+}
+.tab-nav-inner{
+  display:flex;gap:6px;overflow-x:auto;
+  padding:0 1.25rem;
+  scrollbar-width:thin;
+}
+.tab-nav-inner::-webkit-scrollbar{height:4px;}
+.tab-nav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.tab-btn{
+  padding:8px 16px;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:999px;color:var(--muted);font-family:inherit;
+  font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;
+  transition:all .15s;flex-shrink:0;
+}
+.tab-btn:hover{color:var(--navy);border-color:var(--blue);}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.tab-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+.tab-panel{display:none;padding-top:24px;}
+.tab-panel.active{display:block;}
+.tab-loading{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  min-height:200px;color:var(--muted);font-size:.82rem;
+}
 
 /* ===== SUMMARY CARDS ===== */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
@@ -115,7 +145,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 }
 .card-head{
   padding:1rem 1.25rem;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
 }
 .card-head-left{display:flex;align-items:center;gap:10px;}
 .card-icon{
@@ -166,21 +196,81 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   font-size:.75rem;font-family:inherit;color:var(--navy);
   background:#fff;outline:none;cursor:pointer;
 }
+.filter-select:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 
 /* ===== GRAPH ===== */
 .graph-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:1.2rem 1.4rem;margin-bottom:20px;}
-.graph-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.graph-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;}
 .graph-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
 
-/* ===== 収支報告書 ===== */
+/* ===== 団費収入タブ ===== */
+.fee-summary-bar{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:1rem 1.25rem;margin-bottom:16px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.fee-summary-bar .filter-select{padding:7px 14px;font-size:.82rem;font-weight:700;}
+.fee-stats{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;align-items:center;flex:1;}
+.fee-stat-rate{color:var(--blue);font-weight:700;}
+.fee-stat-unpaid{color:#d97706;font-weight:700;}
+.fee-summary-bar .btn-primary{margin-left:auto;}
+@media(max-width:600px){.fee-summary-bar .btn-primary{margin-left:0;width:100%;justify-content:center;}}
+
+.fee-matrix-wrap{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.fee-matrix-scroll{overflow-x:auto;}
+.fee-matrix{width:100%;border-collapse:collapse;font-size:.78rem;min-width:880px;}
+.fee-matrix thead th{
+  background:var(--navy);color:#fff;
+  padding:.7rem .55rem;font-family:'Outfit',sans-serif;
+  font-size:.68rem;font-weight:700;letter-spacing:.05em;
+  white-space:nowrap;text-align:center;
+  position:sticky;top:0;z-index:1;
+}
+.fee-matrix thead th.fee-th-future{background:#3a4a6e;color:rgba(255,255,255,.45);}
+.fee-matrix thead th:nth-child(-n+4){text-align:left;}
+.fee-matrix tbody td{
+  padding:.6rem .55rem;border-bottom:1px solid var(--border);
+  text-align:center;white-space:nowrap;
+}
+.fee-matrix tbody td:nth-child(-n+4){text-align:left;}
+.fee-matrix tbody tr:last-child td{border-bottom:none;}
+.fee-matrix tbody tr:hover td{background:#f5f7ff;}
+.fee-name{font-weight:700;color:var(--navy);}
+.fee-cell{font-weight:700;font-size:1rem;width:38px;}
+.fee-cell-paid-card{color:var(--green);}
+.fee-cell-paid-cash{color:var(--blue);}
+.fee-cell-disabled{color:#cdd2dc;}
+.fee-cell-unpaid{
+  color:#a6acba;cursor:pointer;border-radius:6px;
+  transition:all .15s;user-select:none;
+}
+.fee-cell-unpaid:hover{background:rgba(33,74,154,.1);color:var(--blue);}
+.fee-cell-unpaid:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;}
+
+.fee-legend{
+  display:flex;gap:18px;flex-wrap:wrap;
+  padding:.7rem 1rem;font-size:.7rem;color:var(--muted);
+  border-top:1px solid var(--border);background:#fbfcfe;
+}
+.fee-legend span{display:inline-flex;align-items:center;gap:5px;}
+.fee-legend .legend-mark{
+  display:inline-block;width:18px;text-align:center;font-weight:700;font-size:.85rem;
+}
+
+/* ===== 印刷モード ===== */
 @media print {
-  #panel-nav, #lockScreen, .action-row, .no-print { display:none !important; }
+  #panel-nav, #lockScreen, .tab-nav, .action-row, .no-print { display:none !important; }
   body { background:#fff; }
   #mainContent { display:block !important; padding:0; }
+  .inner { max-width:100%; padding:0 1rem; }
+  .tab-panel { display:none !important; }
+  .tab-panel[data-tab="report"] { display:block !important; padding-top:0; }
   .card, .graph-card { box-shadow:none; border:1px solid #ddd; break-inside:avoid; }
-  .report-only { display:block !important; }
 }
-.report-only { display:none; }
 
 /* ===== MODAL ===== */
 .modal-overlay{
@@ -223,6 +313,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   font-size:.88rem;font-weight:700;cursor:pointer;
 }
 .btn-save:hover{background:#1a3d85;}
+.btn-save:disabled{background:#9aa5bd;cursor:not-allowed;}
 .btn-danger{
   flex:1;padding:12px;border:none;border-radius:10px;
   background:#fee2e2;color:var(--red);font-family:inherit;
@@ -236,13 +327,14 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   border-radius:0 8px 8px 0;padding:.75rem 1rem;
   font-size:.75rem;color:#78350f;line-height:1.7;margin-bottom:1rem;
 }
+.amount-hint{font-size:.7rem;color:var(--muted);margin-top:.3rem;}
 </style>
 </head>
 <body>
 
 <!-- ===== PANEL NAV ===== -->
 <nav id="panel-nav">
-  <button id="back-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i></button>
+  <button id="back-btn" onclick="goBack()" aria-label="戻る"><i class="fa-solid fa-chevron-left"></i></button>
   <div id="panel-title">会計委員会</div>
   <div id="panel-badge">FINANCE</div>
 </nav>
@@ -271,126 +363,216 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 <!-- ===== MAIN CONTENT ===== -->
 <div id="mainContent">
+
+  <!-- ===== TAB NAV ===== -->
+  <nav class="tab-nav" role="tablist" aria-label="会計パネル">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true"
+        onclick="activateTab('dashboard')">
+        <i class="fa-solid fa-gauge"></i> ダッシュボード
+      </button>
+      <button class="tab-btn" data-tab="ledger" role="tab" aria-selected="false"
+        onclick="activateTab('ledger')">
+        <i class="fa-solid fa-book"></i> 出納帳
+      </button>
+      <button class="tab-btn" data-tab="fee" role="tab" aria-selected="false"
+        onclick="activateTab('fee')">
+        <i class="fa-solid fa-yen-sign"></i> 団費収入
+      </button>
+      <button class="tab-btn" data-tab="report" role="tab" aria-selected="false"
+        onclick="activateTab('report')">
+        <i class="fa-solid fa-file-lines"></i> 収支報告書
+      </button>
+    </div>
+  </nav>
+
   <div class="inner">
 
-    <!-- サマリーカード -->
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-num income" id="statIncome">¥0</div>
-        <div class="stat-label">今月の収入</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num expense" id="statExpense">¥0</div>
-        <div class="stat-label">今月の支出</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num unpaid" id="statUnpaid">0名</div>
-        <div class="stat-label">未納者数</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="statBalance">¥0</div>
-        <div class="stat-label">累計残高</div>
-      </div>
-    </div>
+    <!-- ===== TAB: ダッシュボード ===== -->
+    <section class="tab-panel active" data-tab="dashboard" data-loaded="false" role="tabpanel">
 
-    <!-- グラフ -->
-    <div class="graph-card">
-      <div class="graph-head">
-        <div class="graph-title">月次収支グラフ</div>
-        <select class="filter-select" id="graphYear" onchange="renderGraph()"></select>
+      <div class="tab-loading" id="dashLoading">
+        <div class="spinner"></div><span>読み込み中…</span>
       </div>
-      <canvas id="financeChart" height="160"></canvas>
-    </div>
 
-    <!-- アクションボタン -->
-    <div class="action-row no-print">
-      <button class="btn-primary" onclick="openModal()">
-        <i class="fa-solid fa-plus"></i> 収支を記録
-      </button>
-      <button class="btn-secondary" onclick="exportCSV()">
-        <i class="fa-solid fa-download"></i> CSVダウンロード
-      </button>
-      <button class="btn-secondary" onclick="printReport()">
-        <i class="fa-solid fa-print"></i> 収支報告書を印刷
-      </button>
-    </div>
-
-    <!-- 出納帳 -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-head-left">
-          <div class="card-icon" style="background:rgba(200,164,77,.12);color:#92680a;"><i class="fa-solid fa-book"></i></div>
-          <div class="card-title">出納帳</div>
+      <div id="dashContent" style="display:none;">
+        <!-- サマリーカード -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-num income" id="statIncome">¥0</div>
+            <div class="stat-label">今月の収入</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num expense" id="statExpense">¥0</div>
+            <div class="stat-label">今月の支出</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num unpaid" id="statUnpaid">―</div>
+            <div class="stat-label">今月の未納者数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="statBalance">¥0</div>
+            <div class="stat-label">現在残高</div>
+          </div>
         </div>
-        <div class="filter-row">
-          <select class="filter-select" id="filterCat" onchange="renderLedger()">
-            <option value="">すべて</option>
-            <option value="会費">会費</option>
-            <option value="会場費">会場費</option>
-            <option value="備品">備品</option>
-            <option value="印刷費">印刷費</option>
-            <option value="その他">その他</option>
+
+        <!-- グラフ -->
+        <div class="graph-card">
+          <div class="graph-head">
+            <div class="graph-title">月次収支グラフ</div>
+            <select class="filter-select" id="graphYear" onchange="renderGraph()" aria-label="表示年"></select>
+          </div>
+          <canvas id="financeChart" height="160"></canvas>
+        </div>
+
+        <!-- アクションボタン -->
+        <div class="action-row no-print">
+          <button class="btn-primary" onclick="openLedgerModal()">
+            <i class="fa-solid fa-plus"></i> 収支を記録
+          </button>
+          <button class="btn-secondary" onclick="exportCSV()">
+            <i class="fa-solid fa-download"></i> CSVダウンロード
+          </button>
+          <button class="btn-secondary" onclick="printReport()">
+            <i class="fa-solid fa-print"></i> 収支報告書を印刷
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TAB: 出納帳 ===== -->
+    <section class="tab-panel" data-tab="ledger" data-loaded="false" role="tabpanel">
+
+      <div class="tab-loading" id="ledgerLoading">
+        <div class="spinner"></div><span>読み込み中…</span>
+      </div>
+
+      <div id="ledgerContent" style="display:none;">
+        <div class="action-row">
+          <button class="btn-primary" onclick="openLedgerModal()">
+            <i class="fa-solid fa-plus"></i> 収支を記録
+          </button>
+          <button class="btn-secondary" onclick="exportCSV()">
+            <i class="fa-solid fa-download"></i> CSVダウンロード
+          </button>
+          <button class="btn-secondary" onclick="reloadLedger()">
+            <i class="fa-solid fa-rotate"></i> 更新
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-left">
+              <div class="card-icon" style="background:rgba(200,164,77,.12);color:#92680a;"><i class="fa-solid fa-book"></i></div>
+              <div class="card-title">出納帳</div>
+            </div>
+            <div class="filter-row">
+              <select class="filter-select" id="filterCat" onchange="renderLedger()" aria-label="カテゴリ">
+                <option value="">すべて</option>
+                <option value="会費">会費</option>
+                <option value="会場費">会場費</option>
+                <option value="備品">備品</option>
+                <option value="印刷費">印刷費</option>
+                <option value="その他">その他</option>
+              </select>
+              <select class="filter-select" id="filterMonth" onchange="renderLedger()" aria-label="月">
+                <option value="">全期間</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="tbl-wrap">
+              <table class="data-table" style="min-width:580px;">
+                <thead>
+                  <tr>
+                    <th>日付</th><th>摘要</th><th>カテゴリ</th>
+                    <th>収入</th><th>支出</th><th>残高</th><th class="no-print"></th>
+                  </tr>
+                </thead>
+                <tbody id="ledgerTable">
+                  <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TAB: 団費収入 ===== -->
+    <section class="tab-panel" data-tab="fee" data-loaded="false" role="tabpanel">
+
+      <div class="tab-loading" id="feeLoading">
+        <div class="spinner"></div><span>読み込み中…</span>
+      </div>
+
+      <div id="feeContent" style="display:none;">
+        <div class="fee-summary-bar">
+          <select class="filter-select" id="feeYearSelect" onchange="onFeeYearChange()" aria-label="年度">
           </select>
-          <select class="filter-select" id="filterMonth" onchange="renderLedger()">
-            <option value="">全期間</option>
-          </select>
+          <div class="fee-stats">
+            <span class="fee-stat-rate" id="feeRate">納入率 ―</span>
+            <span class="fee-stat-unpaid" id="feeUnpaid">未納額 ―</span>
+          </div>
+          <button class="btn-primary" onclick="openFeeModal()">
+            <i class="fa-solid fa-plus"></i> 現金で受領
+          </button>
         </div>
-      </div>
-      <div class="card-body" style="padding:0;">
-        <div class="tbl-wrap">
-          <table class="data-table" style="min-width:580px;">
-            <thead>
-              <tr>
-                <th>日付</th><th>摘要</th><th>カテゴリ</th>
-                <th>収入</th><th>支出</th><th>残高</th><th class="no-print"></th>
-              </tr>
-            </thead>
-            <tbody id="ledgerTable">
-              <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
 
-    <!-- 会費納入状況 -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-head-left">
-          <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-users"></i></div>
-          <div class="card-title">会費納入状況</div>
+        <div class="fee-matrix-wrap">
+          <div class="fee-matrix-scroll">
+            <table class="fee-matrix">
+              <thead>
+                <tr>
+                  <th>氏名</th><th>パート</th><th>区分</th><th>方法</th>
+                </tr>
+              </thead>
+              <tbody id="feeMatrixBody">
+              </tbody>
+            </table>
+          </div>
+          <div class="fee-legend no-print">
+            <span><span class="legend-mark" style="color:var(--green);">✓</span>カード払い済</span>
+            <span><span class="legend-mark" style="color:var(--blue);">✓</span>現金受領済</span>
+            <span><span class="legend-mark" style="color:#a6acba;">□</span>未納（クリックで記録）</span>
+            <span><span class="legend-mark" style="color:#cdd2dc;">−</span>対象外（入団前/未来月）</span>
+          </div>
         </div>
-        <button class="btn-secondary no-print" onclick="loadFeeStatus()" style="padding:5px 12px;font-size:.72rem;">
-          <i class="fa-solid fa-rotate"></i> 更新
-        </button>
       </div>
-      <div class="card-body" style="padding:0;">
-        <div class="tbl-wrap">
-          <table class="data-table">
-            <thead><tr><th>氏名</th><th>パート</th><th>区分</th><th>ステータス</th></tr></thead>
-            <tbody id="feeTable">
-              <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);">読み込み中…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- 収支報告書（印刷用） -->
-    <div class="card report-only">
-      <div class="card-head">
-        <div class="card-title">収支報告書</div>
+    <!-- ===== TAB: 収支報告書 ===== -->
+    <section class="tab-panel" data-tab="report" data-loaded="false" role="tabpanel">
+
+      <div class="tab-loading" id="reportLoading">
+        <div class="spinner"></div><span>読み込み中…</span>
       </div>
-      <div class="card-body">
-        <div id="reportContent"></div>
+
+      <div id="reportContentWrap" style="display:none;">
+        <div class="action-row no-print">
+          <button class="btn-primary" onclick="printReport()">
+            <i class="fa-solid fa-print"></i> 印刷する
+          </button>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-left">
+              <div class="card-icon" style="background:rgba(33,74,154,.1);color:var(--blue);"><i class="fa-solid fa-file-lines"></i></div>
+              <div class="card-title">収支報告書</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="reportContent"></div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
   </div>
 </div>
 
-<!-- ===== 収支入力モーダル ===== -->
-<div class="modal-overlay" id="ledgerModal">
+<!-- ===== 収支入力モーダル（出納帳） ===== -->
+<div class="modal-overlay" id="ledgerModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
     <div class="modal-drag"></div>
     <div class="modal-title" id="modalTitle">収支を記録</div>
@@ -438,9 +620,51 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
     <div class="modal-msg" id="modalMsg"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="btn-cancel" onclick="closeLedgerModal()">キャンセル</button>
       <button class="btn-danger" id="btnDelete" onclick="deleteEntry()" style="display:none;">削除</button>
       <button class="btn-save" onclick="saveEntry()">
+        <i class="fa-solid fa-check"></i> 保存
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 現金受領モーダル（団費収入） ===== -->
+<div class="modal-overlay" id="feeModal" role="dialog" aria-modal="true" aria-labelledby="feeModalTitle">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title" id="feeModalTitle">現金で団費を受領</div>
+
+    <div class="modal-fg">
+      <label>団員 <span style="color:var(--gold)">*</span></label>
+      <select id="feeInputMember" onchange="onFeeMemberChange()"></select>
+    </div>
+    <div class="fg-row">
+      <div class="modal-fg">
+        <label>対象月 <span style="color:var(--gold)">*</span></label>
+        <select id="feeInputMonth"></select>
+      </div>
+      <div class="modal-fg">
+        <label>金額 <span style="color:var(--gold)">*</span></label>
+        <input type="number" id="feeInputAmount" min="0" placeholder="3000">
+        <div class="amount-hint">区分に応じた月額が自動入力されます。必要に応じて変更できます。</div>
+      </div>
+    </div>
+    <div class="modal-fg">
+      <label>メモ（任意）</label>
+      <input type="text" id="feeInputNote" placeholder="例：練習日に手渡しで受領">
+    </div>
+
+    <div class="receipt-note">
+      <i class="fa-solid fa-receipt" style="margin-right:6px;"></i>
+      保存すると<strong>出納帳にも自動で「会費」として記録</strong>されます。
+      領収書を発行した場合は<strong>原本を必ず保管</strong>してください。
+    </div>
+
+    <div class="modal-msg" id="feeModalMsg"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeFeeModal()">キャンセル</button>
+      <button class="btn-save" id="feeSaveBtn" onclick="saveFeePayment()">
         <i class="fa-solid fa-check"></i> 保存
       </button>
     </div>
@@ -456,12 +680,37 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const SB = { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } };
 const PANEL_CODE = 'FINANCE';
 
+// 月額対応表（仕様書 §4.3）
+const FEE_AMOUNT = {
+  '正会員（大人）': 3000,
+  '学生会員': 1500,
+  'ボランティア会員': 1000,  // 表示対象外（定義のみ）
+};
+const TARGET_MEMBER_TYPES = ['正会員（大人）', '学生会員'];
+const MEMBER_TYPE_SHORT = {
+  '正会員（大人）': '大人',
+  '学生会員': '学生',
+};
+const MEMBER_TYPE_LABEL = {
+  '正会員（大人）': '正会員',
+  '学生会員': '学生会員',
+};
+
+// タブ名
+const TAB_NAMES = ['dashboard', 'ledger', 'fee', 'report'];
+
 // =============================================
 //  状態
 // =============================================
 let memberToken = null;
 let memberData  = null;
 let ledgerData  = [];
+let ledgerLoaded = false;
+let feeMembersData = [];
+let feeMembersLoaded = false;
+let feePaymentsByYear = {};
+let availableFiscalYears = [];
+let currentFeeYear = null;
 let currentType = 'income';
 let chartInstance = null;
 
@@ -484,23 +733,20 @@ window.addEventListener('DOMContentLoaded', async () => {
       SB
     );
     const members = await res.json();
-    if (!members || members.length === 0) return; // tokenが無効 → ロック画面のまま
+    if (!members || members.length === 0) return;
 
     memberData = members[0];
     const role      = memberData.role      || '';
     const committee = memberData.committee || '';
 
-    // 権限チェック
     const FULL_ACCESS = ['president', 'vice_president', 'director'];
     const hasAccess   = FULL_ACCESS.includes(role) || role === 'finance' || committee === 'finance';
 
     if (hasAccess) {
       showMain();
     }
-    // 権限なし → ロック画面のまま（パネルコードでも入れる）
   } catch(e) {
     console.error(e);
-    // エラー時はロック画面のまま
   }
 });
 
@@ -534,20 +780,83 @@ async function showMain() {
     } catch(e) { console.error(e); }
   }
 
-  await loadLedger();
-  await loadFeeStatus();
-  loadChartJs(() => {
-    populateYearSelect();
-    renderGraph();
-  });
-
   document.getElementById('stateLoading').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
+
+  // 初期タブを活性化
+  const initialTab = getTabFromHash();
+  await activateTab(initialTab);
+
+  // hashchange 連動
+  window.addEventListener('hashchange', () => {
+    activateTab(getTabFromHash());
+  });
 }
 
 // =============================================
-//  出納帳データ取得
+//  タブ管理
 // =============================================
+function getTabFromHash() {
+  const m = (location.hash || '').match(/^#tab=(\w+)$/);
+  return m && TAB_NAMES.includes(m[1]) ? m[1] : 'dashboard';
+}
+
+async function activateTab(tabName) {
+  if (!TAB_NAMES.includes(tabName)) tabName = 'dashboard';
+
+  // タブナビ
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    const isActive = b.dataset.tab === tabName;
+    b.classList.toggle('active', isActive);
+    b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+  // パネル
+  document.querySelectorAll('.tab-panel').forEach(p => {
+    p.classList.toggle('active', p.dataset.tab === tabName);
+  });
+  // URLハッシュ
+  const newHash = '#tab=' + tabName;
+  if (location.hash !== newHash) {
+    history.replaceState(null, '', newHash);
+  }
+  // 遅延ロード
+  const panel = document.querySelector(`.tab-panel[data-tab="${tabName}"]`);
+  if (panel && panel.dataset.loaded === 'false') {
+    try {
+      await loadTab(tabName);
+      panel.dataset.loaded = 'true';
+    } catch(e) {
+      console.error(`タブ ${tabName} のロード失敗:`, e);
+    }
+  }
+}
+
+async function loadTab(tabName) {
+  switch(tabName) {
+    case 'dashboard': return loadDashboard();
+    case 'ledger':    return loadLedgerTab();
+    case 'fee':       return loadFeeTab();
+    case 'report':    return loadReportTab();
+  }
+}
+
+function invalidateOtherTabs(except) {
+  TAB_NAMES.forEach(t => {
+    if (t === except) return;
+    const panel = document.querySelector(`.tab-panel[data-tab="${t}"]`);
+    if (panel) panel.dataset.loaded = 'false';
+  });
+}
+
+// =============================================
+//  共有データのロード
+// =============================================
+async function ensureLedgerLoaded() {
+  if (ledgerLoaded) return;
+  await loadLedger();
+  ledgerLoaded = true;
+}
+
 async function loadLedger() {
   try {
     const res = await fetch(
@@ -555,118 +864,87 @@ async function loadLedger() {
       SB
     );
     const data = await res.json();
-    // Supabaseのカラム名をアプリ内部の命名に変換
     ledgerData = (data || []).map(r => ({
-      id:       r.id,
-      date:     r.date,
-      type:     r.type,        // 'income' | 'expense'
-      category: r.category,
-      amount:   r.amount,
-      desc:     r.description,
-      org_id:   r.org_id,
-      member_id:r.member_id,
+      id:        r.id,
+      date:      r.date,
+      type:      r.type,
+      category:  r.category,
+      amount:    r.amount,
+      desc:      r.description,
+      org_id:    r.org_id,
+      member_id: r.member_id,
     }));
   } catch(e) {
     console.error('ledger取得エラー:', e);
     ledgerData = [];
   }
-  populateMonthFilter();
-  renderLedger();
-  renderSummary();
 }
 
-// =============================================
-//  会費納入状況
-//  [Phase 1] fee_status カラム廃止に伴い「改修中」表示
-//  [Phase 2] fee_payments テーブルを参照する月別マトリクスに再実装予定
-// =============================================
-async function loadFeeStatus() {
-  document.getElementById('feeTable').innerHTML =
-    '<tr><td colspan="4" style="text-align:center;padding:32px 20px;color:var(--muted);font-size:.82rem;line-height:1.7;">'
-    + '会費納入状況の表示は現在改修中です<br>'
-    + '<span style="font-size:.72rem;">月別マトリクス表示で近日リリース予定</span>'
-    + '</td></tr>';
-  document.getElementById('statUnpaid').textContent = '―';
+async function ensureFeeMembersLoaded() {
+  if (feeMembersLoaded) return;
+  await loadFeeMembers();
+  feeMembersLoaded = true;
 }
 
-function renderFeeTable(members) {
-  // [Phase 1] 関数本体は無効化（loadFeeStatus が直接表示するため）
-  // [Phase 2] 月別マトリクス表示として再実装予定
-}
-
-// =============================================
-//  出納帳レンダリング
-// =============================================
-function populateMonthFilter() {
-  const sel = document.getElementById('filterMonth');
-  const prev = sel.value;
-  const months = [...new Set(ledgerData.map(e => e.date.slice(0,7)))].sort().reverse();
-  sel.innerHTML = '<option value="">全期間</option>' + months.map(m => {
-    const [y, mo] = m.split('-');
-    return `<option value="${m}"${m === prev ? ' selected':''}>${y}年${parseInt(mo)}月</option>`;
-  }).join('');
-}
-
-function renderLedger() {
-  const catFilter   = document.getElementById('filterCat').value;
-  const monthFilter = document.getElementById('filterMonth').value;
-
-  let rows = [...ledgerData].sort((a,b) => a.date.localeCompare(b.date));
-  if (catFilter)   rows = rows.filter(r => r.category === catFilter);
-  if (monthFilter) rows = rows.filter(r => r.date.startsWith(monthFilter));
-
-  if (!rows.length) {
-    document.getElementById('ledgerTable').innerHTML =
-      '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem;">データがありません</td></tr>';
-    return;
+async function loadFeeMembers() {
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/members?status=eq.active&select=id,org_id,name,part,member_type,payment_method,joined_at&order=name.asc`;
+    const res = await fetch(url, { ...SB });
+    const all = (await res.json()) || [];
+    // 全角カッコを含む member_type は URL フィルタが面倒なので JS 側でフィルタ
+    feeMembersData = all.filter(m => TARGET_MEMBER_TYPES.includes(m.member_type));
+  } catch(e) {
+    console.error('feeMembers取得エラー:', e);
+    feeMembersData = [];
   }
+}
 
-  // 残高を計算（フィルター前の全データで計算）
-  let runningBalance = 0;
-  const balanceMap = {};
-  [...ledgerData].sort((a,b) => a.date.localeCompare(b.date)).forEach(r => {
-    runningBalance += r.type === 'income' ? r.amount : -r.amount;
-    balanceMap[r.id] = runningBalance;
-  });
+// =============================================
+//  TAB1: ダッシュボード
+// =============================================
+async function loadDashboard() {
+  document.getElementById('dashLoading').style.display = 'flex';
+  document.getElementById('dashContent').style.display = 'none';
 
-  document.getElementById('ledgerTable').innerHTML = rows.map(r => {
-    const d = new Date(r.date);
-    const dateStr = (d.getMonth()+1) + '/' + d.getDate();
-    const isIncome = r.type === 'income';
-    return `<tr>
-      <td style="white-space:nowrap;color:var(--muted);font-size:.75rem;">${r.date}</td>
-      <td style="font-size:.8rem;">${r.desc || '―'}</td>
-      <td><span style="font-size:.65rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">${r.category || '―'}</span></td>
-      <td class="${isIncome ? 'amount-income' : ''}">${isIncome ? '¥' + r.amount.toLocaleString() : '―'}</td>
-      <td class="${!isIncome ? 'amount-expense' : ''}">${!isIncome ? '¥' + r.amount.toLocaleString() : '―'}</td>
-      <td style="font-weight:700;font-size:.8rem;">¥${(balanceMap[r.id]||0).toLocaleString()}</td>
-      <td class="no-print">
-        <button onclick="openEditModal('${r.id}')"
-          style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:.68rem;cursor:pointer;color:var(--navy);">
-          編集
-        </button>
-      </td>
-    </tr>`;
-  }).join('');
+  await ensureLedgerLoaded();
+  await ensureFeeMembersLoaded();
+  await loadCurrentMonthUnpaidStat();
+  populateGraphYearSelect();
+  renderSummary();
+  loadChartJs(() => renderGraph());
+
+  document.getElementById('dashLoading').style.display = 'none';
+  document.getElementById('dashContent').style.display = 'block';
+}
+
+async function loadCurrentMonthUnpaidStat() {
+  try {
+    const thisMonth = currentMonthStr();
+    const url = `${SUPABASE_URL}/rest/v1/fee_payments?year_month=eq.${thisMonth}&select=member_id`;
+    const res = await fetch(url, SB);
+    const payments = (await res.json()) || [];
+    const paidIds = new Set(payments.map(p => p.member_id));
+    const target = feeMembersData.length;
+    const paid = feeMembersData.filter(m => paidIds.has(m.id)).length;
+    const unpaid = Math.max(0, target - paid);
+    document.getElementById('statUnpaid').textContent = unpaid + '名';
+  } catch(e) {
+    console.error('未納者数の計算に失敗:', e);
+    document.getElementById('statUnpaid').textContent = '―';
+  }
 }
 
 function renderSummary() {
-  const now = new Date();
-  const thisMonth = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
-
-  const thisMonthData = ledgerData.filter(r => r.date.startsWith(thisMonth));
+  const thisMonth = currentMonthStr();
+  const thisMonthData = ledgerData.filter(r => r.date && r.date.startsWith(thisMonth));
   const income  = thisMonthData.filter(r => r.type === 'income').reduce((s,r) => s + r.amount, 0);
   const expense = thisMonthData.filter(r => r.type === 'expense').reduce((s,r) => s + r.amount, 0);
   const balance = ledgerData.reduce((s,r) => s + (r.type === 'income' ? r.amount : -r.amount), 0);
-
   document.getElementById('statIncome').textContent  = '¥' + income.toLocaleString();
   document.getElementById('statExpense').textContent = '¥' + expense.toLocaleString();
   document.getElementById('statBalance').textContent = '¥' + balance.toLocaleString();
 }
 
-// =============================================
-//  グラフ（Chart.js）
-// =============================================
 function loadChartJs(cb) {
   if (window.Chart) { cb(); return; }
   const s = document.createElement('script');
@@ -675,22 +953,24 @@ function loadChartJs(cb) {
   document.head.appendChild(s);
 }
 
-function populateYearSelect() {
-  const years = [...new Set(ledgerData.map(r => r.date.slice(0,4)))];
+function populateGraphYearSelect() {
+  const years = [...new Set(ledgerData.map(r => r.date && r.date.slice(0,4)).filter(Boolean))];
   if (!years.length) years.push(String(new Date().getFullYear()));
   const sel = document.getElementById('graphYear');
   const thisYear = String(new Date().getFullYear());
+  const prev = sel.value;
+  const target = years.includes(prev) ? prev : (years.includes(thisYear) ? thisYear : years[0]);
   sel.innerHTML = years.sort().reverse().map(y =>
-    `<option value="${y}"${y === thisYear ? ' selected':''}>${y}年</option>`
+    `<option value="${y}"${y === target ? ' selected':''}>${y}年</option>`
   ).join('');
 }
 
 function renderGraph() {
+  if (!window.Chart) { loadChartJs(() => renderGraph()); return; }
   const year = document.getElementById('graphYear').value || String(new Date().getFullYear());
   const months = Array.from({length:12}, (_,i) => year + '-' + String(i+1).padStart(2,'0'));
-
-  const incomes  = months.map(m => ledgerData.filter(r => r.date.startsWith(m) && r.type === 'income').reduce((s,r) => s+r.amount, 0));
-  const expenses = months.map(m => ledgerData.filter(r => r.date.startsWith(m) && r.type === 'expense').reduce((s,r) => s+r.amount, 0));
+  const incomes  = months.map(m => ledgerData.filter(r => r.date && r.date.startsWith(m) && r.type === 'income').reduce((s,r) => s+r.amount, 0));
+  const expenses = months.map(m => ledgerData.filter(r => r.date && r.date.startsWith(m) && r.type === 'expense').reduce((s,r) => s+r.amount, 0));
 
   const ctx = document.getElementById('financeChart').getContext('2d');
   if (chartInstance) chartInstance.destroy();
@@ -715,9 +995,513 @@ function renderGraph() {
 }
 
 // =============================================
-//  モーダル
+//  TAB2: 出納帳
 // =============================================
-function openModal() {
+async function loadLedgerTab() {
+  document.getElementById('ledgerLoading').style.display = 'flex';
+  document.getElementById('ledgerContent').style.display = 'none';
+
+  await ensureLedgerLoaded();
+  populateMonthFilter();
+  renderLedger();
+
+  document.getElementById('ledgerLoading').style.display = 'none';
+  document.getElementById('ledgerContent').style.display = 'block';
+}
+
+async function reloadLedger() {
+  ledgerLoaded = false;
+  await loadLedgerTab();
+  // ダッシュボード・収支報告書も再ロード対象にする
+  invalidateOtherTabs('ledger');
+}
+
+function populateMonthFilter() {
+  const sel = document.getElementById('filterMonth');
+  const prev = sel.value;
+  const months = [...new Set(ledgerData.map(e => e.date && e.date.slice(0,7)).filter(Boolean))].sort().reverse();
+  sel.innerHTML = '<option value="">全期間</option>' + months.map(m => {
+    const [y, mo] = m.split('-');
+    return `<option value="${m}"${m === prev ? ' selected':''}>${y}年${parseInt(mo)}月</option>`;
+  }).join('');
+}
+
+function renderLedger() {
+  const catFilter   = document.getElementById('filterCat').value;
+  const monthFilter = document.getElementById('filterMonth').value;
+
+  let rows = [...ledgerData].sort((a,b) => a.date.localeCompare(b.date));
+  if (catFilter)   rows = rows.filter(r => r.category === catFilter);
+  if (monthFilter) rows = rows.filter(r => r.date && r.date.startsWith(monthFilter));
+
+  if (!rows.length) {
+    document.getElementById('ledgerTable').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem;">データがありません</td></tr>';
+    return;
+  }
+
+  // 残高は全期間で計算
+  let runningBalance = 0;
+  const balanceMap = {};
+  [...ledgerData].sort((a,b) => a.date.localeCompare(b.date)).forEach(r => {
+    runningBalance += r.type === 'income' ? r.amount : -r.amount;
+    balanceMap[r.id] = runningBalance;
+  });
+
+  document.getElementById('ledgerTable').innerHTML = rows.map(r => {
+    const isIncome = r.type === 'income';
+    return `<tr>
+      <td style="white-space:nowrap;color:var(--muted);font-size:.75rem;">${escapeHtml(r.date)}</td>
+      <td style="font-size:.8rem;">${escapeHtml(r.desc || '―')}</td>
+      <td><span style="font-size:.65rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">${escapeHtml(r.category || '―')}</span></td>
+      <td class="${isIncome ? 'amount-income' : ''}">${isIncome ? '¥' + r.amount.toLocaleString() : '―'}</td>
+      <td class="${!isIncome ? 'amount-expense' : ''}">${!isIncome ? '¥' + r.amount.toLocaleString() : '―'}</td>
+      <td style="font-weight:700;font-size:.8rem;">¥${(balanceMap[r.id]||0).toLocaleString()}</td>
+      <td class="no-print">
+        <button onclick="openEditModal('${r.id}')"
+          style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:.68rem;cursor:pointer;color:var(--navy);">
+          編集
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// =============================================
+//  TAB3: 団費収入
+// =============================================
+async function loadFeeTab() {
+  document.getElementById('feeLoading').style.display = 'flex';
+  document.getElementById('feeContent').style.display = 'none';
+
+  await ensureFeeMembersLoaded();
+  await initFiscalYears();
+  populateFeeYearSelect();
+  await loadFeePaymentsForYear(currentFeeYear);
+  renderFeeMatrix();
+  updateFeeSummary();
+
+  document.getElementById('feeLoading').style.display = 'none';
+  document.getElementById('feeContent').style.display = 'block';
+}
+
+async function initFiscalYears() {
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/fee_payments?select=year_month`;
+    const res = await fetch(url, SB);
+    const payments = (await res.json()) || [];
+    const years = new Set(payments.map(p => fiscalYearOf(p.year_month)).filter(Boolean));
+    years.add(currentFiscalYear());
+    availableFiscalYears = Array.from(years).sort().reverse();
+  } catch(e) {
+    console.error('fiscalYears取得エラー:', e);
+    availableFiscalYears = [currentFiscalYear()];
+  }
+  if (!currentFeeYear) currentFeeYear = currentFiscalYear();
+}
+
+function populateFeeYearSelect() {
+  const sel = document.getElementById('feeYearSelect');
+  sel.innerHTML = availableFiscalYears.map(y =>
+    `<option value="${y}"${y === currentFeeYear ? ' selected':''}>${y}年度</option>`
+  ).join('');
+}
+
+async function onFeeYearChange() {
+  currentFeeYear = document.getElementById('feeYearSelect').value;
+  if (!feePaymentsByYear[currentFeeYear]) {
+    await loadFeePaymentsForYear(currentFeeYear);
+  }
+  renderFeeMatrix();
+  updateFeeSummary();
+}
+
+async function loadFeePaymentsForYear(year) {
+  try {
+    const months = fiscalYearMonths(year);
+    const start = months[0];
+    const end = months[months.length - 1];
+    const url = `${SUPABASE_URL}/rest/v1/fee_payments?year_month=gte.${start}&year_month=lte.${end}&select=*`;
+    const res = await fetch(url, SB);
+    feePaymentsByYear[year] = (await res.json()) || [];
+  } catch(e) {
+    console.error('fee_payments取得エラー:', e);
+    feePaymentsByYear[year] = [];
+  }
+}
+
+function renderFeeMatrix() {
+  const months = fiscalYearMonths(currentFeeYear);
+  const payments = feePaymentsByYear[currentFeeYear] || [];
+
+  // ヘッダー（月部分）を更新
+  const thead = document.querySelector('.fee-matrix thead tr');
+  // 既存の th を維持しつつ、月の th を再生成
+  const fixedThs = `
+    <th>氏名</th><th>パート</th><th>区分</th><th>方法</th>
+  `;
+  const monthThs = months.map(m => {
+    const mNum = parseInt(m.slice(5,7));
+    const isFuture = isFutureMonth(m);
+    return `<th class="${isFuture ? 'fee-th-future' : ''}">${mNum}月</th>`;
+  }).join('');
+  thead.innerHTML = fixedThs + monthThs;
+
+  // ボディ
+  if (feeMembersData.length === 0) {
+    document.getElementById('feeMatrixBody').innerHTML =
+      `<tr><td colspan="${4 + months.length}" style="text-align:center;padding:24px;color:var(--muted);">対象会員がいません</td></tr>`;
+    return;
+  }
+
+  document.getElementById('feeMatrixBody').innerHTML = feeMembersData.map(member => {
+    const cells = months.map(m => renderFeeCell(member, m, payments)).join('');
+    const methodLabel = member.payment_method === 'stripe' ? 'カード'
+                      : member.payment_method === 'cash' ? '現金'
+                      : '未設定';
+    const typeShort = MEMBER_TYPE_SHORT[member.member_type] || '―';
+    return `<tr>
+      <td class="fee-name">${escapeHtml(member.name || '')}</td>
+      <td>${escapeHtml(member.part || '―')}</td>
+      <td>${typeShort}</td>
+      <td>${methodLabel}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+}
+
+function renderFeeCell(member, yearMonth, payments) {
+  if (isBeforeJoined(yearMonth, member.joined_at)) {
+    return `<td class="fee-cell fee-cell-disabled" title="入団前">−</td>`;
+  }
+  if (isFutureMonth(yearMonth)) {
+    return `<td class="fee-cell fee-cell-disabled" title="未来月">−</td>`;
+  }
+  const payment = payments.find(p => p.member_id === member.id && p.year_month === yearMonth);
+  if (payment) {
+    const isCard = payment.payment_method === 'stripe';
+    const cls = isCard ? 'fee-cell-paid-card' : 'fee-cell-paid-cash';
+    const tip = isCard ? `カード払い済 ¥${(payment.amount||0).toLocaleString()}` : `現金受領済 ¥${(payment.amount||0).toLocaleString()}`;
+    return `<td class="fee-cell ${cls}" title="${escapeHtml(tip)}">✓</td>`;
+  }
+  return `<td class="fee-cell fee-cell-unpaid" title="クリックで現金受領を記録"
+            onclick="openFeeModal('${member.id}','${yearMonth}')">□</td>`;
+}
+
+function updateFeeSummary() {
+  const months = fiscalYearMonths(currentFeeYear);
+  const payments = feePaymentsByYear[currentFeeYear] || [];
+
+  // 納入率
+  const paidIds = new Set(payments.map(p => p.member_id));
+  const totalCount = feeMembersData.length;
+  const paidCount = feeMembersData.filter(m => paidIds.has(m.id)).length;
+  const rate = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0;
+
+  // 未納額
+  let expected = 0;
+  feeMembersData.forEach(m => {
+    months.forEach(ym => {
+      if (isBeforeJoined(ym, m.joined_at)) return;
+      if (isFutureMonth(ym)) return;
+      expected += FEE_AMOUNT[m.member_type] || 0;
+    });
+  });
+  const collected = payments.reduce((s, p) => s + (p.amount || 0), 0);
+  const unpaidAmount = Math.max(0, expected - collected);
+
+  document.getElementById('feeRate').textContent = `納入率 ${rate}% （${totalCount}名中${paidCount}名）`;
+  document.getElementById('feeUnpaid').textContent = `未納額 ¥${unpaidAmount.toLocaleString()}`;
+}
+
+// ===== 現金受領モーダル =====
+function openFeeModal(memberId, yearMonth) {
+  const targetMemberId = memberId || '';
+  const targetMonth = yearMonth || currentMonthStr();
+  populateFeeMemberSelect(targetMemberId);
+  populateFeeMonthSelect(targetMonth, targetMemberId);
+  // 金額プリセット
+  const member = feeMembersData.find(m => m.id === targetMemberId);
+  document.getElementById('feeInputAmount').value = member ? (FEE_AMOUNT[member.member_type] || '') : '';
+  document.getElementById('feeInputNote').value = '';
+  document.getElementById('feeModalMsg').className = 'modal-msg';
+  document.getElementById('feeSaveBtn').disabled = false;
+  document.getElementById('feeModal').classList.add('open');
+}
+
+function closeFeeModal() {
+  document.getElementById('feeModal').classList.remove('open');
+}
+
+function populateFeeMemberSelect(selectedId) {
+  const sel = document.getElementById('feeInputMember');
+  const opts = feeMembersData.map(m => {
+    const label = MEMBER_TYPE_LABEL[m.member_type] || '';
+    const sel2 = m.id === selectedId ? ' selected' : '';
+    return `<option value="${m.id}"${sel2}>${escapeHtml(m.name)}（${escapeHtml(label)}）</option>`;
+  });
+  sel.innerHTML = '<option value="">団員を選択…</option>' + opts.join('');
+  sel.value = selectedId || '';
+}
+
+function populateFeeMonthSelect(selectedMonth, memberId) {
+  const sel = document.getElementById('feeInputMonth');
+  const member = feeMembersData.find(m => m.id === memberId);
+  const months = fiscalYearMonths(currentFeeYear);
+  const opts = months.map(m => {
+    const [y, mm] = m.split('-');
+    const future = isFutureMonth(m);
+    const before = member ? isBeforeJoined(m, member.joined_at) : false;
+    const disabled = future || before;
+    const suffix = future ? '（未来）' : (before ? '（入団前）' : '');
+    return `<option value="${m}"${m === selectedMonth ? ' selected':''}${disabled ? ' disabled':''}>${y}年${parseInt(mm)}月${suffix}</option>`;
+  });
+  sel.innerHTML = opts.join('');
+  // selectedMonth が disabled だった場合は最初の有効月を選ぶ
+  if (sel.value !== selectedMonth) {
+    const firstEnabled = Array.from(sel.options).find(o => !o.disabled);
+    if (firstEnabled) sel.value = firstEnabled.value;
+  }
+}
+
+function onFeeMemberChange() {
+  const memberId = document.getElementById('feeInputMember').value;
+  const member = feeMembersData.find(m => m.id === memberId);
+  if (member) {
+    document.getElementById('feeInputAmount').value = FEE_AMOUNT[member.member_type] || '';
+  }
+  // 月セレクタ再構築（入団前を disabled に）
+  const currentMonth = document.getElementById('feeInputMonth').value;
+  populateFeeMonthSelect(currentMonth, memberId);
+}
+
+async function saveFeePayment() {
+  const memberId  = document.getElementById('feeInputMember').value;
+  const yearMonth = document.getElementById('feeInputMonth').value;
+  const amount    = parseInt(document.getElementById('feeInputAmount').value);
+  const note      = document.getElementById('feeInputNote').value.trim();
+  const msgEl     = document.getElementById('feeModalMsg');
+  const saveBtn   = document.getElementById('feeSaveBtn');
+
+  msgEl.className = 'modal-msg';
+
+  if (!memberId || !yearMonth || !amount || amount <= 0) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '団員・対象月・金額は必須です。';
+    return;
+  }
+
+  const member = feeMembersData.find(m => m.id === memberId);
+  if (!member) {
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '団員情報が取得できませんでした。';
+    return;
+  }
+
+  saveBtn.disabled = true;
+
+  const orgId = member.org_id;
+  const today = new Date().toISOString().slice(0, 10);
+  const recordedBy = memberData?.id || null;
+
+  // 1. fee_payments INSERT
+  const feePayload = {
+    org_id: orgId,
+    member_id: memberId,
+    year_month: yearMonth,
+    amount: amount,
+    payment_method: 'cash',
+    paid_at: new Date().toISOString(),
+    recorded_by: recordedBy,
+    note: note || null,
+  };
+
+  let feePaymentId = null;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fee_payments`, {
+      method: 'POST',
+      headers: {
+        ...SB.headers,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation',
+      },
+      body: JSON.stringify(feePayload),
+    });
+    if (res.status === 409) {
+      msgEl.className = 'modal-msg error';
+      msgEl.textContent = '既に支払い記録があります。';
+      saveBtn.disabled = false;
+      return;
+    }
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      if (errBody.code === '23505') {
+        msgEl.className = 'modal-msg error';
+        msgEl.textContent = '既に支払い記録があります。';
+        saveBtn.disabled = false;
+        return;
+      }
+      throw new Error('fee_payments INSERT failed: ' + res.status);
+    }
+    const inserted = await res.json();
+    feePaymentId = inserted[0]?.id;
+    if (!feePaymentId) throw new Error('feePaymentId 取得失敗');
+  } catch (e) {
+    console.error(e);
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '保存できませんでした、もう一度お試しください。';
+    saveBtn.disabled = false;
+    return;
+  }
+
+  // 2. ledger INSERT
+  let ledgerId = null;
+  try {
+    const [yy, mm] = yearMonth.split('-');
+    const ledgerPayload = {
+      date: today,
+      type: 'income',
+      category: '会費',
+      amount: amount,
+      description: `${member.name} 様 ${yy}年${parseInt(mm)}月分 団費`,
+      org_id: orgId,
+      member_id: memberId,
+    };
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/ledger`, {
+      method: 'POST',
+      headers: {
+        ...SB.headers,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation',
+      },
+      body: JSON.stringify(ledgerPayload),
+    });
+    if (!res.ok) throw new Error('ledger INSERT failed: ' + res.status);
+    const inserted = await res.json();
+    ledgerId = inserted[0]?.id;
+  } catch (e) {
+    console.error(e);
+    // ロールバック: fee_payments を DELETE
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/fee_payments?id=eq.${feePaymentId}`, {
+        method: 'DELETE',
+        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+      });
+    } catch (e2) { console.error('rollback failed:', e2); }
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = '出納帳への記録に失敗しました。もう一度お試しください。';
+    saveBtn.disabled = false;
+    return;
+  }
+
+  // 3. fee_payments.ledger_id を UPDATE（リンク張り、失敗してもクリティカルではない）
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/fee_payments?id=eq.${feePaymentId}`, {
+      method: 'PATCH',
+      headers: {
+        ...SB.headers,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({ ledger_id: ledgerId }),
+    });
+  } catch (e) {
+    console.warn('ledger_id link failed (non-critical):', e);
+  }
+
+  msgEl.className = 'modal-msg success';
+  msgEl.textContent = '✓ 保存しました。';
+
+  // 自タブを再描画
+  await loadFeePaymentsForYear(currentFeeYear);
+  renderFeeMatrix();
+  updateFeeSummary();
+
+  // 他タブのキャッシュ無効化
+  ledgerLoaded = false;
+  invalidateOtherTabs('fee');
+
+  setTimeout(() => {
+    closeFeeModal();
+    saveBtn.disabled = false;
+  }, 1200);
+}
+
+// =============================================
+//  TAB4: 収支報告書
+// =============================================
+async function loadReportTab() {
+  document.getElementById('reportLoading').style.display = 'flex';
+  document.getElementById('reportContentWrap').style.display = 'none';
+
+  await ensureLedgerLoaded();
+  renderReport();
+
+  document.getElementById('reportLoading').style.display = 'none';
+  document.getElementById('reportContentWrap').style.display = 'block';
+}
+
+function renderReport() {
+  const months = [...new Set(ledgerData.map(r => r.date && r.date.slice(0,7)).filter(Boolean))].sort();
+  const total_income  = ledgerData.filter(r => r.type === 'income').reduce((s,r) => s + r.amount, 0);
+  const total_expense = ledgerData.filter(r => r.type === 'expense').reduce((s,r) => s + r.amount, 0);
+
+  if (months.length === 0) {
+    document.getElementById('reportContent').innerHTML =
+      '<p style="text-align:center;padding:24px;color:var(--muted);">出納帳に記録がありません。</p>';
+    return;
+  }
+
+  const rows = months.map(m => {
+    const d = ledgerData.filter(r => r.date && r.date.startsWith(m));
+    const income  = d.filter(r => r.type === 'income').reduce((s,r) => s+r.amount, 0);
+    const expense = d.filter(r => r.type === 'expense').reduce((s,r) => s+r.amount, 0);
+    const [y, mo] = m.split('-');
+    return `<tr>
+      <td>${y}年${parseInt(mo)}月</td>
+      <td style="color:var(--green);font-weight:700;">¥${income.toLocaleString()}</td>
+      <td style="color:var(--red);font-weight:700;">¥${expense.toLocaleString()}</td>
+      <td style="font-weight:700;">¥${(income-expense).toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('reportContent').innerHTML = `
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;">出力日：${new Date().toLocaleDateString('ja-JP')}</p>
+    <div class="tbl-wrap">
+      <table class="data-table" style="margin-bottom:1rem;">
+        <thead><tr><th>月</th><th>収入</th><th>支出</th><th>収支</th></tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr style="background:#f0f4ff;">
+            <td style="font-weight:700;">合計</td>
+            <td style="color:var(--green);font-weight:700;">¥${total_income.toLocaleString()}</td>
+            <td style="color:var(--red);font-weight:700;">¥${total_expense.toLocaleString()}</td>
+            <td style="font-weight:700;">¥${(total_income-total_expense).toLocaleString()}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  `;
+}
+
+async function printReport() {
+  // 印刷時に必要なデータを準備
+  await ensureLedgerLoaded();
+  renderReport();
+  // 収支報告書タブをロード済み扱いに
+  const reportPanel = document.querySelector('.tab-panel[data-tab="report"]');
+  if (reportPanel) {
+    reportPanel.dataset.loaded = 'true';
+    document.getElementById('reportLoading').style.display = 'none';
+    document.getElementById('reportContentWrap').style.display = 'block';
+  }
+  window.print();
+}
+
+// =============================================
+//  出納帳：モーダル
+// =============================================
+function openLedgerModal() {
   document.getElementById('editId').value    = '';
   document.getElementById('inputDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('inputDesc').value = '';
@@ -745,7 +1529,7 @@ function openEditModal(id) {
   document.getElementById('ledgerModal').classList.add('open');
 }
 
-function closeModal() {
+function closeLedgerModal() {
   document.getElementById('ledgerModal').classList.remove('open');
 }
 
@@ -782,27 +1566,15 @@ async function saveEntry() {
   try {
     let res;
     if (id) {
-      // 更新
       res = await fetch(`${SUPABASE_URL}/rest/v1/ledger?id=eq.${id}`, {
         method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal',
-        },
+        headers: { ...SB.headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify(payload),
       });
     } else {
-      // 新規
       res = await fetch(`${SUPABASE_URL}/rest/v1/ledger`, {
         method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal',
-        },
+        headers: { ...SB.headers, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify(payload),
       });
     }
@@ -810,14 +1582,21 @@ async function saveEntry() {
     if (res.ok || res.status === 201 || res.status === 204) {
       msgEl.className = 'modal-msg success';
       msgEl.textContent = '✓ 保存しました。';
-      await loadLedger();
+      // ledger 再読込 + 関連タブ無効化
+      ledgerLoaded = false;
+      await ensureLedgerLoaded();
+      populateMonthFilter();
+      renderLedger();
       renderSummary();
-      loadChartJs(() => { populateYearSelect(); renderGraph(); });
-      setTimeout(closeModal, 1200);
+      populateGraphYearSelect();
+      if (window.Chart) renderGraph();
+      invalidateOtherTabs('ledger');
+      setTimeout(closeLedgerModal, 1200);
     } else {
       throw new Error('save failed: ' + res.status);
     }
   } catch(e) {
+    console.error(e);
     msgEl.className = 'modal-msg error';
     msgEl.textContent = 'エラーが発生しました。もう一度お試しください。';
   }
@@ -831,21 +1610,23 @@ async function deleteEntry() {
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/ledger?id=eq.${id}`, {
       method: 'DELETE',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'return=minimal',
-      },
+      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
     });
     if (res.ok || res.status === 204) {
-      closeModal();
-      await loadLedger();
+      closeLedgerModal();
+      ledgerLoaded = false;
+      await ensureLedgerLoaded();
+      populateMonthFilter();
+      renderLedger();
       renderSummary();
-      loadChartJs(() => { populateYearSelect(); renderGraph(); });
+      populateGraphYearSelect();
+      if (window.Chart) renderGraph();
+      invalidateOtherTabs('ledger');
     } else {
       throw new Error('delete failed');
     }
   } catch(e) {
+    console.error(e);
     document.getElementById('modalMsg').className = 'modal-msg error';
     document.getElementById('modalMsg').textContent = '削除に失敗しました。';
   }
@@ -859,7 +1640,7 @@ function exportCSV() {
   const header = '日付,摘要,カテゴリ,種別,金額';
   const rows   = ledgerData
     .sort((a,b) => a.date.localeCompare(b.date))
-    .map(r => `${r.date},"${r.desc || ''}",${r.category},${r.type === 'income' ? '収入' : '支出'},${r.amount}`);
+    .map(r => `${r.date},"${(r.desc || '').replace(/"/g,'""')}",${r.category},${r.type === 'income' ? '収入' : '支出'},${r.amount}`);
   const csv  = '\uFEFF' + [header, ...rows].join('\n');
   const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
   const url  = URL.createObjectURL(blob);
@@ -871,43 +1652,51 @@ function exportCSV() {
 }
 
 // =============================================
-//  収支報告書（印刷）
+//  ヘルパー
 // =============================================
-function printReport() {
-  // 月別サマリーを生成
-  const months = [...new Set(ledgerData.map(r => r.date.slice(0,7)))].sort();
-  const rows = months.map(m => {
-    const d = ledgerData.filter(r => r.date.startsWith(m));
-    const income  = d.filter(r => r.type === 'income').reduce((s,r) => s+r.amount, 0);
-    const expense = d.filter(r => r.type === 'expense').reduce((s,r) => s+r.amount, 0);
-    const [y, mo] = m.split('-');
-    return `<tr>
-      <td>${y}年${parseInt(mo)}月</td>
-      <td style="color:var(--green);font-weight:700;">¥${income.toLocaleString()}</td>
-      <td style="color:var(--red);font-weight:700;">¥${expense.toLocaleString()}</td>
-      <td style="font-weight:700;">¥${(income-expense).toLocaleString()}</td>
-    </tr>`;
-  }).join('');
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[c]));
+}
 
-  const total_income  = ledgerData.filter(r => r.type === 'income').reduce((s,r) => s+r.amount, 0);
-  const total_expense = ledgerData.filter(r => r.type === 'expense').reduce((s,r) => s+r.amount, 0);
+function currentMonthStr() {
+  const now = new Date();
+  return now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+}
 
-  document.getElementById('reportContent').innerHTML = `
-    <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;">出力日：${new Date().toLocaleDateString('ja-JP')}</p>
-    <table class="data-table" style="margin-bottom:1rem;">
-      <thead><tr><th>月</th><th>収入</th><th>支出</th><th>収支</th></tr></thead>
-      <tbody>${rows}</tbody>
-      <tfoot>
-        <tr style="background:#f0f4ff;">
-          <td style="font-weight:700;">合計</td>
-          <td style="color:var(--green);font-weight:700;">¥${total_income.toLocaleString()}</td>
-          <td style="color:var(--red);font-weight:700;">¥${total_expense.toLocaleString()}</td>
-          <td style="font-weight:700;">¥${(total_income-total_expense).toLocaleString()}</td>
-        </tr>
-      </tfoot>
-    </table>
-  `;
-  window.print();
+function currentFiscalYear() {
+  const now = new Date();
+  const m = now.getMonth() + 1;
+  return String(m >= 4 ? now.getFullYear() : now.getFullYear() - 1);
+}
+
+function fiscalYearOf(yearMonth) {
+  if (!yearMonth) return null;
+  const [y, m] = yearMonth.split('-').map(Number);
+  if (!y || !m) return null;
+  return String(m >= 4 ? y : y - 1);
+}
+
+function fiscalYearMonths(year) {
+  const months = [];
+  const y = Number(year);
+  for (let i = 0; i < 12; i++) {
+    const mNum = ((4 + i - 1) % 12) + 1;       // 4,5,...,12,1,2,3
+    const yNum = mNum >= 4 ? y : y + 1;
+    months.push(`${yNum}-${String(mNum).padStart(2,'0')}`);
+  }
+  return months;
+}
+
+function isFutureMonth(yearMonth) {
+  return yearMonth > currentMonthStr();
+}
+
+function isBeforeJoined(yearMonth, joinedAt) {
+  if (!joinedAt) return false;
+  const joinMonth = String(joinedAt).slice(0,7);
+  return yearMonth < joinMonth;
 }
 
 // =============================================
