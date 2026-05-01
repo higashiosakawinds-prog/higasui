@@ -206,6 +206,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .fee-cell{font-weight:700;font-size:1rem;width:38px;}
 .fee-cell-paid-card{color:var(--green);}
 .fee-cell-paid-cash{color:var(--blue);}
+.fee-cell-cancellable{cursor:pointer;border-radius:6px;transition:all .15s;}
+.fee-cell-cancellable:hover{background:rgba(192,57,43,.08);color:var(--red);}
 .fee-cell-disabled{color:#cdd2dc;}
 .fee-cell-unpaid{
   color:#a6acba;cursor:pointer;border-radius:6px;
@@ -480,7 +482,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
           </div>
           <div class="fee-legend no-print">
             <span><span class="legend-mark" style="color:var(--green);">✓</span>カード払い済</span>
-            <span><span class="legend-mark" style="color:var(--blue);">✓</span>現金受領済</span>
+            <span><span class="legend-mark" style="color:var(--blue);">✓</span>現金受領済（クリックで取消）</span>
             <span><span class="legend-mark" style="color:#a6acba;">□</span>未納（クリックで記録）</span>
             <span><span class="legend-mark" style="color:#cdd2dc;">−</span>対象外（入団前/未来月）</span>
           </div>
@@ -1119,12 +1121,74 @@ function renderFeeCell(member, yearMonth, payments) {
   const payment = payments.find(p => p.member_id === member.id && p.year_month === yearMonth);
   if (payment) {
     const isCard = payment.payment_method === 'stripe';
-    const cls = isCard ? 'fee-cell-paid-card' : 'fee-cell-paid-cash';
-    const tip = isCard ? `カード払い済 ¥${(payment.amount||0).toLocaleString()}` : `現金受領済 ¥${(payment.amount||0).toLocaleString()}`;
-    return `<td class="fee-cell ${cls}" title="${escapeHtml(tip)}">✓</td>`;
+    if (isCard) {
+      // カード払いは Stripe 側にあるレコードと紐付くため、画面から取消不可
+      const tip = `カード払い済 ¥${(payment.amount||0).toLocaleString()}`;
+      return `<td class="fee-cell fee-cell-paid-card" title="${escapeHtml(tip)}">✓</td>`;
+    } else {
+      // 現金 ✓ はクリックで取消可能
+      const tip = `現金受領済 ¥${(payment.amount||0).toLocaleString()}（クリックで取消）`;
+      const ledgerId = payment.ledger_id || '';
+      return `<td class="fee-cell fee-cell-paid-cash fee-cell-cancellable" title="${escapeHtml(tip)}"
+                onclick="cancelFeePayment('${payment.id}','${member.id}','${yearMonth}','${ledgerId}')">✓</td>`;
+    }
   }
   return `<td class="fee-cell fee-cell-unpaid" title="クリックで現金受領を記録"
             onclick="openFeeModal('${member.id}','${yearMonth}')">□</td>`;
+}
+
+// 現金で記録した支払いの取消（fee_payments を先に DELETE → 紐付く ledger も DELETE）
+async function cancelFeePayment(paymentId, memberId, yearMonth, ledgerId) {
+  const member = feeMembersData.find(m => m.id === memberId);
+  const memberName = member ? member.name : '';
+  const [yy, mm] = (yearMonth || '').split('-');
+  const monthLabel = (yy && mm) ? `${yy}年${parseInt(mm)}月` : yearMonth;
+
+  const ok = confirm(
+    `${memberName}さんの${monthLabel}分の現金受領を取消しますか？\n\n`
+    + '※ 出納帳の記録（会費収入）も同時に削除されます。\n'
+    + '※ この操作は取り消せません。'
+  );
+  if (!ok) return;
+
+  // 1. fee_payments を DELETE（FK 参照の関係で必ず先）
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fee_payments?id=eq.${paymentId}`, {
+      method: 'DELETE',
+      headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+    });
+    if (!res.ok && res.status !== 204) {
+      throw new Error('fee_payments DELETE failed: ' + res.status);
+    }
+  } catch (e) {
+    console.error(e);
+    alert('取消に失敗しました。もう一度お試しください。');
+    return;
+  }
+
+  // 2. 紐付く ledger も DELETE（あれば）
+  if (ledgerId) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/ledger?id=eq.${ledgerId}`, {
+        method: 'DELETE',
+        headers: { ...SB.headers, 'Prefer': 'return=minimal' },
+      });
+      if (!res.ok && res.status !== 204) {
+        console.warn('ledger DELETE failed (non-critical):', res.status);
+      }
+    } catch (e) {
+      console.warn('ledger DELETE failed (non-critical):', e);
+    }
+  }
+
+  // マトリクスを再描画
+  await loadFeePaymentsForYear(currentFeeYear);
+  renderFeeMatrix();
+  updateFeeSummary();
+
+  // 他タブ（ダッシュボード/出納帳/収支報告書）のキャッシュ無効化
+  ledgerLoaded = false;
+  invalidateOtherTabs('fee');
 }
 
 function updateFeeSummary() {
@@ -1217,18 +1281,26 @@ function onFeeMemberChange() {
 async function saveFeePayment() {
   const memberId  = document.getElementById('feeInputMember').value;
   const yearMonth = document.getElementById('feeInputMonth').value;
-  const amount    = parseInt(document.getElementById('feeInputAmount').value);
+  // カンマ・空白・通貨記号を取り除いてから数値化（Safari の type=number 対策）
+  const amountRaw = document.getElementById('feeInputAmount').value.replace(/[,\s¥円]/g, '');
+  const amount    = parseInt(amountRaw);
   const note      = document.getElementById('feeInputNote').value.trim();
   const msgEl     = document.getElementById('feeModalMsg');
   const saveBtn   = document.getElementById('feeSaveBtn');
 
   msgEl.className = 'modal-msg';
 
-  if (!memberId || !yearMonth || !amount || amount <= 0) {
+  const missing = [];
+  if (!memberId)  missing.push('団員');
+  if (!yearMonth) missing.push('対象月');
+  if (!amount || isNaN(amount) || amount <= 0) missing.push('金額（1円以上）');
+  if (missing.length) {
     msgEl.className = 'modal-msg error';
-    msgEl.textContent = '団員・対象月・金額は必須です。';
+    msgEl.textContent = missing.join('・') + ' を入力してください。';
     return;
   }
+  // 金額をユーザーに見せ直す
+  document.getElementById('feeInputAmount').value = amount;
 
   const member = feeMembersData.find(m => m.id === memberId);
   if (!member) {
@@ -1484,16 +1556,24 @@ async function saveEntry() {
   const id     = document.getElementById('editId').value;
   const date   = document.getElementById('inputDate').value;
   const desc   = document.getElementById('inputDesc').value.trim();
-  const amount = parseInt(document.getElementById('inputAmount').value);
+  // カンマ・空白・通貨記号を取り除いてから数値化（Safari の type=number 対策）
+  const amountRaw = document.getElementById('inputAmount').value.replace(/[,\s¥円]/g, '');
+  const amount = parseInt(amountRaw);
   const cat    = document.getElementById('inputCat').value;
   const msgEl  = document.getElementById('modalMsg');
 
   msgEl.className = 'modal-msg';
-  if (!date || !desc || !amount || amount <= 0) {
+  const missing = [];
+  if (!date) missing.push('日付');
+  if (!desc) missing.push('摘要');
+  if (!amount || isNaN(amount) || amount <= 0) missing.push('金額（1円以上）');
+  if (missing.length) {
     msgEl.className = 'modal-msg error';
-    msgEl.textContent = '日付・摘要・金額は必須です。';
+    msgEl.textContent = missing.join('・') + ' を入力してください。';
     return;
   }
+  // 金額をユーザーに見せ直す（カンマ消去後の値で確認できるように）
+  document.getElementById('inputAmount').value = amount;
 
   const payload = {
     date, type: currentType, category: cat,
