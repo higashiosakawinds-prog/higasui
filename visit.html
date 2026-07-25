@@ -97,6 +97,17 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .form-msg{display:none;border-radius:10px;padding:1rem 1.2rem;font-size:.82rem;margin-top:1rem;line-height:1.6;}
 .form-msg.success{display:block;background:#dcfce7;color:#15803d;border:1px solid #86efac;}
 .form-msg.error{display:block;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+/* 🚧 MIGRATION-TEMP: 希望日程チェックボックス・移行期間の注意書き用スタイル
+   完全移行後、注意書き(.migration-note)関連は不要になったら削除してください。
+   日程チェックボックス自体(.practice-date-list等)は移行後も使い続けます。 */
+.practice-date-list{display:flex;flex-direction:column;gap:8px;margin-bottom:.8rem;}
+.practice-date-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s;}
+.practice-date-item:hover{border-color:var(--blue);}
+.practice-date-item input[type="checkbox"]{width:17px;height:17px;cursor:pointer;accent-color:var(--blue);flex-shrink:0;}
+.practice-date-item span{font-size:.82rem;color:var(--navy);font-weight:500;}
+.practice-date-empty{font-size:.78rem;color:var(--muted);padding:8px 2px;}
+.migration-note{display:flex;align-items:flex-start;gap:8px;background:#fff7e6;border:1px solid #f5d68a;border-radius:10px;padding:.7rem .9rem;margin-bottom:1rem;font-size:.74rem;color:#8a6416;line-height:1.6;}
+.migration-note i{margin-top:2px;flex-shrink:0;}
 .faq-list{display:flex;flex-direction:column;gap:10px;}
 .faq-item{background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--border);overflow:hidden;}
 .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;cursor:pointer;transition:background .2s;font-size:.85rem;font-weight:700;color:var(--navy);gap:10px;}
@@ -290,6 +301,24 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
           </div>
         </div>
         <div class="form-section-label">見学希望日程</div>
+
+        <!-- 🚧 MIGRATION-TEMP: ここから「希望日程チェックボックス」ブロック
+             ポータルのSupabase(activities)から今後の練習日を取得して選択させる新機能。
+             チェックボックス自体・fetchPracticeDates()関数は完全移行後も残します。
+             削除してよいのは【.migration-note の注意文】と、
+             このブロックのすぐ下にある「🚧 MIGRATION-TEMP ここまで」のコメントだけです。 -->
+        <div class="fg">
+          <label>候補日を選択<span class="opt">任意・複数選択可</span></label>
+          <div class="practice-date-list" id="practiceDateList">
+            <div class="practice-date-empty">候補日を読み込み中…</div>
+          </div>
+        </div>
+        <div class="migration-note">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>テスト中のため、上で選んだ日程は下の「希望日程・コメント」欄にも同様にご記載ください。</span>
+        </div>
+        <!-- 🚧 MIGRATION-TEMP ここまで（.migration-note のみ削除対象。上のチェックボックスは残す） -->
+
         <div class="fg">
           <label>希望日程・コメント<span class="req">*</span></label>
           <input type="text" id="fComment" placeholder="例：4月5日・4月12日・4月19日のいずれかを希望">
@@ -339,9 +368,129 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
 <footer><p>© 東大阪吹奏楽団</p></footer>
 
 <script>
-const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
-const ORG_ID = '37cf6fef-551a-4159-b6ab-5010c3951aa8';
+/* ═══════════════════════════════════════════════════════════════
+   🚧 MIGRATION-TEMP: 見学申込フォーム 二重登録について（完全移行ガイド）
+
+   現在、見学申込は下記2箇所に同時登録しています。
+     1. 旧Supabase（applications テーブル / org_id方式）… これまで通り。今後もこのまま消える予定。
+     2. ポータルSupabase（visit_requests テーブル）      … 新設。移行後はこちらが本体になる。
+
+   【完全移行時にやること】
+     a. LEGACY_SUPABASE_URL / LEGACY_SUPABASE_KEY / LEGACY_ORG_ID の定義を削除
+     b. insertLegacyApplication() 関数ごと削除
+     c. submitForm() 内の insertLegacyApplication(...) 呼び出しを削除
+     d. .migration-note（「テスト中のため〜」の注意書き）をHTMLから削除
+     e. 本ブロックのコメント自体も削除してOK
+   　（PORTAL_SUPABASE_* / insertPortalVisitRequest() / fetchPracticeDates() は
+     　移行後も本体として使い続けるので消さないでください）
+   ═══════════════════════════════════════════════════════════════ */
+
+// 🚧 MIGRATION-TEMP: 旧Supabase設定（完全移行時に削除）
+const LEGACY_SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
+const LEGACY_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+const LEGACY_ORG_ID = '37cf6fef-551a-4159-b6ab-5010c3951aa8';
+
+// ポータルSupabase設定（本体・恒久的に使用）
+const PORTAL_SUPABASE_URL = 'https://iaqbkriorspsjldodhjy.supabase.co';
+const PORTAL_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhcWJrcmlvcnNwc2psZG9kaGp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDE1MjEsImV4cCI6MjA5NDA3NzUyMX0.vuwBn8D2cvLdLRQ3X7rOPtHEG5cglY5wkzpnqOBVoJ8';
+
+// フォームの表示ラベル → ポータル側のパートキーへの変換
+const PART_KEY_MAP = {
+  'Flute':'flute', 'Oboe':'oboe', 'Clarinet':'clarinet', 'Bass Clarinet':'bassclarinet',
+  'Fagotto':'bassoon', 'Alto Saxophone':'asaxophone', 'Tenor Saxophone':'tsaxophone',
+  'Baritone Saxophone':'bsaxophone', 'Trumpet':'trumpet', 'Horn':'horn', 'Trombone':'trombone',
+  'Euphonium':'euphonium', 'Tuba':'tuba', 'Percussion':'percussion', 'String Bass':'contrabass',
+  'Piano':'piano', '未定・相談したい':'undecided',
+};
+
+// ── 候補日（練習日）をポータルSupabaseから取得して描画 ──
+// 恒久機能。完全移行後も残します。
+async function fetchPracticeDates() {
+  const listEl = document.getElementById('practiceDateList');
+  try {
+    const res = await fetch(
+      `${PORTAL_SUPABASE_URL}/rest/v1/public_upcoming_practices?select=*&order=activity_date.asc&limit=8`,
+      { headers: { 'apikey': PORTAL_SUPABASE_KEY, 'Authorization': `Bearer ${PORTAL_SUPABASE_KEY}` } }
+    );
+    if (!res.ok) throw new Error(res.status);
+    const practices = await res.json();
+
+    if (!practices.length) {
+      listEl.innerHTML = '<div class="practice-date-empty">現在ご案内できる候補日がありません。下のコメント欄に希望をご記入ください。</div>';
+      return;
+    }
+
+    const WD = ['日','月','火','水','木','金','土'];
+    listEl.innerHTML = practices.map(p => {
+      const d = new Date(p.activity_date + 'T00:00:00');
+      const label = `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）` + (p.start_time ? ` ${p.start_time.slice(0,5)}〜` : '');
+      return `<label class="practice-date-item">
+        <input type="checkbox" class="practice-date-cb" value="${p.id}">
+        <span>${label}${p.location ? ' ／ ' + p.location : ''}</span>
+      </label>`;
+    }).join('');
+  } catch (e) {
+    console.warn('[visit] 候補日の取得に失敗しました:', e);
+    listEl.innerHTML = '<div class="practice-date-empty">候補日の読み込みに失敗しました。下のコメント欄に希望日をご記入ください。</div>';
+  }
+}
+document.addEventListener('DOMContentLoaded', fetchPracticeDates);
+
+// 🚧 MIGRATION-TEMP: 旧Supabase（applications）への登録。完全移行時に関数ごと削除。
+async function insertLegacyApplication({ name, yomi, birthday, part, email, phone, comment, isMinor, guardianName, emergencyPhone }) {
+  const res = await fetch(`${LEGACY_SUPABASE_URL}/rest/v1/applications`, {
+    method: 'POST',
+    headers: {
+      'apikey': LEGACY_SUPABASE_KEY,
+      'Authorization': `Bearer ${LEGACY_SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({
+      org_id: LEGACY_ORG_ID,
+      name, yomi,
+      birthday: birthday || null,
+      part: part || null,
+      email,
+      phone: phone || null,
+      comment,
+      guardian_name:   isMinor ? guardianName   : null,
+      emergency_phone: isMinor ? emergencyPhone : null,
+      member_type: '見学',
+      status: 'pending',
+    }),
+  });
+  if (!res.ok && res.status !== 201) throw new Error('legacy insert failed: ' + res.status);
+}
+
+// ポータルSupabase（visit_requests）への登録。本体・恒久的に使用。
+async function insertPortalVisitRequest({ name, yomi, birthday, part, email, phone, comment, isMinor, guardianName, emergencyPhone, selectedActivityIds }) {
+  const res = await fetch(`${PORTAL_SUPABASE_URL}/rest/v1/visit_requests`, {
+    method: 'POST',
+    headers: {
+      'apikey': PORTAL_SUPABASE_KEY,
+      'Authorization': `Bearer ${PORTAL_SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({
+      name, yomi,
+      birthday: birthday || null,
+      member_type: isMinor ? 'minor' : 'adult',
+      part: PART_KEY_MAP[part] ?? null,
+      email,
+      phone: phone || null,
+      emergency_phone: isMinor ? emergencyPhone : null,
+      guardian_name:   isMinor ? guardianName   : null,
+      comment,
+      date_request_activity_ids: selectedActivityIds,
+      // 🚧 MIGRATION-TEMP: 「テスト中のため〜」の案内文とセットの措置。
+      // 完全移行後、date_request_note は「候補日に無い希望」用の純粋な自由記述欄として扱ってOK。
+      date_request_note: comment,
+    }),
+  });
+  if (!res.ok && res.status !== 201) throw new Error('portal insert failed: ' + res.status);
+}
 
 async function submitForm() {
   const name    = document.getElementById('fName').value.trim();
@@ -354,6 +503,7 @@ async function submitForm() {
   const isMinor = document.getElementById('fMinor').checked;
   const guardianName   = document.getElementById('fGuardianName').value.trim();
   const emergencyPhone = document.getElementById('fEmergencyPhone').value.trim();
+  const selectedActivityIds = [...document.querySelectorAll('.practice-date-cb:checked')].map(cb => cb.value);
 
   const msgEl = document.getElementById('formMsg');
   const btn   = document.getElementById('submitBtn');
@@ -373,37 +523,22 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 送信中…';
 
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/applications`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({
-        org_id: ORG_ID,
-        name, yomi,
-        birthday: birthday || null,
-        part: part || null,
-        email,
-        phone: phone || null,
-        comment,
-        guardian_name:   isMinor ? guardianName   : null,
-        emergency_phone: isMinor ? emergencyPhone : null,
-        member_type: '見学',
-        status: 'pending',
-      }),
-    });
-    if (res.ok || res.status === 201) {
-      msgEl.className = 'form-msg success';
-      msgEl.innerHTML = '✓ 申込を受け付けました！<br>担当者よりLINEまたはメールにてご連絡します（通常2〜3日以内）。';
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> 送信完了';
-    } else {
-      throw new Error(res.status);
-    }
-  } catch(e) {
+  const formData = { name, yomi, birthday, part, email, phone, comment, isMinor, guardianName, emergencyPhone };
+
+  // 🚧 MIGRATION-TEMP: 旧・新の両方に登録する。
+  // 旧Supabaseの成功/失敗を「送信結果」として利用者に案内し（今まで通りの動作を維持するため）、
+  // ポータルSupabaseへの登録は失敗しても利用者の申込自体は止めない（コンソールログのみ）。
+  // 完全移行後は insertPortalVisitRequest の成功/失敗だけを見るように書き換えてください。
+  const legacyResult = await Promise.allSettled([insertLegacyApplication(formData)]);
+  insertPortalVisitRequest({ ...formData, selectedActivityIds }).catch(e => {
+    console.warn('[visit] ポータルSupabaseへの登録に失敗しました（利用者には非表示・要確認）:', e);
+  });
+
+  if (legacyResult[0].status === 'fulfilled') {
+    msgEl.className = 'form-msg success';
+    msgEl.innerHTML = '✓ 申込を受け付けました！<br>担当者よりLINEまたはメールにてご連絡します（通常2〜3日以内）。';
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> 送信完了';
+  } else {
     msgEl.className = 'form-msg error';
     msgEl.textContent = 'エラーが発生しました。時間をおいて再度お試しください。';
     btn.disabled = false;
