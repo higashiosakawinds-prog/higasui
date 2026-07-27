@@ -313,10 +313,6 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
             <div class="practice-date-empty">候補日を読み込み中…</div>
           </div>
         </div>
-        <div class="migration-note">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <span>テスト中のため、上で選んだ日程は下の「希望日程・コメント」欄にも同様にご記載ください。</span>
-        </div>
         <!-- 🚧 MIGRATION-TEMP ここまで（.migration-note のみ削除対象。上のチェックボックスは残す） -->
 
         <div class="fg">
@@ -409,7 +405,7 @@ async function fetchPracticeDates() {
   const listEl = document.getElementById('practiceDateList');
   try {
     const res = await fetch(
-      `${PORTAL_SUPABASE_URL}/rest/v1/public_upcoming_practices?select=*&order=activity_date.asc&limit=8`,
+      `${PORTAL_SUPABASE_URL}/rest/v1/public_upcoming_practices?select=*&order=activity_date.asc&limit=5`,
       { headers: { 'apikey': PORTAL_SUPABASE_KEY, 'Authorization': `Bearer ${PORTAL_SUPABASE_KEY}` } }
     );
     if (!res.ok) throw new Error(res.status);
