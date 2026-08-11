@@ -150,6 +150,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 .recruit-num { font-family: 'Outfit'; font-size: 4rem; font-weight: 800; line-height: 1; }
 .recruit-num span { font-size: 1.2rem; vertical-align: super; }
+.recruit-progress-wrap{max-width:360px;margin:1rem auto 0;background:rgba(255,255,255,0.12);border-radius:20px;height:8px;overflow:hidden;}
+.recruit-progress-bar{height:100%;background:var(--gold);border-radius:20px;transition:width 0.6s ease;width:0%;}
 .parts { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin: 2rem 0; }
 .part { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; transition: transform 0.2s; }
 .part-hot { background: rgba(200,164,77,0.2); border-color: var(--gold); color: #FFE585; font-weight: 700; animation: pulse-glow 2s ease-in-out infinite; }
@@ -345,38 +347,50 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
   </div>
 </section>
 
+<!-- ============================================
+     団員募集セクション
+     現在団員数・目標団員数・パート募集状況は
+     「管理用Supabaseプロジェクト」(ポータルとは別プロジェクト)の
+     site_settings テーブルから読み取り専用で取得します。
+     このページ（index.html）からは書き込みは行いません。
+     管理画面：admin.html（Supabase Authでログインした管理者のみ書き込み可）
+     取得できなかった場合は、下記のフォールバック値をそのまま表示します。
+     ============================================ -->
 <section class="sec sec-blue" id="recruit">
   <div class="inner reveal">
-    <div class="recruit-num"><span>現在</span>12<span>名</span></div>
-    <p style="margin-bottom:1rem; opacity:0.8;">CURRENT MEMBERS · 目標20名</p>
-    <h2 class="h2 h2-white">団員募集中!!</h2>
+    <div class="recruit-num"><span>現在</span><span id="recruit-current">12</span><span>名</span></div>
+    <p style="margin-bottom:0.4rem; opacity:0.8;">CURRENT MEMBERS · 目標<span id="recruit-target">20</span>名</p>
+    <div class="recruit-progress-wrap"><div class="recruit-progress-bar" id="recruit-progress-bar"></div></div>
+    <h2 class="h2 h2-white" style="margin-top:2rem;">団員募集中!!</h2>
     <p style="margin-bottom:2.5rem; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.8;">立ち上げメンバーとして一緒に団を育てていきませんか？<br>※ 募集枠が埋まっているパートもお気軽にご相談ください</p>
 
-    <p class="recruit-label recruit-label-hot">&#x1F525; 募集強化パート</p>
-    <div class="parts" style="margin-top:0; margin-bottom:2rem;">
-      <span class="part part-hot">Clarinet</span>
-      <span class="part part-hot">Oboe</span>
-      <span class="part part-hot">Horn</span>
-      <span class="part part-hot">Tuba</span>
-      <span class="part part-hot">Percussion</span>
-    </div>
+    <div id="recruit-parts-wrap">
+      <p class="recruit-label recruit-label-hot" id="label-hot">&#x1F525; 募集強化パート</p>
+      <div class="parts" id="parts-hot" style="margin-top:0; margin-bottom:2rem;">
+        <span class="part part-hot">Clarinet</span>
+        <span class="part part-hot">Oboe</span>
+        <span class="part part-hot">Horn</span>
+        <span class="part part-hot">Tuba</span>
+        <span class="part part-hot">Percussion</span>
+      </div>
 
-    <p class="recruit-label recruit-label-open">募集中</p>
-    <div class="parts" style="margin-top:0; margin-bottom:2rem;">
-      <span class="part">Flute</span>
-      <span class="part">Bassoon</span>
-      <span class="part">Bass Clarinet</span>
-      <span class="part">Trumpet</span>
-      <span class="part">Trombone</span>
-      <span class="part">Contrabass</span>
-    </div>
+      <p class="recruit-label recruit-label-open" id="label-open">募集中</p>
+      <div class="parts" id="parts-open" style="margin-top:0; margin-bottom:2rem;">
+        <span class="part">Flute</span>
+        <span class="part">Bassoon</span>
+        <span class="part">Bass Clarinet</span>
+        <span class="part">Trumpet</span>
+        <span class="part">Trombone</span>
+        <span class="part">Contrabass</span>
+      </div>
 
-    <p class="recruit-label recruit-label-closed">現在募集休止中</p>
-    <div class="parts" style="margin-top:0; margin-bottom:2rem;">
-      <span class="part part-closed">Alto Saxophone</span>
-      <span class="part part-closed">Tenor Saxophone</span>
-      <span class="part part-closed">Baritone Saxophone</span>
-      <span class="part part-closed">Euphonium</span>
+      <p class="recruit-label recruit-label-closed" id="label-closed">現在募集休止中</p>
+      <div class="parts" id="parts-closed" style="margin-top:0; margin-bottom:2rem;">
+        <span class="part part-closed">Alto Saxophone</span>
+        <span class="part part-closed">Tenor Saxophone</span>
+        <span class="part part-closed">Baritone Saxophone</span>
+        <span class="part part-closed">Euphonium</span>
+      </div>
     </div>
 
     <a href="visit.html" class="btn-gold" style="max-width:300px; margin:0 auto;">見学・体験を申し込む</a>
@@ -424,8 +438,17 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
 </footer>
 
 <script>
+// ==============================
+// 設定値
+// ① ポータル用Supabase（既存・お知らせ/申請フォーム等で使用中のプロジェクト）
+// ② 管理用Supabase（新規・団員数とパート募集状況の専用プロジェクト）
+//    ⚠️ ②は新規プロジェクト作成後、URL / anon key を書き換えてください。
+// ==============================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
+
+const SETTINGS_SUPABASE_URL = 'https://jqnarjjtqvbbwhspfmmi.supabase.co';
+const SETTINGS_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbmFyamp0cXZiYndoc3BmbW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzOTI5MDgsImV4cCI6MjEwMTk2ODkwOH0.WPXffeTmYM7RQVAV61NOmCfMbqqhOGboGu8q9zRpGTY';
 
 // ハンバーガーメニュー
 const ham = document.getElementById('ham-btn');
@@ -440,7 +463,7 @@ function closeNav() {
   document.body.style.overflow = '';
 }
 
-// NEWS（Supabase版）
+// NEWS（ポータル用Supabase）
 async function loadNews() {
   const el = document.getElementById('news-list');
   try {
@@ -481,6 +504,64 @@ async function loadNews() {
   }
 }
 loadNews();
+
+// ==============================
+// 団員数・パート募集状況（管理用Supabase / 読み取り専用）
+// 書き込みは admin.html からログイン済み管理者のみが行います。
+// このページは anon key で SELECT するだけなので、RLSにより書き込みはできません。
+// 取得に失敗した場合は、HTMLに書かれているフォールバック値をそのまま使います。
+// ==============================
+async function loadSiteSettings() {
+  if (SETTINGS_SUPABASE_URL.includes('YOUR-NEW-PROJECT')) {
+    console.warn('[recruit] 管理用Supabaseの接続設定が未設定のため、既定値を表示します。');
+    return;
+  }
+  try {
+    const res = await fetch(
+      `${SETTINGS_SUPABASE_URL}/rest/v1/site_settings?id=eq.1&select=*`,
+      { headers: { 'apikey': SETTINGS_SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SETTINGS_SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) throw new Error('fetch error: ' + res.status);
+    const data = await res.json();
+    if (!data || !data.length) throw new Error('empty');
+
+    const s = data[0];
+    const current = Number(s.current_members) || 0;
+    const target = Number(s.target_members) || 1;
+
+    document.getElementById('recruit-current').textContent = current;
+    document.getElementById('recruit-target').textContent = target;
+    const pct = Math.max(0, Math.min(100, Math.round((current / target) * 100)));
+    document.getElementById('recruit-progress-bar').style.width = pct + '%';
+
+    const parts = Array.isArray(s.parts) ? s.parts : [];
+    renderPartsGroup('hot', parts.filter(p => p.status === 'hot'), 'part-hot');
+    renderPartsGroup('open', parts.filter(p => p.status === 'open'), '');
+    renderPartsGroup('closed', parts.filter(p => p.status === 'closed'), 'part-closed');
+
+  } catch (e) {
+    // 取得失敗時はHTMLの初期値（フォールバック）をそのまま表示するので何もしない
+    console.warn('[recruit] site_settingsの取得に失敗しました。既定値を表示します:', e);
+  }
+}
+function renderPartsGroup(key, items, extraClass) {
+  const label = document.getElementById('label-' + key);
+  const wrap = document.getElementById('parts-' + key);
+  if (!items.length) {
+    label.style.display = 'none';
+    wrap.style.display = 'none';
+    return;
+  }
+  label.style.display = '';
+  wrap.style.display = '';
+  wrap.innerHTML = items.map(p =>
+    `<span class="part ${extraClass}">${escHtml(p.name)}</span>`
+  ).join('');
+}
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+loadSiteSettings();
 
 // フォーム送信
 const GAS = 'https://script.google.com/macros/s/AKfycbwGw9B-0KxKRmiGFi36l-AsglsQSIl5cKUYsGtOeNQ4kysav014sqYtLkTpBqkWGck/exec';
