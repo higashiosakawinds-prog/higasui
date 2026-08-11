@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ホームページ管理画面 | 東大阪吹奏楽団</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Shippori+Mincho:wght@700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--blue:#214A9A;--navy:#1C2B4A;--gold:#C8A44D;--goldhv:#D9B85E;--white:#fff;--bg:#F7F8FA;--text:#1A1A1A;--muted:#606070;--border:#DDE1EC;--green:#1D9E75;--red:#C0392B;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.inner{max-width:760px;margin:0 auto;padding:0 1.5rem;}
+
+/* ===== LOGIN GATE ===== */
+#gate{position:fixed;inset:0;background:linear-gradient(160deg,var(--navy),var(--blue));display:flex;align-items:center;justify-content:center;z-index:999;padding:1.5rem;}
+.gate-card{background:var(--white);border-radius:20px;padding:2.5rem 2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.gate-icon{font-size:2rem;margin-bottom:1rem;}
+.gate-card h1{font-family:'Shippori Mincho',serif;font-size:1.2rem;color:var(--navy);margin-bottom:0.5rem;}
+.gate-card p{font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;}
+.gate-field{margin-bottom:0.8rem;text-align:left;}
+.gate-field label{display:block;font-size:0.7rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem;}
+.gate-card input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:0.9rem;font-family:inherit;}
+.gate-card input:focus{outline:none;border-color:var(--blue);}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--blue);color:white;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;margin-top:0.6rem;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gate-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.gate-err{color:var(--red);font-size:0.76rem;margin-top:0.8rem;display:none;line-height:1.6;}
+.gate-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gate-config-warn{background:#FFF3CD;border:1px solid #FFE083;border-radius:8px;padding:0.7rem 0.9rem;font-size:0.72rem;color:#7A5D00;line-height:1.7;text-align:left;margin-bottom:1rem;display:none;}
+
+/* ===== HEADER ===== */
+#app{display:none;}
+header{background:linear-gradient(160deg,var(--navy),var(--blue));padding:2rem 0 2.2rem;}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.header-eyebrow{font-family:'Outfit',sans-serif;font-size:0.63rem;font-weight:800;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;}
+header h1{font-family:'Shippori Mincho',serif;font-size:1.5rem;color:white;font-weight:700;}
+header p{font-size:0.8rem;color:rgba(255,255,255,0.65);margin-top:0.4rem;}
+.logout-btn{flex-shrink:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);color:white;padding:8px 14px;border-radius:20px;font-size:0.75rem;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.logout-btn:hover{border-color:var(--gold);color:var(--gold);}
+.header-user{font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:0.3rem;}
+.header-links{margin-top:1.2rem;display:flex;gap:0.8rem;flex-wrap:wrap;}
+.header-links a{font-size:0.75rem;color:rgba(255,255,255,0.75);text-decoration:none;border:1px solid rgba(255,255,255,0.25);padding:6px 12px;border-radius:20px;}
+.header-links a:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ===== SECTIONS ===== */
+.sec{padding:2rem 0;}
+.card{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 12px rgba(33,74,154,0.05);}
+.card-title{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem;display:flex;align-items:center;gap:8px;}
+.card-desc{font-size:0.78rem;color:var(--muted);margin-bottom:1.3rem;line-height:1.7;}
+
+/* member counts */
+.member-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.field label{display:block;font-size:0.72rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
+.field input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:'Outfit',sans-serif;font-weight:700;color:var(--navy);background:var(--bg);}
+.field input:focus{outline:none;border-color:var(--blue);background:white;}
+.progress-wrap{background:var(--bg);border-radius:20px;height:10px;overflow:hidden;margin-top:0.4rem;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:20px;transition:width 0.4s;}
+.progress-label{font-size:0.7rem;color:var(--muted);margin-top:0.4rem;text-align:right;}
+
+/* parts */
+.part-row{display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0;border-bottom:1px solid var(--border);}
+.part-row:last-child{border-bottom:none;}
+.part-row input[type=text]{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:inherit;background:var(--bg);}
+.part-row input[type=text]:focus{outline:none;border-color:var(--blue);background:white;}
+.part-row select{padding:9px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:0.8rem;font-family:inherit;background:white;color:var(--navy);font-weight:700;}
+.part-del{width:34px;height:34px;flex-shrink:0;border:none;background:none;color:var(--muted);cursor:pointer;border-radius:8px;font-size:0.9rem;}
+.part-del:hover{background:#FFF0F0;color:var(--red);}
+.add-part-row{display:flex;gap:0.6rem;margin-top:0.9rem;}
+.add-part-row input{flex:1;padding:10px 12px;border:1.5px dashed var(--border);border-radius:8px;font-size:0.85rem;font-family:inherit;background:var(--bg);}
+.add-part-row input:focus{outline:none;border-color:var(--blue);}
+.btn-add{padding:10px 16px;border:none;border-radius:8px;background:var(--bg);border:1.5px solid var(--border);color:var(--navy);font-weight:700;font-size:0.8rem;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.btn-add:hover{border-color:var(--blue);color:var(--blue);}
+
+/* save bar */
+.save-bar{position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:1rem 0;margin-top:1rem;}
+.btn-save{width:100%;padding:15px;border:none;border-radius:12px;background:var(--green);color:white;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(29,158,117,0.3);}
+.btn-save:disabled{opacity:0.6;cursor:not-allowed;}
+.save-msg{text-align:center;font-size:0.78rem;margin-top:0.6rem;display:none;}
+.save-msg.ok{color:var(--green);display:block;}
+.save-msg.err{color:var(--red);display:block;}
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+
+.loading-note{text-align:center;padding:3rem 0;color:var(--muted);font-size:0.85rem;line-height:1.8;}
+.last-updated{font-size:0.7rem;color:var(--muted);text-align:center;margin-top:0.5rem;}
+</style>
+</head>
+<body>
+
+<!-- ログインゲート（Supabase Auth によるメール・パスワード認証） -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-icon">🔒</div>
+    <h1>ホームページ管理画面</h1>
+    <p>担当者アカウントでログインしてください。</p>
+    <div class="gate-config-warn" id="config-warn">
+      ⚠️ Supabaseの接続設定（URL / anon key）が未設定です。このファイル内の <code>SUPABASE_URL</code> と <code>SUPABASE_ANON_KEY</code> を、新規作成したSupabaseプロジェクトの値に書き換えてください。
+    </div>
+    <div class="gate-field">
+      <label>メールアドレス</label>
+      <input type="email" id="gate-email" placeholder="admin@example.com" autocomplete="username">
+    </div>
+    <div class="gate-field">
+      <label>パスワード</label>
+      <input type="password" id="gate-pw" placeholder="パスワード" autocomplete="current-password">
+    </div>
+    <button class="gate-btn" id="gate-btn" onclick="login()">
+      <span id="gate-btn-text">ログイン</span>
+      <div class="gate-spinner" id="gate-spinner"></div>
+    </button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="inner">
+      <div class="header-top">
+        <div>
+          <p class="header-eyebrow">Admin</p>
+          <h1>ホームページ管理画面</h1>
+          <p>ここで変更した内容は、トップページに自動的に反映されます。</p>
+          <p class="header-user" id="header-user"></p>
+        </div>
+        <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> ログアウト</button>
+      </div>
+      <div class="header-links">
+        <a href="index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square" style="margin-right:5px;"></i>公開ページを見る</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="sec">
+    <div class="inner">
+
+      <div id="loading" class="loading-note">読み込み中...</div>
+
+      <div id="form-wrap" style="display:none;">
+
+        <!-- 団員数 -->
+        <div class="card">
+          <div class="card-title">👥 団員数</div>
+          <p class="card-desc">トップページの「団員募集中!!」セクションに表示される人数です。</p>
+          <div class="member-grid">
+            <div class="field">
+              <label>現在の団員数</label>
+              <input type="number" id="current-members" min="0" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label>目標団員数</label>
+              <input type="number" id="target-members" min="1" inputmode="numeric">
+            </div>
+          </div>
+          <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%;"></div></div>
+          <div class="progress-label" id="progress-label"></div>
+        </div>
+
+        <!-- パート募集状況 -->
+        <div class="card">
+          <div class="card-title">🎺 パート募集状況</div>
+          <p class="card-desc">各パートの募集状況（募集強化 / 募集中 / 休止中）を設定します。トップページに自動反映されます。</p>
+          <div id="parts-list"></div>
+          <div class="add-part-row">
+            <input type="text" id="new-part-name" placeholder="新しいパート名（例：Piano）">
+            <button class="btn-add" onclick="addPart()"><i class="fa-solid fa-plus"></i> 追加</button>
+          </div>
+        </div>
+
+        <div class="last-updated" id="last-updated"></div>
+
+        <div class="save-bar">
+          <button class="btn-save" id="save-btn" onclick="saveSettings()">
+            <span id="save-btn-text"><i class="fa-solid fa-floppy-disk"></i> 変更を保存する</span>
+            <div class="spinner" id="save-spinner"></div>
+          </button>
+          <div class="save-msg" id="save-msg"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==============================
+// 設定値
+// ⚠️ 新規に作成した「管理用Supabaseプロジェクト」の値に書き換えてください。
+//    Project Settings → API から取得できます（ポータル用とは別プロジェクトです）。
+// ==============================
+const SUPABASE_URL = 'https://jqnarjjtqvbbwhspfmmi.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbmFyamp0cXZiYndoc3BmbW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzOTI5MDgsImV4cCI6MjEwMTk2ODkwOH0.WPXffeTmYM7RQVAV61NOmCfMbqqhOGboGu8q9zRpGTY';
+
+const isConfigured = !SUPABASE_URL.includes('YOUR-NEW-PROJECT') && !SUPABASE_ANON_KEY.includes('YOUR-NEW-PROJECT');
+if (!isConfigured) document.getElementById('config-warn').style.display = 'block';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentParts = [];
+
+// ==============================
+// ログイン（Supabase Auth）
+// ==============================
+async function login() {
+  const email = document.getElementById('gate-email').value.trim();
+  const password = document.getElementById('gate-pw').value;
+  const err = document.getElementById('gate-err');
+  const btn = document.getElementById('gate-btn');
+  const txt = document.getElementById('gate-btn-text');
+  const sp = document.getElementById('gate-spinner');
+  err.style.display = 'none';
+
+  if (!isConfigured) {
+    err.textContent = 'Supabaseの接続設定が完了していません。管理者にご確認ください。';
+    err.style.display = 'block';
+    return;
+  }
+  if (!email || !password) {
+    err.textContent = 'メールアドレスとパスワードを入力してください。';
+    err.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true; txt.style.display = 'none'; sp.style.display = 'block';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false; txt.style.display = 'inline'; sp.style.display = 'none';
+
+  if (error) {
+    err.textContent = 'ログインに失敗しました：' + error.message;
+    err.style.display = 'block';
+    return;
+  }
+  enterApp(data.user);
+}
+document.getElementById('gate-pw').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') login();
+});
+
+async function logout() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+function enterApp(user) {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('header-user').textContent = 'ログイン中： ' + (user ? user.email : '');
+  loadSettings();
+}
+
+// ページ読み込み時に既存セッションがあるか確認（ログイン状態を保持）
+async function checkExistingSession() {
+  if (!isConfigured) return;
+  const { data } = await sb.auth.getSession();
+  if (data && data.session) {
+    enterApp(data.session.user);
+  }
+}
+checkExistingSession();
+
+// ==============================
+// 設定の読み込み
+// ==============================
+async function loadSettings() {
+  try {
+    const { data, error } = await sb.from('site_settings').select('*').eq('id', 1).limit(1);
+    if (error) throw error;
+    if (!data || !data.length) throw new Error('データが見つかりません（site_settings テーブルが未作成の可能性があります）');
+
+    const s = data[0];
+    document.getElementById('current-members').value = s.current_members;
+    document.getElementById('target-members').value = s.target_members;
+    currentParts = Array.isArray(s.parts) ? s.parts.slice() : [];
+    renderParts();
+    updateProgress();
+    if (s.updated_at) {
+      const d = new Date(s.updated_at);
+      document.getElementById('last-updated').textContent =
+        '最終更新：' + d.toLocaleString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('form-wrap').style.display = 'block';
+  } catch (e) {
+    document.getElementById('loading').innerHTML =
+      '読み込みに失敗しました。<br><span style="font-size:0.75rem;">' + e.message + '</span><br><br>' +
+      '<span style="font-size:0.75rem;">site_settings テーブルが未作成の場合は、付属の SQL（supabase_site_settings_migration.sql）を新規Supabaseプロジェクトの SQL Editor で実行してください。</span>';
+  }
+}
+
+document.getElementById('current-members').addEventListener('input', updateProgress);
+document.getElementById('target-members').addEventListener('input', updateProgress);
+function updateProgress() {
+  const cur = parseInt(document.getElementById('current-members').value, 10) || 0;
+  const tgt = parseInt(document.getElementById('target-members').value, 10) || 1;
+  const pct = Math.max(0, Math.min(100, Math.round((cur / tgt) * 100)));
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${cur} / ${tgt} 名（${pct}%）`;
+}
+
+// ==============================
+// パート一覧の描画
+// ==============================
+function renderParts() {
+  const wrap = document.getElementById('parts-list');
+  if (!currentParts.length) {
+    wrap.innerHTML = '<p style="font-size:0.8rem;color:var(--muted);padding:1rem 0;">パートがまだ登録されていません。下から追加してください。</p>';
+    return;
+  }
+  wrap.innerHTML = currentParts.map((p, i) => `
+    <div class="part-row">
+      <input type="text" value="${escAttr(p.name)}" oninput="updatePartName(${i}, this.value)">
+      <select onchange="updatePartStatus(${i}, this.value)">
+        <option value="hot" ${p.status === 'hot' ? 'selected' : ''}>🔥 募集強化</option>
+        <option value="open" ${p.status === 'open' ? 'selected' : ''}>募集中</option>
+        <option value="closed" ${p.status === 'closed' ? 'selected' : ''}>休止中</option>
+      </select>
+      <button class="part-del" onclick="removePart(${i})" title="削除"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  `).join('');
+}
+function updatePartName(i, val) { currentParts[i].name = val; }
+function updatePartStatus(i, val) { currentParts[i].status = val; }
+function removePart(i) { currentParts.splice(i, 1); renderParts(); }
+function addPart() {
+  const input = document.getElementById('new-part-name');
+  const name = input.value.trim();
+  if (!name) return;
+  currentParts.push({ name: name, status: 'open' });
+  input.value = '';
+  renderParts();
+}
+function escAttr(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ==============================
+// 保存（ログイン中のセッションでのみRLSを通過します）
+// ==============================
+async function saveSettings() {
+  const btn = document.getElementById('save-btn');
+  const txt = document.getElementById('save-btn-text');
+  const sp = document.getElementById('save-spinner');
+  const msg = document.getElementById('save-msg');
+  msg.className = 'save-msg';
+
+  const current_members = parseInt(document.getElementById('current-members').value, 10);
+  const target_members = parseInt(document.getElementById('target-members').value, 10);
+
+  if (isNaN(current_members) || isNaN(target_members) || target_members < 1) {
+    msg.className = 'save-msg err';
+    msg.textContent = '団員数・目標団員数を正しく入力してください。';
+    return;
+  }
+  const cleanParts = currentParts.filter(p => p.name && p.name.trim());
+
+  btn.disabled = true;
+  txt.style.display = 'none';
+  sp.style.display = 'block';
+
+  try {
+    const { error } = await sb.from('site_settings')
+      .update({
+        current_members: current_members,
+        target_members: target_members,
+        parts: cleanParts
+      })
+      .eq('id', 1);
+    if (error) throw error;
+
+    currentParts = cleanParts;
+    renderParts();
+    msg.className = 'save-msg ok';
+    msg.textContent = '✓ 保存しました。トップページに反映されています。';
+    document.getElementById('last-updated').textContent =
+      '最終更新：' + new Date().toLocaleString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+  } catch (e) {
+    msg.className = 'save-msg err';
+    msg.textContent = '保存に失敗しました。ログインが切れている可能性があります。再読み込みしてお試しください。（' + e.message + '）';
+  } finally {
+    btn.disabled = false;
+    txt.style.display = 'flex';
+    sp.style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>
