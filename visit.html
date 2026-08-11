@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>見学申込 | 東大阪吹奏楽団</title>
-<meta name="description" content="東大阪吹奏楽団の見学申込ページ。見学費¥500。第1・第3土曜日練習/本番前のみ第5土曜も練習あり)。未成年の方も保護者の方も安心してご参加ください。">
+<meta name="description" content="東大阪吹奏楽団の見学申込ページ。見学費¥500。 毎週土曜日練習。未成年の方も保護者の方も安心してご参加ください。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -173,7 +173,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
         <div class="step-body">
           <div class="step-title">当日練習場所へお越しください</div>
           <div class="step-desc">練習開始時間の少し前にお越しください。見学費¥500は当日受付にてお支払いいただきます。</div>
-          <span class="step-tag">毎週土曜 13:00〜 · 当日現金払い</span>
+          <span class="step-tag"><span id="visit-step-schedule">毎週土曜 13:00〜17:00</span> · 当日現金払い</span>
         </div>
       </div>
     </div>
@@ -186,7 +186,7 @@ footer p{font-family:'Outfit',sans-serif;font-size:.68rem;color:rgba(255,255,255
       <div class="info-card">
         <div class="info-card-icon">📅</div>
         <div class="info-card-title">練習日</div>
-        <div class="info-card-text">毎週土曜日<br>13:00〜17:00（目安）</div>
+        <div class="info-card-text"><span id="visit-info-days">毎週土曜日</span><br><span id="visit-info-time">13:00〜17:00</span>（目安）</div>
       </div>
       <div class="info-card">
         <div class="info-card-icon">🏢</div>
@@ -389,6 +389,31 @@ const LEGACY_ORG_ID = '37cf6fef-551a-4159-b6ab-5010c3951aa8';
 // ポータルSupabase設定（本体・恒久的に使用）
 const PORTAL_SUPABASE_URL = 'https://iaqbkriorspsjldodhjy.supabase.co';
 const PORTAL_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhcWJrcmlvcnNwc2psZG9kaGp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDE1MjEsImV4cCI6MjA5NDA3NzUyMX0.vuwBn8D2cvLdLRQ3X7rOPtHEG5cglY5wkzpnqOBVoJ8';
+
+// 練習日時の表記（管理用Supabase / 読み取り専用）
+const SETTINGS_SUPABASE_URL = 'https://jqnarjjtqvbbwhspfmmi.supabase.co';
+const SETTINGS_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbmFyamp0cXZiYndoc3BmbW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzOTI5MDgsImV4cCI6MjEwMTk2ODkwOH0.WPXffeTmYM7RQVAV61NOmCfMbqqhOGboGu8q9zRpGTY';
+
+async function loadPracticeSchedule() {
+  try {
+    const res = await fetch(
+      `${SETTINGS_SUPABASE_URL}/rest/v1/site_settings?id=eq.1&select=practice_days,practice_time`,
+      { headers: { 'apikey': SETTINGS_SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SETTINGS_SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) throw new Error('fetch error: ' + res.status);
+    const data = await res.json();
+    if (!data || !data.length) throw new Error('empty');
+    const s = data[0];
+    if (s.practice_days && s.practice_time) {
+      document.getElementById('visit-step-schedule').textContent = `${s.practice_days} ${s.practice_time}`;
+    }
+    if (s.practice_days) document.getElementById('visit-info-days').textContent = s.practice_days;
+    if (s.practice_time) document.getElementById('visit-info-time').textContent = s.practice_time;
+  } catch (e) {
+    console.warn('[visit] 練習日時の取得に失敗しました。既定値を表示します:', e);
+  }
+}
+loadPracticeSchedule();
 
 // フォームの表示ラベル → ポータル側のパートキーへの変換
 const PART_KEY_MAP = {
