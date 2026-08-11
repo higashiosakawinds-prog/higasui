@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>練習案内・入団申込 | 東大阪吹奏楽団</title>
-<meta name="description" content="東大阪吹奏楽団の練習案内・入団申込ページ。奇数週土曜13:00〜17:00、東大阪市内で練習中。見学無料！楽器がない方もご相談ください。">
+<meta name="description" content="東大阪吹奏楽団の練習案内・入団申込ページ。毎週土曜13:00〜17:00、東大阪市内で練習中。見学無料！楽器がない方もご相談ください。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
@@ -149,7 +149,7 @@ footer{background:var(--navy);padding:4rem 0;text-align:center;border-top:2px so
   <div class="inner">
     <p class="eyebrow">Practice &amp; Join</p>
     <h1>練習案内・入団申込</h1>
-    <p>奇数週土曜日、東大阪市内で練習しています。見学は今なら無料！楽器がない方もご相談ください。</p>
+    <p><span id="join-practice-days">奇数週土曜日</span>、東大阪市内で練習しています。見学は今なら無料！楽器がない方もご相談ください。</p>
   </div>
 </section>
 
@@ -398,6 +398,30 @@ async function loadCalendar() {
   }
 }
 loadCalendar();
+
+// ==============================
+// 練習日時の表記（管理用Supabase / 読み取り専用）
+// admin.html の「練習日時の表記」から編集した内容がここに反映されます。
+// ==============================
+const SETTINGS_SUPABASE_URL = 'https://jqnarjjtqvbbwhspfmmi.supabase.co';
+const SETTINGS_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbmFyamp0cXZiYndoc3BmbW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzOTI5MDgsImV4cCI6MjEwMTk2ODkwOH0.WPXffeTmYM7RQVAV61NOmCfMbqqhOGboGu8q9zRpGTY';
+
+async function loadPracticeSchedule() {
+  try {
+    const res = await fetch(
+      `${SETTINGS_SUPABASE_URL}/rest/v1/site_settings?id=eq.1&select=practice_days,practice_time`,
+      { headers: { 'apikey': SETTINGS_SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SETTINGS_SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) throw new Error('fetch error: ' + res.status);
+    const data = await res.json();
+    if (!data || !data.length) throw new Error('empty');
+    const s = data[0];
+    if (s.practice_days) document.getElementById('join-practice-days').textContent = s.practice_days;
+  } catch (e) {
+    console.warn('[join] 練習日時の取得に失敗しました。既定値を表示します:', e);
+  }
+}
+loadPracticeSchedule();
 
 const obs = new IntersectionObserver(entries => {
   entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i*80); });
