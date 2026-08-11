@@ -86,6 +86,19 @@ header p{font-size:0.8rem;color:rgba(255,255,255,0.65);margin-top:0.4rem;}
 
 .loading-note{text-align:center;padding:3rem 0;color:var(--muted);font-size:0.85rem;line-height:1.8;}
 .last-updated{font-size:0.7rem;color:var(--muted);text-align:center;margin-top:0.5rem;}
+
+/* news admin */
+.news-item{border:1.5px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.9rem;background:var(--bg);}
+.news-item-top{display:flex;gap:0.6rem;margin-bottom:0.6rem;}
+.news-item-top select{padding:9px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:0.78rem;font-family:inherit;background:white;color:var(--navy);font-weight:700;flex-shrink:0;}
+.news-item-top input[type=date]{padding:9px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:0.78rem;font-family:inherit;background:white;flex-shrink:0;width:150px;}
+.news-item input[type=text],.news-item input[type=url]{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:inherit;background:white;margin-bottom:0.5rem;}
+.news-item-label{font-size:0.65rem;font-weight:700;color:var(--muted);margin-bottom:0.2rem;display:block;}
+.news-item-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:0.4rem;}
+.news-item-pub{display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--navy);font-weight:700;cursor:pointer;}
+.news-item-pub input{accent-color:var(--green);width:16px;height:16px;}
+.news-item-del{border:none;background:none;color:var(--muted);cursor:pointer;font-size:0.78rem;padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:5px;}
+.news-item-del:hover{background:#FFF0F0;color:var(--red);}
 </style>
 </head>
 <body>
@@ -167,6 +180,36 @@ header p{font-size:0.8rem;color:rgba(255,255,255,0.65);margin-top:0.4rem;}
             <input type="text" id="new-part-name" placeholder="新しいパート名（例：Piano）">
             <button class="btn-add" onclick="addPart()"><i class="fa-solid fa-plus"></i> 追加</button>
           </div>
+        </div>
+
+        <!-- 練習日時表記 -->
+        <div class="card">
+          <div class="card-title">📅 練習日時の表記</div>
+          <p class="card-desc">トップページ・練習案内ページ・見学申込ページの「練習日」「時間」表記に共通で反映されます。現在ページごとに表記がバラバラ（毎週／奇数週など）になっているため、ここで一箇所に統一してください。</p>
+          <div class="member-grid" style="margin-bottom:1rem;">
+            <div class="field">
+              <label>練習の頻度・曜日</label>
+              <input type="text" id="practice-days" placeholder="例：毎週土曜日 / 奇数週土曜日" style="font-family:inherit;">
+            </div>
+            <div class="field">
+              <label>練習時間</label>
+              <input type="text" id="practice-time" placeholder="例：13:00〜17:00" style="font-family:inherit;">
+            </div>
+          </div>
+          <div class="field">
+            <label>補足（任意）</label>
+            <input type="text" id="practice-note" placeholder="例：本番前のみ第5土曜も練習あり" style="font-family:inherit;font-weight:400;">
+          </div>
+        </div>
+
+        <!-- お知らせ管理 -->
+        <div class="card">
+          <div class="card-title">📰 お知らせ（ニュース）</div>
+          <p class="card-desc">トップページ上部の「最新のお知らせ」欄とカルーセルバナーに表示されます。公開ONのものだけがサイトに表示されます。</p>
+          <div id="news-admin-list"></div>
+          <div id="news-admin-empty" style="display:none;font-size:0.8rem;color:var(--muted);padding:1rem 0;">お知らせがまだ登録されていません。下から追加してください。</div>
+          <button class="btn-add" style="margin-top:0.5rem;width:100%;" onclick="addNewsItem()"><i class="fa-solid fa-plus"></i> お知らせを追加</button>
+          <div class="save-msg" id="news-msg" style="margin-top:0.8rem;"></div>
         </div>
 
         <div class="last-updated" id="last-updated"></div>
@@ -272,6 +315,9 @@ async function loadSettings() {
     const s = data[0];
     document.getElementById('current-members').value = s.current_members;
     document.getElementById('target-members').value = s.target_members;
+    document.getElementById('practice-days').value = s.practice_days || '';
+    document.getElementById('practice-time').value = s.practice_time || '';
+    document.getElementById('practice-note').value = s.practice_note || '';
     currentParts = Array.isArray(s.parts) ? s.parts.slice() : [];
     renderParts();
     updateProgress();
@@ -283,10 +329,12 @@ async function loadSettings() {
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('form-wrap').style.display = 'block';
+
+    loadNewsAdmin();
   } catch (e) {
     document.getElementById('loading').innerHTML =
       '読み込みに失敗しました。<br><span style="font-size:0.75rem;">' + e.message + '</span><br><br>' +
-      '<span style="font-size:0.75rem;">site_settings テーブルが未作成の場合は、付属の SQL（supabase_site_settings_migration.sql）を新規Supabaseプロジェクトの SQL Editor で実行してください。</span>';
+      '<span style="font-size:0.75rem;">site_settings / news_items テーブルが未作成の場合は、付属の SQL（news_and_schedule_migration.sql）を新規Supabaseプロジェクトの SQL Editor で実行してください。</span>';
   }
 }
 
@@ -348,10 +396,18 @@ async function saveSettings() {
 
   const current_members = parseInt(document.getElementById('current-members').value, 10);
   const target_members = parseInt(document.getElementById('target-members').value, 10);
+  const practice_days = document.getElementById('practice-days').value.trim();
+  const practice_time = document.getElementById('practice-time').value.trim();
+  const practice_note = document.getElementById('practice-note').value.trim();
 
   if (isNaN(current_members) || isNaN(target_members) || target_members < 1) {
     msg.className = 'save-msg err';
     msg.textContent = '団員数・目標団員数を正しく入力してください。';
+    return;
+  }
+  if (!practice_days || !practice_time) {
+    msg.className = 'save-msg err';
+    msg.textContent = '練習の頻度・曜日と練習時間を入力してください。';
     return;
   }
   const cleanParts = currentParts.filter(p => p.name && p.name.trim());
@@ -365,7 +421,10 @@ async function saveSettings() {
       .update({
         current_members: current_members,
         target_members: target_members,
-        parts: cleanParts
+        parts: cleanParts,
+        practice_days: practice_days,
+        practice_time: practice_time,
+        practice_note: practice_note
       })
       .eq('id', 1);
     if (error) throw error;
@@ -383,6 +442,132 @@ async function saveSettings() {
     btn.disabled = false;
     txt.style.display = 'flex';
     sp.style.display = 'none';
+  }
+}
+
+// ==============================
+// お知らせ（news_items）管理
+// ==============================
+let newsItems = [];
+
+async function loadNewsAdmin() {
+  const listEl = document.getElementById('news-admin-list');
+  try {
+    const { data, error } = await sb.from('news_items').select('*').order('published_at', { ascending: false });
+    if (error) throw error;
+    newsItems = data || [];
+    renderNewsAdmin();
+  } catch (e) {
+    listEl.innerHTML = '<p style="font-size:0.78rem;color:var(--red);padding:0.5rem 0;">お知らせの読み込みに失敗しました：' + e.message + '</p>';
+  }
+}
+
+function renderNewsAdmin() {
+  const listEl = document.getElementById('news-admin-list');
+  const emptyEl = document.getElementById('news-admin-empty');
+  if (!newsItems.length) {
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+  listEl.innerHTML = newsItems.map((n, i) => `
+    <div class="news-item" id="news-item-${i}">
+      <div class="news-item-top">
+        <select onchange="updateNewsField(${i}, 'tag', this.value)">
+          <option value="演奏会" ${n.tag === '演奏会' ? 'selected' : ''}>演奏会</option>
+          <option value="NEWS" ${n.tag === 'NEWS' ? 'selected' : ''}>NEWS</option>
+          <option value="info" ${(!n.tag || n.tag === 'info') ? 'selected' : ''}>INFO</option>
+        </select>
+        <input type="date" value="${n.published_at ? n.published_at.slice(0,10) : ''}" onchange="updateNewsField(${i}, 'published_at', this.value)">
+      </div>
+      <span class="news-item-label">タイトル</span>
+      <input type="text" value="${escAttr(n.title)}" placeholder="お知らせのタイトル" oninput="updateNewsField(${i}, 'title', this.value)">
+      <span class="news-item-label">リンク先URL（任意・タイトルをクリックした時の遷移先）</span>
+      <input type="url" value="${escAttr(n.url || '')}" placeholder="https://..." oninput="updateNewsField(${i}, 'url', this.value)">
+      <span class="news-item-label">バナー画像URL（任意・トップのカルーセルに表示）</span>
+      <input type="url" value="${escAttr(n.banner_url || '')}" placeholder="https://... .jpg" oninput="updateNewsField(${i}, 'banner_url', this.value)">
+      <div class="news-item-bottom">
+        <label class="news-item-pub">
+          <input type="checkbox" ${n.is_published ? 'checked' : ''} onchange="updateNewsField(${i}, 'is_published', this.checked)">
+          公開する
+        </label>
+        <div style="display:flex;gap:0.4rem;">
+          <button class="btn-add" style="padding:8px 12px;" onclick="saveNewsItem(${i})"><i class="fa-solid fa-check"></i> この項目を保存</button>
+          <button class="news-item-del" onclick="deleteNewsItem(${i})"><i class="fa-solid fa-trash"></i> 削除</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateNewsField(i, key, val) {
+  newsItems[i][key] = val;
+}
+
+function addNewsItem() {
+  newsItems.unshift({
+    title: '',
+    tag: 'info',
+    url: '',
+    banner_url: '',
+    is_published: true,
+    published_at: new Date().toISOString().slice(0, 10)
+  });
+  renderNewsAdmin();
+  const first = document.getElementById('news-item-0');
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function saveNewsItem(i) {
+  const msg = document.getElementById('news-msg');
+  msg.className = 'save-msg';
+  const item = newsItems[i];
+  if (!item.title || !item.title.trim()) {
+    msg.className = 'save-msg err';
+    msg.textContent = 'タイトルを入力してください。';
+    return;
+  }
+  const payload = {
+    title: item.title.trim(),
+    tag: item.tag || 'info',
+    url: item.url ? item.url.trim() : null,
+    banner_url: item.banner_url ? item.banner_url.trim() : null,
+    is_published: !!item.is_published,
+    published_at: item.published_at || new Date().toISOString().slice(0, 10)
+  };
+  if (item.id) payload.id = item.id;
+
+  try {
+    const { data, error } = await sb.from('news_items').upsert(payload).select().single();
+    if (error) throw error;
+    newsItems[i] = data;
+    renderNewsAdmin();
+    msg.className = 'save-msg ok';
+    msg.textContent = '✓ 保存しました。';
+  } catch (e) {
+    msg.className = 'save-msg err';
+    msg.textContent = '保存に失敗しました：' + e.message;
+  }
+}
+
+async function deleteNewsItem(i) {
+  const item = newsItems[i];
+  if (!confirm('このお知らせを削除しますか？この操作は取り消せません。')) return;
+  const msg = document.getElementById('news-msg');
+  msg.className = 'save-msg';
+  try {
+    if (item.id) {
+      const { error } = await sb.from('news_items').delete().eq('id', item.id);
+      if (error) throw error;
+    }
+    newsItems.splice(i, 1);
+    renderNewsAdmin();
+    msg.className = 'save-msg ok';
+    msg.textContent = '✓ 削除しました。';
+  } catch (e) {
+    msg.className = 'save-msg err';
+    msg.textContent = '削除に失敗しました：' + e.message;
   }
 }
 </script>
