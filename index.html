@@ -340,11 +340,12 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <p class="lead">見学はいつでもOK!まずは雰囲気だけ感じに来てください。</p>
     </div>
     <div class="pcards reveal">
-      <div class="pcard"><div class="pcard-icon">📅</div><div><div class="pcard-cat">練習日</div><div class="pcard-val">毎週土曜日</div><p class="pcard-sub">13:00~17:00</p></div></div>
+      <div class="pcard"><div class="pcard-icon">📅</div><div><div class="pcard-cat">練習日</div><div class="pcard-val" id="idx-practice-days">毎週土曜日</div><p class="pcard-sub" id="idx-practice-time">13:00~17:00</p></div></div>
       <div class="pcard"><div class="pcard-icon">📍</div><div><div class="pcard-cat">場所</div><div class="pcard-val">東大阪市内</div><p class="pcard-sub">東大阪文化創造館 ほか</p></div></div>
       <div class="pcard"><div class="pcard-icon">👀</div><div><div class="pcard-cat">費用</div><div class="pcard-val">見学 ¥500 / 回</div><p class="pcard-sub">最大3回まで体験可能</p></div></div>
       <div class="pcard"><div class="pcard-icon">🎒</div><div><div class="pcard-cat">持ち物</div><div class="pcard-val">楽器・譜面台</div><p class="pcard-sub">お持ちでない方は応相談</p></div></div>
     </div>
+    <p class="form-note" id="idx-practice-note" style="text-align:left;margin-top:0.8rem;"></p>
   </div>
 </section>
 
@@ -434,16 +435,15 @@ footer { background: var(--navy); padding: 4rem 0; text-align: center; border-to
       <a href="https://www.youtube.com/@東大阪吹奏楽団" target="_blank" class="sns-youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
       <a href="https://line.me/ti/p/@798rjgoq" target="_blank" class="sns-line" aria-label="LINE"><i class="fab fa-line"></i></a>
     </div>
-    <p style="font-size:0.7rem; opacity:0.3;">Copyright © 2026 東大阪吹奏楽団 All Rights Reserved.</p>
+    <p style="font-size:0.7rem; opacity:0.3;">Copyright © 2025 東大阪吹奏楽団 All Rights Reserved.</p>
   </div>
 </footer>
 
 <script>
 // ==============================
 // 設定値
-// ① ポータル用Supabase（既存・お知らせ/申請フォーム等で使用中のプロジェクト）
-// ② 管理用Supabase（新規・団員数とパート募集状況の専用プロジェクト）
-//    ⚠️ ②は新規プロジェクト作成後、URL / anon key を書き換えてください。
+// ① ポータル用Supabase（既存・申請フォーム等で使用中のプロジェクト）
+// ② 管理用Supabase（団員数・パート募集状況・練習日時・お知らせの管理専用プロジェクト）
 // ==============================
 const SUPABASE_URL = 'https://eqnacealnnmpipapdguc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmFjZWFsbm5tcGlwYXBkZ3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI4MjgsImV4cCI6MjA4OTQwODgyOH0.XI948sgJf6gWXs-sU9iiqxBXDB_S50ZBz__IeV1hA-0';
@@ -464,13 +464,16 @@ function closeNav() {
   document.body.style.overflow = '';
 }
 
-// NEWS（ポータル用Supabase）
+// ==============================
+// NEWS（管理用Supabase / news_items テーブル）
+// admin.html の「お知らせ」から投稿・編集した内容がここに表示されます。
+// ==============================
 async function loadNews() {
   const el = document.getElementById('news-list');
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/news?is_published=eq.true&order=published_at.desc&limit=5`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      `${SETTINGS_SUPABASE_URL}/rest/v1/news_items?is_published=eq.true&order=published_at.desc&limit=5`,
+      { headers: { 'apikey': SETTINGS_SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SETTINGS_SUPABASE_ANON_KEY}` } }
     );
     if (!res.ok) throw new Error('fetch error');
     const data = await res.json();
@@ -478,16 +481,16 @@ async function loadNews() {
 
     el.innerHTML = data.map(item => {
       const date = item.published_at ? item.published_at.replace(/-/g, '.').slice(0, 10) : '';
-      const firstTag = (item.tags && item.tags.length > 0) ? item.tags[0] : 'info';
-      const tagLabel = firstTag === '演奏会' ? '演奏会' : firstTag === 'NEWS' ? 'NEWS' : 'INFO';
-      const tagClass = firstTag === '演奏会' ? 'concert' : firstTag === 'NEWS' ? 'news' : 'info';
+      const tag = item.tag || 'info';
+      const tagLabel = tag === '演奏会' ? '演奏会' : tag === 'NEWS' ? 'NEWS' : 'INFO';
+      const tagClass = tag === '演奏会' ? 'concert' : tag === 'NEWS' ? 'news' : 'info';
       return `
         <div class="news-row">
           <span class="news-date">${date}</span>
           <span class="news-tag tag-${tagClass}">${tagLabel}</span>
           <span>${item.url
-            ? `<a href="${item.url}" style="color:white;text-decoration:none;">${item.title}</a>`
-            : item.title}</span>
+            ? `<a href="${item.url}" style="color:white;text-decoration:none;">${escHtml(item.title)}</a>`
+            : escHtml(item.title)}</span>
         </div>
       `;
     }).join('');
@@ -507,7 +510,7 @@ async function loadNews() {
 loadNews();
 
 // ==============================
-// 団員数・パート募集状況（管理用Supabase / 読み取り専用）
+// 団員数・パート募集状況・練習日時（管理用Supabase / 読み取り専用）
 // 書き込みは admin.html からログイン済み管理者のみが行います。
 // このページは anon key で SELECT するだけなので、RLSにより書き込みはできません。
 // 取得に失敗した場合は、HTMLに書かれているフォールバック値をそのまま使います。
@@ -539,6 +542,11 @@ async function loadSiteSettings() {
     renderPartsGroup('hot', parts.filter(p => p.status === 'hot'), 'part-hot');
     renderPartsGroup('open', parts.filter(p => p.status === 'open'), '');
     renderPartsGroup('closed', parts.filter(p => p.status === 'closed'), 'part-closed');
+
+    if (s.practice_days) document.getElementById('idx-practice-days').textContent = s.practice_days;
+    if (s.practice_time) document.getElementById('idx-practice-time').textContent = s.practice_time;
+    const noteEl = document.getElementById('idx-practice-note');
+    if (noteEl) noteEl.textContent = s.practice_note || '';
 
   } catch (e) {
     // 取得失敗時はHTMLの初期値（フォールバック）をそのまま表示するので何もしない
@@ -607,7 +615,7 @@ function initCarousel(slides) {
 
   if (slides && slides.length > 0) {
     track.innerHTML = slides.map(s =>
-      `<div class="carousel-slide"><a href="${s.link_url || '#'}"><img src="${s.banner_url}" alt="${s.title}"></a></div>`
+      `<div class="carousel-slide"><a href="${s.url || '#'}"><img src="${s.banner_url}" alt="${escHtml(s.title)}"></a></div>`
     ).join('');
     dotsWrap.innerHTML = slides.map((_,i) =>
       `<span class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></span>`
