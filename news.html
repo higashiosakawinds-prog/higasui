@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>お知らせ | 東大阪吹奏楽団</title>
+  <meta name="description" content="東大阪吹奏楽団からのお知らせ。演奏会のご案内、日々の活動報告、見学・体験の情報をお届けします。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="news.css">
+  <script src="news-content.js" defer></script>
+  <script src="news.js" defer></script>
+</head>
+<body data-news-page="list">
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <nav id="site-nav" aria-label="メインメニュー">
+    <div class="inner nav-inner">
+      <a href="index.html" id="nav-logo"><img src="higasui.svg" alt="東大阪吹奏楽団 トップページ"></a>
+      <button id="ham-btn" type="button" aria-label="メニューを開く" aria-controls="site-drawer" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div id="site-drawer" hidden>
+    <ul>
+      <li><a href="index.html">🏠 トップページ</a></li>
+      <li><a href="news.html" aria-current="page">📰 お知らせ</a></li>
+      <li><a href="about.html">🎷 団について</a></li>
+      <li><a href="join.html">📅 練習案内・入団</a></li>
+      <li><a href="faq.html">❓ よくある質問</a></li>
+      <li><a href="visit.html">📝 見学申込</a></li>
+    </ul>
+    <a href="visit.html" id="drawer-cta">🎺 見学・体験を申し込む</a>
+  </div>
+  <main id="main">
+    <header class="page-header">
+      <div class="page-header-inner">
+        <p class="page-eyebrow">NEWS</p>
+        <h1>お知らせ</h1>
+        <p>ひがすいの音と、日々のこと。<br>演奏会のご案内や、活動の様子をお届けします。</p>
+      </div>
+    </header>
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <ol class="inner"><li><a href="index.html">TOP</a></li><li aria-current="page">お知らせ</li></ol>
+    </nav>
+    <section class="news-section" aria-label="お知らせ一覧">
+      <div class="inner">
+        <div class="demo-notice" data-demo-notice hidden><strong>DEMO</strong><span>表示確認用のサンプル記事です。実際の開催・募集情報ではありません。</span></div>
+        <div class="news-toolbar" id="news-toolbar">
+          <div class="news-filters" id="news-filters" role="group" aria-label="カテゴリで絞り込む"></div>
+          <p class="news-count" id="news-count" role="status" aria-live="polite"></p>
+        </div>
+        <div class="news-cards" id="news-cards" aria-busy="true"><p class="news-state">お知らせを読み込んでいます…</p></div>
+        <nav class="pagination" id="news-pagination" aria-label="お知らせのページ切り替え" hidden></nav>
+        <noscript><p class="news-state">お知らせを表示するには、ブラウザのJavaScriptを有効にしてください。</p></noscript>
+      </div>
+    </section>
+    <section class="cta-band" aria-label="見学のご案内">
+      <h2>次は、一緒に奏でませんか。</h2>
+      <p>団の雰囲気を、練習の音を、まずは見学で。<br>ブランクのある方も、どうぞお気軽に。</p>
+      <a class="btn-gold" href="visit.html">🎺 見学・体験を申し込む</a>
+    </section>
+  </main>
+  <footer>
+    <div class="inner">
+      <a class="footer-logo" href="index.html"><img src="higasui.svg" alt="東大阪吹奏楽団"></a>
+      <p class="footer-desc">学校・地域・世代をつなぐ“新しい吹奏楽のかたち”を東大阪から。</p>
+      <div class="footer-links"><a href="news.html">お知らせ</a><a href="about.html">団について</a><a href="join.html">練習案内</a><a href="faq.html">よくある質問</a><a href="visit.html">見学申込</a><a href="yakkan.html">定款</a></div>
+      <p class="footer-copy">© 東大阪吹奏楽団</p>
+    </div>
+  </footer>
+</body>
+</html>
