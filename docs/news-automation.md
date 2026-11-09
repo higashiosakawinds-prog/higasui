@@ -39,4 +39,10 @@ APIキーを変更した場合は、GitHubの `Settings > Secrets and variables 
 - 通知対象：コンテンツの公開・更新、公開終了、削除
 - GitHubトークン：このリポジトリのrepository_dispatch APIを呼べる専用トークン
 
+共同編集者アカウントから別の個人所有の公開リポジトリへ通知するため、専用のclassic PATに `public_repo` のみを付けます。fine-grained PATではこの共同編集者アクセスを扱えません。このスコープは当該1リポジトリだけには限定できず、編集権限のある他の公開リポジトリにもアクセスできる点に留意してください。非公開リポジトリへの権限は付けません。発行画面の有効期限は90日（2027年2月8日）に設定しています。
+
 GitHubトークンはmicroCMSのWebhook設定だけに保存し、ソースや公開データへ書き込みません。APIキーとは別の認証情報です。GitHubで作成したトークンの値をチャットに送る必要はありません。
+
+## 動作確認記録
+
+2026年11月10日、microCMSのデモ記事の紹介文を更新して公開し、Webhookから[同期ワークフロー](https://github.com/higashiosakawinds-prog/higasui/actions/runs/42642817497)が起動しました。公開データはGitHub Actionsのbotによって自動コミットされ、Pagesビルド依頼まで成功しました。
