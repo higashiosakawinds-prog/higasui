@@ -1,0 +1,9 @@
+# 運用用ソースやローカル設定をGitHub Pagesへ配信しない。
+exclude:
+  - scripts
+  - tests
+  - demo
+  - docs
+  - microcms
+  - .env
+  - .env.example

@@ -1,0 +1,71 @@
+name: Sync microCMS news
+
+on:
+  repository_dispatch:
+    types: [microcms_news_update]
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: '変更がなくてもGitHub Pagesを再公開する'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: sync-microcms-news
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: >-
+      github.repository == 'higashiosakawinds-prog/higasui' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name != 'repository_dispatch' ||
+       (github.event.client_payload.service == 'higasui' && github.event.client_payload.api == 'news'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Test synchronization
+        run: node --test tests/sync-news.test.mjs
+      - name: Fetch published articles
+        env:
+          MICROCMS_SERVICE_DOMAIN: higasui
+          MICROCMS_NEWS_ENDPOINT: news
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+        run: node scripts/sync-news.mjs
+      - name: Commit changed public data
+        run: |
+          if git diff --quiet -- news-content.js; then
+            echo '公開記事の変更はありません。'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- news-content.js
+          git commit -m 'Update published microCMS news'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      # GITHUB_TOKENでのpushはPagesビルドを起動しないため、明示的に依頼する。
+      # 前回のビルド依頼失敗も、次のWebhookまたは手動実行で再試行する。
+      - name: Request GitHub Pages build when needed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          FORCE_REBUILD: ${{ inputs.force_rebuild || false }}
+        run: |
+          read -r built_commit build_status < <(gh api "repos/$GH_REPO/pages/builds/latest" --jq '[.commit, .status] | @tsv')
+          current_commit=$(git rev-parse HEAD)
+          if [[ "$FORCE_REBUILD" == 'true' || "$current_commit" != "$built_commit" || "$build_status" == 'errored' ]]; then
+            gh api --method POST "repos/$GH_REPO/pages/builds" --jq .status
+          else
+            echo "最新コミットのPages状態: $build_status"
+          fi
