@@ -10,7 +10,7 @@ window.HIGASUI_RECRUITMENT = {
     },
     {
       "partId": "flute",
-      "targetCount": 4,
+      "targetCount": 5,
       "priority": false,
       "note": "表示確認用の仮の目標人数です。"
     },
