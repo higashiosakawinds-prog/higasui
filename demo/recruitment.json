@@ -1,0 +1,112 @@
+{
+  "contents": [
+    {
+      "partId": "ピッコロ / piccolo",
+      "targetCount": 1,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "フルート / flute",
+      "targetCount": 4,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "オーボエ / oboe",
+      "targetCount": 2,
+      "priority": true,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "ファゴット / bassoon",
+      "targetCount": 2,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "クラリネット / clarinet",
+      "targetCount": 6,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "バスクラリネット / bassclarinet",
+      "targetCount": 1,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "ソプラノサックス / ssaxophone",
+      "targetCount": 1,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "アルトサックス / asaxophone",
+      "targetCount": 2,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "テナーサックス / tsaxophone",
+      "targetCount": 2,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "バリトンサックス / bsaxophone",
+      "targetCount": 1,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "ホルン / horn",
+      "targetCount": 4,
+      "priority": true,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "トランペット / trumpet",
+      "targetCount": 4,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "トロンボーン / trombone",
+      "targetCount": 3,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "ユーフォニアム / euphonium",
+      "targetCount": 2,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "テューバ / tuba",
+      "targetCount": 2,
+      "priority": true,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "パーカッション / percussion",
+      "targetCount": 4,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "コントラバス / contrabass",
+      "targetCount": 1,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    },
+    {
+      "partId": "ピアノ / piano",
+      "targetCount": 1,
+      "priority": false,
+      "note": "表示確認用の仮の目標人数です。"
+    }
+  ]
+}

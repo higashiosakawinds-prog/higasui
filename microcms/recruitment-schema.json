@@ -1,0 +1,114 @@
+{
+  "apiFields": [
+    {
+      "fieldId": "partId",
+      "name": "パート",
+      "kind": "select",
+      "required": true,
+      "multipleSelect": false,
+      "description": "パートを選択します。同じパートを複数登録しないでください。",
+      "selectItems": [
+        {
+          "id": "hgs0000000",
+          "value": "ピッコロ / piccolo"
+        },
+        {
+          "id": "hgs0000001",
+          "value": "フルート / flute"
+        },
+        {
+          "id": "hgs0000002",
+          "value": "オーボエ / oboe"
+        },
+        {
+          "id": "hgs0000003",
+          "value": "ファゴット / bassoon"
+        },
+        {
+          "id": "hgs0000004",
+          "value": "クラリネット / clarinet"
+        },
+        {
+          "id": "hgs0000005",
+          "value": "バスクラリネット / bassclarinet"
+        },
+        {
+          "id": "hgs0000006",
+          "value": "ソプラノサックス / ssaxophone"
+        },
+        {
+          "id": "hgs0000007",
+          "value": "アルトサックス / asaxophone"
+        },
+        {
+          "id": "hgs0000008",
+          "value": "テナーサックス / tsaxophone"
+        },
+        {
+          "id": "hgs0000009",
+          "value": "バリトンサックス / bsaxophone"
+        },
+        {
+          "id": "hgs0000010",
+          "value": "ホルン / horn"
+        },
+        {
+          "id": "hgs0000011",
+          "value": "トランペット / trumpet"
+        },
+        {
+          "id": "hgs0000012",
+          "value": "トロンボーン / trombone"
+        },
+        {
+          "id": "hgs0000013",
+          "value": "ユーフォニアム / euphonium"
+        },
+        {
+          "id": "hgs0000014",
+          "value": "テューバ / tuba"
+        },
+        {
+          "id": "hgs0000015",
+          "value": "パーカッション / percussion"
+        },
+        {
+          "id": "hgs0000016",
+          "value": "コントラバス / contrabass"
+        },
+        {
+          "id": "hgs0000017",
+          "value": "ピアノ / piano"
+        }
+      ]
+    },
+    {
+      "fieldId": "targetCount",
+      "name": "目標人数",
+      "kind": "number",
+      "required": true,
+      "description": "追加募集人数ではなく、このパートの最終的な目標人数です。0以上の整数で入力します。",
+      "numberSizeLimitValidation": {
+        "numberSize": {
+          "min": 0,
+          "max": 1000
+        }
+      }
+    },
+    {
+      "fieldId": "priority",
+      "name": "募集強化",
+      "kind": "boolean",
+      "required": false,
+      "description": "目標未達のときに募集強化と表示します。目標到達後は自動で募集休止になります。"
+    },
+    {
+      "fieldId": "note",
+      "name": "募集コメント",
+      "kind": "textArea",
+      "required": false,
+      "description": "プレビューの各パートに表示するコメントです。"
+    }
+  ],
+  "customFields": []
+}

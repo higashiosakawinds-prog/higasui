@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>パート募集プレビュー | 東大阪吹奏楽団</title>
+  <meta name="description" content="東大阪吹奏楽団のパート別募集表示を確認するためのプレビューページです。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="news.css">
+  <link rel="stylesheet" href="recruitment.css">
+  <script src="recruitment-model.js" defer></script>
+  <script src="recruitment-config.js" defer></script>
+  <script src="recruitment-content.js" defer></script>
+  <script src="recruitment.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <nav id="site-nav" aria-label="サイトの案内"><div class="inner nav-inner">
+    <a href="index.html" id="nav-logo"><img src="higasui.svg" alt="東大阪吹奏楽団 トップページ"></a>
+    <a class="preview-home" href="index.html">公式サイトへ <span aria-hidden="true">↗</span></a>
+  </div></nav>
+  <main id="main">
+    <header class="page-header"><div class="page-header-inner">
+      <p class="page-eyebrow">JOIN OUR SOUND</p>
+      <h1>あなたの音が、<br>ひがすいの力になる。</h1>
+      <p>パートごとの仲間と、一緒に奏でる未来へ。<br>現在の人数と目標から、募集状況をお届けします。</p>
+    </div></header>
+    <nav class="breadcrumb" aria-label="パンくずリスト"><ol class="inner"><li><a href="index.html">TOP</a></li><li aria-current="page">パート募集プレビュー</li></ol></nav>
+    <section class="recruitment-section" aria-label="団員数とパート募集">
+      <div class="inner">
+        <div class="demo-notice"><strong>PREVIEW</strong><span>表示確認用のページです。目標人数は仮設定であり、正式な募集方針ではありません。</span></div>
+        <div class="recruitment-metrics">
+          <div><p class="metric-label">現在の団員総数</p><p class="metric-value"><span id="total-members">—</span><span class="metric-unit">名</span></p><p class="metric-note">既存サイトと同じ情報を表示</p></div>
+          <div><p class="metric-label">募集中のパート</p><p class="metric-value"><span id="open-parts">—</span><span class="metric-unit">パート</span></p><p class="metric-note">目標人数との差から算出</p></div>
+          <div><p class="metric-label">募集人数の合計</p><p class="metric-value"><span id="remaining-total">—</span><span class="metric-unit">名</span></p><p class="metric-note">仮の目標人数に基づく表示</p></div>
+        </div>
+        <div class="recruitment-heading"><div><p class="section-kicker">PARTS</p><h2>パート別の募集状況</h2></div><div class="preview-actions"><button id="toggle-sample" class="refresh-button" type="button" aria-pressed="false">サンプル人数で試す</button><button id="refresh-counts" class="refresh-button" type="button">最新の人数に更新 <span aria-hidden="true">↻</span></button></div></div>
+        <div id="sample-notice" class="demo-notice" hidden><strong>SAMPLE</strong><span>現在人数にはサンプル値を使用しています。実際の所属人数ではありません。団員総数だけはSupabaseの実データです。</span></div>
+        <p class="counting-note">パート別人数は正団員・正団員（学生）を集計。準団員・休団中・賛助・スタッフは含みません。</p>
+        <p class="counting-note">団員総数とパート別人数では集計対象が異なるため、人数の合計が一致しない場合があります。</p>
+        <p id="fetch-status" class="fetch-status" role="status" aria-live="polite">現在の人数を確認しています…</p>
+        <div class="news-filters recruitment-filters" role="group" aria-label="募集状況で絞り込む">
+          <button class="news-filter" type="button" data-filter="all" aria-pressed="true">すべて</button>
+          <button class="news-filter" type="button" data-filter="recruiting" aria-pressed="false">募集中</button>
+          <button class="news-filter" type="button" data-filter="closed" aria-pressed="false">募集休止</button>
+        </div>
+        <div id="recruitment-cards" class="recruitment-cards" aria-busy="true"><p class="news-state">募集状況を読み込んでいます…</p></div>
+        <p class="recruitment-footnote">募集人数は「目標人数 − 現在人数」で算出し、0未満にはしません。人数を確認できない場合は、募集状況を「確認中」と表示します。</p>
+        <noscript><p class="news-state">表示するには、ブラウザのJavaScriptを有効にしてください。</p></noscript>
+      </div>
+    </section>
+  </main>
+  <footer><div class="inner"><a class="footer-logo" href="index.html"><img src="higasui.svg" alt="東大阪吹奏楽団"></a><p class="footer-desc">学校・地域・世代をつなぐ“新しい吹奏楽のかたち”を東大阪から。</p><p class="footer-copy">© 東大阪吹奏楽団</p></div></footer>
+</body>
+</html>

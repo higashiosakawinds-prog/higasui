@@ -1,0 +1,20 @@
+"コンテンツID
+※空欄で構いません。特定の値を設定したい場合に入力してください。",partId,targetCount,priority,note
+,ピッコロ / piccolo,1,false,表示確認用の仮の目標人数です。
+,フルート / flute,4,false,表示確認用の仮の目標人数です。
+,オーボエ / oboe,2,true,表示確認用の仮の目標人数です。
+,ファゴット / bassoon,2,false,表示確認用の仮の目標人数です。
+,クラリネット / clarinet,6,false,表示確認用の仮の目標人数です。
+,バスクラリネット / bassclarinet,1,false,表示確認用の仮の目標人数です。
+,ソプラノサックス / ssaxophone,1,false,表示確認用の仮の目標人数です。
+,アルトサックス / asaxophone,2,false,表示確認用の仮の目標人数です。
+,テナーサックス / tsaxophone,2,false,表示確認用の仮の目標人数です。
+,バリトンサックス / bsaxophone,1,false,表示確認用の仮の目標人数です。
+,ホルン / horn,4,true,表示確認用の仮の目標人数です。
+,トランペット / trumpet,4,false,表示確認用の仮の目標人数です。
+,トロンボーン / trombone,3,false,表示確認用の仮の目標人数です。
+,ユーフォニアム / euphonium,2,false,表示確認用の仮の目標人数です。
+,テューバ / tuba,2,true,表示確認用の仮の目標人数です。
+,パーカッション / percussion,4,false,表示確認用の仮の目標人数です。
+,コントラバス / contrabass,1,false,表示確認用の仮の目標人数です。
+,ピアノ / piano,1,false,表示確認用の仮の目標人数です。

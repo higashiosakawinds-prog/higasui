@@ -1,4 +1,4 @@
-name: Sync microCMS news
+name: Sync microCMS content
 
 on:
   repository_dispatch:
@@ -24,7 +24,7 @@ jobs:
       github.repository == 'higashiosakawinds-prog/higasui' &&
       github.ref == 'refs/heads/main' &&
       (github.event_name != 'repository_dispatch' ||
-       (github.event.client_payload.service == 'higasui' && github.event.client_payload.api == 'news'))
+       (github.event.client_payload.service == 'higasui' && contains(fromJSON('["news", "recruitment"]'), github.event.client_payload.api)))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -35,23 +35,31 @@ jobs:
         with:
           node-version: '22'
       - name: Test synchronization
-        run: node --test tests/sync-news.test.mjs
+        run: node --test tests/sync-news.test.mjs tests/recruitment.test.mjs
       - name: Fetch published articles
+        if: github.event_name == 'workflow_dispatch' || github.event.client_payload.api == 'news'
         env:
           MICROCMS_SERVICE_DOMAIN: higasui
           MICROCMS_NEWS_ENDPOINT: news
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
         run: node scripts/sync-news.mjs
+      - name: Fetch published recruitment policies
+        if: github.event_name == 'workflow_dispatch' || github.event.client_payload.api == 'recruitment'
+        env:
+          MICROCMS_SERVICE_DOMAIN: higasui
+          MICROCMS_RECRUITMENT_ENDPOINT: recruitment
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+        run: node scripts/sync-recruitment.mjs
       - name: Commit changed public data
         run: |
-          if git diff --quiet -- news-content.js; then
-            echo '公開記事の変更はありません。'
+          if git diff --quiet -- news-content.js recruitment-content.js; then
+            echo '公開データの変更はありません。'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- news-content.js
-          git commit -m 'Update published microCMS news'
+          git add -- news-content.js recruitment-content.js
+          git commit -m 'Update published microCMS content'
           git pull --rebase origin main
           git push origin HEAD:main
       # GITHUB_TOKENでのpushはPagesビルドを起動しないため、明示的に依頼する。
