@@ -1,0 +1,28 @@
+name: Configure recruitment preview database
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: '確認済みのパート人数集計RPCを追加する'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  configure:
+    if: github.repository == 'higashiosakawinds-prog/higasui' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Inspect schema or apply aggregate RPC
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          APPLY_RECRUITMENT_RPC: ${{ inputs.apply }}
+        run: node scripts/configure-recruitment-db.mjs
